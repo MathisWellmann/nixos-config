@@ -74,9 +74,9 @@
     enableSSHSupport = true;
   };
 
-  # environment.sessionVariables = {
-  #   WLR_NO_HARDWARE_CURSORS = "1";
-  # };
+  environment.sessionVariables = {
+    WLR_NO_HARDWARE_CURSORS = "1";
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
@@ -140,7 +140,21 @@
     mongodb
     killall
     home-manager
+    iperf
+    lshw
   ];
+
+  programs.bash.shellAliases = {
+    cu = "cargo update";
+    cc = "cargo check";
+    cb = "cargo build";
+    cbr = "cargo build --release";
+    cr = "cargo run";
+    crr = "cargo run --release";
+    cte = "cargo test";
+    fmt = "cargo +nightly fmt";
+    tfmt = "taplo fmt";
+  };
 
   fonts.fonts = with pkgs; [
     noto-fonts
