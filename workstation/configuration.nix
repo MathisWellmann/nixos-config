@@ -129,19 +129,23 @@
     delta
     crate2nix
 
-    # Misc
+    # Desktop
     chromium
     firefox
     vlc
     keepassxc
     mate.eom
-    typst
     zathura
+
+    # Misc
+    typst
     mongodb
     killall
     home-manager
     iperf
     lshw
+    nmap
+    rathole
   ];
 
   programs.bash.shellAliases = {
@@ -181,12 +185,18 @@
   nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 27017 ];
+  networking.firewall.allowedTCPPorts = [ 
+    27017 # Mongodb
+    8231 # Tikr
+  ];
   # networking.firewall.allowedUDPPorts = [ ... ];
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
   networking.nameservers = [ "192.168.0.165" ];
+  networking.extraHosts = ''
+    172.104.239.84 linode
+  '';
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
