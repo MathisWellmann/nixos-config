@@ -47,13 +47,13 @@
     driSupport = true;
     driSupport32Bit = true;
   };
-
   hardware.nvidia = {
     modesetting.enable = true;
     nvidiaSettings = true;
     # package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
-
+  sound.enable = true;
+  hardware.pulseaudio.enable = true;
 
   services.xserver = {
     enable = true;
@@ -74,16 +74,17 @@
     enableSSHSupport = true;
   };
 
-  environment.sessionVariables = {
-    WLR_NO_HARDWARE_CURSORS = "1";
-  };
+  # environment.sessionVariables = {
+  #   WLR_NO_HARDWARE_CURSORS = "1";
+  # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
     isNormalUser = true;
     description = "magewe";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [];
+    shell = pkgs.nushell;
   };
 
   # Allow unfree packages
@@ -146,7 +147,12 @@
     lshw
     nmap
     rathole
+    phoronix-test-suite
+    pulseaudio
+    docker-compose
   ];
+
+  virtualisation.docker.enable = true;
 
   programs.bash.shellAliases = {
     cu = "cargo update";
@@ -169,12 +175,21 @@
   nix.settings.trusted-users = [ "root" "magewe" ];
 
   services.openssh.enable = true;
-
+  services.tailscale.enable = true;
   services.mongodb = {
     enable = true;
     dbpath = "/home/magewe/mongodb";
     user = "root";
     bind_ip = "0.0.0.0";
+  };
+  services.prometheus = {
+    exporters = {
+      node = {
+        enable = true;
+        enabledCollectors = [ "systemd" ];
+        port = 9002;
+      };
+    };
   };
 
   nix.gc = {
