@@ -1,0 +1,6528 @@
+ls
+la
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+ls
+la
+ls-font
+la
+hx .config/alacritty/alacritty.yml
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+la
+ls
+la
+cd rust/
+la
+cd ..
+neofetch
+lfs
+xrandr -q
+xrandr --output HDMI-0 --rotate left 
+hx .xinitrc
+xrandr -q
+:wq
+xrandr -q
+hx .xinitrc
+xrandr -q
+la
+hx .xinitrc
+la
+cd rust/
+cd MathisWellmann/
+ttyper
+neofetch
+z rust/MathisWellmann/
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+rainj
+rusty-rain
+cargo install rusty-rain
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+cargo install rusty-rain
+rainj
+rusty-rain
+cd ~
+cd .cargo/bin/
+ls
+source ~/.cargo/bin/
+cd ..
+cd Downloads/
+ls
+tar 
+tar -xf veracrypt-1.25.9-setup.tar.bz2
+ls
+./veracrypt-1.25.9-setup-gui-x86
+cd /usr/bin/
+ls
+./veracrypt
+la
+./veracrypt
+./veracrypt-uninstall.sh
+sudo ./veracrypt-uninstall.sh
+cd ~
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+btm
+cd rust/MathisWellmann/
+la
+btm
+ttyper
+logout
+hx .xinitrc
+btm
+hx .xinitrc
+lsblk
+sudo mkdir /mnt/usb256
+sudo mkdir /mnt/
+sudo mkdir /mnt/usb256
+sudo mount /dev/sda1 /mnt/usb256/
+sudo umount /mnt/usb256/
+cd rust/MathisWellmann/
+git config --global credential.helper store
+git clone https://github.com/MathisWellmann/tikr
+git config --global credential.helper store
+git clone https://github.com/MathisWellmann/tikr
+htop
+ls
+git config --global credential.helper store
+git clone https://github.com/MathisWellmann/tikr
+unset SSH_ASKPASS
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+btm
+cd rust/MathisWellmann/
+git clone https://github.com/MathisWellmann/tikr
+SSH_ASKPASS=false git clone https://github.com/MathisWellmann/tikr
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+git clone https://github.com/MathisWellmann/tikr
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+hx pw
+SSH_ASKPASS="./pw" git clone https://github.com/MathisWellmann/tikr
+la
+hx pw
+chmod +x pw
+la
+SSH_ASKPASS="./pw" git clone https://github.com/MathisWellmann/tikr
+git clone https://github.com/MathisWellmann/hydrous_ngrc
+git clone https://github.com/MathisWellmann/hydra
+git clone https://github.com/MathisWellmann/reservoir_computer
+git clone https://github.com/MathisWellmann/ngrc_cuda
+git clone https://github.com/MathisWellmann/forust
+git clone https://github.com/MathisWellmann/trade_aggregation-rs
+git clone https://github.com/MathisWellmann/lfest-rs
+git clone https://github.com/MathisWellmann/warehouse
+git clone https://github.com/MathisWellmann/ngrc
+git clone https://github.com/MathisWellmann/cosyne
+git clone https://github.com/MathisWellmann/gym-rs
+cd rust/MathisWellmann/
+mkdir nixos-config
+cd nixos-config/
+cp /etc/nixos/configuration.nix .
+cp -r ~/.config/ .
+la
+hx README.md
+git init
+git remote add origin https://github.com/MathisWellmann/nixos-config.git
+git branch -M main
+git push -u origin main
+gitui
+git commit -m "Init"
+git config --global user.email "wellmannmathis@gmail.com"
+git config --global user.name "MathisWellmann"
+git push
+git push -u origin main
+git commit -m "Init"
+git push -u origin main
+cd ..
+cd hydro
+z hydro
+z hydrous_ngrc/
+cc
+hx shell.nix
+nix shell
+z hydr
+nix-shell
+ttyper
+cd src/
+hx main.rs
+rustup component add rust-analyzer
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+gitui
+nix-shell
+git commit -m "Add `shell.nix`"
+git push
+gitui
+cd ~
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+mkdir -p ~/.config/nixpkgs
+mkdir ~/.config/nixpkgs
+ echo “{ allowUnfree = true; }” >> ~/.config/nixpkgs/config.nix
+hx shell.nix
+nix-shell
+hx .config/nixpkgs/config.nix
+hx shell.nix
+la
+nix-shell
+clear
+gitui
+fmt
+hx shell.nix
+cd ..
+mkdir gensyn
+cd gensyn/
+git clone https://github.com/gensyn-ai/node
+cd node
+z hydro
+cp shell.nix ~/rust/gensyn/node/
+cc
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+btm
+hx shell.nix
+nix-shell
+hx shell.nix
+gitui
+hx shell.nix
+z hydro
+gitui
+git pull
+cd ..
+cd ngrc_cuda/
+git pull
+ls
+nix-shell
+hx shell.nix
+cp ../hydrous_ngrc/shell.nix
+cp ../hydrous_ngrc/shell.nix .
+hx shell.nix
+z node
+git pull
+gitui
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+rustup update
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+hx flake.nix
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-depevol
+nix-develop
+nixdevelop
+nix develop
+nix develop --extra-experimental-features
+hx flake.nix
+rm -f flake.nix
+hx shell.nix
+btm
+ttyper
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+z node
+nix-shell
+nix develop
+nix-shell
+hx shell.nix
+nix-shell
+btm
+nix-shell
+rustup target add wasm32-unknown-unknown --toolchain nightly
+z ngrc
+hx shell.nix
+nix-shell
+cd ../ngrc_cuda/
+nix-shell
+hx shell.nix
+nix-shell
+ni
+nix-shell
+nix-collect-garbage
+nix-env -iA cachix -f https://cachix.org/api/v1/install
+cachix use nix-community
+sudo cachix use nix-community
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+  nix.settings.trusted-users = [ "root" "magewe" ];
+cachix use nix-community
+nix-shell
+cd rust
+git clone https://github.com/andresilva/nix-polkadot/tree/master
+https://github.com/andresilva/nix-polkadot/
+git clone https://github.com/andresilva/nix-polkadot/
+cd nix-polkadot/
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+btm
+gitui
+git switch -C mathis-nix
+gitui
+git commit -m "Add `shell.nix`"
+git push
+    git push --set-upstream origin mathis-nix
+git checkout main
+gitui
+nix-shell
+git checkout mathis-nix
+ls
+cp shell.nix ~
+git checkout main
+cp ~/shell.nix .
+nix-shell
+rm -f shell.nix
+cp ~/shell.nix .
+ls
+z cuda
+nix-shell
+hx shell.nix
+git pull
+gitui
+hx shell.nix
+nix-shell
+z cuda
+gitui
+z cuda
+nix-shell
+z cuda
+nix-shell
+hx shell.nix
+fmt
+gitui
+git commit -m "Add `shell.nix`"
+git push
+btm
+nvtop
+btm
+eom img/lorenz_system_x.png
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+eom img/lorenz_system_x.png
+gitui
+eom img/lorenz_system_x.png
+cp shell.nix ../hydrous_ngrc/
+cd ..
+cd hydrous_ngrc/
+cd ..
+cd hydrous_ngrc/
+gitui
+git checkout cuda
+git fetch
+git checkout cuda
+ttyper
+cd ..
+cd hydro
+cd hydra
+git pull
+hx shell.nix
+cd ..
+cd hydrous_ngrc/
+hx shell.nix
+cd ..
+cd cua
+cd ngrc_cuda/
+nix-shell
+cd ..
+cd cuda
+cd ngrc_cuda/
+hx shell.nix
+gitui
+git commit -m "Smaller `shell.nix`"
+git push
+cd ..
+cp ngrc_cuda/shell.nix hydrous_ngrc/
+cd hydrous_ngrc/
+nix-shell
+cd ..
+cd hydrous_ngrc/
+nix-shell
+hx shell.nix
+hx src/main.rs
+nix-shellf
+nix-shell
+fmt
+gitui
+git commit -m "More progress"
+hx .git/hooks/pre-commit
+hx Cargo.toml
+fmt
+gitui
+git commit -m "More progress"
+git push
+z node
+gitui
+ttyper
+btm
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo nix-env --delete-generations old
+gitui
+cd ..
+cd MathisWellmann/
+mkdir nixos
+cd nixos-config/
+la
+cp /etc/nixos/configuration.nix .
+gitui
+git commit -m "Update config"
+git push
+z node
+git fetch
+git pull
+git branch
+git branch --all
+git push --delete origin mathis-staking-shelf
+git fetch --prune
+git branch --all
+git push --delete origin mathis-staking-solver
+git push --delete origin mathis-showcase-subsystem
+git push --delete origin mathis-shelf-committee-accounts
+git push --delete origin mathis-nix
+git branch -D mathis-nix
+git fetch --prune
+git branch --all
+git checkout mathis-ml-task-payment
+git rebase main
+git push --force
+xrandr -q
+xrandr --output DP-1 --left-of HDMI-0 --rotate left 
+hx .xinitrc
+nix-shell
+nix-shell
+z node
+z node
+nix-shell
+fmt
+gitui
+hx pallets/gensyn/src/tests/submit_task_erasure_roots.rs
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Adjust test"
+git push
+hx pallets/gensyn/src/lib.rs
+nix-shell
+fmt
+gitui
+git commit -m "Pay the solver"
+git push
+100 
+hx pallets/gensyn/src/tests/submit_trained_parameters_erasure_root.rs
+gitui
+igitui
+gitui
+z cuda
+nix-shell
+z cuda
+cd ..
+cd hydrous_ngrc/
+nix-shell
+cd ..
+cd hydrous_ngrc/
+nix-shell
+z cuda
+ls
+cd ..
+cd hydrous_ngrc/
+z cuda
+nix-shell
+cp ../hydrous_ngrc/documentation/HFT_HAVOK.typ .
+mv HFT_HAVOK.typ impl_details.typ
+typst impl_details.typ
+typst compile impl_details.typ
+mupdf impl_details.pdf
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo nixos-rebuild switch --upgrade
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+hx src/create_design_matrix_poly_2.rs
+typst compile impl_details.typ
+mupdf impl_details.pdf
+hx src/create_design_matrix_poly_2.rs
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+hx src/create_design_matrix_poly_2.rs
+typst compile impl_details.typ
+mupdf impl_details.pdf
+hx src/create_design_matrix_poly_2.rs
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+typst compile impl_details.typ
+mupdf impl_details.pdf
+hx impl_details.typ
+typst compile impl_details.typ
+hx impl_details.typ
+mupdf impl_details.pdf
+gitui
+git commit -m "Add `impl_details.typ`"
+git push
+z hydro
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Make compile"
+git push
+z cuda
+cd src/
+ls
+hx create_design_matrix_poly_2.rs
+z cuda
+cd src/
+nix-shell
+fmt
+gitui
+git commit -m "Add new CUDA based `averaging_kernel`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add CUDA based `ln_returns`"
+git push
+hx create_design_matrix_poly_2.rs
+z node
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Test the payout once the task is done"
+git push
+hx pallets/gensyn/src/lib.rs
+gitui
+git commit -m "Clarify the documentation"
+git push
+git checkout main
+git pull
+git checkout mathis-ml-task-payment
+git rebase main
+git push --force
+cargo clippy
+nix-shell
+fmt
+gitui
+git commit -m "chore: fmt"
+git push
+git checkout main
+git branch
+git switch -C mathis-const-max-committee-size
+hx pallets/shelf_committees/src/lib.rs
+gitui
+git checkout mathis-ml-task-payment
+git checkout mathis-const-max-committee-size
+hx runtime/src/lib.rs
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Make the maximum number of shelves in a committee a constant"
+git push
+    git push --set-upstream origin mathis-const-max-committee-size
+cd ..
+git clone https://github.com/paritytech/polkadot
+cd polkadot/
+hx runtime/polkadot/src/lib.rs
+git checkout release-v0.9.42
+hx runtime/polkadot/src/lib.rs
+z node
+nix-shell
+cd ..
+cd ~
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Disambiguate `Index` type, renaming it to `AccountNonce`"
+git push
+    git push --set-upstream origin mathis-disambiguate-index
+git checkout main
+git pull
+git checkout mathis-disambiguate-inde
+git checkout mathis-disambiguate-index
+git rebase main
+git push --force
+git checkout mathis-ml-task-payment
+git rebase main
+git push --force
+git checkout mathis-disambiguate-index
+hx .gitignore
+gitui
+git commit -m "Add `shell.nix` to `.gitignore`"
+git push
+git checkout mathis-ml-task-payment
+gitui
+hx pallets/gensyn/src/lib.rs
+nix-shell
+fmt
+gitui
+hx pallets/gensyn/src/tests/submitter_pays_solver.rs
+fmt
+gitui
+hx pallets/gensyn/src/lib.rs
+dt
+nix-shell
+fmt
+gitui
+git checkout main
+git pull
+git checkout mathis-ml-task-payment
+git rebase main
+git push --forec
+git push --force
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Impl `normalize`"
+git push
+scp magewe@192.168.0.206:/home/magewe/BTCUSDT-aggTrades-2023-01_compact.csv .
+btm
+nix-shell
+fmt
+gitui
+git commit -m "Adjust `train_test_split` logic and added a test"
+git push
+z cuda
+cd src/
+hx ngrc_cuda.rs
+fmt
+gitui
+git commit -m "Logging changes"
+git push
+nvtop
+z cuda
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+sudo nixos-rebuild switch
+nix-shell
+cd ..
+cd hydrous_ngrc/
+nix-shell
+cd ..
+cd ngrc_cuda/
+cd src/
+hx lib.rs
+cd ..
+hx ngrc_cuda/src/ngrc_cuda.rs
+cd ngrc_cuda/
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Do not compile CUDA source code when initializing the NGRC, make the caller do it. Also export `cudarc`"
+git push
+nix-shell
+fmt
+z hydro
+gitui
+git commit -m "Use `cudarc` from `ngrc_cuda` and compile source only once"
+git push
+nvtop
+btm
+z cuda
+cd src/
+hx create_design_matrix_poly_2.rs
+nix-shell
+cd ..
+z cuda
+nix-shell
+fmt
+gitui
+git commit -m "Gracefully handle failure to load kernel"
+git push
+nix-shell
+nvtop
+z hydro
+942 / 60
+z cuda
+cd src/
+nix-shell
+cd ..
+ni
+nix-shell 
+fmt
+gitui
+git commit -m "Add `params` method"
+git push
+nix-shell
+z cuda
+nix-shell
+fmt
+gitui
+git commit -m "Add `DataSource` and modify `train` parameters so both data from the host and the device are accepted"
+git push
+nix-shell
+z cuda
+nix-shell
+fmt
+gitui
+git commit -m "Use `CudaView` as input arguments, moving arguments around"
+git push
+nix-shell
+ttyper
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Train once when the best parameters are received from the optimizer thread. Also use the GPU slices instead of moving to host all the time"
+git push
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Refactor by creating `prune_solved_ml_task` function"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Test the pruning of solved ml tasks"
+git push
+hx pallets/gensyn/src/lib.rs
+git checkout main
+git pull
+git checkout mathis-ml-task-payment
+git rebase main
+git push --force
+nix-shell
+fmt
+gitui
+git commit -m "Improve two tests"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Delete the av items from the PoAv layer when pruning the solved ml task"
+git push
+ni
+nix-shell
+fmt
+gitui
+git commit -m "Remove `PalletId` associated type and related code which is not currently needed"
+git push
+z cuda
+nix-shell
+z cuda
+gitui
+cd ..
+cd hydrous_ngrc/
+gitui
+cd ..
+cd hydrous_ngrc/
+z node
+hx pallets/gensyn/src/lib.rs
+fmt
+nix-shell
+fmt
+gitui
+git commit -m "Chore: clippy"
+git push
+z node
+git checkout main
+git pull
+git checkout mathis-ml-task-payment
+git rebase main
+git push --force
+ls
+nix-shell
+fmt
+gitui
+git commit -m "The ngrc optimizer thread now sends over the trained elite ngrcs"
+git push
+z node
+git checkout main
+git pull
+git branch
+git branch -D mathis-disambiguate-index
+git branch -D mathis-const-max-committee-size
+git branch -D mathis-ml-task-payment
+btm
+z hydro
+nvtop
+nix-shell
+mbt
+btm
+z hydro
+gitui
+git commit -m "Compile the averaging kernel just once. 2x speedup achieved"
+git push
+562 / 60
+ttyper
+gitui
+nix-shell
+fmt
+z hydro
+gitui
+nvtop
+btm
+zcuda
+z cuda
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Smaller adjustments"
+git push
+nvtop
+z cuda
+git reset --soft HEAD^
+gitui
+hx src/ngrc_cuda.rs
+fmt
+nix-shell
+gitui
+git commit -m "Smaller adjustments"
+git push --force
+z cuda
+hx src/create_design_matrix_poly_2.rs
+fmt
+gitui
+nix-shell
+gitui
+git commit -m "Remove some logs and create `readout_matrix` method"
+git push
+z cuda
+git reset --soft HEAD^
+hx src/create_design_matrix_poly_2.rs
+fmt
+nix-shell
+fmt
+gitui
+git commit -m "Remove some logs and create `readout_matrix` method"
+git push --force
+z cuda
+nix-shell
+git reset --soft HEAD^
+hx src/lib.rs
+nix-shell
+fmt
+gitui
+git commit -m "Remove some logs and create `readout_matrix` method"
+git push --force
+nix-shell
+nvtop
+nix-shell
+fmt
+gitui
+git commit -m "Extract out `order_prices_from_forecast`"
+git push
+100 / 10
+5.87 * 10
+5.87 * 17
+nix-shell
+fmt
+z hydro
+gitui
+z node
+git branch
+git switch -C mathis-enforce-solver-verifier-distinction
+nix-shell
+fmt
+gitui
+git commit -m "Ensure that solver registration does not work when already active"
+git push
+    git push --set-upstream origin mathis-enforce-solver-verifier-distinction
+nix-shell
+fmt
+gitui
+git commit -m "Make sure a verifier cannot be a solver and vice versa"
+git push
+z hydro
+nix-shell
+z hydro
+z node
+cd ..
+git clone https://github.com/gensyn-ai/reproducibility
+cd reproducibility/
+nix-shell
+cd ..
+cd gensyn/reproducibility/
+cp ../node/shell.nix
+cp ../node/shell.nix .
+nix-shell
+cd ..
+cd gensyn/reproducibility/
+nix-shell
+cd ..
+cd MathisWellmann/hydrous_ngrc/
+hx shell.nix
+cd ..
+cd MathisWellmann/hydrous_ngrc/
+hx .gitignore
+ls
+nix-shell
+fmt
+z hydro
+gitui
+git commit -m "Add plot of averaging kernel"
+git push
+gitui
+cd src/
+git checkout main
+git pull
+git merge cuda
+git push
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+ip addr
+la
+rainj
+rusty-rain
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+xef
+xev
+wev
+la
+ls
+cd rust/
+ls
+hx .config/hypr/hyprland.conf
+la
+hx .config/alacritty/alacritty.yml
+cd rust/
+sudo hx /etc/nixos/configuration.nix
+scp -r magewe@192.168.0.206:/home/magewe/rust/MathisWellmann .
+hx .config/hypr/hyprland.conf
+sudo nixos-rebuild switch --upgrade
+ls
+hx .config/hypr/hyprland.conf
+sudo hx /etc/nixos/configuration.nix
+cd MathisWellmann/ngrc_cuda/
+nix-shell
+ls
+git pull
+git config --global credential.helper store
+sk
+hx .config/hypr/hyprland.conf
+cd ..
+hx .config/hypr/hyprland.conf
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+sudo nixos-rebuild switch
+hx .config/hypr/hyprland.conf
+ttyper
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+lsblk
+ls /mnt/
+sudo mount /dev/sda1 /mnt/kingston/
+cd /mnt/kingston/
+cd rust/MathisWellmann/ngrc_cuda/
+git pull
+unset SSH_ASKPASS
+SSH_ASKPASS=false git pull
+GIT_ASKPASS=echo git pull
+git pull
+cd ..
+cd ngrc_cuda/
+cd ..
+cd ~
+cd rust/MathisWellmann/ngrc_cuda/
+nix-shell
+nix-shell
+cd ..
+cd hydrous_ngrc/
+git checkout main
+git pull
+cd ..
+cd hydrous_ngrc/
+gitui
+nvtop
+btm
+dt
+scp magewe@192.168.0.206:/home/magewe/BTCUSDT-aggTrades-2023-01_compact.csv .
+ttyper
+btm
+z hydro
+cd hydro
+z hydro
+nix-shell
+nix-shell
+ttyper
+z hydro
+btm
+ssh magewe@madcatz
+z hydro
+nvtop
+z hydro
+nix-shell
+fmt
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+rustup update nightly
+fmt
+gitui
+git config --global user.name "MathisWellmann"
+git config --global user.email "wellmannmathis@gmail.com"
+git commit -m "Add `plot_ln_returns_from_averaged` test"
+git push
+z hydro
+z cuda
+hx README.md
+nix-shell
+nix-shell
+fmt
+gitui
+git commit -m "Add `logarithm_scaler` to direcly scale the result of the logarithm operation"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add `logarithm_scaler` to direcly scale the result of the logarithm operation"
+git push --force
+ttyper
+z hydra
+z rust/MathisWellmann/hydra
+gitui
+git pull
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Different optimizer threading"
+git push
+z hydro
+nix-shell
+neofetch
+nix-shell
+fmt
+gitui
+git commit -m "Remove unused"
+git push
+gitui
+hx config_files/agent.ron
+gitui
+hx config_files/agent.ron
+z hydro
+nix-shell
+nix-shell
+eom img/ngrc_agent_0.137.0_d6fa8f99_BTCUSDT-aggTrades-2023-01_compact.csv.gif
+nix-shell
+eom img/ngrc_agent_0.137.0_d6fa8f99_BTCUSDT-aggTrades-2023-01_compact.csv.gif
+fmt
+gitui
+git commit -m "Re-enable plotting"
+git push
+nix-shell
+eom img/ngrc_agent_0.137.0_d6fa8f99_BTCUSDT-aggTrades-2023-01_compact.csv.gif
+fmt
+gitui
+git commit -m "Better gif plot"
+git push
+eom img/ngrc_agent_0.137.0_d6fa8f99_BTCUSDT-aggTrades-2023-01_compact.csv.png
+gitui
+cd rust
+git clone https://github.com/alphaville/optimization-engine
+cp MathisWellmann/hydrous_ngrc/shell.nix optimization-engine/
+cd optimization-engine/
+nix-shell
+nix-shell
+eom img/ngrc_agent_0.137.0_d6fa8f99_BTCUSDT-aggTrades-2023-01_compact.csv.png
+rm -f img/*
+hx config_files/agent.ron
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+mongod 
+sudo mkdir -p /data/db
+mongod 
+mongodb
+mongod
+mongos 
+mongo 
+mongod
+la /data/
+ls
+la
+z hydro
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+z hydro
+z hydro
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+mkdir mongodb
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo systemctl status mondod
+sudo systemctl status mondodb
+sudo systemctl status mongod
+sudo systemctl status mongodb
+z hydro
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Make the post entry analyzer plot its own configurable thing"
+git push
+nix-shell
+eom img/ngrc_agent_0.138.0_240ac61c_BTCUSDT-aggTrades-2023-01_compact.csv.png
+nix-shell
+fmt
+gitui
+git commit -m "Fixup two tests"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Remove test"
+git push
+eom img/monte_carlo_generated_trades_0.png
+nix-shell
+fmt
+gitui
+hx Cargo.toml
+gitui
+git commit -m "set `action_step` correctly so order cancellation works again"
+git push
+eom img/ngrc_agent_0.138.0_240ac61c_BTCUSDT-aggTrades-2023-01_compact.csv.png
+hx config_files/agent.ron
+nix-shell
+eom img/ngrc_agent_0.139.0_f8adcae3_BTCUSDT-aggTrades-2023-01_compact.csv.png
+z cuda
+nix-shell
+cd ..
+cd ngrc_cuda/
+nix-shell
+fmt
+gitui
+git commit -m "Changes to `random_search`"
+git push
+nix-shell
+cd ..
+cd hydrous_ngrc/
+nix-shell
+eom img/forecast_ln_returns_from_averaged.png
+nix-shell
+fmt
+gitui
+nix-shell
+eom img/forecast_ln_returns_from_averaged.png
+nix-shell
+eom img/forecast_ln_returns_from_averaged.png
+nix-shell
+eom img/forecast_ln_returns_from_averaged.png
+nix-shell
+eom img/forecast_ln_returns_from_averaged.png
+nix-shell
+eom img/forecast_ln_returns_from_averaged.png
+nix-shell
+fmt
+gitui
+git commit -m "Update the test"
+git push
+nix-shell
+nix-shell
+fmt
+gitui
+git commit -m "Add `savitzky_golay` "
+git push
+eom img/ln_returns_from_averaged.png
+eom img/savitzky_golay_derivative_5.png
+nix-shell
+nix-shell
+eom img/savitzky_golay_derivative_5.png
+eom img/savitzky_golay_derivative_7.png
+fmt
+gitui
+git commit -m "Add `savitzky_golay_derivative_7.rs`"
+git push
+nvtop
+btm
+z hydro
+z hydro
+z cuda
+nix-shell
+fmt
+gitui
+git commit -m "Modify `random_search`"
+nix-shell
+git push
+btm
+nix-shell
+eom img/forecast_averaged_prices.png
+nix-shell
+fmt
+gitui
+git commit -m "Add test for forecasting the averaged prices directly"
+git push
+sudo start_hyprland.sh
+sudo hx start_hyprland.sh
+hx start_hyprland.sh
+sudo hx /etc/nixos/configuration.nix
+z hydro
+z hydro
+nix-shell
+ttyper
+eom img/forecast_averaged_prices.png
+nix-shell
+eom img/forecast_averaged_prices.png
+nix-shell
+eom img/forecast_averaged_prices.png
+nix-shell
+eom img/forecast_averaged_prices.png
+nix-shell
+eom img/forecast_averaged_prices.png
+nix-shell
+fmt
+gitui
+git commit -m "Normalize the series"
+git push
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+z hydro
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+cd ..
+cd ngrc_cuda/
+ls
+nix-shell
+cd ..
+cd ngrc_cuda/
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Add `objective_function` and `objective` to random search"
+git push
+cd ..
+cd hydrous_ngrc/
+nix-shell
+cd ..
+cd hydrous_ngrc/
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+fmt
+gitui
+cd src/feature_processor/pre_processor/
+gitui
+mv avg_kernel_macd.rs kacd.rs
+hx mod.rs
+gitui
+git commit -m "Introduce `kacd` and forecasting horizon objective function"
+git push
+cd ..
+nix-shell
+eom img/forecast_kacd.png
+nvtop
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+z hydro
+git pull
+z hydro
+gitui
+git pull
+nix-shell
+eom img/savitzky_golay_quad_5.png
+nix-shell
+fmt
+gitui
+git commit -m "Add three more savitzky golay coefficients with test plots"
+git push
+nix-shell
+eom img/savitzky_golay_quart_7.png
+nix-shell
+fmt
+gitui
+git commit -m "Add two more savitzky golay coefficients with test plots"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Share more code between tests"
+git push
+nix-shell
+eom img/averaging_kernel.png
+nix-shell
+eom img/averaging_kernel.png
+nix-shell
+eom img/averaging_kernel.png
+nix-shell
+eom img/averaging_kernel.png
+z rust/MathisWellmann/trade_aggregation-rs/
+hx Cargo.toml
+git pull
+hx Cargo.toml
+cp ../hydrous_ngrc/shell.nix .
+z trade
+nix-shell
+eom img/savitzky_golay_derivative_9.png
+nix-shell
+fmt
+gitui
+nix-shell
+hx shell.nix
+gitui
+git commit -m "Make the `VolumeRule` return a `Result` to be able to perform input validation"
+git push
+z hydr
+cd ..
+cd hydra
+gitui
+hx Cargo.toml
+nix-shell
+cp ../hydrous_ngrc/shell.nix .
+nix-shell
+hx shell.nix
+nix-shell
+fmt
+gitui
+git commit -m "Update `trade_aggregation` dependency"
+git push
+nix-shell
+fmt
+nix-shell
+eom img/prices.png
+nix-shell
+eom img/prices.png
+nix-shell
+fmt
+gitui
+git commit -m "Use newest version of `trade_aggregation`, update the aggregation rule in tests"
+git push
+gitui
+git push
+nix-shell
+fmt
+gitui
+eom img/forecast_averaged_prices.png
+gitui
+git commit -m "Make the forecasting modes use more common code"
+git push
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_log_returns_from_averaged.png
+eom img/averaging_kernel.png
+nix-shell
+eom img/forecast_averaged_prices.png
+eom img/forecast_log_returns_from_averaged.png
+nix-shell
+eom img/forecast_kacd.png
+nix-shell
+eom img/forecast_kacd.png
+ttyper
+git push
+z cuda
+nix-shell
+cd ..
+cd ngrc_cuda/
+hx examples/lorenz_system.rs
+nix-shell
+fmt
+gitui
+git commit -m "Add `SearchConfig` and modify `random_search`"
+git push
+nix-shell
+cd ..
+cd hydrous_ngrc/
+nix-shell
+cd ..
+cd hydrous_ngrc/
+z cuda
+nix-shell
+fmt
+gitui
+git commit -m "Adjust mackey glass example"
+git push
+eom img/lorenz_system_x.png
+hx examples/lorenz_system.rs
+nix-shell
+nix-shell
+z hydro
+nix-shell
+cargo install delta
+cargo install git-delta
+delta --help
+git-delta --help
+cargo uninstall git-delta
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+nix-shell
+z cuda
+nix-shell
+git config --global user.email "wellmannmathis@gmail.com"
+git config --global user.name "MathisWellmann"
+nix-shell
+nix-shell
+git push
+z cuda
+z cuda
+git pull
+cd ~
+hx .git-credentials
+hx .gitconfig
+git pull
+git checkout recovery
+z cuda
+nix-shell
+fmt
+gitui
+git commit -m "Adjust `mackey_glass` for incredible performance"
+git push
+nix-shell
+fmt
+nix-shell
+z hydro
+gitui
+nix-shell
+cd ..
+cd hydrous_ngrc/
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Make it work with newest proven to work ngrc_cuda"
+git push
+nix-shell
+git push --force
+killall ssh-agent
+kill ssh-agent
+htop
+hx .gitconfig
+nix-shell -p killall
+sudo hx /etc/nixos/configuration.nix
+nix-shell
+fmt
+gitui
+git commit -m "Adjust forecasting experiments"
+git push
+z hydro
+z hydro
+git push
+cargo clean
+scp -r * magewe@192.168.0.206:/home/magewe/rust/MathisWellmann/hydrous_ngrc
+git pull
+gitui
+cargo check
+clear
+g
+nix-shell
+eom img/savitzky_golay_derivative_5.png
+nix-shell
+z hydro
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Extract out more common functionality in forecast experiments"
+git push
+git pull
+git push
+gitui
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Make the savgol forecasting experiment use the common function as well"
+git push
+nix-shell
+eom img/forecast_averaged_normalized_prices.png
+nix-shell
+z hydro
+eom img/forecast_averaged_normalized_prices.png
+tokei
+nix-shell
+fmt
+gitui
+git commit -m "Figure out best parameters using cross validation"
+git push
+btm
+z hydro
+nix-shell
+z cuda
+git pull
+zellij
+z hydro
+nix-shell
+nix-shell
+nix-shell
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Smaller tweaks to the forecasting experiment"
+git push
+eom img/forecast_averaged_normalized_prices.png
+z node
+cd rust/
+mkdir gensyn
+cd gensyn/
+git clone https://github.com/gensyn-ai/node
+cd no
+cd node/
+scp magewe@192.168.0.206:/home/magewe/rust/gensyn/node/shell.nix .
+lsblk
+sudo mount /dev/sda1 /mnt/kingston/
+cd /mnt/kingston/
+ls
+la
+cd ~
+sudo umount /mnt/kingston/
+cp ~/rust/MathisWellmann/hydrous_ngrc/shell.nix .
+z node
+nix-shell
+hx shell.nix
+cd ..
+cp node/shell.nix cargo-dragons/
+cd cargo-dragons/
+nix-shell
+cd ..
+cd cargo-dragons/
+nix-shell
+fmt
+gitui
+git commit -m "Chore: Apply clippy and fmt"
+git push
+    git push --set-upstream origin mathis-clippy
+fmt
+gitui
+cargo +stable fmt -- --check
+rustup 
+rustup update
+rustup update stable
+cargo +stable fmt -- --check
+cargo +stable fmt
+gitui
+git reset --soft HEAD^
+gitui
+cargo +stable fmt
+gitui
+git commit -m "Chore: Apply clippy and fmt"
+git push --force
+z hydro
+cd ..
+cd gensyn/node/
+git checkout mathis-enforce-solver-verifier-distinction
+nix-shell
+cd ..
+cd node/
+hx pallets/gensyn/src/lib.rs
+z node
+fmt
+gitui
+git commit -m "Apply review comments"
+git push
+nix-shell
+cd ..
+cd cargo-dragons/
+gitui
+z node
+gitui
+nix-shell
+fmt
+gitui
+cargo +stable fmt
+gitui
+git push
+git reset --soft HEAD^
+git switch -C mathis-cleanup
+nix-shell
+cargo +stable fmt
+gitui
+nix-shell
+cargo +stable fmt
+gitui
+i
+z dragons
+cargo build
+RUST_LOG=info ./target/debug/cargo-dragons --help
+RUST_LOG=info ./target/debug/cargo-dragons -v -m ../node/ independence-check --help
+RUST_LOG=info ./target/debug/cargo-dragons -v -m ../node/ independence-check --ctx ephemeral
+z node
+git checkout main
+git pull
+git branch -D mathis-enforce-solver-verifier-distinction
+RUST_LOG=info ./target/debug/cargo-dragons -v -m ../node/ independence-check
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+nix-shell
+nix-shell
+tfmt
+gitui
+git commit -m "Update dependencies"
+git push
+gitui
+cd ..
+ls
+cd ..
+cd gensyn/
+git clone https://github.com/paritytech/substrate
+btm
+rm -rf substrate
+git clone https://github.com/gensyn-ai/substrate
+cd substrate/
+git branch
+git branch --all
+git checkout polkadot-v0.9.42
+nix-shell
+hx Cargo.toml
+cd ..
+cp node/shell.nix substrate/
+cd substrate/
+nix-shell
+nix-shell
+cargo +stable fmt
+gitui
+git commit -m "Move `make_pkg_predicate` into `utils.rs`"
+git push
+nix-shell
+z hydro
+z hydro
+git pull
+nix-shell
+eom img/averaging_kernel_21.png
+eom img/forecast_kacd_avg.png
+z hydro
+ls
+nix-shell
+eom img/forecast_kacd_avg.png
+7 / 4
+nix-shell
+eom img/kacd_avg_to_prices.png
+nix-shell
+fmt
+gitui
+git commit -m "Attempt to reconstruct prices from kacd"
+git push
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Add `alma_log_return_alma` with experiment"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add test for reconstructing alma_log_return_alma"
+git push
+gitui
+z dragons
+z dragons
+git checkout main
+git pull
+git branch -D mathis-cleanup
+z node
+nix-shell
+/
+cd ~
+z dragons
+nix-shell
+cd ..
+cd node
+z substrate
+hx Cargo.toml
+ls
+la
+la primitives/
+la client/
+la client/transaction-pool/
+la
+tk
+sk
+la client/
+la
+sk
+la node
+sk
+hx primitives/core/Cargo.toml
+sk
+hx Cargo.toml
+tfmt
+gitui
+git pull
+git switch -C mathis-independence
+gitui
+git commit -m "Specify substrate through `path`"
+git push
+    git push --set-upstream origin mathis-independence
+cd ..
+cd substrate/
+z dragons
+hx src/commands/check_independence.rs
+hx primitives/npos-elections/src/reduce.rs
+nix-shell
+fmt
+cd ..
+cd node/
+fmt
+tfmt
+gitui
+git commit -m "Straighten out a few features"
+git push
+nix-shell
+cargo +stable fmt
+gitui
+fmt
+gitui
+hx primitives/npos-elections/src/reduce.rs
+gitui
+git commit -m "Fix macro not found issue by explicitly specifying the crate, so it does not rely on global import scope"
+git pusp
+git push
+cd ..
+cd cargo-dragons/
+ls
+gitui
+nix-shell
+cd ..
+cd node/
+nix-shell
+tmf
+fmt
+tfmt
+gitui
+git commit -m "Fix submitter-cli not building independently"
+git push
+nix-shell
+tfmt
+gitui
+git commit -m "Address two more independent compilation issues, resolving all of them"
+git push
+git checkout main
+git switch -C mathis-independence-git
+git logs mathis-independence
+git log mathis-independence
+git cherry-pick ac91b378567325b88427ea3610e78d4702be6a64
+git cherry-pick 55c16a9c2402eb7c06d68eec6da83884d904a1d7
+git cherry-pick 78cb617cc527b10adf06132ffa91673cece832b4
+git push
+    git push --set-upstream origin mathis-independence-git
+nix-shell
+cd ..
+cd cargo-dragons/
+gitui
+nix-shell
+cargo +stable fmt
+nix-shell
+cargo +stable fmt
+tfmt
+gitui
+git commit -m "Final touches"
+git push
+nix-shell
+cargo +stable fmt
+gitui
+git commit -m "Change verbosity of compile output"
+git push
+cd ..
+cd node/
+hx pallets/gensyn/src/lib.rs
+git checkout main
+git switch -C mathis-registration-events
+hx pallets/gensyn/src/lib.rs
+gitui
+nix-shell
+nix-shell
+nix-shell
+z hydro
+git pull
+z hydro
+gitui
+z hydro
+eom img/alma_log_return_alma.png
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+nix flake init
+ttyper
+hx flake.nix
+rm -f flake.nix
+z dragons
+z node
+gitui
+git branch
+git checkout mathis-independence-git
+nix-shell
+z node
+hx pallets/gensyn/src/lib.rs
+cd ..
+cd cargo-dragons/
+nix-shell
+fmt
+gitui
+eom img/alma_log_return_alma.png
+eom img/alma_log_return_alma_to_prices.png
+nix-shell
+eom img/alma_log_return_alma_to_prices.png
+nix-shell
+fmt
+gitui
+rm -f img/savitzky_golay_*
+gitui
+git reset --soft HEAD^
+z hydro
+ni
+gitui
+hx src/experiments/forecast_savizky_golay_derivative.rs
+fmt
+gitui
+git commit -m "In experiments, reconstruct the prices"
+git push
+git push --force
+nix-shell
+eom img/savitzky_golay_derivative_5.png
+eom img/forecast_alma_log_return_alma_reconstructed.png
+la
+gitui
+git commit -m "Add imp"
+git push
+eom img/forecast_log_returns_from_averaged.png
+eom img/forecast_log_returns_from_averaged_reconstructed.png
+z hydro
+z hydro
+gitui
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+mbt
+cd ~
+home-manager init
+cd .config/home-manager/
+ls
+btm
+hx flake.nix
+cd ..
+z hydro
+gitui
+nix-shell
+z node
+hx pallets/shelf_committees/src/lib.rs
+eom img/savitzky_golay_derivative_5.png
+cd ~
+ls
+la
+scp whittaker-henderson_smoothing.pdf magewe@192.168.0.206:/home/magewe/
+scp Why_and_How_Savitzky−Golay_Filters_Should_Be_Replaced.pdf magewe@192.168.0.206:/home/magewe/
+cd Downloads/
+lsa
+la
+cd ..
+la
+scp `2306.06932_Revisiting_Whittaker-Henderson_Smoothing.pdf` magewe@192.168.0.206:/home/magewe/
+z substrate
+z dragons
+gitui
+nix-shell
+cd ..
+cd cargo-dragons/
+nix-shell
+fmt
+cargo +stable fmt
+gitui
+git commit -m "Do not use `macro_use`"
+git push
+z substrate
+git switch -C mathis-polkadot-v0.9.42-independence
+z substrate
+nix-shell
+cd ..
+cd node/
+gitui
+nix-shell
+hx Cargo.toml
+cd ..
+cd node/
+cargo tree --duplicates
+gitui
+hx Cargo.toml
+gitui
+z rust/MathisWellmann/gym-rs/
+git pull
+cp ../hydrous_ngrc/shell.nix .
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+cd ..
+cd MathisWellmann/hydrous_ngrc/
+hx shell.nix
+nix-shell
+hx shell.nix
+hx shell.nix
+cd ..
+nix-shell
+nix-shell
+hx shell.nix
+nix-shell
+hx shell.nix
+tokei
+nix-shell
+hx Cargo.toml
+cd ..
+cd MathisWellmann/gym-rs/
+nix-shell
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Add `shell.nix`"
+git push
+gitui
+git commit -m "Deny unused imports and crate dependencies"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add simple `rustfmt.toml`"
+git push
+cd ..
+cd gensyn/substrate/
+nix-shell
+cd ..
+cd gensyn/
+cd cargo-dragons/
+nix-shell
+cd ..
+cd MathisWellmann/gym-rs/
+nix-shell
+cd ..
+cd MathisWellmann/gym-rs/
+gitui
+ttyper
+z node
+hx pallets/gensyn/Cargo.toml
+cd ..
+nix-shell
+cd ..
+cp gym-rs/shell.nix substrate/
+git clone https://github.com/MathisWellmann/substrate
+cd substrate
+nix-shell
+hx shell.nix
+cd ..
+rm -f substrate/shell.nix
+cp ../gensyn/node/shell.nix substrate/
+cd substrate/
+cd substrate/
+cd rust/gensyn/substrate/
+ls
+nix-shell
+cd ..
+cd gensyn/cargo-dragons/
+gitui
+cd ..
+cd cargo-dragons/
+nix-shell
+z node
+gitui
+git pull
+git branch
+git branch -D mathis-independence
+git branch -D mathis-independence-git
+git push --delete origin mathis-independence
+git push --delete origin mathis-independence-git
+git switch -C mathis-resolver-2
+hx Cargo.toml
+nix-shell
+cargo clean
+nix-shell
+z node
+rustc --print target-list
+z node
+git checkout main
+git pull
+git branch -D mathis-resolver-2
+git push --delete origin mathis-resolver-2
+nix-shell
+cargo +stable fmt
+gitui
+git commit -m "Create the powerset of all available package features and check with those enabled"
+git push
+nix-shell
+tfmt
+cargo +stable fmt
+gitui
+git commit -m "Cleaner logging"
+git push
+cd ..
+nix-shell
+cd ..
+cd MathisWellmann/gym-rs/
+nix-shell
+nix-shell
+gitui
+git commit -m "Update README"
+git psuh
+git push
+/cd ..
+cd ..
+cd hydrous_ngrc/
+cd ..
+cd hydrous_ngrc/
+z hydro
+cd ~
+la
+mupdf WhittakerSmoother.pdf
+z hydro
+z cuda
+hx src/ngrc_cuda.rs
+mkdir code
+cd code/
+git clone https://github.com/mhvwerts/whittaker-eilers-smoother/
+cd whittaker-eilers-smoother/
+nix-shell -p python
+nix-shell -p python3
+nix-shell
+fmt
+gitui
+git commit -m "Inital `whittaker_henderson_smoother`"
+git push
+z node
+z node
+cd ..
+cd cargo-dragons/
+cd ..
+cd cargo-dragons/
+nix-shell
+nix-shell
+git checkout main
+git pull
+git branch -D mathis-independence-check-upgrades
+cd ..
+cd node/
+git pull
+git branch
+git branch -D mathis-sanity_ckeck_chunk_size
+git fetch --prune
+git branch -D mathis-registration-events
+git switch -C mathis-unify-roles
+cd ..
+cd node/
+nix-shell
+fmt
+gitui
+git commit -m "Initial unification of solver and verifier roles, by removing two extrinsics, modifying storage items and associated types"
+git push
+    git push --set-upstream origin mathis-unify-roles
+nix-shell
+fmt
+gitui
+git commit -m "Update the registration tests"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Update deregistration tests"
+git push
+hx pallets/gensyn/src/tests/assign_tasks_to_solvers.rs
+nix-shell
+fmt
+gitui
+git commit -m "Update the rest of the tests"
+git push
+nix-shell
+cd ..
+cd MathisWellmann/
+cd hydrous_ngrc/
+nix-shell
+z hydro
+git push
+cd code/
+la
+cd whittaker-eilers-smoother/
+hx shell.nix
+nix-shell
+eom img/whittaker_eilers.png
+nix-shell
+fmt
+gitui
+git commit -m "Working whittaker eilers smoother"
+git push
+nix-shell
+z hydro
+gitui
+cargo clean
+scp -r * magewe@192.168.0.206:/home/magewe/rust/MathisWellmann/hydrous_ngrc/
+git push
+z hydro
+eom img/whittaker_eilers.png
+nix-shell
+nix-shell
+cd ..
+cd gensyn/node/
+cd ..
+cd gensyn/node/
+z hydro
+git pull
+ttyper
+cd ..
+cd MathisWellmann/hydro
+cd MathisWellmann/hydrous_ngrc/
+z hydro
+nix-shell
+cd ..
+cd gensyn/node/
+nix-shell
+cd ..
+cd MathisWellmann/hydrous_ngrc/
+nix-shell
+eom img/whittaker_eilers.png
+nix-shell
+fmt
+gitui
+git commit -m "Add experiment for forecasting the log returns of whittaker-henderson smoothed prices "
+git push
+cd src/
+ttyper
+hx feature_processor/pre_processor/whittaker_henderson_smoother.rs
+gitui
+git commit -m "Add images"
+git push
+z node
+git checkout main
+git switch -C mathis-registration-events
+git pull
+git push
+la
+z node
+hx pallets/gensyn/src/lib.rs
+nix-shell
+nix-shell
+fmt
+gitui
+git commit -m "Add `SolverRegisteredEvent` with associated runtime-api and node side caching integration"
+git push
+    git push --set-upstream origin mathis-registration-events
+git checkout main
+git pull
+git checkout mathis-registration-events
+git rebase main
+git push --force
+z node
+git checkout main
+git pull
+git branch -D mathis-registration-events
+git push --delete origin mathis-registration-events
+git checkout mathis-unify-roles
+git rebase main
+hx pallets/gensyn/src/lib.rs
+git rebase --confinute
+git rebase --confinue
+git rebase --continue
+git push 
+gitui
+git push --force
+git reset --soft HEAD^
+gitui
+git commit -m "Rebase"
+git push --force
+hx pallets/gensyn/src/lib.rs
+nix-shell
+fmt
+gitui
+git commit -m "Rename the runtime api for the new event"
+git push 
+z whittaker
+cd ..
+cd rust/MathisWellmann/
+git clone https://github.com/MathisWellmann/whittaker_smoother
+cd whittaker_smoother/
+hx README.md
+gitui
+git commit -m "Show an example usage"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Introduce `ComputeRole` and ensure a `Verifier` cannot call certain extrinsics, with test"
+git push
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Use my crate `whittaker_smoother`"
+git push
+hx src/feature_processor/pre_processor/mod.rs
+z warehou
+z rust/MathisWellmann/warehouse/
+git pull
+gitui
+git commit -m "Add `mongodb_robustness`"
+git push
+gitui
+git commit -m "Add `kacd.rs`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Remove `kacd` and experiments"
+git push
+nix-shell
+fmt
+gitui
+rm -f img/savitzky_golay_*
+gitui
+mupdf science_resources/savitzky_golay_filter.pdf
+rm -f science_resources/savitzky_golay_filter.pdf
+gitui
+rm -f img/kack*
+gitui
+rm -f img/kacd*
+gitui
+git commit -m "Remove `savitzky_golay` related functions, modes and images"
+git push
+nix-shell
+eom img/averaging_kernel_21.png
+29 + 23 + 37 + 45 + 33 + 12
+nix-shell
+mupdf documentation/
+mupdf documentation/hydrous_ngrc.pdf
+git pull
+eom img/ln_returns_from_averaged.png
+ttyper
+nix-shell
+la img/
+gitui
+fmt
+tfmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Remove `averaging_kernel` and all associated experiments and images"
+git push
+tokei
+la
+cd src/
+la
+cd ..
+gitui
+git commit -m "Add `convolution.rs`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Move `convolution.rs` into the warehouse, out of this repo"
+git push
+gitui
+hx documentation/hydrous_ngrc.typ
+gitui
+git commit -m "Remove now nonexisting images from `hydrous_ngrc.typ`"
+git push
+nix-shell
+fmt
+rm -f img/forecast_alma_log_return_alma.png
+rm -f img/forecast_alma_log_return_alma_reconstructed.png
+la img/
+rm -f img/alma_log_return_alma*
+la img
+gitui
+git commit -m "Remove `forecast_alma_log_return_alma` experiment"
+git push
+tokei
+cd ..
+cd gym-rs/
+git pull
+nix-shell
+cd ..
+cd gym-rs/
+hx shell.nix
+z node
+nix-shell
+nix-shell
+z node
+git checkout main
+git pull
+git branch -D mathis-unify-roles
+git switch -C mathis-deregistration-event
+hx node/submitter-cli/src/main.rs
+nix-shell
+fmt
+gitui
+git commit -m "Add event upon deregistration of compute provider, including node side intergation and caching"
+git push
+    git push --set-upstream origin mathis-deregistration-event
+z hydro
+nix-shell
+z hydro
+cd ..
+cd gym-rs/
+cd ..
+cd gym-rs/
+z rust/MathisWellmann/
+git clone https://github.com/MathisWellmann/rust-ordered-float
+cd rust-ordered-float/
+hx src/lib.rs
+gitui
+git commit -m "Make `impl_rand` public"
+git push
+nix-shell
+cd ..
+cd hydrous_ngrc/
+nix-shell
+z hydro
+btm
+nvtop
+nix-shell
+fmt
+gitui
+git commit -m "Use poisson disk sampling in the experiments"
+git push
+cd code/
+nix-shell
+fmt
+gitui
+git commit -m "Start the reconstructed forecast where the smoothed training data endes"
+git push
+cd code/
+git clone https://github.com/Stability-AI/generative-models
+cd generative-models/
+cd ..
+la
+cd whittaker-eilers-smoother/
+la
+cd ..
+cd generative-models/
+hx shell.nix
+scp magewe@192.168.0.206:/home/magewe/code/generative-models/prompt.py .
+nix-shell
+hx shell.nix
+nix-shell
+cd code/generative-models/e
+cd code/generative-models/
+nix-shell
+hx shell.nix
+mkdir output_img
+nvtop
+zellij
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+fmt
+gitui
+git commit -m "Initial `forecast_price_diff_wh` experiment"
+git push
+la
+tar -xf TISEAN_3.0.1.tar.gz
+la
+cd Tisean_3.0.1/
+la
+tokei
+ls
+la
+cd source_c/
+la
+hx false_nearest.c
+z hydro
+z hydro
+gitui
+6434654401868288 / 1024
+6434654401868288 / 1024 / 1024 / 1024
+nix-shell
+eom img/lagged_coordinate_embedding_BTCUSDT-aggTrades-2023-01_compact.csv_relative_price_1.png
+gitui
+z wareho
+gitui
+git commit -m "Add `lagged_coordinate_embedding`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Remove `lagged_coordinate_embedding`"
+git push
+z wareho
+gitu
+gitui
+git commit -m "Add `micro_price_svd`"
+git push
+gitui
+git commit -m "Add order book reconstruction logic and experiment for embedding of l2"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Remove experiment for embedding l2, including order book reconstruction"
+git push
+tokei
+tree
+tokei
+gitui
+nix-shell
+la
+gitui
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv.png
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Remove `alma_log_returns_alma` and only keep the log return utils"
+git push
+nix-shell
+nix-shell
+gitui
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_1.gif
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_1.png
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_1.gif
+nix-shell
+fmt
+gitui
+git commit -m "In embedding experiment, use price - whittaker smoothed prices "
+git push
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_5.gif
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_14.gif
+gitui
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_14.gif
+nix-shell
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_relative_price_1.gif
+nix-shell
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_tick_1000.gif
+gitui
+z wareho
+gitui
+git commit -m "Add log return function using CUDA"
+git push
+nix-shell
+eom img/whittaker_smoother.png
+git reset --soft HEAD^
+hx Cargo.toml
+gitui
+git commit -m "Add log return function using CUDA"
+git push --force
+eom img/whittaker_smoother.png
+nix-shell
+eom img/whittaker_smoother.png
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_14.gif
+gitui
+btm
+cd code/
+la
+cd ..
+la
+cd Tisean_3.0.1/
+la
+cd source_c/
+la
+hx recurr.c
+cd ..
+cd source_f/
+la
+hx stp.f
+ttyper
+hx upo.f
+cd ..
+cd source_c/
+la
+nix-shell
+z hydro
+nix-shell
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_14.gif
+nix-shell
+fmt
+gitui
+git commit -m "Inital `nonlin_noise_reduction.rs`"
+git push
+nix-shell
+z hydro
+nix-shell
+z hydro
+300 * 0.4
+nix-shell
+fmt
+gitui
+git commit -m "Impl and test the new `nonlin_noise_reduction` function"
+git push
+nix-shell
+eom img/lagged_coordinate_embedding_3d_BTCUSDT-aggTrades-2023-01_compact.csv_time_14.gif
+btm
+ttyper
+ttymro_c,hdnecro_mro_/d
+ttyper
+ttyper 
+ttyper
+z hydro
+z hydro
+eom img/price_diff_wh_embedding.gif
+nix-shell
+fmt
+gitui
+git commit -m "Add three tests with two plotting a gif of the embedding (smoothed and raw) of price diff wh"
+git push
+btm
+nix-shell
+z whittaker
+cd ..
+cd rust/MathisWellmann/whittaker_smoother/
+git pull
+hx README.md
+z whittaker_smoother
+gitui
+git commit -m "Add section of potential upgrades"
+git push
+z hydro
+nix-shell
+z hydro
+nix-shell
+nix-shell
+fmt
+gitui
+git commit -m "Add newly created nonlin noise reduction based on gravitational forces"
+git push
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Rescale the global gravity nonlin noise reduction function"
+git push
+la
+scp *.pdf magewe@192.168.0.206:/home/magewe
+rm -f *.pdf
+la
+cd Downloads/
+la
+rm -f `SSRN-id3900141 (1).pdf`
+sudo rm -f `SSRN-id3900141 (1).pdf`
+scp *.pdf magewe@192.168.0.206:/home/magewe
+sudo rm -f *.pdf
+la
+cd ..
+z cuda
+gitui
+nix-shell
+z cuda
+nix-shell
+git reset --hard
+nix-shell
+cd ..
+cd hydrous_ngrc/
+la
+nix-shell
+fmt
+gitui
+git commit -m "Forecast experiment for price diff wh now smoothes the resulting series with wh again for some pretty good prediction ability"
+git push
+z node
+1.1 ** 8
+z node
+git checkout main
+git pull
+ttyper
+nix-shell
+la
+gitui
+git pull
+gitui
+nix-shell
+fmt
+git switch -C mathis-fetch-final-parameter-ids
+gitui
+git commit -m "Initial `submitter-cli` mode for fetching the final model parameter ids"
+git push
+    git push --set-upstream origin mathis-fetch-final-parameter-ids
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Add gensyn rpc and runtime-api crates"
+git push
+git checkout main
+git pull
+git checkout mathis-fetch-final-parameter-ids
+git rebase main
+nix-shell
+fmt
+gitui
+git commit -m "Impl pallet method `final_parameter_ids`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Apply clippy suggestion"
+git push
+hx pallets/gensyn/src/lib.rs
+nix-shell
+fmt
+gitui
+git commit -m "Add test `final_parameter_ids`"
+git push
+nix-shell
+fmt
+gitui
+tfmt
+gitui
+git commit -m "Integrate RPC into node"
+git push
+z hydro
+nix-shell
+z hydro
+gitui
+git pull
+gitui
+git pull
+eom img/forecast_wh_log_returns.png
+eom img/forecast_wh_log_returns_reconstructed.png
+nix-shell
+eom img/forecast_wh_log_returns_reconstructed.png
+eom img/forecast_wh_log_returns.png
+eom img/forecast_wh_log_returns_reconstructed.png
+nix-shell
+eom img/price_diff_wh.png
+nix-shell
+eom img/forecast_price_diff_wh.png
+nix-shell
+fmtg
+fmt
+gitui
+git commit -m "New forecasting experiment for combining both signals"
+git push
+z hydro
+z hydro
+nix-shell
+eom img/forecast_price_diff_wh.png
+nix-shell
+fmt
+gitui
+git commit -m "Unify some tests"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Extract out a single function for computing signal 2"
+git push
+nix-shell
+fmt
+gitui
+nix-shell
+hx src/main.rs
+cd img/
+la
+mv forecast_wh_log_returns.png forecast_signal_1_log_returns.png
+mv forecast_price_diff_wh.png forecast_signal_2.png
+mv forecast_signal_1_log_returns_reconstructed.png
+mv forecast_wh_log_returns_reconstructed.png forecast_signal_1_log_returns_reconstructed.png
+gitui
+git commit -m "Smoothing out some edges"
+git push
+cd ..
+eom img/forecast_signal_2.png
+z hypdro
+z hydro
+sudo hx /etc/nixos/configuration.nix
+hx documentation/hydrous_ngrc.typ
+nix-shell
+sudo nixos-rebuild switch --upgrade
+hx src/main.rs
+nix-shell
+fmt
+gitui
+git commit -m "Add test for combining both signals"
+z hydro
+gitui
+git push
+ssh-agent
+killall ssh-agent
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+sudo nixos-rebuild switch
+killall ssh-agent
+git push
+ssh -vvv
+ssh -vvv "$@"
+eval ssh-agent
+git push
+killall ssh-agent
+git push
+git config --global http.postBuffer 157286400
+git push
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Remove `nonlin_noise_reduction.rs`"
+git push
+gitui
+hx documentation/hydrous_ngrc.typ
+la img/
+hx documentation/hydrous_ngrc.typ
+la img/
+gitui
+nix-shell
+la img/
+hx documentation/hydrous_ngrc.typ
+z hydro
+z node
+z node
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Filter the returned final parameter ids to the account owner"
+git push
+hx node/submitter-cli/src/main.rs
+nix-shell
+fmt
+gitui
+git commit -m "Return the `MlTaskHash` as well"
+git push
+nix-shell
+fmt
+gitui
+hx node/submitter-cli/src/main.rs
+nix-shell
+fmt
+gitui
+git commit -m "Log the `MlTaskHash` of the submitted task in the submitter cli"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Improve logging"
+git push
+cd ..
+cd substrate/
+hx frame/bags-list/src/lib.rs
+z hydro
+nix-shell
+z hydro
+gitui
+git pull
+gitui
+git commit -m "Update typst documentation"
+git push
+z wareh
+gitui
+git commit -m "Add `multi_forecast_strategy`"
+git push
+ttyper
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+nix-shell
+eom img/forecast_combined.png
+nix-shell
+eom img/forecast_combined.png
+nix-shell
+fmt
+gitui
+git commit -m "Intergrate the new signal processing into the main Agent"
+git push
+    git push --set-upstream origin 2023_08_signal_processing_upgrades
+gitui
+nix-shell
+eom img/ngrc_agent_0.140.0_f863a565_BTCUSDT-aggTrades-2023-01_compact.csv.png
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Fix dis stiat"
+git push
+z node
+git checkout main
+git pull
+git
+git branch
+git branch -D mathis-deregistration-event
+git branch -D mathis-fetch-final-parameter-ids
+gitui
+nix-shell
+z node
+git pull
+nix-shell
+z
+z node
+nix-shell
+z node
+nix-shell
+ttyper
+z hydro
+nix-shell
+z hydro
+nix-shell
+nix-shell
+cd ..
+cd whittaker_smoother/
+cd ..
+cd whittaker_smoother/
+nix-shell
+cp ../hydrous_ngrc/shell.nix .
+nix-shell
+hx shell.nix
+nix-shell
+cd ..
+hx hydrous_ngrc/ni
+hx shell.nix
+hx hydrous_ngrc/shell.nix
+cd whittaker_smoother/
+git pull
+nix-shell
+fmt
+gitui
+git commit -m "Add `shell.nix`"
+git push
+nix-shell
+cd rust/MathisWellmann/whittaker_smoother/
+z node
+z node
+ttyper
+nix-shell
+z node
+ttyper
+sudo chown -R magewe .
+24 / 3
+nix-shell
+24 * 8
+192 / 0.3
+640 / 52
+24 / 0.3
+z hydro
+nix-shell
+z hydro
+gitui
+nix-shell
+cd ..
+cd whittaker_smoother/
+cd src/
+nix-shell
+cd ..
+cd whittaker_smoother/
+cd ..
+z hydro
+nix-shell
+nix-shell
+cd rust/MathisWellmann/rust-ordered-float/
+gitui
+hx src/lib.rs
+z rust-ordered
+gitui
+nix-shell
+gitui
+git commit -m "Export `UniformNotNan` and `UniformOrdered`"
+git push
+fmt
+gitui
+nix-shell
+eom img/forecast_signal_1_log_returns.png
+eom img/forecast_signal_1_log_returns_reconstructed.png
+eom img/forecast_signal_1_log_returns.png
+eom img/forecast_signal_1_log_returns_reconstructed.png
+nix-shell
+fmt
+gitui
+mv src/feature_processor/optimizer/ ../warehouse/src/
+gitui
+git commit -m "Remove optimizer"
+git push
+tokei
+nix-shell
+hx src/main.rs
+gitui
+git commit -m "Tweaks to signal processing"
+git push
+cd ~
+la
+scp *.pdf magewe@192.168.0.206:/home/magewe
+rm -f *.pdf
+la
+cd rust/MathisWellmann/rust-ordered-float/
+hx src/lib.rs
+fmt
+gitui
+git commit -m "chore: Add doc comment"
+git push
+z node
+nix-shell
+z node
+nix-shell
+z node
+nix-shell
+fmt
+git switch -C mathis-stake-based-selection
+gitui
+git commit -m "Initial stake weighted shelf selection"
+git push
+    git push --set-upstream origin mathis-stake-based-selection
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Modify the logic so it works"
+git push
+z node
+cd ..
+cd MathisWellmann/gym-rs/
+hx Cargo.toml
+la
+z hydro
+nix-shell
+z hydro
+la
+scp *.pdf magewe@192.168.0.206:/home/magewe
+mupdf `2008.06853_Sorvec:Geometric_foundations_of_data_reduction.pdf`
+zathura `2008.06853_Sorvec:Geometric_foundations_of_data_reduction.pdf`
+mv `2008.06853_Sorvec:Geometric_foundations_of_data_reduction.pdf` `2008.06853_Survey_Geometric_foundations_of_data_reduction.pdf`
+scp *.pdf magewe@192.168.0.206:/home/magewe
+rm -f *.pdf
+nix-shell
+fmt
+gitui
+git commit -m "Initial laplacian eigenmaps"
+git push
+z hydro
+z hydro
+nix-shell
+z hydro
+ttyper
+nix-shell
+la
+z hydro
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Some progress with laplacian eigenmaps"
+git push
+git reset --soft HEAD^
+hx Cargo.toml
+gitui
+git commit -m "Some progress with laplacian eigenmaps"
+git push --force
+z hydro
+nix-shell
+z hydro
+z hydro
+64 * 24
+cd Downloads/
+ls
+la
+cd ..
+la
+lsblk
+sudo mount /dev/sda1 /mnt/kingston/
+sudo cp TrueNAS-13.0-U5.3.iso /mnt/kingston/
+cd /mnt/kingston/
+la
+rm -f nixos-minimal-22.11.1895.ab1254087f4-x86_64-linux.iso
+sudo rm -f nixos-minimal-22.11.1895.ab1254087f4-x86_64-linux.iso
+ls
+cd ~
+sudo umount /mnt/kingston/
+ttyper
+371 - 342
+z hydro
+z hydro
+cd Downloads/
+la
+cd ..
+la
+z node
+la
+nix-shell
+fmt
+gitui
+fmt
+git fetch
+git pull
+hx pallets/shelf_committees/Cargo.toml
+tfmt
+gitui
+git commit -m "chore taplo fmt"
+git push
+128 * 3.1
+z node
+nix-shell
+fmt
+gitui
+git commit -m "chore: clippy"
+git push
+sudo chown -R magewe Downloads/
+8 * 24
+15 * 24
+lsblk
+sudo mount /dev/sda1 /mnt/kingston/
+cd Downloads/
+la
+mv TrueNAS-SCALE-22.12.3.3.iso /mnt/kingston/
+sudo mv TrueNAS-SCALE-22.12.3.3.iso /mnt/kingston/
+cd /mnt/kingston/
+la
+rm -f arcolinuxl-v23.04.03-x86_64.iso
+sudo rm -f arcolinuxl-v23.04.03-x86_64.iso
+sudo rm -f archlinux-2023.03.01-x86_64.iso
+sudo rm -f archlinux-2023.04.01-x86_64.iso
+la
+sync
+ls
+la
+cd ~
+sudo umount /mnt/kingston/
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+cd code/
+hx github_to_gitea
+mv github_to_gitea github_to_gitea.py
+python github_to_gitea.py
+mkdir github_to_gitea
+mv github_to_gitea.py github_to_gitea/
+la
+cp generative-models/shell.nix github_to_gitea/
+cd github_to_gitea/
+nix-shell
+hx shell.nix
+cd code/github_to_gitea/
+nix-shell
+z substrate
+cd frame/
+la
+nix-shell
+fmt
+la
+la pallets/
+gitui
+git commit -m "Initial sketch of `granular-locks` pallet"
+git push
+    git push --set-upstream origin mathis-granular-locking-pallet
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Initial pallet skeleton"
+git push
+hx pallets/granular-locks/src/lib.rs
+nix-shell
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+ttyper
+btm
+hx src/main.rs
+nix-shell
+fmt
+gitui
+git commit -m "Only use signal 1 in the combined forecast until signal 2 is better for forecasting"
+git push
+nix-shell
+eom img/ngrc_agent_0.140.0_f920d0cf_BTCUSDT-aggTrades-2023-01_compact.csv.png
+nix-shell
+eom img/ngrc_agent_0.140.0_a2e8404e_BTCUSDT-aggTrades-2023-01_compact.csv.png
+sudo hx /etc/nixos/configuration.nix
+nvtop
+dt
+sudo hx /etc/nixos/configuration.nix
+ip addr
+sudo hx /etc/nixos/configuration.nix
+sudo systemctl status mongodb
+hx /nix/store/gq9ah9ddd9zz356wc7710rhk50zs5p6z-mongodb.conf
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+hx /nix/store/kc4mqh1fwmassj862kc5z3y670grj7ah-mongodb.conf
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+nvtop
+btm
+z node
+nvtop
+cd ..
+z hydro
+z hydro
+z node
+eom img/results_ngrc_agent_0.140.0_BTCUSDT-aggTrades-2023-01_compact.csv_AggrTick.png
+nix-shell
+z node
+nix-shell
+z node
+git branch
+git checkout mathis-granular-locking-pallet
+ttyper
+14400 * 28
+nix-shell
+fmt
+tfmt
+gitui
+cd rust/gensyn/
+git clone https://github.com/gensyn-ai/node-shell-dot-nix
+cd node-shell-dot-nix/
+cp ../node/shell.nix .
+gitui
+git commit -m "Add `shell.nix` that provides a build environment for our node repo on nix-os"
+git push --force
+z hydro
+nix-shell
+git pull
+git checkout main
+gitui
+git checkout main
+git pull
+git merge 2023_08_signal_processing_upgrades
+git push
+nix-shell
+cd src/
+cd ..
+ssh magewe@miniryzen
+ssh magewe@192.168.0.209
+sudo hx ./.ssh/known_hosts
+dt
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+la
+scp .git* magewe@192.168.0.209:/home/magewe/
+cd ..
+cd tikr/
+la
+gitui
+git checkout main
+git pull
+git checkout master
+git pull
+cp ../gym-rs/shell.nix .
+hx shell.nix
+nix-shell
+hx shell.nix
+nix-shell
+z hydro
+hx shell.nix
+nix-shell
+gitui
+git commit -m "Add `shell.nix`"
+git push
+hx shell.nix
+nix-shell
+cd ..
+cd tikr/
+nix-build shell.nix
+la
+rm -f result
+la
+hx tikr_ecosystem.service
+scp .git* magewe@192.168.0.165:/home/admin
+scp .git* admin@192.168.0.165:/home/admin
+sudo hx /etc/nixos/configuration.nix
+hx docker-compose.yml
+sudo nixos-rebuild switch
+z tikr
+cargo clean
+hx Cargo.toml
+nix-build shell.nix
+nix-shell
+cd ..
+btm
+scp -r tikr admin@192.168.0.165:/home/admin
+gitui
+cd tikr/
+gitui
+rm -f img/*
+cd ..
+scp -r tikr admin@192.168.0.165:/home/admin
+la
+cd tikr/
+la
+du .
+cd ..
+scp -r tikr admin@192.168.0.165:/home/admin
+cd tikr/
+la
+hx docker-compose.yml
+cd rust/MathisWellmann/
+git clone https://github.com/MathisWellmann/nixos-configs
+cd nixos-configs/
+cp /etc/nixos/configuration.nix .
+mv configuration.nix desktop_configuration.nix
+hx README.md
+gitui
+mkdir workstation
+mv desktop_configuration.nix workstation/configuration.nix
+gitui
+git commit -m "Init commit"
+git push
+ssh magewe@192.168.0.209
+z node
+ssh magewe@192.168.0.209
+z gym
+git pull
+z gym
+hx Cargo.toml
+fmt
+tfmt
+gitui
+git commit -m "Use new `ordered-float` from crate.io with the `UniformOrdered` exposed"
+git push
+z node
+git checkout main
+git pull
+git checkout mathis-is-compute-provider
+git switch -C mathis-is-compute-provider
+nix-shell
+z node
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Add `is_account_compute_provider` runtime-api with node side integration"
+git push
+    git push --set-upstream origin mathis-is-compute-provider
+nix-shell
+fmt
+gitui
+git commit -m "chore: make clippy happy"
+git push
+la
+z hydro
+la
+z tikr
+hx config/tikr_db_cli.ron
+ssh magewe@192.168.0.209
+z node
+nix-shell
+git checkout main
+git pull
+git branch -D mathis-is-compute-provider
+git branch
+git push --delete origin mathis-is-compute-provider
+git checkout mathis-granular-locking-pallet
+git rebase main
+git push --force
+nix-shell
+z node
+nix-shell
+z node
+nix-shell
+fmt
+gitui
+tfmt
+gitui
+git commit -m "Integrate the granular locks trait into the gensyn pallet"
+git push
+hx pallets/granular-locks/src/lib.rs
+ssh magewe@192.168.0.209
+nix-shell
+z hydro
+12 *  162
+12 * 8
+ttyper
+z tikr
+btm
+z /tikr_db-data/
+du .
+eom img/2023-08-23_BINANCE-cm_BTCUSD_PERP_TRADES.png
+du /tikr_db-data/
+nix-shell
+cd ~
+du -h /tikr_db-data/
+du /tikr_db-data/
+z tikr
+nix-shell
+eom img/2023-08-23_BINANCE-cm_BTCUSD_PERP_TRADES.png
+eom img/2023-08-23_BINANCE-um_BTCUSDT_TRADES.png
+btm
+ttyper
+z node
+lsblk
+sudo mount /dev/sda1 /mnt/kingston/
+cd /mnt/kingston/
+la
+rm -f xinitrc
+sudo rm -f xinitrc
+sudo rm -f .xinitrc
+cd ~
+la
+cd Downloads/
+la
+ttyper
+sudo umount /mnt/kingston/
+z node
+git checkout main
+gitui
+git checkout main
+git pull
+git checkout mathis-stake-based-selection
+git rebase main
+git push --force
+git branch 
+git checkout mathis-granular-locking-pallet
+gitui
+z node
+ttyper
+z substrate
+hx frame/support/src/lib.rs
+nix-shell
+fmt
+gitui
+git commit -m "Add storage item for state transitions, change trait signature"
+git push
+nix-shell
+fmt
+gitui
+tfmt
+gitui
+git commit -m "Impl state transition from free balance to eligible stake"
+git push
+z node
+z polkadot
+cd rust/
+la
+cd gensyn/
+la
+git clone https://github.com/paritytech/polkadot
+cd polkadot/
+hx runtime/polkadot/src/lib.rs
+nix-shell
+fmt
+gitui
+git commit -m "Instantiate the granular locks pallet"
+git push
+git checkout mathis-stake-based-selection
+btm
+nix-shell
+fmt
+gitui
+git commit -m "Apply review comments"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Merge `MinCommitteeSize` and `MaxCommitteeSize` into `CommitteeSize`"
+git push
+nix-shell
+nix-shell
+hx frame/support/src/traits/tokens/currency.rs
+z hydro
+z hydro
+tree src/
+nix-shell
+cd ..
+cd hydra
+hx Cargo.toml
+z hydra
+nix-shell
+cd ..
+cd lfest-rs/
+nix-shell
+z lfest
+cp ../hydra/shell.nix .
+nix-shell
+z lfest
+hx shell.nix
+gitui
+git commit -m "Add `shell.nix`"
+git push
+hx Cargo.toml
+tfmt
+gitui
+git commit -m "Bump dependencies"
+git push
+nix-shell
+cd ..
+cd hydra
+cd ..
+cd hydra
+cargo update
+hx Cargo.toml
+z hydra
+tfmt
+gitui
+git commit -m "Bump dependencies"
+git push
+nix-shell
+cd ..
+cd hydro
+cd hydrous_ngrc/
+cd ..
+cd hydro
+cd hydrous_ngrc/
+hx Cargo.toml
+tfmt
+gitui
+git commit -m "Bump dependencies"
+git push
+nix-shell
+nix-shell
+z node
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Adjust tests to new algorithm"
+git push
+git checkout mathis-granular-locking-pallet
+nix-shell
+fmt
+gitui
+git commit -m "Adjust test to work with the new instances of the granular locks pallet"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Impl state transition from eligible stake to collateralized stake"
+git push
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Impl state transition for immediately collateralizing the free balance."
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Impl state transition to redeem collateral"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Impl state transition to redeem collateral to free balance"
+git ptush
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Impl state transitions for slashing collateral"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Change signature of trait and impl a few more getters"
+git push
+2 ** 16
+nix-shell
+fmt
+gitui
+git commit -m "Add new associated type for defining the max number of state transitions in storage. Also impl unstaking"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Impl the delayed transition from pending balance to free balance"
+git push
+btm
+nix-shell
+fmt
+gitui
+git commit -m "Update tests to include the new associated type too"
+git push
+ttyper
+nix-shell
+z node
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Rename the backtest related code"
+git push
+tokei
+z node
+nix-shell
+0.5 ** 12
+1.005 ** 12
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Do not decrement the eligible stake because the shelf is removed from the pool anyways (As we can only have 1 shelf represent a single member in a committee for now)"
+git push
+nix-shell
+hx Cargo.toml
+fmt
+tfmt
+gitui
+git commit -m "Change agent parameter structure"
+git push
+z node
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Refactor to split out `BacktestParams` from `AgentParams`"
+git push
+z node
+git pull
+cargo check
+nix-shell
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Adjust some existing tests for new logic"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Update comment for the initialization of the weighted distribution"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Update the computation of stake by only considering the eligible part upfront"
+git push
+git checkout mathis-granular-locking-pallet
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Add mock runtime"
+git push
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Add weight calculation for Hook"
+git push
+nix-shell
+z node
+nix-shell
+z hydro
+nix-shell
+z hydro
+z node
+hx runtime/src/lib.rs
+6 * 60
+360 / 60
+cd rust/gensyn/polkadot/
+hx runtime/polkadot/src/lib.rs
+nix-shell
+la
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Resolve deprecation warning in chrono stuff"
+git push
+nix-shell
+z hydra
+nix-shell
+z hydra
+nix-shell
+z hydrou
+nix-shell
+gitui
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Extract out common backtesting setup code into `backtest_setup`"
+git push
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Bubble up the `AgentResults` so they can be used in various contexts"
+git push
+z node
+z hydro
+z hydro
+btm
+htop
+nix-shell
+fmt
+gitui
+git commit -m "Move `PlotConfig` into `BacktestParams`"
+git push
+z hydro
+nix-shell
+z hydro
+nix-shell
+z node
+nix-shell
+z node
+btm
+ttyper
+nix-shell
+fmti
+fmt
+gitui
+z node
+z node
+nix-shell
+fmt
+gitui
+git commit -m "on block init, move the scheduled compute providers into the idle pool"
+git push
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Update test for registration of compute provider and add vital comment to an associated type"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add test for `stake_free_balance`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add test `collateralize_eligible_stake`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add two more tests"
+git push
+nix-shell
+z node
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Attempt to plot trade permutation robustnes test"
+git push
+z node
+ttyper
+nix-shell
+fmt
+gitui
+dt
+nix-shell
+fmt
+gitui
+git commit -m "Improve error"
+git push
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Add new test for delayed unstaking"
+git push
+tfmt
+hx pallets/granular-locks/src/lib.rs
+z node
+fmt
+gitui
+git commit -m "chore: taplo and clippy"
+git push
+z hydro
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+eom img/robustness_trad_perturb_rpnl.png
+gitui
+git commit -m "workking trades robustnes"
+git push
+ttyper
+z node
+hx runtime/src/lib.rs
+nix-shell
+fmt
+gitui
+git commit -m "Improve plot"
+git push
+eom img/robustness_trad_perturb.png
+z hydro
+z hydro
+ip addr
+scp /etc/nixos/configuration.nix magewe@192.168.0.132:/home/magewe
+sudo nixos-rebuild switch --upgrade
+ip addr
+lshw
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo lshw
+sudo lshw | rg Mellanox
+gitui
+z hydro
+la
+ssh magewe@192.168.0.132
+nix-shell
+fmtg
+fmt
+gitui
+git commit -m "Extract out a function"
+git push
+nix-shell
+cd ..
+scp -r MathisWellmann/ magewe@192.168.0.132:/home/magewe/rust/
+scp -rv MathisWellmann/ magewe@192.168.0.132:/home/magewe/rust/
+btm
+ip addr
+scp -r MathisWellmann/ magewe@192.168.0.132:/home/magewe/rust/
+nix-shell
+ssh magewe@192.168.0.132
+sudo hx /etc/nixos/hardware-configuration.nix
+sudo nixos-generate-config
+sudo hx /etc/nixos/hardware-configuration.nix
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Impl mode for parameter robustness"
+git push
+tokei
+cd rust/
+scp -r MathisWellmann/ magewe@192.168.0.132:/home/magewe/rust/
+cd MathisWellmann/
+cargo multi clean
+nix-shell
+cargo-multi clean
+scp -r MathisWellmann/ magewe@192.168.0.132:/home/magewe/rust/
+cd ..
+z hydro
+du target/debug/
+du target/debug/hydrous_ngrc
+^du target/debug/hydrous_ngrc
+^du -h target/debug/hydrous_ngrc
+^du -h target/release/hydrous_ngrc
+nix-shell
+fmt
+gitui
+git commit -m "Some minor internal changes"
+git push
+scp -r MathisWellmann/ magewe@192.168.0.132:/home/magewe/rust/
+nix-shell
+nix-shell
+z hydro
+z hydro
+z hydra
+gitui
+scp .git* magewe@192.168.0.132:/home/magewe
+ssh magewe@192.168.0.132
+0.04 * 24 * 365
+350 * 0.5
+0.015 * 24 * 365
+sudo hx /etc/nixos/hardware-configuration.nix
+cargo install cargo-multi
+cd rust/MathisWellmann/
+cargo multi
+la
+scp BTCUSDT-aggTrades-2023-0* magewe@192.168.0.132:/home/magewe/
+z hydra
+cd ..
+cd hydrous_ngrc/
+btm
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+nix-shell
+sudo nixos-rebuild switch
+nix-shell
+nix-shell
+cd ..
+cd hydro
+cd hydrous_ngrc/config_files/
+cd ..
+z tikr
+nix-shell
+cd ..
+cd hydra/
+nix-shell
+cd ..
+cd hydra/
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+nix-shell
+nix-shell
+z tikr
+nix-shell
+cd ..
+cd warehouse/src/
+la
+sk
+hx mongodb_results_robustness.rs
+z lfest
+git pull
+hx Cargo.toml
+nix-shell
+fmt
+gitui
+git commit -m "Introduce functions to query the price and quantity filter from binance. modify the `trade_source_selector` to return the tick size"
+git push
+cd ..
+cd hydrous_ngrc/
+cd ..
+cd hydrous_ngrc/
+nix-shell
+fmt
+gitui
+cd ..
+cd hyd
+cd hydra/
+gitui
+fmt
+gitui
+git commit -m "Smaller fixes"
+git push
+cd ..
+cd hydrous_ngrc/
+gitui
+git commit -m "Upgrade to newest hydra version 0.34, enabling massive RAM savings when running multiple single agent backtests due to only constructing the runner inputs once"
+git push
+tokei
+ttyper
+z lf
+nix-shell
+nix-shell
+fmt
+gitui
+z hydra
+fmt
+gitui
+git commit -m "Change the tick size type to String and parse"
+git push
+git commit -m "Change the tick size data type"
+git push
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Correctly compute the runner inputs for trade perturb mode"
+git push
+nix-shell
+z ngrc_cu
+nix-shell
+z ngr_cu
+z ngrc
+36 / 46
+nix-shell
+nix-shell
+fmt
+gitui
+git commit -m "Add benches"
+git push
+cd rust/
+la
+git clone https://github.com/coreylowman/cudarc
+cd cudarc/
+las
+la
+cd src/
+la
+cd cublas/
+la
+hx sys.rs
+z ngr
+cd ..
+cd ngrc_cuda/
+ssh magewe@192.168.0.132
+cd rust/
+la
+cd cudarc/
+la
+cd src/
+la
+hx cublas/
+cd ..
+cp ../MathisWellmann/ngrc_cuda/shell.nix .
+nix-shell
+cd ..
+cd ngrc_cuda/
+nix-shell
+nix-shell
+12 * 360
+4320 * 5
+ttyper
+nix-shell
+nix-shell
+z ngrc
+cd ..
+cd ngrc_cuda/
+gitui
+cd ..
+cd hydrous_ngrc/
+z hydro
+sudo hx /etc/nixos/configuration.nix
+cd rust/MathisWellmann/
+la
+cd nixos-configs/
+la
+cd workstation/
+la
+cp /etc/nixos/configuration.nix .
+gitui
+git commit -m "Add bash aliases"
+git push
+z hydro
+nix-shell
+z ~
+eom robustness_trade_perturb.png
+z hydro
+cd ~
+rm -f robustness_trade_perturb.png
+z hydro
+fmt
+gitui
+btm
+nix-shell
+fmt
+gitui
+git commit -m "Add option `long_only`"
+git push
+hx .config/hypr/hyprland.conf
+nix-shell
+fmt
+gitui
+git commit -m "Fix: use the monte carlo trades to compute the runner inputs"
+git push
+gitui
+nmap -sn
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+nmap -sn 192.168.0.0/24
+cd ~
+eom robustness_trade_perturb.png
+z hydro
+sudo hx /etc/nixos/configuration.nix
+nix-shell
+fmt
+gitui
+git commit -m "More x axis decimal places in `plot_lines`"
+git push
+scp BTCUSDT-aggTrades-2023-0* magewe@192.168.0.209:/home/magewe/
+350 / 4
+87 / 12
+gitui
+cd ..
+ls
+cd ngrc_cuda/
+gitui
+ssh magewe@192.168.0.209
+sudo hx /etc/nixos/configuration.nix
+ls
+ssh magewe@192.168.0.209
+nix-shell
+eom robustness_trade_perturb.png
+mv robustness_trade_perturb.png rust/MathisWellmann/hydrous_ngrc/img/
+z hydro
+gitui
+rm -f img/robustness_trad_perturb.png
+eom img/robustness_param_perturb.png
+gitui
+git commit -m "Add nice imp of trade perturbation robustnes"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Silence the random sampling"
+git push
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+ls
+sudo hx /etc/nixos/configuration.nix
+ip addr
+sudo hx /etc/nixos/configuration.nix
+sudo systemctl status mongodb
+19 * 2.5
+btm
+hx config_files/backtest.ron
+3.5 / 8
+3.5 * 8
+z hydra
+nix-shell
+cd ..
+cd hydrous_ngrc/
+nix-shell
+fmt
+gitui
+tfmt
+gitui
+git commit -m "Remove `random_sampling_tasks` from backtest config and auto determine"
+git push
+nix-shell
+z hydra
+ssh magewe@192.168.0.132
+z hydra
+hx README.md
+ls src/utils/
+tokei
+hx src/utils/tracing_init.rs
+nix-shell
+fmt
+gitui
+tfmt
+gitui
+git commit -m "Move a bunch of common setup and observability code into hydra"
+git push
+tokei
+nix-shell
+fmt
+tmft
+tfmt
+gitui
+git commit -m "Move a bunch of common setup and observability code into hydra"
+git push
+tokei
+cd ..
+cd ngrc_cuda/
+gitui
+cd ..
+cd hydrous_ngrc/
+tokei
+sudo systemctl status mongodb
+sudo systemctl restart mongodb
+sudo systemctl status mongodb
+nix-shell
+fmt
+gitui
+git commit -m "Quality of life improvements"
+git push
+sudo nixos-rebuild switch
+sudo systemctl status mongodb
+z hydra
+cd ..
+cd hydrous_ngrc/
+z hydrou
+gitui
+eom img/robustness_param_perturb.png
+gitui
+git commit -m "Add imgiage `robustnes_param_perturb`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add `long_only_mode_gen` to random sampling config"
+git push
+btm
+nix-shell
+z node
+nix-shell
+gitui
+git commit -m "Update README"
+git push
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Update deregistration test by properly calling `on_initialize` hooks"
+git push
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+z node
+ls
+scp *.pdf magewe@192.168.0.206:/home/magewe
+rm -f *.pdf
+z hydro
+nix-shell
+ttyper
+37 * 2.5
+40 * 2.5
+23.6 * 2.5
+19 * 2.5
+24 * 2.5
+37 * 2.5
+nix-shell
+z node
+z hydro
+nix-shell
+z hykdro
+z hydro
+scp *.pdf magewe@192.168.0.206:/home/magewe
+ls
+cd Downloads/
+scp *.pdf magewe@192.168.0.206:/home/magewe
+nix-shell
+fmt
+gitui
+git commit -m "initial mpc_opt_trading"
+git push
+z hydro
+z node
+z node
+z hydro
+nix-shell
+nix-shell
+fmt
+gitui
+ttyper
+nix-shell
+fmt
+gitui
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Apply review comments"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Apply review comments 2"
+git push
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+cd rust/
+git clone https://github.com/samueltardieu/pathfinding
+cd pathfinding/
+git clone https://github.com/samueltardieu/pathfinding
+ls
+rm -rf pathfinding/
+cp ../MathisWellmann/lfest-rs/shell.nix .
+nix-shell
+nix-shell
+z node
+40 * 32 * 2
+128 * 20
+15 * 24
+360 * 0.5
+180 * 365
+ttyper
+    zzzmmmxxxlllllnnnwwww,,,,aaa....uuuiii;;;;qqqoo____RSTHRSTHRSTH
+ttyper
+nix-shell
+z hydro
+nix-shell
+z hydro
+ttyper
+ls
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Playing around with a*"
+git push
+ttyper
+z hydro
+z node
+z node
+z substrate
+nix-shell
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Upgrade the `AllActiveShelfCommitteeProvider` to uphold the assumptions in tests around eligible stake"
+git push
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Update the last failing tests"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Replace all `Default::default` with the more expressive `BalanceOf<T, I>::zero()`. Add 1 more test"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Better documentation for trait `GranularTimeBasedCurrencyLocks`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Remove leftover logging"
+git push
+nix-shell
+z hydro
+dt
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Copy over the astar code to make it more integrated"
+git push
+tokei
+nix-shell
+fmt
+gitui
+git commit -m "Restore astar functionality which outputs a much nicer solution path"
+git push
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Add test for long only"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add a `new` method to the `TradingGraph`"
+git push
+ttyper
+cd rust/gensyn/
+git clone https://github.com/gensyn-ai/architecture-book
+ttyper
+nix-shell
+nix-shell
+cd ..
+cd ..
+cargo new --bin best_hires
+cd best_hires/
+ls
+z trade-aggregation
+cd rust/MathisWellmann/trade_aggregation-rs/
+gitui
+la
+hx Cargo.toml
+ 
+cd rust
+git clone https://gitlab.com/lib.rs/main
+mv main/ lib_rs
+cd lib_rs/
+cp ../MathisWellmann/lfest-rs/shell.nix .
+nix-shell
+cd ..
+cd MathisWellmann/
+cd best_hires/
+ls
+cp ../lfest-rs/shell.nix .
+ttyper
+hx src/main.rs
+sudopoweroff
+z node
+z node
+nix-shell
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Apply review comments"
+git push
+znode
+z node
+nix-shell
+z node
+nix-shell
+fmt
+gitui
+git commit -m "chore: clippy"
+git push
+z node
+cd ..
+cd architecture-book/
+git branch --all
+git checkout mathis-av-ingress
+git rebase main
+gitui
+z arch
+gitui
+hx src/SUMMARY.md
+gitui
+git rebase --continue
+git push --force
+z node
+nix-shell
+z arch
+gitui
+z hydro
+hx src/SUMMARY.md
+z hydro
+ttyper
+nix-shell
+z hydro
+dt
+nix-shell
+fmt
+gitui
+git commit -m "smaller changes"
+git push
+z node
+z hydro
+git pull
+btm
+nix-shell
+fmt
+gitui
+git commit -m "Modify the cost function"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Explicitly add the `current_price`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add support for short positions"
+git push
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Refactor into module `mpc_opt_trading`"
+git push
+tokei
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Check if limit order can be executed"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Impl `optimal_decision`"
+git push
+nix-shell
+fmt
+gitui
+hx Cargo.toml
+gitui
+git commit -m "Initial new strategy `AStarMPCTradingStrategy`"
+git push
+z hydro
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Refactor into module `limit_market_mix`"
+git push
+tokei
+nix-shell
+fmt
+gitui
+git commit -m "rename: `astar_mpc`"
+git push
+nix-shell
+fmt
+tfmt
+gitui
+nix-shell
+cd ..
+cd hydra
+nix-shell
+cd ..
+cd hydra
+git pull
+cd rust/MathisWellmann/
+ls
+lla
+la
+cd best_hires/
+z best_hires
+hx Cargo.toml
+ls
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Resolve warnings"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Resolve clippy warnings"
+git push
+nix-shell
+dc ..
+cd ..
+cd hydrous_ngrc/
+cd ..
+cd hydrous_ngrc/
+nix-shell
+cd ..
+ls
+cd ngrc_cuda/
+ls
+hx examples/lorenz_system.rs
+z node
+hx Cargo.toml
+nix-shell
+cd ..
+git clone https://gitlab.com/lib.rs/main
+mv main/ lib_rs
+cd lib_rs/
+tokei
+gitui
+nix-shell
+cd ..
+cd lib_rs/
+cd main/
+nix-shell
+z hydro
+nix-shell
+nix-shell
+2023 - 1984
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Some refactor and code impl"
+git push
+nix-shell
+nix-shell
+fmt
+gitui
+z hydro
+nix-shell
+fmt
+gitui
+dt
+nix-shell
+fmt
+gitui
+git commit -m "More impl progress"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Fix panics"
+git push
+nix-shell
+eom img/ngrc_agent_0.145.0_9289e7c4_BTCUSDT-aggTrades-2023-01_compact.csv.png
+ttyper
+cr
+nix-shell
+fmt
+gitui
+git commit -m "Introduce `NextPosition` and remove `Decision`"
+git push
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Improved order quantity"
+git push
+dt
+nix-shell
+fmt
+gitui
+git commit -m "Resolve panic in state transition"
+git push
+z hydro
+hx config_files/agent.ron
+z hydro
+dt
+nix-shell
+fmt
+gitui
+git commit -m "Extract out `utils`. Add two tests "
+git push
+sudo powerorr
+z node
+git checkout main
+git pull
+z node
+btm
+nix-shell
+git push --force
+nix-shell
+fmt
+gitui
+git commit -m "Use `eligible_stake`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Final polish by self-review"
+git push
+git checkout main
+git switch -C mathis-remove-timeout-at
+nix-shell
+fmt
+gitui
+git commit -m "Remove `timeout_at` argument in two extrinsics in the gensyn pallet, add stuff appropriately"
+git push
+    git push --set-upstream origin mathis-remove-timeout-at
+nix-shell
+fmt
+gitui
+git commit -m "Apply self-review"
+git push
+git checkout main
+git branch
+git branch -D mathis-granular-locking-pallet
+git fetch --prune
+git branch --all
+git push --delete origin mathis-deregistration-event
+git push --delete origin mathis-enforce-solver-verifier-distinction
+git branch --all
+git push --delete origin mathis-unify-roles
+git push --delete origin mathis-const-max-committee-size
+git switch -C mathis-cli-task-status
+dt
+z node
+cd rust
+git clone https://github.com/ratatui-org/ratatui
+cd ratatui/
+ls
+cargo run --example barchart
+cargo run --example block
+cargo run --example canvas
+cargo run --example hello_world
+cargo run --example list
+cargo run --example table
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Initial status interface in `submitter_cli`"
+git push
+    git push --set-upstream origin mathis-cli-task-status
+git checkout main
+git pull
+git checkout mathis-cli-task-status
+git rebase main
+git push --force
+git branch 
+git branch -D mathis-remove-timeout-at
+git fetch --prune
+git branch --all
+git push --delete origin mathis-remove-timeout-at
+git branch
+git checkout mathis-stake-based-selection
+git rebase main
+git push --force
+git checkout mathis-cli-task-status
+nix-shell
+z node
+50 / 1.2
+41 * 60
+ttyper
+nix-shell
+gitui
+fmt
+gitui
+git commit -m "Add rpc to query the task states"
+git push
+git checkout main
+git switch -C mathis-ensure-task-owner
+nix-shell
+fmt
+gitui
+git commit -m "Ensure the submitter of task erasure root is the original owner"
+git push
+    git push --set-upstream origin mathis-ensure-task-owner
+nix-shell
+fmt
+gitui
+git commit -m "Add test to ensure owner"
+git push
+nix-shell
+nix-shell
+z hydro
+z hydro
+gitui
+git pull
+z node
+z node
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "chore: clippy"
+git push
+nix-shell
+z node
+nix-shell
+ttyper
+nix-shell
+eom img/ngrc_agent_0.145.0_98d113e5_BTCUSDT-aggTrades-2023-01_compact.csv.png
+eom img/ngrc_agent_0.145.0_9289e7c4_BTCUSDT-aggTrades-2023-01_compact.csv.png
+hx config_files/agent.ron
+eom img/ngrc_agent_0.145.0_9289e7c4_BTCUSDT-aggTrades-2023-01_compact.csv.png
+nix-shell
+eom img/ngrc_agent_0.145.0_9289e7c4_BTCUSDT-aggTrades-2023-01_compact.csv.png
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "astar_mpc: new limit prices"
+git push
+z node
+git checkout main
+git pull
+git branch -D mathis-ensure-task-owner
+git push --delete origin mathis-ensure-task-owner
+nix-shell
+fmt
+gitui
+git commit -m "Move `NewMlTask` and related code into runtime primitives"
+git push
+z node
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Impl method in gensyn pallet to get all task information"
+git push
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Change `MlTaskInformation` type "
+git push
+z substrate
+cd frame/
+sk
+cd ..
+sk
+3.67 * 24 * 30
+1 * 24 
+24 * 30
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Introduce `fee_to_log_base_2` to ensure fee cost is on the same scale as log returns of prices"
+git push
+nix-shell
+z hydro
+nix-shell
+z node
+git checkout main
+git switch -C mathis-license
+ttyper
+hx runtime/src/lib.rs
+z node
+nix-shell
+licensure pallets/gensyn/src/lib.rs
+nix-shell
+fmt
+nix-shell
+z tikr
+hx tikr/src/main.rs
+ttyper
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Progress on filling in the data"
+git push
+cd rust/
+git clone https://github.com/chasinglogic/licensure
+cd licensure/
+tokei
+nix-shell
+fmt
+gitui
+git commit -m "Reduce staking and unstaking time to 5 blocks"
+git push
+    git push --set-upstream origin mathis-lower-staking-time
+gitui
+hx pallets/gensyn/src/lib.rs
+git checkout main
+gitui
+z hydro
+nix-shell
+z hydro
+gitui
+git pull
+git branch
+git branch -D mathis-stake-based-selection
+git fetch --prune
+git branch --all
+git push --delete origin mathis-stake-based-selection
+git push --delete origin mathis-lower-staking-time
+git branch
+git branch -D mathis-lower-staking-time
+git checkout mathis-cli-task-status
+gituui
+gitui
+cat scripts/local_net.sh
+nix-shell
+nix-shell
+cd rust/ratatui/
+cargo run --example panic
+nix-shell
+fmt
+gitui
+git commit -m "Better panic handling"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Make sure the event `AvItemCreated` is emitted when task erasure roots are submitted"
+git push
+    git push --set-upstream origin mathis-consistent-events
+hx pallets/gensyn/src/lib.rs
+git checkout main
+git checkout mathis-licenses
+git branch
+git checkout mathis-license
+git pull
+gitui
+hx .licensure.yml
+gitui
+hx .licensure.yml
+gitui
+hx .licensure.yml
+gitui
+hx .licensure.yml
+gitui
+cp .licensure.yml ..
+git checkout main
+gitui
+git commit -m "Update `.licensure.yml`"
+git push
+git checkout main
+git branch -D mathis-license
+git switch -C mathis-license
+mv ../.licensure.yml .
+gitui
+git commit -m "Add license to all files"
+git push --force
+    git push --set-upstream origin mathis-license
+    git push --set-upstream origin mathis-license --force
+git branch 
+git checkout mathis-consistent-events
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Fix warning"
+git push
+z hydro
+gitui
+nix-shell
+z substrate
+hx frame/support/src/traits/tokens/currency.rs
+z node
+git branch --all
+z node
+nix-shell
+ttyper
+ttyper --language rust
+z hydro
+fmt
+gitui
+git commit -m "Rename some things"
+git push
+nix-shell
+z hydro
+nix-shell
+nix-shell
+sudo powerorr
+z node
+git checkout main
+git pull
+git branch -D mathis-consistent-events
+git fetch --prune
+z node
+git branch --all
+git push --delete origin mathis-consistent-events
+nix-shell
+cp .licensure.yml ..
+gitui
+git commit -m "Update `.licensure.yml`"
+git push
+git checkout main
+git branch -D mathis-license
+git switch -C mathis-license
+gitui
+mv ../.licensure.yml .
+hx .licensure.yml
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Add license headers and unify"
+git push --force
+    git push --set-upstream origin mathis-license
+    git push --set-upstream origin mathis-license --force
+git branch
+git checkout mathis-cli-task-status
+git rebase main
+git push --force
+ttyper
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Leave year untouched"
+git push
+git checkout mathis-cli-task-status
+ls
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Spawn two tasks and combine the streams"
+git push
+gitui
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Handle events"
+git push
+z node
+nix-shell
+z node
+nix-shell
+nix-shell
+git rebase --continue
+git push --force
+tokei
+z node
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "chore: clippy"
+git push
+ttyper
+z hydro
+nix-shell
+nix-shell
+z hydro
+nix-shell
+z node 
+z rust
+git clone https://github.com/liberland/liberland_node
+nix-shell
+cd liberland_node/
+tokei
+fmt
+gitui
+z hydro
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+nix-shell
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+fmt
+gitui
+git commit -m "Add closure to `get_prices` to be able to easily modify the feature taken from the candle"
+git push
+tokei
+hx src/main.rs
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Forecast the highs and lows in experiment"
+git push
+eom img/forecast_high_low.png
+nix-shell
+fmt
+eom img/forecast_high_low.png
+nix-shell
+fmt
+gitui
+eom img/forecast_high_low.png
+ttyper
+nix-shell
+eom img/forecast_high_low.png
+z node
+dt
+cd ..
+nix-shell
+nix-shell
+z hydro
+ttyper
+z hydro
+ttyper
+nix-shell
+cd ..
+git clone https://github.com/MathisWellmann/liberland_node
+cd liberland_node/
+fmt
+gitui
+nix-shell
+cp ../lfest-rs/shell.nix .
+nix-shell
+cd ..
+cd liberland_node/
+nix-shell
+cp ../../gensyn/node/shell.nix .
+nix-shell
+z hydrbo
+nix-shell
+z hydro
+z hydro
+ttyper
+ls
+la
+scp *.pdf magewe@192.168.0.206:/home/magewe
+z hydro
+nix-shell
+fmt
+git switch -C forecast_high_low
+gitui
+git commit -m "Progresso towards forecasting both high and low"
+git push
+    git push --set-upstream origin forecast_high_low
+nix-shell
+sudo powerorr
+z hydro
+git pull
+gitui
+git pull
+git fetch
+git branch --all
+git pull origin/forecast_high_low
+git pull origin forecast_high_low
+gitui
+git pull
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Remove cost estimate"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "New transition costs for `long_only`"
+git push
+hx config_files/agent.ron
+gitui
+ttyper
+z hydro
+nix-shell
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Add `show_dot_graph`"
+git push
+tokei
+nix-shell
+fmt
+gitui
+git commit -m "Improve graph and plot"
+git push
+z node
+git switch main
+gitui
+git fetch --prune
+git branch --all
+git switch bernhard-service-test-and-other-omittances
+z node
+nix-shell
+nix-shell
+fmt
+gitui
+git switch -C mathis-fix-threshold
+git push
+gitui
+git commit -m "Fix threshould caculation and test"
+git push
+    git push --set-upstream origin mathis-fix-threshold
+cd rust/
+ls
+la
+git clone https://github.com/paritytech/polkadot-sdk
+z rust/
+cd polkadot-sdk/
+ls
+cd polkadot/
+ls
+cd ..
+tokei
+cd polkadot/
+la
+nix-shell
+fmt
+gitui
+git commit -m "More tests"
+git push
+git checkout main
+git branch
+gitui
+nix-shell
+fmt
+tfmt
+git switch -C mathis-node-test-and-runtime
+gitui
+git commit -m "Initial port of `bernhard-service-test-and-other-omittances`"
+git push
+    git push --set-upstream origin mathis-node-test-and-runtime
+nix-shell
+fmt
+gitui
+git commit -m "Unify license headers"
+git push
+z hydro
+hx node/test/client/Cargo.toml
+z hydro
+git pull
+gitui
+nix-shell
+nix-shell
+nix-shell
+z hydro
+fmt
+gitui
+git commit -m "update cost"
+git push
+z hydro
+zhydro
+z node
+z hydro
+z node
+nix-shell
+z node
+nix-shell
+z node
+nix-shell
+tfmt
+gituihx node/test/client/Cargo.toml
+hx node/test/client/Cargo.toml
+gitui
+tfmt
+gitui
+git commit -m "Use more workspace dependencies"
+git push
+z polkadot
+nix-shell
+tfmt
+gitui
+git commit -m "Consistent dependency format"
+git push
+nix-shell
+tfmt
+fmt
+gitui
+git commit -m "Do not use master branch of substrate"
+git push
+nix-shell
+tfmt
+gitui
+git commit -m "Fix dependency missspecification"
+git push
+tokei
+hx node/test/client/Cargo.toml
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Remove unused code"
+git push
+z polkadot
+hx runtime/polkadot/
+ls
+la
+sk
+cd runtime/test-runtime/
+la
+cd src/
+tokei
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Cleanup a bunch of errors"
+git push
+nix-shell
+z polkadot
+hx lib.rs
+z node
+ls
+la
+z polkadot
+hx runtime/test-runtime/src/lib.rs
+rm -f runtime/test-runtime/constants/src/weights/rocksdb_weights.rs
+hx runtime/test-runtime/constants/src/weights/mod.rs
+hx runtime/test-runtime/src/lib.rs
+gitui
+git checkout main
+git pull
+git branch
+git checkout mathis-node-test-and-runtime
+git rebase main
+git rebase --abort
+git checkout mathis-cli-task-status
+git rebase main
+hx runtime/polkadot/src/lib.rs
+hx runtime/test-runtime/src/lib.rs
+nix-shell
+z hydro
+z node
+z substrate
+z polkadot
+cd ..
+ls
+hx pallets/gensyn/src/lib.rs
+nix-shell
+z hydro
+z hydro
+nix-shell
+z hydro
+nix-shell
+z node
+git push --force
+git checkout main
+git pull
+git switch -C mathis-availability-rpc
+nix-shell
+fmt
+gitui
+git commit -m "Add rpc endpoint to query item availability"
+git push
+    git push --set-upstream origin mathis-availability-rpc
+git branch
+git branch -D bernhard-service-test-and-other-omittances
+git checkout mathis-cli-task-status
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "fix rebase"
+git push
+z node
+la
+hx scripts/ml_roundtrip.sh
+z node
+200 * 12
+2.4 * 18
+z node
+btm
+cd rust/
+la
+cd ratatui/
+cargo run --example block
+cargo run --example user_input
+z node
+nix-shell
+z node
+hx pallets/bitfields/src/lib.rs
+nix-shell
+nix-shell
+gitui
+fmt
+tfmt
+gitui
+git commit -m "trying to get event streams working"
+git push
+git fetch
+git branch --all
+git checkout viktor-debuggin-bitfields
+z node
+hx .config/hypr/hyprland.conf
+nix-shell
+la
+gitui
+z node
+tail tmp/logs/alice.log
+nix-shell
+nix-shell
+nix-shell
+nix-shell
+z hydro
+z hydro
+gitui
+cc
+nix-shell
+z polkadot
+la
+cd ..
+sk
+cd substrate/bin/utils/subkey/
+la
+cd src/
+la
+hx main.rs
+0.3 * 24
+7 * 0.5
+3.5 * 30
+105 * 12
+0.1 * 24 * 365
+876 * 0.5
+0.1 * 24 * 365
+876 * 0.5
+fmt
+gitui
+git commit -m "Blah"
+git push
+z node
+z node
+nix-shell
+z hydro
+z hydro
+git pull
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Improve `best_path`"
+git push
+z node
+nix-shell
+z node
+z hydro
+cd src/
+cd trading_strategy/
+la
+mv astar_mpc/ dp_mpc
+hx mod.rs
+nix-shell
+cd ..
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "rename `astar_mpc` into `dp_mpc`"
+git push
+z node
+nix-shell
+z node
+gitui
+z node
+nix-shell
+fmt
+gitui
+git commit -m "More defensive error handling in `ml-execution` subsystem"
+git push
+    git push --set-upstream origin mathis-fix-ml-execution-crash
+nix-shell
+fmt
+gitui
+git commit -m "fix typo"
+git push
+gitui
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Update the api of `TradingGraph`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add test `best_path_increasing`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Extract out `dp_optimal_path`"
+git push
+gitui
+tokei
+z node
+nix-shell
+18 * 8 * 2
+lsblk
+sudo mount /dev/sda1 /mnt/kingston/
+z polkadot
+cd ..
+cd
+z polkadot
+cd ..
+cd substrate/
+z polkadot
+git pull
+git branch --all | rg release
+z hydro
+nix-shell
+z tikr
+git pull
+nix-shell
+la target/debug/
+nix-shell
+la target/release/
+nix-shell
+z node
+gitui
+z hydro
+z hydro
+24 * 256
+nix-shell
+sudo nixos-rebuild switch --upgrade
+nix-shell
+fmt
+gitui
+git commit -m "Add test `optimal_path_decreasing`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Rename into `dp_best_path_long_only`"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Add another test"
+git push
+nix-shell
+fmt
+gitui
+hx Cargo.toml
+tfmt
+gitui
+git commit -m "Rename strategy among other changes"
+git push
+nix-shell
+nix-shell
+btm
+z node
+gitui
+nix-shell
+fmt
+gitui
+git switch -C mathis-fix-is-available
+git push
+    git push --set-upstream origin mathis-fix-is-available
+nix-shell
+gitui
+git commit -m "Debugging"
+git push
+gitui
+z hydro
+cd ..
+cd hydra/
+hx Cargo.toml
+nix-shell
+nix-shell
+nix-shell
+z hydro
+nix-shell
+git pull
+cd ..
+cd hydrous_ngrc/
+git pull
+hx src/main.rs
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Fix quantization bug"
+git push
+nix-shell
+fmt
+gitui
+hx Cargo.toml
+gitui
+git commit -m "Fix signal length missmatch"
+git push
+gitui
+ttyper
+nix-shell
+0.6 * 12
+7 * 0.5
+3.5 * 30
+nix-shell
+btm
+z hydro
+1.6 / 450000
+1600 / 45000
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Fix backtest plot"
+git push
+hx config_files/agent.ron
+lsblk
+sudo mount /dev/sda1 /mnt/kingston/
+ttyper
+nix-shell
+fmt
+gitui
+git
+git commit -m "better step counter"
+git push
+ttyper
+z hydro 
+ttyper
+ttyper --language rust
+nix-shell
+dt
+z hydro
+z
+z hydro
+nix-shell
+ttyper
+z hydro
+z hydro 
+ttyper
+cargo install keylogger
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+logkeys
+sudo nixos-rebuild switch
+ttyper
+ls
+la
+ls
+cd
+cd rust/
+git clone https://github.com/deadblackclover/keylogger/tree/master
+git clone https://github.com/deadblackclover/keylogger
+cd keylogger/
+cp ../MathisWellmann/lfest-rs/shell.nix .
+nix-shell
+hx shell.nix
+nix-shell
+z lfest
+hx shell.nix
+z lfest
+nix-shell
+ttyper
+nix-shell
+gitui
+nix-shell
+z lfest
+nix-shell
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+ls
+sudo systemctl status rathole
+sudo systemctl status ratholed
+sudo systemctl status ratholes
+rathole
+rathole --help
+sudo hx /etc/hosts
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+cd rust/MathisWellmann/
+la
+cd nixos-configs/
+la
+cp /etc/nixos/configuration.nix workstation/
+gitui
+git commit -m
+git commit -m "Update workstation config"
+git push
+ssh magewe@linode -p 2022
+nix-shell
+ip addr
+z hydro
+z hydro
+ttyper
+nix-shell
+fmt
+hx Cargo.toml
+gitui
+git
+git commit -m
+git commit -m "Way better transiton costs for long only"
+git push
+ttyper
+z hydro
+nix-shell
+z node
+gitui
+nix-shell
+z node
+git commit -m "More logging changes"
+git push
+git checkout main
+git pull
+git checkout mathis-fix-is-available
+git rebase main
+gitui
+git push --force
+z node
+ttyper
+z hydro
+tokei
+la
+hx docker-compose.yml
+z tikr
+hx docker-compose.yml
+ttyper
+z tikr
+hx docker-compose.yml
+ttyper
+ttypr
+ttyper
+zellij
+ttyper
+z polkodot
+z polkadot
+l
+la 
+sk
+sk 
+hx runtime/parachains/src/paras_inherent/mod.rs
+nix-shell
+fmt
+gitui
+git commit -m "Fixed the bug"
+git push
+nix-shell
+nix-shell
+hx pallets/bitfields/src/lib.rs
+fmt
+gitui
+git commit -m "Logging changes"
+git push
+nix-shell
+z hydro
+nix-shell
+z hydro
+gitui
+btm
+htop
+z hydro
+nix-shell
+ttyper
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Impl short capability for `dp_mpc`"
+git push
+git checkout main
+git merge forecast_high_low
+git push
+git branch -D forecast_high_low
+z node
+cte
+cargo clean
+z hydro
+nix-shell
+fmt
+gitui
+cc
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Apply review comments"
+git push
+nix-shell
+z hydro
+ls
+ttyper
+1500 / 30000
+3 **
+3 ** 12
+nix-shell
+fmt
+git switch -C subpath_cost
+gitui
+git commit -m "Compute the subpath cost and filter in the Neutral position"
+git push
+    git push --set-upstream origin subpath_cost
+z node
+nix-shell
+z node
+git checkout main
+git pull
+la
+git branch
+git branch -D mathis-fix-is-available
+git fetch --prune
+git branch --all
+git push --delete origin mathis-fix-threshold
+git push --delete origin mathis-fix-is-available
+git checkout mathis-cli-task-status
+git pull
+git rebase main
+hx node/submitter-cli/Cargo.toml
+z node
+gitui
+git rebase --continue
+rm -f Cargo.lock
+git rebase --continue
+rm -f Cargo.lock
+gitui
+git rebase --continue
+git push --force
+gitui
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Different channel structure"
+git push
+z node
+ttyper
+z node
+nix-shell
+nix-shell
+nix-shell
+z hydro
+nix-shell
+z hydro
+nix-shell
+mv img/ngrc_agent_0.150.0_f59207d6_BTCUSDT-aggTrades-2023-01_compact.csv.png img/subpath_cost.png
+hx config_files/agent.ron
+eom img/subpath_cost.png
+hx config_files/agent.ron
+gitui
+git checkout subpath_cost
+cr
+nix-shell
+fmt
+gitui
+git commit -m "Extract out `optimal_decision`"
+git push
+ttyper
+z node
+sk
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Extract out `subpath_cost` and add two tests"
+git push
+gitui
+ttyper
+la
+scp *.pdf magewe@192.168.0.206:/home/magewe
+rm -f *.pdf
+cd Downloads/
+la
+scp *.pdf magewe@192.168.0.206:/home/magewe
+rm -f *.pdf
+23 -
+ttyper
+z hydro
+z hydro
+crr
+btm
+ttyper
+htop
+ttyper
+nix-shell
+git checkout main
+gitui 
+git checkout main
+gitui
+ddd
+z node
+git checkout main
+git pull
+gitui
+git branch
+git checkout mathis-cli-task-status
+z node
+nix-shell
+gitui 
+git commit -m "Add test"
+git push
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Re-add rpc that somehow got lost"
+git push
+z hydro
+z node
+ttyper
+z node
+nix-shell
+fmt
+gitui
+git commit -m "Smaller tweaks"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "chore: clippy"
+git push
+ttyper
+nix-shell
+git branch
+git branch -D mathis-sanity_ckeck_chunk_size
+git fetch --prune
+nix-shell
+git branch -D viktor-debuggin-bitfields
+git banch
+git branch
+git branch -D mathis-availability-rpc
+git branch -D mathis-wait-for-bitfield-finalization
+git branch
+git checkout matihs
+git checkout mathis-node-test-and-runtime
+git rebase main
+rm -f Cargo.lock
+hx runtime/Cargo.toml
+git rebase --continue
+rm -f Cargo.lock
+git rebase --continue
+rm -f Cargo.lock
+git rebase --continue
+rm -f Cargo.lock
+hx Cargo.toml
+git rebase --continue
+rm -f Cargo.lock
+git rebase --continue
+rm -f Cargo.lock
+git rebase --continue
+git push --force
+ttyper
+nix-shell
+z hydro
+nix-shell
+z hydro
+z node
+z polkadot
+z node
+hx runtime/polkadot/src/lib.rs
+cd ..
+nix-shell
+cp ~/rust/gensyn/node/shell.nix
+cp ~/rust/gensyn/node/shell.nix .
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+z node
+gitui
+git commit -m "Check bitfields in `enter` extrinsic, include weight calculation"
+git push
+    git push --set-upstream origin mathis-improve-bitfield-checks<\n>
+z node
+ttyper
+nix-shell
+fmt
+gitui
+git commit -m "Check weight before storing"
+git push
+0.4 *
+0.4 * 24
+9.6 * 0.5
+4.8 * 30
+git branch
+git checkout mathis-node-test-and-runtime
+git checkout mathis-status-interface
+git checkout mathis-cli-task-status
+gitui
+git checkout mathis-cli-task-status
+gitui
+git checkout mathis-cli-task-status
+nix-shell
+fmt
+gitui
+git commit -m "Optionally filter by task owner"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Use `addr` of cli arguments"
+git push
+z node
+z noke
+z node
+ttyper
+nix-shell
+fmt
+gitui
+tfmt
+gitui
+git commit -m "Some final tweaks"
+git push
+git branch
+git checkout maiths
+git checkout mathis-improve-bitfield-checks
+git checkout main
+git pull
+git checkout mathis-improve-bitfield-checks
+git rebase main
+git push --force
+nix-shell
+ttyper
+ttyper
+ssh magewe@linode
+hx Cargo.toml
+ssh root@linode
+git fetch --prune
+git checkout viktor-ml-roundtrip-test-take-2
+z hydro
+nix-shell
+z hydro
+nix-shell
+git commit -m "long_only"
+git push
+git pull
+git branch
+git checkout subpath_cost
+guitui
+gitui
+git checkout main
+gitui
+git checkout subpath_cost
+z node
+hx config_files/agent.ron
+gitui
+git checkout main
+nix-shell
+ssh root@linode
+nix-shell
+z node
+z node
+gitui
+ttyper
+1000 
+1000 / 624
+nix-shell
+fmt
+gitui
+git checkout main
+git phull
+git pull
+git switch -C mathis-min-upload-size
+gitui
+git commit -m "Ensure each av-item is above a minimum size"
+git push
+    git push --set-upstream origin mathis-min-upload-size
+nix-shell
+z hydro
+z hydro
+git pull
+gitui
+ssh magewe@razerblade
+nix-shell
+ssh magewe@madcatz
+ttyper
+sudo hx /etc/nixos/configuration.nix
+nix-shell
+git branch
+git branch -D post_entry_analysis
+git branch -D 0.73
+git branch -D 2023_08_signal_processing_upgrades
+git branch -D trade_exit_classifier
+git branch --all
+git push --delete origin fix-n_samples
+git push --delete origin post_entry_analysis
+git push --delete origin trade_exit_classifier
+git push --delete origin cuda
+git push --delete origin converging_delta
+git push --delete origin 0.73
+git fetch --prune
+git branch --all
+git branch -D forecast_high_low
+git push --delete origin forecast_high_low
+git branch -D cuda
+git branch
+git branch --all
+ssh magewe@superserver
+ttyper
+nix-shell
+fmt
+gitui
+hx config_files/agent.ron
+z hydra
+nix-shell
+fmt
+gitui
+git commit -m "Use high and low of candle as ask and bid respectively"
+git push
+nix-shell
+nix-shell
+fmt
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Plot limit order executions"
+git push
+git checkout main
+git merge limit_orders
+git push
+git checkout limit_orders
+git checkout main
+gitui
+z hydro
+ttyper
+ping truenas-scale
+ping superservec
+ping superserver
+ssh magewe@superserver
+btm
+ttyper
+nix-shell
+cd ~
+la
+scp .git-credentials magewe@superserver:/home/magewe
+ssh magewe@superserver
+btm
+scp .config/nixpkgs/config.nix magewe@superserver:/home/magewe/.config/nixpkgs/
+mkdir -p ~/.config/nixpkgs
+sudo hx /etc/nixos/configuration.nix
+ca /etc/nixos/configuration.nix
+cat /etc/nixos/configuration.nix
+nix-shell
+cd ~
+scp BTCUSDT-aggTrades-2023-01_compact.csv magewe@superserver:/home/magewe
+scp /etc/nixos/configuration.nix magewe@192.168.0.209:/home/magewe
+la
+rm -rf Tis*
+la
+rm -f TrueNAS-13.0-U5.3.iso
+la
+ls
+scp ./start_hyprland.sh magewe@miny-ryzen
+scp ./start_hyprland.sh magewe@miny-ryzen:/home/magewe
+scp -r .config/ magewe@mini-ryzen:/home/magewe
+scp -r .config/ magewe@mini_ryzen:/home/magewe
+scp -r .config/ magewe@miniryzen:/home/magewe
+scp wallpaper.jpg magewe@miniryzen:/home/magewe
+la
+sudo hx /etc/nixos/configuration.nix
+z hydro
+50
+50 *
+50 * 80
+nix-shell
+la
+gitui
+eom img/ngrc_agent_0.151.0_f59207d6_BTCUSDT-aggTrades-2023-01_compact.csv_robustness_20flrdzy.png
+ls
+z hydro
+z node
+hx Cargo.toml
+z hydra
+nix-shell
+nix-shell
+git switch -C cancel_limit_orders
+gitui
+fmt
+tfmt
+gitui
+git commit -m "Add logic for cancelling orders and even market filling them in some states"
+git push
+    git push --set-upstream origin cancel_limit_orders
+sudo hx /etc/nixos/configuration.nix
+z hydro
+nix-shell
+mkpasswd
+nix-shell
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+btm
+phoronix-test-suite
+zelli
+phoronix-test-suite
+phoronix-test-suite benchmark
+phoronix-test-suite benchmark all
+phoronix-test-suite benchmark tidb
+z hydro
+nix-shell
+alsamixer
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+alsamixer
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+alsamixer
+sudo hx /etc/nixos/configuration.nix
+pactl load-module module-combine-sink
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+alsamixer
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+alsamixer
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch
+aplay
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+pactl set-sink-volume @DEFAULT_SINK@ +5%
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+pactl set-sink-volume @DEFAULT_SINK@ +5%
+sudo pactl set-sink-volume @DEFAULT_SINK@ +5%
+sudo pactl
+sudo pactl --help
+sudo pactl stat
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+alsamixer
+sudo pactl set-sink-volume @DEFAULT_SINK@ +5%
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+sudo hx /etc/nixos/configuration.nix
+sudo nixos-rebuild switch --upgrade
+z hydro
+nbtm
+sudo systemctl status pulseaudio
+nix-shell
+btm
+z hydro
+nix-shell
+fmt
+gitui
+git commit -m "Fixed state transition"
+git push
+git checkout main
+gitui
+git checkout main
+git merge cancel_limit_orders
+git push
+git branch -D cancel_limit_orders
+git branch --all
+git push --delete origin cancel_limit_orders
+nix-shell
+btm
+ttyper
+z hydro
+0.3 * 12
+nix-shell
+gitui
+eom img/ngrc_agent_0.152.0_f59207d6_BTCUSDT-aggTrades-2023-01_compact.csv_robustness_121j7j3X.png
+eom img/robustness_trade_perturb.png
+eom img/ngrc_agent_0.152.0_f59207d6_BTCUSDT-aggTrades-2023-01_compact.csv_robustness_121j7j3X.png
+z hydro
+nix-shell
+gitui
+rm -f img/ngrc_agent_0.152.0_f59207d6*
+gitui
+cd ~
+la
+nvtop
+scp *.pdf magewe@192.168.0.206:/home/magewe
+scp *.pdf magewe@razerblade:/home/magewe
+la
+cd Downloads/
+la
+scp *.pdf magewe@razerblade:/home/magewe
+rm -f *.pdf
+z hydro
+eom img/robustness_trade_perturb.png
+dt
+ssh magewe@superserver
+z hydro
+z node
+hx pallets/bitfields/src/lib.rs
+z node
+nix-shell
+fmyt
+fmt
+gitui
+git commit -m "FIxed param perturbation ratio and changed filename for robustnes modes to include the version"
+git push
+nix-shell
+fmt
+nix-shell
+fmt
+gitui
+git commit -m "Update as discussed"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Logging changes"
+git push
+git checkout main
+git pull
+git checkout mathis-min-upload-size
+git rebase main
+git push --force
+nix-shell
+fmt
+gitui
+git commit -m "Adjust tests"
+git push
+nix-shell
+z polkador
+z polkadot
+git branch
+git checkout mathis-improve-bitfield-checks
+git rebase main
+git push --force
+hx runtime/polkadot/src/lib.rs
+nix-shell
+cd ..
+nix-shell
+z hydro
+eom img/robustness_param_perturb_0.152.0.png
+gitui
+rm -f img/robustness_param_perturb.png
+gitui
+git commit -m "parameter robustness result img"
+git push
+zellij attach
+z node
+z node
+ttyper
+1000 /
+1000 / 35
+624
+624 * 60 * 60
+nix-shell
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Extract out commont functionality"
+git push
+git branch
+git checkout mathis-min-upload-size
+1.1
+1.1 ^ 12
+1.1 ** 12
+nix-shell
+fmt
+gitui
+git commit -m "Extract out function `av_item_payment_amount`"
+git push
+git branch
+git checkout mathis-node-test-and-runtime
+git rebase main
+rm -f Cargo.lock
+z hydro
+z node
+gitui
+z node
+git rebase --continue
+git push --force
+ls
+nix-shell
+gitui
+git checkout main
+hx node/submitter-cli/src/fetch_ml_task_results/cmd.rs
+git branch
+git checkout mathis-improve-bitfield-checks
+nix-shell
+fmt
+gitui
+git commit -m "Update comment"
+git push
+git branch
+git branch -D mathis-cli-task-status
+gitui
+ttyper
+git checkout mathis-node-test-and-runtime
+cp runtime/src/* runtime/test-runtime/src/
+cp -r runtime/src/* runtime/test-runtime/src/
+gitui
+nix-shell
+git checkout mathis-min-upload-size
+nix-shell
+fmt
+gitui
+git commit -m "Revert TFLOP"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Final polish"
+git push
+nix-shell
+z hydro
+nix-shell
+eom img/robustness_param_perturb_0.152.0.png
+nix-shell
+z tikr
+z hydro
+z hydra
+nix-shell
+nix-shell
+fmt
+gitui
+git commit -m "Change kucoin execution price data type to String"
+git push
+nix-shell
+ssh magewe@nixostikr
+z hydro
+z tikr
+git pull
+z tikr
+nix-shell
+fmt
+gitui
+git commit -m "Fixed series name bug for binance"
+git push
+nix-shell
+nix-shell
+ttyper
+ssh magewe@linode
+ssh root@linode
+nix-shell
+random --char -l 64
+random 
+random chars 
+ssh magewe@superserver
+ssh magewe@linode -p 2023
+ssh magewe@superserver
+z hydro
+nix-shell
+fmt
+gitui
+git pull
+git commit -m "In robustness plot, draw scatter as well. Better error handling for plotting functions"
+git push
+tokei
+btm
+nix-shell
+eom img/robustness_param_perturb_0.152.0.png
+btm
+nix-shell
+eom img/robustness_param_perturb_0.152.0.png
+nix-shell
+eom img/robustness_param_perturb_0.152.0.png
+nix-shell
+eom img/robustness_param_perturb_0.152.0.png
+nix-shell
+fmt
+gitui
+eom img/robustness_param_perturb_0.152.0.png
+nix-shell
+fmt
+gitui
+git commit -m "Improve robustness plot"
+git push
+gitui
+hx src/main.rs
+z tikr
+nix-shell
+z hydro
+fmt
+gitui
+git commit -m "db_cli: Improved error handling in plotting"
+git push
+nix-shell
+nix-shell
+fmt
+gitui
+git commit -m "db_cli: Fix timestamp parsing"
+git push
+nix-shell
+gitui
+eom img/2023-08-23_BINANCE-cm_BTCUSD_PERP_TRADES.png
+nix-shell
+eom img/2023-10-03_BINANCE-cm-TRADES_BTCUSD_PERP.png
+cd rust
+git clone https://github.com/GreptimeTeam/greptimedb
+docker run -p 4002:4002 -v "$(pwd):/tmp/greptimedb" greptime/greptimedb standalone start
+curl -L https://github.com/GreptimeTeam/greptimedb/raw/develop/scripts/install.sh | sh
+./greptime
+ls
+./greptime --help
+la
+z tikr
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "tikr: update dependencies"
+git push
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Update all dependencies"
+git push
+ssh magewe@nixostikr
+z node
+nix-shell
+z hydro
+nix-shell
+z polkadot
+git checkout main
+git pull
+git checkout mathis-min-upload-size
+git rebase main
+git push --force
+git branch
+git checkout mathis-improve-bitfield-checks
+git rebase main
+git push --force
+gitui
+ttyper
+z node
+ttyper
+hx runtime/polkadot/src/lib.rs
+cd ..
+nix-shell
+fmt
+gitui
+git commit -m "Move towards a single function both providing and verifying the bitfields. Add `ProcessInherentDataContext`"
+git push
+nix-shell
+ssh magewe@nixostikr
+dt
+nix-shell
+ttyper
+z node
+z node
+gitui
+cc
+z hydro
+z polkadot
+cd ..
+nix-shell
+fmt
+gitui
+git commit -m "Add `weight` module"
+git push
+nix-shell
+fmt
+gitui
+git commit -m "Ensure no overweight extrinsic reaches the runtime"
+git push
+nix-shell
+eom img/robustness_param_perturb_0.152.0.png
+ssh magewe@nixostikr
+ssh magewe@192.168.0.132
+sudo hx ./.ssh/known_hosts
+ssh magewe@superserver
+btm
+ssh magewe@192.168.0.132
+nix-shell
+fmt
+gitui
+git commit -m "Introduce randomness associated type to do random subset selection"
+git push
+ttyper
+z rust
+git clone https://github.com/oconnor663/bao
+cd bao/
+cp ../MathisWellmann/lfest-rs/shell.nix .
+nix-shell
+nix-shell
+fmt
+gitui
+git commit -m "Add new associated types to mock runtime"
+git push
+nix-shell
+z hydro
+eom img/robustness_trade_perturb_0.152.0.png
+ssh magewe@superserver
+z node
+gitui
+cd sdk/
+la
+nix-shell
+hx sdk-cli.py
+cd rust/MathisWellmann/tikr/
+nix build --print-build-logs "github:DeterminateSystems/nuenv"
+cd rust/MathisWellmann/
+ls
+la
+cd nixos-configs/
+la
+cp /etc/nixos/configuration.nix workstation/
+gitui
+git commit -m "Update workstation"
+git push
+cd ~
+sudo hx /etc/nixos/configuration.nix
+cd rust/gensyn/node
+nix-shell
+cd rust/gensyn/node
+gitui
+nix-shell
+fmt
+gitui
+git commit -m "Add another benchmark"
+git push
+cd rust/gensyn/node
+nix-shell
+fmt
+gitui
+git commit -m "Make the `DynamicBlock` contain at most 10_000 elements. Add a test for validationg `BlockIndex` and sequence index when creating new `DynamicBlock` from data"
+git push
+nix-shell
+cd rust/gensyn/node
+nix-shell
+cd ..
+z tikr
+nix-shell
+z tikr
+nix
+nix-shell
+fmt
+gitui
+git commit 
+git commit -m "Adjust sequence index validation function"
+git push
+cd /tikr_db-data/
+la
+cd Kucoin_L2OrderBookSnapshot_XBTUSDTM/
+la
+sudo chown -R magewe .
+la
+ttyper
+cd /tikr_db-data/
+cd Kucoin_L2OrderBookSnapshot_XBTUSDTM/
+la
+ls
+la
+nix-shell
+nix-shell
+z tikr
+nix-shell
+z node
+zellij attach
+z node
+z pol
+sk
+ls
+git pull
+sk
+tree | rg test-runtime
+gitui
+ls
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Use actual runtime as test-runtime"
+git push
+hx node/test/service/src/lib.rs
+cd ..
+nix-shell
+fmt
+tfmt
+gitui
+git commit -m "Bulk of the changes"
+git push
+nix-shell
+ns
+hx ~/.config/nushell/config.nu
+z tikr
+ns
+z ~
+z nix-config
+z nix
+ls
+cd workstation/
+ls
