@@ -208,9 +208,12 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  networking.nameservers = [ "192.168.0.165" ];
-  networking.extraHosts = ''
-    172.104.239.84 linode
+  networking.nameservers = [ "192.168.0.75" ];
+
+  # To not run out of memory in the tmpfs created by nix-shell
+  services.logind.extraConfig = ''
+    RuntimeDirectorySize=64G
+    HandleLidSwitchDocked=ignore
   '';
 
   # This value determines the NixOS release from which the default
