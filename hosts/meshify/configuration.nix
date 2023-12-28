@@ -79,7 +79,18 @@
     isNormalUser = true;
     description = "magewe";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [];
+    packages = with pkgs; [
+      # Desktop
+      chromium
+      firefox
+      vlc
+      keepassxc
+      mate.eom
+      zathura
+
+      # Misc
+      ollama
+    ];
     shell = pkgs.zsh;
   };
 
@@ -128,14 +139,6 @@
     delta
     crate2nix
 
-    # Desktop
-    chromium
-    firefox
-    vlc
-    keepassxc
-    mate.eom
-    zathura
-
     # Misc
     typst
     killall
@@ -144,7 +147,6 @@
     nmap
     pulseaudio
     docker-compose
-    ollama
   ];
 
   virtualisation.docker.enable = true;
@@ -167,7 +169,6 @@
     noto-fonts-emoji
     terminus_font
   ];
-
 
   services.openssh.enable = true;
   services.tailscale.enable = true;
