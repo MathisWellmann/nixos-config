@@ -91,7 +91,7 @@
       # Misc
       ollama
     ];
-    shell = pkgs.zsh;
+    shell = pkgs.nushell;
   };
 
   # Allow unfree packages
@@ -101,6 +101,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     # CLI
+    nushell
     wget
     helix
     lsd
@@ -151,7 +152,6 @@
 
   virtualisation.docker.enable = true;
 
-  programs.zsh.enable = true;
   programs.bash.shellAliases = {
     cu = "cargo update";
     cc = "cargo check";
