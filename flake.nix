@@ -16,14 +16,21 @@
       pkgs = nixpkgs.legacyPackages.${system};
     in
     {
-    
-      nixosConfigurations.default = nixpkgs.lib.nixosSystem {
+      nixosConfigurations = {
+        meshify = nixpkgs.lib.nixosSystem {
           specialArgs = {inherit inputs;};
           modules = [ 
-            ./configuration.nix
+            ./hosts/meshify/configuration.nix
             inputs.home-manager.nixosModules.default
           ];
         };
-
+        superserver = nixpkgs.lib.nixosSystem {
+          specialArgs = {inherit inputs;};
+          modules = [ 
+            ./hosts/superserver/configuration.nix
+            inputs.home-manager.nixosModules.default
+          ];
+        };
+      };
     };
 }
