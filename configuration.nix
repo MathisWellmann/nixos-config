@@ -2,29 +2,21 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, ... }:
 
 {
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      inputs.home-manager.nixosModules.default
     ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  # Setup keyfile
-  boot.initrd.secrets = {
-    "/crypto_keyfile.bin" = null;
-  };
-
-  networking.hostName = "ryzen"; # Define your hostname.
+  networking.hostName = "meshify"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Configure network proxy if necessary
-  # networking.proxy.default = "http://user:password@proxy:port/";
-  # networking.proxy.noProxy = "127.0.0.1,localhost,internal.domain";
 
   # Enable networking
   networking.networkmanager.enable = true;
@@ -52,28 +44,43 @@
     driSupport = true;
     driSupport32Bit = true;
   };
-
   hardware.nvidia = {
     modesetting.enable = true;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    # package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
+  sound.enable = true;
+  hardware.pulseaudio.enable = true;
 
-  # Configure keymap in X11
   services.xserver = {
     enable = true;
+    autorun = false;
     videoDrivers = ["nvidia"];
-    displayManager.startx.enable = true;
-    layout = "us";
-    xkbVariant = "";
   };
+
+  programs.hyprland = {
+    enable = true;
+    xwayland = {
+      enable = true;
+    };
+  };
+
+  programs.gnupg.agent = {
+    enable = true;
+    enableSSHSupport = true;
+  };
+
+  # environment.sessionVariables = {
+  #   WLR_NO_HARDWARE_CURSORS = "1";
+  # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
     isNormalUser = true;
     description = "magewe";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "docker" ];
     packages = with pkgs; [];
+    shell = pkgs.zsh;
   };
 
   # Allow unfree packages
@@ -88,11 +95,11 @@
     lsd
     skim
     ripgrep
-    nushell
     zoxide
     starship
     tokei
     zellij
+    tmux
     ttyper
     taplo-cli
     lfs
@@ -102,18 +109,13 @@
     onefetch
     tree 
     nvtop
-
-    # WM
-    xorg.xorgserver
-    xorg.xf86inputevdev
-    xorg.xf86inputsynaptics
-    xorg.xf86inputlibinput
-    nitrogen
-    dmenu
-    polybar
-    picom
-    leftwm
     alacritty
+    hyprland
+    hyprpaper
+    waybar
+    wofi
+    bat
+    diskonaut
 
     # Dev
     rustup
@@ -121,48 +123,98 @@
     gitui
     oxker
     gcc
-    sccache
-    cargo-info
-    mprocs
-    cargo-show-asm
+    cargo-flamegraph
+    cargo-outdated
+    delta
+    crate2nix
 
-    # Misc
-    barrier
+    # Desktop
     chromium
     firefox
     vlc
-    veracrypt
     keepassxc
     mate.eom
+    zathura
+
+    # Misc
     typst
+    killall
+    iperf
+    lshw
+    nmap
+    pulseaudio
+    docker-compose
+    ollama
   ];
 
-  fonts.fonts = with pkgs; [
+  virtualisation.docker.enable = true;
+
+  programs.zsh.enable = true;
+  programs.bash.shellAliases = {
+    cu = "cargo update";
+    cc = "cargo check";
+    cb = "cargo build";
+    cbr = "cargo build --release";
+    cr = "cargo run";
+    crr = "cargo run --release";
+    cte = "cargo test";
+    fmt = "cargo +nightly fmt";
+    tfmt = "taplo fmt";
+  };
+
+  fonts.packages = with pkgs; [
     noto-fonts
     noto-fonts-emoji
     terminus_font
   ];
 
+
+  services.openssh.enable = true;
+  services.tailscale.enable = true;
+  services.mongodb = {
+    enable = true;
+    dbpath = "/home/magewe/mongodb";
+    user = "root";
+    bind_ip = "0.0.0.0";
+  };
+  services.prometheus = {
+    exporters = {
+      node = {
+        enable = true;
+        enabledCollectors = [ "systemd" ];
+        port = 9002;
+      };
+    };
+  };
+
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
   nix.settings.trusted-users = [ "root" "magewe" ];
 
-  # Some programs need SUID wrappers, can be configured further or are
-  # started in user sessions.
-  # programs.mtr.enable = true;
-  # programs.gnupg.agent = {
-  #   enable = true;
-  #   enableSSHSupport = true;
-  # };
-
-  # List services that you want to enable:
-
-  # Enable the OpenSSH daemon.
-  # services.openssh.enable = true;
-
   # Open ports in the firewall.
-  # networking.firewall.allowedTCPPorts = [ ... ];
-  # networking.firewall.allowedUDPPorts = [ ... ];
-  # Or disable the firewall altogether.
-  # networking.firewall.enable = false;
+  networking.firewall.allowedTCPPorts = [ 
+    27017 # Mongodb
+    8231 # Tikr
+  ];
+  networking.nameservers = [ "192.168.0.75" ];
+
+  # To not run out of memory in the tmpfs created by nix-shell
+  services.logind.extraConfig = ''
+    RuntimeDirectorySize=64G
+    HandleLidSwitchDocked=ignore
+  '';
+
+  home-manager = {
+    # also pass inputs to home-manager modules
+    extraSpecialArgs = { inherit inputs; };
+    users = {
+      "magewe" = import ./home.nix;
+    };
+  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -170,6 +222,6 @@
   # this value at the release version of the first install of this system.
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
-  system.stateVersion = "23.05"; # Did you read the comment?
+  system.stateVersion = "23.11"; # Did you read the comment?
 
 }
