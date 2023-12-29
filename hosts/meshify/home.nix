@@ -132,9 +132,21 @@
         core.editor = "hx";
       };
     };
+    alacritty = {
+      enable = true;
+      settings = {
+        window.opacity = 0.8;
+        fonts = {
+          size = 12.0;
+          normal.family = "Terminus"; 
+        };
+        shell.program = "nu";
+      };
+    };
     nushell = {
       enable = true;
       shellAliases = {
+        ns = "nix-shell";
         la = "lsd -la";
         dt = "date now";
         night = "redshift -P -O 5000";
