@@ -159,7 +159,16 @@
     starship = {
       enable = true;
       settings = {
-         add_newline = false;
+        add_newline = false;
+        character = {
+          error_symbol = "[✗](bold red)";
+        };
+        directory = {
+          read_only = " ";
+          truncation_length = 10;
+          truncate_to_repo = true; # truncates directory to root folder if in github repo
+          style = "bold italic blue";
+        };
       };
     };
     zoxide = {
