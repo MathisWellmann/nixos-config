@@ -96,18 +96,11 @@
     lsd
     skim
     ripgrep
-    zoxide
-    starship
-    tokei
     zellij
     tmux
-    ttyper
     taplo-cli
-    lfs
     htop
     bottom
-    neofetch
-    onefetch
     tree 
     nvtop
     alacritty
@@ -116,13 +109,10 @@
     waybar
     wofi
     bat
-    diskonaut
 
     # Dev
     rustup
     git
-    gitui
-    oxker
     gcc
     cargo-flamegraph
     cargo-outdated
