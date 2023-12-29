@@ -79,18 +79,7 @@
     isNormalUser = true;
     description = "magewe";
     extraGroups = [ "networkmanager" "wheel" "docker" ];
-    packages = with pkgs; [
-      # Desktop
-      chromium
-      firefox
-      vlc
-      keepassxc
-      mate.eom
-      zathura
-
-      # Misc
-      ollama
-    ];
+    packages = with pkgs; [];
     shell = pkgs.nushell;
   };
 
