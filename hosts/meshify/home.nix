@@ -31,6 +31,7 @@
 
     # Misc
     ollama
+    redshift
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
@@ -150,6 +151,10 @@
       settings = {
          add_newline = false;
       };
+    };
+    zoxide = {
+      enable = true;
+      enableNushellIntegration = true;
     };
   };
 }
