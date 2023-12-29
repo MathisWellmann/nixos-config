@@ -75,65 +75,64 @@
     # EDITOR = "emacs";
   };
 
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
-
-  programs.helix = {
-    enable = true;
-    settings = {
-      theme = "ayu_mirage";
-      editor = {
-        scroll-lines = 1;
-        cursorline = true;
-        auto-save = false;
-        completion-trigger-len = 1;
-        true-color = true;
-        auto-pairs = true;
-        rulers = [120];
-        idle-timeout = 0;
-        bufferline = "multiple";
-        cursor-shape = {
-          insert = "bar";
-          normal = "block";
-          select = "underline";
-        };
-        lsp = {
-          display-messages = true;
-          display-inlay-hints = false;
-        };
-        statusline = {
-          left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
-          center = [];
-          right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+  programs = {
+    # Let Home Manager install and manage itself.
+    home-manager.enable = true;
+    helix = {
+      enable = true;
+      settings = {
+        theme = "ayu_mirage";
+        editor = {
+          scroll-lines = 1;
+          cursorline = true;
+          auto-save = false;
+          completion-trigger-len = 1;
+          true-color = true;
+          auto-pairs = true;
+          rulers = [120];
+          idle-timeout = 0;
+          bufferline = "multiple";
+          cursor-shape = {
+            insert = "bar";
+            normal = "block";
+            select = "underline";
+          };
+          lsp = {
+            display-messages = true;
+            display-inlay-hints = false;
+          };
+          statusline = {
+            left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
+            center = [];
+            right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+          };
         };
       };
     };
-  };
-
-  programs.git = {
-    enable = true;
-    userName = "MathisWellmann";
-    userEmail = "wellmannmathis@gmail.com";
-  };
-
-  programs.nushell = {
-    enable = true;
-    shellAliases = {
-      la = "lsd -la";
-      dt = "date now";
-      night = "redshift -P -O 5000";
-      bright = "sudo xbacklight -set 100";
-      # Cargo
-      udeps = "cargo +nightly udeps --all-targets";
-      fmt = "cargo +nightly fmt --all";
-      tfmt = "taplo fmt";
-      cu = "cargo update";
-      cc = "cargo check";
-      cb = "cargo build";
-      cbr = "cargo build --release";
-      cr = "cargo run";
-      crr = "cargo run --release";
-      cte = "cargo test";
+    git = {
+      enable = true;
+      userName = "MathisWellmann";
+      userEmail = "wellmannmathis@gmail.com";
+    };
+    nushell = {
+      enable = true;
+      shellAliases = {
+        la = "lsd -la";
+        dt = "date now";
+        night = "redshift -P -O 5000";
+        bright = "sudo xbacklight -set 100";
+        # Cargo
+        udeps = "cargo +nightly udeps --all-targets";
+        fmt = "cargo +nightly fmt --all";
+        tfmt = "taplo fmt";
+        cu = "cargo update";
+        cc = "cargo check";
+        cb = "cargo build";
+        cbr = "cargo build --release";
+        cr = "cargo run";
+        crr = "cargo run --release";
+        cte = "cargo test";
+      };
     };
   };
 }
