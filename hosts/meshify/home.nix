@@ -63,4 +63,36 @@
 
   # Let Home Manager install and manage itself.
   programs.home-manager.enable = true;
+
+  programs.helix = {
+    enable = true;
+    settings = {
+      theme = "ayu_mirage";
+      editor = {
+        scroll-lines = 1;
+        cursorline = true;
+        auto-save = false;
+        completion-trigger-len = 1;
+        true-color = true;
+        auto-pairs = true;
+        rulers = [120];
+        idle-timeout = 0;
+        bufferline = "multiple";
+        cursor-shape = {
+          insert = "bar";
+          normal = "block";
+          select = "underline";
+        };
+        lsp = {
+          display-messages = true;
+          display-inlay-hints = false;
+        };
+        statusline = {
+          left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
+          center = [];
+          right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+        };
+      };
+    };
+  };
 }
