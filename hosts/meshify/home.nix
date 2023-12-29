@@ -133,6 +133,16 @@
         crr = "cargo run --release";
         cte = "cargo test";
       };
+      extraConfig = 
+        "$env.config = {
+          show_banner: false,
+        }";
+    };
+    starship = {
+      enable = true;
+      settings = {
+         add_newline = false;
+      };
     };
   };
 }
