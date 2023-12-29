@@ -113,6 +113,13 @@
       enable = true;
       userName = "MathisWellmann";
       userEmail = "wellmannmathis@gmail.com";
+      extraConfig = {
+        push = { autoSetupRemote = true; };
+        init = {
+          defaultBranch = "main";
+        };
+        core.editor = "hx";
+      };
     };
     nushell = {
       enable = true;
