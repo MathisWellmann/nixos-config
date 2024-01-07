@@ -1,6 +1,4 @@
-{
-  ...
-}: {
+{...}: {
   programs.bash.shellAliases = {
     la = "lsd -la";
     cu = "cargo update";
