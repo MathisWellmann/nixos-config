@@ -11,6 +11,7 @@
     ./hardware-configuration.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
+    ./../../modules/root_pkgs.nix
   ];
 
   # Bootloader.
@@ -53,45 +54,6 @@
     packages = [];
     shell = pkgs.nushell;
   };
-
-  nixpkgs.config.allowUnfree = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment.systemPackages = with pkgs; [
-    # CLI
-    nushell
-    wget
-    helix
-    nil # Nix LSPA
-    alejandra # Nix formatter
-    lsd
-    skim
-    ripgrep
-    zellij
-    tmux
-    htop
-    bottom
-    tree
-    nvtop
-    alacritty
-    bat
-    # Dev
-    rustup
-    git
-    gcc
-    cargo-flamegraph
-    cargo-outdated
-    delta
-    crate2nix
-    taplo-cli
-    # Misc
-    killall
-    iperf
-    lshw
-    nmap
-    docker-compose
-  ];
 
   services.openssh.enable = true;
   services.tailscale.enable = true;

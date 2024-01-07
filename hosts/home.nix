@@ -16,7 +16,6 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    # Should already be a system level dependency
     helix
 
     # Desktop
@@ -39,7 +38,9 @@
     onefetch
     diskonaut
     gitui
-    oxker
+    oxker # Docker tui
+    nil # Nix LSPA
+    alejandra # Nix formatter
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the

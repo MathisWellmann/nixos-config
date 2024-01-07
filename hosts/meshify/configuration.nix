@@ -12,6 +12,7 @@
     inputs.home-manager.nixosModules.default
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
+    ./../../modules/root_pkgs.nix
   ];
 
   # Bootloader.
@@ -68,50 +69,12 @@
     shell = pkgs.nushell;
   };
 
-  # Allow unfree packages
-  nixpkgs.config.allowUnfree = true;
-
-  # List packages installed in system profile. To search, run:
-  # $ nix search wget
   environment.systemPackages = with pkgs; [
-    # CLI
-    nushell
-    wget
-    helix
-    nil # Nix LSPA
-    alejandra # Nix formatter
-    lsd
-    skim
-    ripgrep
-    zellij
-    tmux
-    taplo-cli
-    htop
-    bottom
-    tree
-    nvtop
     alacritty
     hyprland
     hyprpaper
     waybar
     wofi
-    bat
-    # Dev
-    rustup
-    git
-    gcc
-    cargo-flamegraph
-    cargo-outdated
-    delta
-    crate2nix
-    # Misc
-    typst
-    killall
-    iperf
-    lshw
-    nmap
-    pulseaudio
-    docker-compose
   ];
 
   virtualisation.docker.enable = true;
