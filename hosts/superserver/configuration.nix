@@ -2,8 +2,8 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
-  config,
   pkgs,
+  inputs,
   ...
 }: {
   imports = [
@@ -66,39 +66,47 @@
     isNormalUser = true;
     description = "magewe";
     extraGroups = ["networkmanager" "wheel"];
-    packages = with pkgs; [];
+    packages = [];
+    shell = pkgs.nushell;
   };
 
-  # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-    vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
+    # CLI
+    nushell
     wget
     helix
+    nil # Nix LSPA
+    alejandra # Nix formatter
     lsd
     skim
     ripgrep
-    zoxide
     zellij
-    lfs
+    tmux
     htop
     bottom
-    neofetch
     tree
     nvtop
+    alacritty
+    bat
+    # Dev
     rustup
     git
-    gitui
-    oxker
     gcc
+    cargo-flamegraph
+    cargo-outdated
+    delta
+    crate2nix
+    taplo-cli
+    # Misc
     killall
     iperf
     lshw
     nmap
-    rathole
+    docker-compose
   ];
 
   programs.bash.shellAliases = {
@@ -124,11 +132,26 @@
       };
     };
   };
+  # To not run out of memory in the tmpfs created by nix-shell
+  services.logind.extraConfig = ''
+    RuntimeDirectorySize=64G
+    HandleLidSwitchDocked=ignore
+  '';
 
   nix.gc = {
     automatic = true;
     dates = "weekly";
     options = "--delete-older-than 7d";
+  };
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.trusted-users = ["root" "magewe"];
+
+  home-manager = {
+    # also pass inputs to home-manager modules
+    extraSpecialArgs = {inherit inputs;};
+    users = {
+      "magewe" = import ./../home.nix;
+    };
   };
 
   # This value determines the NixOS release from which the default
