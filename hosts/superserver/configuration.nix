@@ -9,6 +9,7 @@
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./../../modules/bash_aliases.nix
   ];
 
   # Bootloader.
@@ -108,18 +109,6 @@
     nmap
     docker-compose
   ];
-
-  programs.bash.shellAliases = {
-    cu = "cargo update";
-    cc = "cargo check";
-    cb = "cargo build";
-    cbr = "cargo build --release";
-    cr = "cargo run";
-    crr = "cargo run --release";
-    cte = "cargo test";
-    fmt = "cargo +nightly fmt";
-    tfmt = "taplo fmt";
-  };
 
   services.openssh.enable = true;
   services.tailscale.enable = true;

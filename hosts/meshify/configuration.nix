@@ -10,13 +10,14 @@
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
+    ./../../modules/bash_aliases.nix
   ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "meshify"; # Define your hostname.
+  networking.hostName = "meshify";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Enable networking
@@ -131,18 +132,6 @@
   ];
 
   virtualisation.docker.enable = true;
-
-  programs.bash.shellAliases = {
-    cu = "cargo update";
-    cc = "cargo check";
-    cb = "cargo build";
-    cbr = "cargo build --release";
-    cr = "cargo run";
-    crr = "cargo run --release";
-    cte = "cargo test";
-    fmt = "cargo +nightly fmt";
-    tfmt = "taplo fmt";
-  };
 
   fonts.packages = with pkgs; [
     noto-fonts
