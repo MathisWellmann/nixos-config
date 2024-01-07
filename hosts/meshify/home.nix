@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   # Home Manager needs a bit of information about you and the paths it should
@@ -102,7 +102,7 @@
           auto-pairs = true;
           rulers = [120];
           idle-timeout = 0;
-          bufferline = "multiple";
+          bufferline = "always";
           cursor-shape = {
             insert = "bar";
             normal = "block";
