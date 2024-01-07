@@ -1,15 +1,16 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ pkgs, inputs, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.default
-    ];
+  pkgs,
+  inputs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.default
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -78,7 +79,7 @@
   users.users.magewe = {
     isNormalUser = true;
     description = "magewe";
-    extraGroups = [ "networkmanager" "wheel" "docker" ];
+    extraGroups = ["networkmanager" "wheel" "docker"];
     packages = [];
     shell = pkgs.nushell;
   };
@@ -93,7 +94,8 @@
     nushell
     wget
     helix
-    nil
+    nil # Nix LSPA
+    alejandra # Nix formatter
     lsd
     skim
     ripgrep
@@ -102,7 +104,7 @@
     taplo-cli
     htop
     bottom
-    tree 
+    tree
     nvtop
     alacritty
     hyprland
@@ -162,7 +164,7 @@
     exporters = {
       node = {
         enable = true;
-        enabledCollectors = [ "systemd" ];
+        enabledCollectors = ["systemd"];
         port = 9002;
       };
     };
@@ -173,15 +175,15 @@
     dates = "weekly";
     options = "--delete-older-than 7d";
   };
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
-  nix.settings.trusted-users = [ "root" "magewe" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
+  nix.settings.trusted-users = ["root" "magewe"];
 
   # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [ 
+  networking.firewall.allowedTCPPorts = [
     27017 # Mongodb
     8231 # Tikr
   ];
-  networking.nameservers = [ "192.168.0.75" ];
+  networking.nameservers = ["192.168.0.75"];
 
   # To not run out of memory in the tmpfs created by nix-shell
   services.logind.extraConfig = ''
@@ -191,7 +193,7 @@
 
   home-manager = {
     # also pass inputs to home-manager modules
-    extraSpecialArgs = { inherit inputs; };
+    extraSpecialArgs = {inherit inputs;};
     users = {
       "magewe" = import ./home.nix;
     };
@@ -204,5 +206,4 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
-
 }

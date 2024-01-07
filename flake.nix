@@ -10,27 +10,29 @@
     };
   };
 
-  outputs = { self, nixpkgs, ... }@inputs:
-    let
-      system = "x86_64-linux";
-      pkgs = nixpkgs.legacyPackages.${system};
-    in
-    {
-      nixosConfigurations = {
-        meshify = nixpkgs.lib.nixosSystem {
-          specialArgs = {inherit inputs;};
-          modules = [ 
-            ./hosts/meshify/configuration.nix
-            inputs.home-manager.nixosModules.default
-          ];
-        };
-        superserver = nixpkgs.lib.nixosSystem {
-          specialArgs = {inherit inputs;};
-          modules = [ 
-            ./hosts/superserver/configuration.nix
-            inputs.home-manager.nixosModules.default
-          ];
-        };
+  outputs = {
+    self,
+    nixpkgs,
+    ...
+  } @ inputs: let
+    system = "x86_64-linux";
+    pkgs = nixpkgs.legacyPackages.${system};
+  in {
+    nixosConfigurations = {
+      meshify = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/meshify/configuration.nix
+          inputs.home-manager.nixosModules.default
+        ];
+      };
+      superserver = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/superserver/configuration.nix
+          inputs.home-manager.nixosModules.default
+        ];
       };
     };
+  };
 }

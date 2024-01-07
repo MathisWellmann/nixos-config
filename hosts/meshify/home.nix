@@ -1,6 +1,4 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "magewe";
@@ -125,7 +123,7 @@
       userName = "MathisWellmann";
       userEmail = "wellmannmathis@gmail.com";
       extraConfig = {
-        push = { autoSetupRemote = true; };
+        push = {autoSetupRemote = true;};
         init = {
           defaultBranch = "main";
         };
@@ -138,7 +136,7 @@
         window.opacity = 0.8;
         fonts = {
           size = 12.0;
-          normal.family = "Terminus"; 
+          normal.family = "Terminus";
         };
         shell.program = "nu";
       };
@@ -163,8 +161,7 @@
         crr = "cargo run --release";
         cte = "cargo test";
       };
-      extraConfig = 
-        "$env.config = {
+      extraConfig = "$env.config = {
           show_banner: false,
         }";
     };
