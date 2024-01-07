@@ -93,6 +93,7 @@
     nushell
     wget
     helix
+    nil
     lsd
     skim
     ripgrep
