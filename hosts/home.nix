@@ -17,7 +17,6 @@
   # environment.
   home.packages = with pkgs; [
     helix
-
     # Desktop
     chromium
     firefox
@@ -25,11 +24,10 @@
     keepassxc
     mate.eom
     zathura
-
     # Misc
     ollama
     redshift
-
+    typst
     # Terminal
     tokei
     ttyper
@@ -41,6 +39,7 @@
     oxker # Docker tui
     nil # Nix LSPA
     alejandra # Nix formatter
+    delta # A syntax-highlighting pager for git
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the

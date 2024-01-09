@@ -5,6 +5,7 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    # Terminal
     wget
     helix
     lsd
@@ -17,21 +18,20 @@
     tree
     nvtop
     bat
-    # Dev
-    rustup
-    git
-    gcc
+    # Rust
+    cargo
     cargo-flamegraph
     cargo-outdated
-    delta
     crate2nix
     taplo-cli
+    # Dev
+    git
+    gcc
+    docker-compose
     # Misc
-    typst
     killall
     iperf
     lshw
     nmap
-    docker-compose
   ];
 }
