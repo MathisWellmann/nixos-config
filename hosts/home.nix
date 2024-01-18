@@ -128,6 +128,7 @@
           defaultBranch = "main";
         };
         core.editor = "hx";
+        pull.rebase = true;
       };
     };
     alacritty = {

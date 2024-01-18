@@ -19,7 +19,8 @@
     nvtop
     bat
     # Rust
-    cargo
+    rustup
+    rustfmt
     cargo-flamegraph
     cargo-outdated
     crate2nix
