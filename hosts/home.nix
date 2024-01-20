@@ -41,6 +41,10 @@
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
 
+    # Visualize git repo history
+    gource # Visualization tool for source control repos
+    ffmpeg # Used for encoding the output of `gource`
+
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
