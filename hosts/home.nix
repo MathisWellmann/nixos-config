@@ -42,6 +42,7 @@
     delta # A syntax-highlighting pager for git
 
     # Visualize git repo history
+    # Command `gource -1920x1080 -c 4 -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b 30000K gource.webm`
     gource # Visualization tool for source control repos
     ffmpeg # Used for encoding the output of `gource`
 
