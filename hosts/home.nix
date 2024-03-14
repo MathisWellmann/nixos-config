@@ -40,6 +40,7 @@
     nil # Nix LSPA
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
+    jujutsu # jj is the better git
 
     # Visualize git repo history
     # Command `gource -1920x1080 -c 4 -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b 30000K gource.webm`
