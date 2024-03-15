@@ -40,7 +40,6 @@
     nil # Nix LSPA
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
-    jujutsu # jj is the better git
 
     # Visualize git repo history
     # Command `gource -1920x1080 -c 4 -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b 30000K gource.webm`
@@ -90,7 +89,11 @@
     # EDITOR = "emacs";
   };
 
-  programs = {
+
+  programs = let 
+    me = "MathisWellmann";
+    email = "wellmannmathis@gmail.com";
+  in {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
     helix = {
@@ -126,8 +129,8 @@
     };
     git = {
       enable = true;
-      userName = "MathisWellmann";
-      userEmail = "wellmannmathis@gmail.com";
+      userName = "${me}";
+      userEmail = "${email}";
       extraConfig = {
         push = {autoSetupRemote = true;};
         init = {
@@ -135,6 +138,16 @@
         };
         core.editor = "hx";
         pull.rebase = true;
+      };
+    };
+    jujutsu = {
+      enable = true;
+      settings = {
+        user = {
+          name = "${me}";
+          email = "${email}";
+        };
+        ui.editor = "hx";
       };
     };
     alacritty = {
@@ -168,8 +181,8 @@
         crr = "cargo run --release";
         cte = "cargo test";
 
-        jjl = "${pkgs.jujutsu} log -r main::mine()";
-        jjlo = "${pkgs.jujutsu} log -r main@origin::mine()";
+        jjl = "jj log -r main::mine()";
+        jjlo = "jj log -r main@origin::mine()";
       };
       extraConfig = "$env.config = {
           show_banner: false,
