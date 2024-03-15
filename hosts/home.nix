@@ -167,6 +167,9 @@
         cr = "cargo run";
         crr = "cargo run --release";
         cte = "cargo test";
+
+        jjl = "${pkgs.jujutsu} log -r main::mine()";
+        jjlo = "${pkgs.jujutsu} log -r main@origin::mine()";
       };
       extraConfig = "$env.config = {
           show_banner: false,
