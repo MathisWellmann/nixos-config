@@ -13,21 +13,24 @@
   };
   networking.firewall.allowedTCPPorts = [18081];
 
-  # services.xmrig = {
-  #   enable = true;
-  #   settings = {
-  #     autosave = true;
-  #     cpu = true;
-  #     opencl = false;
-  #     cuda = false;
-  #     pools = [
-  #       {
-  #         url = "pool.supportxmr.com:443";
-  #         user = "your-wallet";
-  #         keepalive = true;
-  #         tls = true;
-  #       }
-  #     ]
-  #   }
-  # };
+  services.xmrig = {
+    enable = true;
+    settings = {
+      autosave = true;
+      cpu = {
+        enable = true;
+        max-threads-hint = 20;
+      };
+      opencl = false;
+      cuda = false;
+      pools = [
+        {
+          url = "pool.supportxmr.com:443";
+          user = "86FxMgMKate8Vm9Kka41KogveSwYgocQEaiUPgyLq6itBiwh1kch2Y8K5kup91uiTBVKmh8HW4B61U5x5o3hDbMEUrGm5kx";
+          keepalive = true;
+          tls = true;
+        }
+      ];
+    };
+  };
 }
