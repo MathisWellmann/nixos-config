@@ -14,6 +14,7 @@
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
+    ./../../modules/monero.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
