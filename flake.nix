@@ -14,8 +14,7 @@
     self,
     nixpkgs,
     ...
-  } @ inputs:
-   {
+  } @ inputs: {
     nixosConfigurations = {
       meshify = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};

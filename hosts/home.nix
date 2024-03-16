@@ -25,7 +25,6 @@
     mate.eom
     zathura
     # Misc
-    ollama
     redshift
     typst
     # Terminal
@@ -89,8 +88,7 @@
     # EDITOR = "emacs";
   };
 
-
-  programs = let 
+  programs = let
     me = "MathisWellmann";
     email = "wellmannmathis@gmail.com";
   in {

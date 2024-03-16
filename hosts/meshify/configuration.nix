@@ -15,6 +15,7 @@
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/monero.nix
+    ./../../modules/local_ai.nix
   ];
 
   nixpkgs.config.allowUnfree = true;
