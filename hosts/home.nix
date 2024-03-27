@@ -154,7 +154,7 @@
       enable = true;
       settings = {
         window.opacity = 0.8;
-        fonts = {
+        font = {
           size = 12.0;
           normal.family = "Terminus";
         };
