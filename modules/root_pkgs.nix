@@ -16,7 +16,7 @@
     htop
     bottom
     tree
-    nvtop
+    nvtopPackages.full
     bat
     # Rust
     rustup
