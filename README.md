@@ -38,3 +38,8 @@ Then update the system, eg for the `meshify` host configuration:
 ```
 sudo nixos-rebuild switch --flake .#meshify --upgrade-all
 ```
+
+## Cleaning system store manually
+```shell
+nix-store --gc
+```

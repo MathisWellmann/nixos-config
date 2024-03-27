@@ -16,9 +16,11 @@
     ./../../modules/root_pkgs.nix
     ./../../modules/monero.nix
     ./../../modules/local_ai.nix
+    # TODO: modularize stuff into `base_system.nix`
   ];
 
   nixpkgs.config.allowUnfree = true;
+  nixpkgs.config.pulseaudio = true;
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -50,12 +52,7 @@
     videoDrivers = ["nvidia"];
   };
 
-  programs.hyprland = {
-    enable = true;
-    xwayland = {
-      enable = true;
-    };
-  };
+  security.polkit.enable = true;
 
   programs.gnupg.agent = {
     enable = true;
@@ -74,14 +71,6 @@
     packages = [];
     shell = pkgs.nushell;
   };
-
-  environment.systemPackages = with pkgs; [
-    alacritty
-    hyprland
-    hyprpaper
-    waybar
-    wofi
-  ];
 
   virtualisation.docker.enable = true;
 
