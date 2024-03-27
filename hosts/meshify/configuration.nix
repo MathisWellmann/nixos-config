@@ -85,12 +85,6 @@
 
   virtualisation.docker.enable = true;
 
-  fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-emoji
-    terminus_font
-  ];
-
   services.openssh.enable = true;
   services.tailscale.enable = true;
   services.mongodb = {

@@ -48,6 +48,7 @@
     gource # Visualization tool for source control repos
     ffmpeg # Used for encoding the output of `gource`
 
+    nerdfonts
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
     # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
@@ -91,6 +92,7 @@
     # EDITOR = "emacs";
   };
 
+  fonts.fontconfig.enable = true;
   programs = let
     me = "MathisWellmann";
     email = "wellmannmathis@gmail.com";
@@ -158,6 +160,8 @@
         font = {
           size = 12.0;
           normal.family = "Terminus";
+          size = 20.0;
+          normal.family = "HackNerdFont";
         };
         shell.program = "nu";
       };
