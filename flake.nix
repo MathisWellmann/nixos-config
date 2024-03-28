@@ -8,11 +8,14 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    agenix.url = "github:ryantm/agenix";
   };
 
   outputs = {
     self,
     nixpkgs,
+    agenix,
     ...
   } @ inputs: {
     nixosConfigurations = {
@@ -21,6 +24,7 @@
         modules = [
           ./hosts/meshify/configuration.nix
           inputs.home-manager.nixosModules.default
+          agenix.nixosModules.default
         ];
       };
       superserver = nixpkgs.lib.nixosSystem {
@@ -28,6 +32,7 @@
         modules = [
           ./hosts/superserver/configuration.nix
           inputs.home-manager.nixosModules.default
+          agenix.nixosModules.default
         ];
       };
     };

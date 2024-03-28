@@ -1,4 +1,8 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -34,5 +38,6 @@
     iperf
     lshw
     nmap
+    inputs.agenix.packages."${system}".default
   ];
 }
