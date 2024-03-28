@@ -12,4 +12,26 @@ in {
       "nofail" # Prevent system from failing if this drive doesn't mount
     ];
   };
+
+  # Configure agenix secrets
+  # The password file has to be generated beforehand as such:
+  # 
+  age.secrets = {
+    "restic/password".file = /etc/nixos/secrets/restic/password.age;
+  };
+
+  services.restic.backups = {
+    localbackup = {
+      initialize = true;
+      paths = [
+        "/home"
+      ];
+      exclude = [
+        "/home/*/.cache"
+      ];
+      passwordFile = "/etc/nixos/secrets/restic/password.age";
+      repository = "${backup_hdd}";
+      pruneOpts = ["--keep-daily 7"];
+    };
+  };
 }

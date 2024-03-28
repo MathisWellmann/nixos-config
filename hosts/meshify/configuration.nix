@@ -4,6 +4,7 @@
 {
   pkgs,
   inputs,
+  config,
   ...
 }: {
   imports = [
@@ -21,6 +22,7 @@
   ];
 
   nixpkgs.config.pulseaudio = true;
+  age.identityPaths = [ "${config.users.users.magewe.home}/.ssh/magewe_meshify" ];
 
   networking.hostName = "meshify";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
