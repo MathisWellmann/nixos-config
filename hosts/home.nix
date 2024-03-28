@@ -238,9 +238,12 @@
         jjl = "jj log -r main::mine()";
         jjlo = "jj log -r main@origin::mine()";
       };
-      extraConfig = "$env.config = {
+      extraConfig = ''
+        $env.config = {
           show_banner: false,
-        }";
+        };
+        def skhx [] = { sk | xargs hx };
+      '';
     };
     starship = {
       enable = true;
