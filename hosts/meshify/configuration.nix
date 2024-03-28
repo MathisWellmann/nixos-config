@@ -4,7 +4,6 @@
 {
   pkgs,
   inputs,
-  lib,
   ...
 }: {
   imports = [
@@ -16,22 +15,13 @@
     ./../../modules/root_pkgs.nix
     ./../../modules/monero.nix
     ./../../modules/local_ai.nix
-    # TODO: modularize stuff into `base_system.nix`
+    ./../../modules/base_system.nix
   ];
 
-  nixpkgs.config.allowUnfree = true;
   nixpkgs.config.pulseaudio = true;
-
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = "meshify";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-  systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
 
   hardware.opengl = {
     enable = true;
@@ -51,8 +41,6 @@
     autorun = false;
     videoDrivers = ["nvidia"];
   };
-
-  security.polkit.enable = true;
 
   programs.gnupg.agent = {
     enable = true;
@@ -74,8 +62,6 @@
 
   virtualisation.docker.enable = true;
 
-  services.openssh.enable = true;
-  services.tailscale.enable = true;
   services.mongodb = {
     enable = true;
     dbpath = "/home/magewe/mongodb";
@@ -92,26 +78,12 @@
     };
   };
 
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-  nix.settings.trusted-users = ["root" "magewe"];
-
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
     27017 # Mongodb
     8231 # Tikr
   ];
   networking.nameservers = ["192.168.0.75"];
-
-  # To not run out of memory in the tmpfs created by nix-shell
-  services.logind.extraConfig = ''
-    RuntimeDirectorySize=64G
-    HandleLidSwitchDocked=ignore
-  '';
 
   home-manager = {
     # also pass inputs to home-manager modules

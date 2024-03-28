@@ -12,17 +12,14 @@
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
+    ./../../modules/base_system.nix
   ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
   # Enable ip forwarding for exposing tailscale subnet routes.
   boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
   boot.kernel.sysctl."ipv6.conf.all.forwarding" = 1;
 
   networking.hostName = "superserver"; # Define your hostname.
-  networking.networkmanager.enable = true;
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -55,8 +52,6 @@
     shell = pkgs.nushell;
   };
 
-  services.openssh.enable = true;
-  services.tailscale.enable = true;
   services.prometheus = {
     exporters = {
       node = {
@@ -66,19 +61,6 @@
       };
     };
   };
-  # To not run out of memory in the tmpfs created by nix-shell
-  services.logind.extraConfig = ''
-    RuntimeDirectorySize=64G
-    HandleLidSwitchDocked=ignore
-  '';
-
-  nix.gc = {
-    automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
-  };
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-  nix.settings.trusted-users = ["root" "magewe"];
 
   home-manager = {
     # also pass inputs to home-manager modules
