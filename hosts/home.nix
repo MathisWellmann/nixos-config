@@ -158,8 +158,6 @@
       settings = {
         window.opacity = 0.8;
         font = {
-          size = 12.0;
-          normal.family = "Terminus";
           size = 20.0;
           normal.family = "HackNerdFont";
         };
