@@ -13,6 +13,7 @@
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
+    ./../../modules/desktop.nix
   ];
 
   # Enable ip forwarding for exposing tailscale subnet routes.
@@ -21,24 +22,9 @@
 
   networking.hostName = "superserver"; # Define your hostname.
 
-  # Enable the X11 windowing system.
-  services.xserver.enable = true;
-
   # Enable the KDE Plasma Desktop Environment.
   services.xserver.displayManager.sddm.enable = true;
   services.xserver.desktopManager.plasma5.enable = true;
-
-  # Configure keymap in X11
-  services.xserver = {
-    layout = "de";
-    xkbVariant = "";
-    videoDrivers = ["nvidia"];
-  };
-
-  hardware.nvidia = {
-    modesetting.enable = true;
-    nvidiaSettings = true;
-  };
 
   # Configure console keymap
   console.keyMap = "de";

@@ -16,6 +16,7 @@
     ./../../modules/monero.nix
     ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
+    ./../../modules/desktop.nix
   ];
 
   nixpkgs.config.pulseaudio = true;
@@ -23,30 +24,13 @@
   networking.hostName = "meshify";
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
-  hardware.opengl = {
-    enable = true;
-    driSupport = true;
-    driSupport32Bit = true;
-  };
-  hardware.nvidia = {
-    modesetting.enable = true;
-    nvidiaSettings = true;
-    # package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
-  sound.enable = true;
-  hardware.pulseaudio.enable = true;
-
-  services.xserver = {
-    enable = true;
-    autorun = false;
-    videoDrivers = ["nvidia"];
-  };
-
+  # TODO: Move to `home.nix`
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
   };
 
+  # TODO: move next to `hyprland` setup
   # environment.sessionVariables = {
   #   WLR_NO_HARDWARE_CURSORS = "1";
   # };
