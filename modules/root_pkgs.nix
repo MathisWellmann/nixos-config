@@ -13,7 +13,8 @@
     wget
     helix
     lsd
-    skim
+    skim # Fuzzy finder written in Rust
+    fzf # Fuzzy finder written in Go
     ripgrep
     zellij
     tmux

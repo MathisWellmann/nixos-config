@@ -44,7 +44,10 @@
     nil # Nix LSP
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
+
+    # Cryptography
     sequoia-sq
+    safecloset
 
     nerdfonts
 

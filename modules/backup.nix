@@ -16,6 +16,7 @@ in {
   # Configure agenix secrets
   # The password file has to be generated beforehand as such:
   #
+  # https://github.com/ryantm/agenix?tab=readme-ov-file#install-via-flakes
   age.secrets = {
     "restic/password".file = /etc/nixos/secrets/restic/password.age;
   };
