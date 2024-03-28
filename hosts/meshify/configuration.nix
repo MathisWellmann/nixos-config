@@ -19,6 +19,7 @@
     ./../../modules/base_system.nix
     ./../../modules/desktop.nix
     ./../../modules/backup.nix
+    ./../../modules/buildkite.nix
   ];
 
   nixpkgs.config.pulseaudio = true;
