@@ -264,5 +264,19 @@
       enable = true;
       enableNushellIntegration = true;
     };
+    yazi = {
+      enable = true;
+      settings = {
+        log.enable = true;
+        opener = {
+          edit = [
+            {
+              run = "hx $@";
+              block = true;
+            }
+          ];
+        };
+      };
+    };
   };
 }
