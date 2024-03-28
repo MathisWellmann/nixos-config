@@ -23,13 +23,14 @@
     keepassxc
     mate.eom
     zathura
+    halloy # IRC GUI written in Rust
+
     # Misc
-    redshift
     typst
+
     # Terminal
     tokei
     ttyper
-    lfs
     neofetch
     onefetch
     diskonaut
@@ -38,7 +39,6 @@
     nil # Nix LSP
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
-    halloy # IRC GUI written in Rust
     sequoia-sq
     cointop
 
@@ -51,11 +51,9 @@
     hyprpaper
     waybar
     wofi
-    # wayland-protocols
     wayland-utils
     wl-clipboard
     wl-gammarelay-rs
-    wlroots
     wlr-randr
     wdisplays # GUI to manage displays in wayland
 
