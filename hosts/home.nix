@@ -13,6 +13,7 @@
   home.stateVersion = "22.11"; # Please read the comment before changing.
 
   nixpkgs.config.allowUnfree = true;
+
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
@@ -24,6 +25,7 @@
     keepassxc
     mate.eom
     zathura
+
     # Communication
     halloy # IRC GUI written in Rust
     discord
@@ -43,7 +45,6 @@
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
     sequoia-sq
-    cointop
 
     # Visualize git repo history
     # Command `gource -1920x1080 -c 4 -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b 30000K gource.webm`
@@ -61,6 +62,10 @@
     wdisplays # GUI to manage displays in wayland
 
     nerdfonts
+
+    # Crypto
+    cointop
+    electron-cash
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the
