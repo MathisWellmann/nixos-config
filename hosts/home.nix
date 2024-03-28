@@ -44,6 +44,7 @@
     nil # Nix LSP
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
+    yaml-language-server
 
     # Cryptography
     sequoia-sq
