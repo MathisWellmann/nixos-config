@@ -17,6 +17,7 @@
     ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop.nix
+    ./../../modules/backup.nix
   ];
 
   nixpkgs.config.pulseaudio = true;
