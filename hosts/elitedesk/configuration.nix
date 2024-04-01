@@ -4,7 +4,6 @@
 {
   pkgs,
   inputs,
-  config,
   ...
 }: {
   imports = [
@@ -14,29 +13,14 @@
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
-    ./../../modules/monero.nix
-    ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
-    ./../../modules/desktop.nix
-    ./../../modules/backup.nix
   ];
 
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
+
   nixpkgs.config.pulseaudio = true;
-  age.identityPaths = ["${config.users.users.magewe.home}/.ssh/magewe_meshify"];
 
-  networking.hostName = "meshify";
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # TODO: Move to `home.nix`
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
-
-  # TODO: move next to `hyprland` setup
-  # environment.sessionVariables = {
-  #   WLR_NO_HARDWARE_CURSORS = "1";
-  # };
+  networking.hostName = "elitedesk";
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
@@ -46,31 +30,6 @@
     packages = [];
     shell = pkgs.nushell;
   };
-
-  virtualisation.docker.enable = true;
-
-  services.mongodb = {
-    enable = true;
-    dbpath = "/home/magewe/mongodb";
-    user = "root";
-    bind_ip = "0.0.0.0";
-  };
-  services.prometheus = {
-    exporters = {
-      node = {
-        enable = true;
-        enabledCollectors = ["systemd"];
-        port = 9002;
-      };
-    };
-  };
-
-  # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [
-    27017 # Mongodb
-    8231 # Tikr
-  ];
-  networking.nameservers = ["192.168.0.75"];
 
   home-manager = {
     # also pass inputs to home-manager modules

@@ -35,6 +35,13 @@
           agenix.nixosModules.default
         ];
       };
+      elitedesk = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/elitedesk/configuration.nix
+          inputs.home-manager.nixosModules.default
+        ];
+      };
     };
   };
 }

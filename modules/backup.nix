@@ -15,7 +15,7 @@ in {
 
   # Configure agenix secrets
   # The password file has to be generated beforehand as such:
-  # 
+  #
   age.secrets = {
     "restic/password".file = /etc/nixos/secrets/restic/password.age;
   };
