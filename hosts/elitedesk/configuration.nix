@@ -39,6 +39,16 @@
     };
   };
 
+  # Mount the 16TB backup drive
+  fileSystems."/mnt/backup_hdd" = {
+    device = "/dev/disk/by-uuid/e15ce1db-586f-4e7b-a5d8-d8a4a0b45e48";
+    fsType = "btrfs";
+    options = [
+      "users" # Allows any user to mount and unmount
+      "nofail" # Prevent system from failing if this drive doesn't mount
+    ];
+  };
+
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
