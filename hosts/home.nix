@@ -145,6 +145,7 @@
         };
         core.editor = "hx";
         pull.rebase = true;
+        credential.helper = "store";
       };
     };
     jujutsu = {
