@@ -18,6 +18,7 @@
   ];
 
   buildkite_agent = "superserver";
+  buildkite_queue = "nixos";
 
   # Enable ip forwarding for exposing tailscale subnet routes.
   boot.kernel.sysctl."net.ipv4.ip_forward" = 1;

@@ -22,6 +22,8 @@
     ./../../modules/buildkite.nix
   ];
 
+  buildkite_queue = "nixos";
+
   nixpkgs.config.pulseaudio = true;
   age.identityPaths = ["${config.users.users.magewe.home}/.ssh/magewe_meshify"];
 

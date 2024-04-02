@@ -2,7 +2,11 @@
   options = {
     buildkite_agent = lib.mkOption {
       default = "meshify";
-      description = "The buildkite agent name that will show up in the web inferface";
+      description = "The buildkite agent name that will show up in the web inferface.";
+    };
+    buildkite_queue = lib.mkOption {
+      default = "default-queue";
+      description = "The buildkite queue that will be used.";
     };
   };
 
@@ -13,7 +17,7 @@
       # Copy the raw token string into that file and make root the owner.
       tokenPath = /var/buildkite/token_${config.buildkite_agent};
       tags = {
-        queue = "default-queue";
+        queue =  config.buildkite_queue;
       };
 
       # tools needed for basic nix-build
