@@ -14,7 +14,10 @@
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop.nix
+    ./../../modules/buildkite.nix
   ];
+
+  buildkite_agent = "superserver";
 
   # Enable ip forwarding for exposing tailscale subnet routes.
   boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
