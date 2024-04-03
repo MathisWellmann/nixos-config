@@ -12,6 +12,7 @@
     vlc
     keepassxc
     mate.eom
+    geeqie
     zathura
 
     # Visualize git repo history

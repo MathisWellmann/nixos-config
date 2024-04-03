@@ -227,12 +227,30 @@
               block = true;
             }
           ];
+          play = [
+            {
+              run = "vls $@";
+              block = true;
+            }
+          ];
         };
         open = {
           rules = [
             {
               name = "*.ARW";
               use = "image";
+            }
+            {
+              name = "*.jpg";
+              use = "image";
+            }
+            {
+              name = "*.webm";
+              use = "play";
+            }
+            {
+              name = "*.mp4";
+              use = "play";
             }
           ];
         };
