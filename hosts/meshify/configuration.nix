@@ -60,18 +60,12 @@
   age.identityPaths = ["${config.users.users.magewe.home}/.ssh/magewe_meshify"];
 
   networking.hostName = "meshify";
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # TODO: Move to `home.nix`
   programs.gnupg.agent = {
     enable = true;
     enableSSHSupport = true;
   };
-
-  # TODO: move next to `hyprland` setup
-  # environment.sessionVariables = {
-  #   WLR_NO_HARDWARE_CURSORS = "1";
-  # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
