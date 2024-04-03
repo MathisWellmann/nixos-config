@@ -24,6 +24,39 @@
 
   buildkite_queue = "nixos";
 
+  networking.nat = {
+    enable = true;
+    # internalInterfaces = ["ve-+"];
+    # externalInterface = "ens3";
+    # # Lazy IPv6 connectivity for the container
+    # enableIPv6 = true;
+  };
+
+  # Native `systemd-nspawn` container
+  containers.buildkiteGensyn = {
+    autoStart = true;
+
+    config = { config, pkgs, lib, ... }: {
+      imports = [
+        ./../../modules/buildkite.nix
+      ];
+      buildkite_agent = "meshify-gensyn";
+      buildkite_queue = "nixos";
+
+      networking = {
+        firewall.enable = true;
+        # Use systemd-resolved inside the container
+        # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
+        useHostResolvConf = lib.mkForce false;
+      };
+    
+      services.resolved.enable = true;
+
+      system.stateVersion = "23.11";
+      nix.settings.experimental-features = ["nix-command" "flakes"];
+    };
+  };
+  
   nixpkgs.config.pulseaudio = true;
   age.identityPaths = ["${config.users.users.magewe.home}/.ssh/magewe_meshify"];
 
