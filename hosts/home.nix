@@ -18,14 +18,6 @@
   # environment.
   home.packages = with pkgs; [
     helix
-    # Desktop
-    chromium
-    firefox
-    vlc
-    keepassxc
-    mate.eom # Image viewer
-    geeqie # A better image viewer supporting ARW files.
-    zathura
 
     # Misc
     typst
