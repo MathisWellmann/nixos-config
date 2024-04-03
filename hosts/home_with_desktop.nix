@@ -22,7 +22,7 @@
     # Window manager
     hyprpaper
     waybar
-    wofi
+    fuzzel
     wayland-utils
     wl-clipboard
     wl-gammarelay-rs
@@ -54,7 +54,7 @@
       "exec-once" = "waybar & hyprpaper";
       "$terminal" = "alacritty";
       "$fileManager" = "dolphin";
-      "$menu" = "wofi --show drun";
+      "$menu" = "fuzzel";
       "$mainMod" = "SUPER";
       bind = [
         "$mainMod, RETURN, exec, $terminal"
