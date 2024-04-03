@@ -55,14 +55,12 @@
       ];
       "exec-once" = "waybar & hyprpaper";
       "$terminal" = "alacritty";
-      "$fileManager" = "dolphin";
       "$menu" = "fuzzel";
       "$mainMod" = "SUPER";
       bind = [
         "$mainMod, RETURN, exec, $terminal"
         "$mainMod, Q, killactive,"
         "$mainMod, J, exit,"
-        "$mainMod, F, exec, $fileManager"
         "$mainMod, V, togglefloating,"
         "$mainMod, COMMA, exec, $menu"
         "$mainMod, P, pseudo"
@@ -79,6 +77,9 @@
         "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
         "col.inactive_border" = "rgba(595959aa)";
         layout = "dwindle";
+      };
+      dwindle = {
+        smart_split = true;
       };
     };
   };
