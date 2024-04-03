@@ -9,12 +9,14 @@
     # Desktop
     chromium
     firefox
-    vlc
     keepassxc
-    mate.eom
-    geeqie
-    zathura
+    mate.eom # Image viewer
+    geeqie # Better image viewer
+    zathura # PDF reader
+    lan-mouse
 
+    # Video
+    vlc
     # Visualize git repo history
     # Command `gource -1920x1080 -c 4 -o - | ffmpeg -y -r 60 -f image2pipe -vcodec ppm -i - -vcodec libvpx -b 30000K gource.webm`
     gource # Visualization tool for source control repos

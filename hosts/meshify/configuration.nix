@@ -105,7 +105,7 @@
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../home_with_desktop.nix;
+      "magewe" = import ./../../home/home_with_desktop.nix;
     };
   };
 
