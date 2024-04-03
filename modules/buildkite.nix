@@ -1,4 +1,9 @@
-{pkgs, lib, config, ...}: {
+{
+  pkgs,
+  lib,
+  config,
+  ...
+}: {
   options = {
     buildkite_agent = lib.mkOption {
       default = "meshify";
@@ -17,7 +22,7 @@
       # Copy the raw token string into that file and make root the owner.
       tokenPath = /var/buildkite/token_${config.buildkite_agent};
       tags = {
-        queue =  config.buildkite_queue;
+        queue = config.buildkite_queue;
       };
 
       # tools needed for basic nix-build
