@@ -27,10 +27,6 @@
     geeqie # A better image viewer supporting ARW files.
     zathura
 
-    # Communication
-    halloy # IRC GUI written in Rust
-    discord
-
     # Misc
     typst
 
@@ -53,13 +49,8 @@
 
     nerdfonts
 
-    # Crypto
+    # Cryptocurrency
     cointop
-    electron-cash # BCH wallet with CashFusion privacy tech.
-
-    # Photo Editing
-    hugin # Panorama stitching
-    darktable
 
     # # It is sometimes useful to fine-tune packages, for example, by applying
     # # overrides. You can do that directly here, just don't forget the

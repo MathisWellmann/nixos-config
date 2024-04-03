@@ -29,6 +29,17 @@
     wl-gammarelay-rs
     wlr-randr
     wdisplays # GUI to manage displays in wayland
+
+    # Communication
+    halloy # IRC GUI written in Rust
+    discord
+
+    # Cryptocurrency
+    electron-cash # BCH wallet with CashFusion privacy tech.
+
+    # Photo Editing
+    hugin # Panorama stitching
+    darktable
   ];
 
   wayland.windowManager.hyprland = {
