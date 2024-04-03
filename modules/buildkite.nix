@@ -21,6 +21,12 @@
       name = "${config.buildkite_agent}";
       # Copy the raw token string into that file and make root the owner.
       tokenPath = /var/buildkite/token_${config.buildkite_agent};
+      # To be able to clone private repos, create an ssh key. E.g:
+      # ssh-keygen -t rsa -b 4096
+      # Then add this key to the repos `deploy keys` section in the settings.
+      # See: https://buildkite.com/docs/agent/v3/github-ssh-keys
+      privateSshKeyPath = /var/buildkite/ssh_key_${config.buildkite_agent};
+      
       tags = {
         queue = config.buildkite_queue;
       };
