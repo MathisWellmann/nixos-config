@@ -23,7 +23,8 @@
     firefox
     vlc
     keepassxc
-    mate.eom
+    mate.eom # Image viewer
+    geeqie # A better image viewer supporting ARW files.
     zathura
 
     # Communication
@@ -231,6 +232,20 @@
             {
               run = "hx $@";
               block = true;
+            }
+          ];
+          image = [
+            {
+              run = "geeqie $@";
+              block = true;
+            }
+          ];
+        };
+        open = {
+          rules = [
+            {
+              name = "*.ARW";
+              use = "image";
             }
           ];
         };
