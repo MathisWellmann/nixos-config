@@ -36,7 +36,7 @@
       imports = [
         ./../../modules/buildkite.nix
       ];
-      buildkite_agent = "gensyn";
+      buildkite_agent = "ss-gensyn";
       buildkite_queue = "nixos";
 
       networking = {
