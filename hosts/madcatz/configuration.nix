@@ -16,6 +16,37 @@
   ];
 
   networking.hostName = "madcatz"; # Define your hostname.
+  networking.nat.enable = true;
+
+  # Native `systemd-nspawn` container
+  containers.buildkiteGensyn = {
+    autoStart = true;
+
+    config = {
+      config,
+      pkgs,
+      lib,
+      ...
+    }: {
+      imports = [
+        ./../../modules/buildkite.nix
+      ];
+      buildkite_agent = "madcatz-gensyn";
+      buildkite_queue = "nixos";
+
+      networking = {
+        firewall.enable = true;
+        # Use systemd-resolved inside the container
+        # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
+        useHostResolvConf = lib.mkForce false;
+      };
+
+      services.resolved.enable = true;
+
+      system.stateVersion = "23.11";
+      nix.settings.experimental-features = ["nix-command" "flakes"];
+    };
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
