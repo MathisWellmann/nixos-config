@@ -16,4 +16,5 @@
     LC_TELEPHONE = "de_DE.UTF-8";
     LC_TIME = "de_DE.UTF-8";
   };
+  console.keyMap = "de";
 }
