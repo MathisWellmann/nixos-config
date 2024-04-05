@@ -26,7 +26,7 @@
       # Then add this key to the repos `deploy keys` section in the settings.
       # See: https://buildkite.com/docs/agent/v3/github-ssh-keys
       privateSshKeyPath = /var/buildkite/ssh_key_${config.buildkite_agent};
-      
+
       tags = {
         queue = config.buildkite_queue;
       };
