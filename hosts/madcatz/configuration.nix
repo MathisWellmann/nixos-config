@@ -4,6 +4,7 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
 }: {
   imports = [
@@ -13,7 +14,10 @@
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
+    ./../../modules/desktop.nix
   ];
+
+  i18n.defaultLocale = lib.mkForce "de_DE.UTF-8";
 
   networking.hostName = "madcatz"; # Define your hostname.
   networking.nat.enable = true;
@@ -61,7 +65,7 @@
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../../home/home.nix;
+      "magewe" = import ./../../home/home_hyprland.nix;
     };
   };
 
