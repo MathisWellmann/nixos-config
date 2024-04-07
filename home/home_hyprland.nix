@@ -35,6 +35,7 @@
     # Communication
     halloy # IRC GUI written in Rust
     discord
+    slack
 
     # Cryptocurrency
     electron-cash # BCH wallet with CashFusion privacy tech.
