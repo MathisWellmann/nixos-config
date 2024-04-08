@@ -43,3 +43,10 @@ sudo nixos-rebuild switch --flake .#meshify --upgrade-all
 ```shell
 nix-store --gc
 ```
+
+# Tips:
+When getting something like this:
+```shell
+  error: cached failure of attribute 'nixosConfigurations.poweredge.config.system.build.toplevel'
+```
+Then you can disable the eval-cache temporarily by running with `--option eval-cache false`.
