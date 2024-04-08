@@ -42,4 +42,9 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
+
+  boot.supportedFilesystems = ["zfs"];
+  boot.zfs.forceImportRoot = false;
+  # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
+  networking.hostId = "d198feeb";
 }
