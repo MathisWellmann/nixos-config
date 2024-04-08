@@ -49,6 +49,13 @@
           inputs.home-manager.nixosModules.default
         ];
       };
+      poweredge = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/poweredge/configuration.nix
+          inputs.home-manager.nixosModules.default
+        ];
+      };
     };
   };
 }
