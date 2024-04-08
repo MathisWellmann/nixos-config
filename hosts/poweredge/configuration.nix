@@ -13,6 +13,7 @@
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
+    ./../../modules/monero.nix
   ];
 
   networking.hostName = "poweredge"; # Define your hostname.
