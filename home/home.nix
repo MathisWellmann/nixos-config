@@ -17,7 +17,6 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    helix
 
     # Misc
     typst
@@ -34,6 +33,8 @@
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
     yaml-language-server
+    helix
+    openvpn
 
     # Cryptography
     sequoia-sq
