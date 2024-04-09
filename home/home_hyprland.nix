@@ -14,6 +14,7 @@
     geeqie # Better image viewer
     zathura # PDF reader
     lan-mouse
+    qbittorrent
 
     # Video
     vlc
