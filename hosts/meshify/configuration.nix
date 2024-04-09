@@ -19,6 +19,7 @@
     ./../../modules/desktop.nix
     ./../../modules/backup.nix
     ./../../modules/buildkite.nix
+    ./../../modules/monero.nix
   ];
 
   buildkite_queue = "nixos";
