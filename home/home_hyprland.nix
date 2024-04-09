@@ -51,10 +51,10 @@
     # systemd.enable = true;
     settings = {
       monitor = [
-        "HDMI-A-1, preferred, 0x0, 1, transform, 1"
         "DP-1, preferred, 2160x0, 1, transform, 1"
-        "DP-3, preferred, 4320x0, 1, transform, 1"
-        "DP-2, preferred, 6480x0, 1"
+        "DP-2, preferred, 0x0, 1, transform, 1"
+        "DP-3, preferred, 6000x0, 1"
+        "HDMI-A-1, preferred, 4320x0, 1, transform, 1"
       ];
       "exec-once" = "waybar & hyprpaper";
       "$terminal" = "alacritty";
