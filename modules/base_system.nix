@@ -21,8 +21,8 @@
 
   nix.gc = {
     automatic = true;
-    dates = "weekly";
-    options = "--delete-older-than 7d";
+    dates = "daily";
+    options = "--delete-older-than 3d";
   };
   nix.settings.experimental-features = ["nix-command" "flakes"];
   nix.settings.trusted-users = ["root" "magewe"];
