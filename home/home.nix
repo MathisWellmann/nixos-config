@@ -35,6 +35,7 @@
     yaml-language-server
     helix
     openvpn
+    mullvad
 
     # Cryptography
     sequoia-sq
