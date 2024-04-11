@@ -39,6 +39,7 @@
         pkgs.gzip
         pkgs.git
       ];
+      extraConfig = "plugins-path: /var/buildkite/plugins";
     };
   };
 }
