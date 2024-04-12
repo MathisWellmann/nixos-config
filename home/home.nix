@@ -150,6 +150,7 @@
           email = "${email}";
         };
         ui.editor = "hx";
+        snapshot.max-new-file-size = "10MB";
       };
     };
     alacritty = {
