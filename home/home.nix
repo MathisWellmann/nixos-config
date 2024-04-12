@@ -17,7 +17,6 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-
     # Misc
     typst
 
@@ -36,6 +35,7 @@
     helix
     openvpn
     mullvad
+    kmon # Linux kernel manager and activity monitor
 
     # Cryptography
     sequoia-sq
