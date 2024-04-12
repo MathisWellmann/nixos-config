@@ -36,6 +36,7 @@
     openvpn
     mullvad
     kmon # Linux kernel manager and activity monitor
+    mprocs # TUI tool to run multiple commands in parallel
 
     # Cryptography
     sequoia-sq
