@@ -21,6 +21,7 @@
     ./../../modules/backup.nix
     ./../../modules/buildkite.nix
     ./../../modules/monero.nix
+    ./../../modules/mount_external_drives.nix
   ];
 
   buildkite_queue = "nixos";
