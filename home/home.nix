@@ -196,6 +196,7 @@
           show_banner: false,
         };
         def skhx [] = { sk | xargs hx };
+        def fhx [] = { fzf | xargs hx };
 
         $env.PATH = ($env.PATH | split row (char esep) | 
           append ($env.HOME| path join .cargo/bin));
