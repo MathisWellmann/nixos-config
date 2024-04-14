@@ -268,6 +268,11 @@
         };
       };
     };
-    direnv.enable = true;
+    # When a directory has a `.envrc` file configured with ``, it will automatically enter the `nix develop` environment. 
+    # `echo "use flake" >> .envrc && direnv allow`
+    direnv = {
+      enable = true;
+      enableNushellIntegration = true;
+    };
   };
 }
