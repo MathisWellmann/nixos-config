@@ -19,6 +19,7 @@
   home.packages = with pkgs; [
     # Misc
     typst
+    zola # Static site generator that I want to use for my blog.
 
     # Terminal
     tokei
