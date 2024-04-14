@@ -3,6 +3,7 @@
     ns = "nix-shell";
     la = "lsd -la";
     skhx = "sk | xargs hx"; # Fuzzy search and open the selected file with `helix`
+    fhx = "fzf | xargs hx"; # Same as above but with `fzf`
     night = "redshift -P -O 5000";
     bright = "sudo xbacklight -set 100";
     # Rust
