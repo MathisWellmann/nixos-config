@@ -5,6 +5,7 @@
   pkgs,
   inputs,
   config,
+  lib,
   ...
 }: {
   imports = [
@@ -116,4 +117,10 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
+
+  # Temporarily disable it because rebooting into newer version causes problems. version 205 and earlier works.
+  # It hangs trying to initialize the display or similar so I'll leave it for a week like this.
+  nix.gc = lib.mkForce {
+    automatic = false;
+  };
 }
