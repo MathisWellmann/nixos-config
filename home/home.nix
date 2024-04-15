@@ -20,6 +20,7 @@
     # Misc
     typst
     zola # Static site generator that I want to use for my blog.
+    vault
 
     # Terminal
     tokei
