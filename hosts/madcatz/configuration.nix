@@ -23,37 +23,37 @@
   networking.nat.enable = true;
 
   # Native `systemd-nspawn` container
-  containers.buildkiteGensyn = {
-    autoStart = true;
+  # containers.buildkiteGensyn = {
+  #   autoStart = true;
 
-    config = {
-      config,
-      pkgs,
-      lib,
-      ...
-    }: {
-      imports = [
-        ./../../modules/buildkite.nix
-      ];
-      buildkite_agent = "madcatz-gensyn";
-      buildkite_queue = "nixos";
+  #   config = {
+  #     config,
+  #     pkgs,
+  #     lib,
+  #     ...
+  #   }: {
+  #     imports = [
+  #       ./../../modules/buildkite.nix
+  #     ];
+  #     buildkite_agent = "madcatz-gensyn";
+  #     buildkite_queue = "nixos";
 
-      networking = {
-        firewall.enable = true;
-        # Use systemd-resolved inside the container
-        # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
-        useHostResolvConf = lib.mkForce false;
-      };
+  #     networking = {
+  #       firewall.enable = true;
+  #       # Use systemd-resolved inside the container
+  #       # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
+  #       useHostResolvConf = lib.mkForce false;
+  #     };
 
-      services.resolved.enable = true;
+  #     services.resolved.enable = true;
 
-      system.stateVersion = "23.11";
-      nix.settings.experimental-features = ["nix-command" "flakes"];
-      environment.systemPackages = with pkgs; [
-        lsd
-      ];
-    };
-  };
+  #     system.stateVersion = "23.11";
+  #     nix.settings.experimental-features = ["nix-command" "flakes"];
+  #     environment.systemPackages = with pkgs; [
+  #       lsd
+  #     ];
+  #   };
+  # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
@@ -68,7 +68,7 @@
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../../home/home_hyprland.nix;
+      "magewe" = import ./../../home/madcatz.nix;
     };
   };
 
