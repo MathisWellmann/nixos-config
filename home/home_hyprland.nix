@@ -7,7 +7,6 @@
   # environment.
   home.packages = with pkgs; [
     # Desktop
-    chromium
     firefox
     keepassxc
     mate.eom # Image viewer
@@ -98,6 +97,18 @@
       dwindle = {
         smart_split = true;
       };
+    };
+  };
+
+  programs = {
+    chromium = {
+       enable = true;
+      extensions = [
+        "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
+        "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark reader
+        "fijngjgcjhjmmpcmkeiomlglpeiijkld" # Talisman
+        "onhogfjeacnfoofkfgppdlbmlmnplgbn" # SubWallet
+      ];
     };
   };
 }
