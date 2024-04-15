@@ -15,6 +15,7 @@
     zathura # PDF reader
     lan-mouse
     qbittorrent
+    mongodb-compass
 
     # Video
     vlc
