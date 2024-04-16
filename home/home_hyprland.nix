@@ -15,6 +15,7 @@
     lan-mouse
     qbittorrent
     mongodb-compass
+    virtualbox
 
     # Video
     vlc
