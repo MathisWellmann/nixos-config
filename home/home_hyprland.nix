@@ -50,7 +50,6 @@
   wayland.windowManager.hyprland = {
     enable = true;
     xwayland.enable = true;
-    # systemd.enable = true;
     settings = {
       monitor = [
         "DP-1, preferred, 2160x0, 1, transform, 1"
@@ -103,7 +102,7 @@
 
   programs = {
     chromium = {
-       enable = true;
+      enable = true;
       extensions = [
         "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
         "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark reader
