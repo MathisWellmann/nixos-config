@@ -27,6 +27,7 @@
     # Package version diff tool. E.g Compare system revision 405 with 420:
     # `nvd diff /nix/var/nix/profiles/system-405-link/ /nix/var/nix/profiles/system-420-link/`
     nvd
+    nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
 
     # Terminal
     tokei
