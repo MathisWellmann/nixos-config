@@ -43,6 +43,7 @@
     # Cryptography
     sequoia-sq
     safecloset
+    gokey # Vault-less password derivation from master key
 
     nerdfonts
 
