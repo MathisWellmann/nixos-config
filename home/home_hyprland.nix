@@ -32,7 +32,6 @@
     wl-clipboard
     wl-gammarelay-rs
     wlr-randr
-    wdisplays # GUI to manage displays in wayland
 
     # Communication
     halloy # IRC GUI written in Rust
