@@ -64,7 +64,7 @@
 	background: rgba(40, 40, 40, 0.8784313725); /* #282828e0 */
 	color: @white;
 	font-family: JetBrains Mono, "Font Awesome 6 Free";
-	font-size: 11pt;
+	font-size: 20pt;
 	/*font-weight: bold;*/
 }
 
@@ -211,67 +211,67 @@
 }
 
 #custom-arrow1 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @time;
 	background: @date;
 }
 
 #custom-arrow2 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @date;
 	background: @layout;
 }
 
 #custom-arrow3 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @layout;
 	background: @battery;
 }
 
 #custom-arrow4 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @battery;
 	background: @temp;
 }
 
 #custom-arrow5 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @temp;
 	background: @cpu;
 }
 
 #custom-arrow6 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @cpu;
 	background: @memory;
 }
 
 #custom-arrow7 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @memory;
 	background: @network;
 }
 
 #custom-arrow8 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @network;
 	background: @sound;
 }
 
 #custom-arrow9 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @sound;
 	background: @idle;
 }
 
 #custom-arrow10 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @idle;
 	background: transparent;
 }
 
 #custom-arrow11 {
-	font-size: 11pt;
+	font-size: 20pt;
 	color: @unfocused;
 	background: transparent;
 }
