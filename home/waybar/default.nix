@@ -7,31 +7,26 @@
         position = "top";
 
         modules-left = [
-          "sway/mode"
-          "sway/workspaces"
-          "custom/arrow11"
-          "sway/window"
+          # "hyprland/mode"
+          "hyprland/workspaces"
+          "custom/arrow9"
+          "hyprland/window"
         ];
 
         modules-right = [
-          "custom/arrow10"
-          "idle_inhibitor"
-          "custom/arrow9"
-          "pulseaudio"
           "custom/arrow8"
-          "network"
+          "idle_inhibitor"
           "custom/arrow7"
-          "memory"
+          "pulseaudio"
           "custom/arrow6"
-          "cpu"
+          "network"
           "custom/arrow5"
-          "temperature"
+          "memory"
           "custom/arrow4"
-          "battery"
+          "cpu"
           "custom/arrow3"
-          "sway/language"
+          "temperature"
           "custom/arrow2"
-          "tray"
           "clock#date"
           "custom/arrow1"
           "clock#time"
@@ -50,11 +45,11 @@
           format-full = "{icon} {capacity}%";
           format-alt = "{icon} {power}W";
           format-icons = [
-            ""
-            ""
-            ""
-            ""
-            ""
+            " "
+            " "
+            " "
+            " "
+            " "
           ];
           tooltip = false;
         };
@@ -82,10 +77,10 @@
           };
         };
 
-        "sway/language" = {
+        "hyprland/language" = {
           format = " {}";
           min-length = 5;
-          on-click = "${pkgs.sway}/bin/swaymsg 'input * xkb_switch_layout next'";
+          on-click = "${pkgs.hyprland}/bin/hyprlandmsg 'input * xkb_switch_layout next'";
           tooltip = false;
         };
 
@@ -108,22 +103,24 @@
           tooltip = false;
         };
 
-        "sway/mode" = {
+        "hyprland/mode" = {
           format = "{}";
           tooltip = false;
         };
 
-        "sway/window" = {
-          foramt = "{}";
+        "hyprland/window" = {
+          format = "{}";
           max-length = 30;
           tooltip = false;
         };
 
-        "sway/workspaces" = {
+        "hyprland/workspaces" = {
           disable-scroll-wraparound = true;
           smooth-scrolling-threshold = 4;
           enable-bar-scroll = true;
-          format = "{name}";
+          format = "{icon}";
+          on-scroll-up = "hyprctl dispatch workspace e+1";
+          on-scroll-down = "hyprctl dispatch workspace e-1";
         };
 
         pulseaudio = {
@@ -131,13 +128,13 @@
           format-bluetooth = "{icon} {volume}%";
           format-muted = "";
           format-icons = {
-            headphone = "";
+            headphone = " ";
             hands-free = "";
             headset = "";
-            phone = "";
-            portable = "";
-            car = "";
-            default = ["" ""];
+            phone = " ";
+            portable = " ";
+            car = " ";
+            default = [" " " "];
           };
           scroll-step = 1;
           on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";
@@ -161,8 +158,8 @@
         idle_inhibitor = {
           format = "{icon}";
           format-icons = {
-            activated = "";
-            deactivated = "";
+            activated = " ";
+            deactivated = " ";
           };
           tooltip = false;
         };
@@ -212,16 +209,6 @@
         };
 
         "custom/arrow9" = {
-          format = "";
-          tooltip = false;
-        };
-
-        "custom/arrow10" = {
-          format = "";
-          tooltip = false;
-        };
-
-        "custom/arrow11" = {
           format = "";
           tooltip = false;
         };

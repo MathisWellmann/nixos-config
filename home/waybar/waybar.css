@@ -46,6 +46,7 @@
 @define-color battery	@aqua;
 @define-color date	@black;
 @define-color time	@white;
+@define-color workspace @white;
 
 /* Reset all styles */
 * {
@@ -134,7 +135,7 @@
 }
 
 /* Active (on focused output) */
-#workspaces button.focused {
+#workspaces button.active{
 	color: @black;
 	background: @focused;
 }
@@ -186,11 +187,6 @@
 	color: @black;
 }
 
-#language {
-	background: @layout;
-	color: @black;
-}
-
 #battery {
 	background: @battery;
 	color: @white;
@@ -201,13 +197,13 @@
 }
 
 #clock.date {
-	background: @date;
 	color: @white;
+	background: @date;
 }
 
 #clock.time {
-	background: @time;
 	color: @black;
+	background: @time;
 }
 
 #custom-arrow1 {
@@ -219,59 +215,47 @@
 #custom-arrow2 {
 	font-size: 20pt;
 	color: @date;
-	background: @layout;
-}
-
-#custom-arrow3 {
-	font-size: 20pt;
-	color: @layout;
-	background: @battery;
-}
-
-#custom-arrow4 {
-	font-size: 20pt;
-	color: @battery;
 	background: @temp;
 }
 
-#custom-arrow5 {
+#custom-arrow3 {
 	font-size: 20pt;
 	color: @temp;
 	background: @cpu;
 }
 
-#custom-arrow6 {
+#custom-arrow4 {
 	font-size: 20pt;
 	color: @cpu;
 	background: @memory;
 }
 
-#custom-arrow7 {
+#custom-arrow5 {
 	font-size: 20pt;
 	color: @memory;
 	background: @network;
 }
 
-#custom-arrow8 {
+#custom-arrow6 {
 	font-size: 20pt;
 	color: @network;
 	background: @sound;
 }
 
-#custom-arrow9 {
+#custom-arrow7 {
 	font-size: 20pt;
 	color: @sound;
 	background: @idle;
 }
 
-#custom-arrow10 {
+#custom-arrow8 {
 	font-size: 20pt;
 	color: @idle;
 	background: transparent;
 }
 
-#custom-arrow11 {
+#custom-arrow9 {
 	font-size: 20pt;
-	color: @unfocused;
+	color: @focused;
 	background: transparent;
 }
