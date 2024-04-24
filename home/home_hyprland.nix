@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   imports = [
     ./home.nix
+    ./waybar
   ];
 
   # The home.packages option allows you to install Nix packages into your
@@ -26,7 +27,6 @@
 
     # Window manager
     hyprpaper
-    waybar
     fuzzel
     wayland-utils
     wl-clipboard
