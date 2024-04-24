@@ -17,6 +17,7 @@
     qbittorrent
     mongodb-compass
     virtualbox
+    cinnamon.nemo
 
     # Video
     vlc
