@@ -23,6 +23,7 @@
     tree
     nvtopPackages.full
     bat
+    lsof
     # Rust
     rustup
     rustfmt
