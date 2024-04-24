@@ -1,4 +1,4 @@
-{ pkgs, ... }: {
+{pkgs, ...}: {
   programs.waybar = {
     enable = true;
     settings = {
@@ -137,7 +137,7 @@
             phone = "";
             portable = "";
             car = "";
-            default = [ "" "" ];
+            default = ["" ""];
           };
           scroll-step = 1;
           on-click = "${pkgs.pulseaudio}/bin/pactl set-sink-mute @DEFAULT_SINK@ toggle";

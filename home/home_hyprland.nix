@@ -27,7 +27,6 @@
 
     # Window manager
     hyprpaper
-    fuzzel
     wayland-utils
     wl-clipboard
     wl-gammarelay-rs
@@ -109,6 +108,38 @@
         "fijngjgcjhjmmpcmkeiomlglpeiijkld" # Talisman
         "onhogfjeacnfoofkfgppdlbmlmnplgbn" # SubWallet
       ];
+    };
+    fuzzel = {
+      enable = true;
+      settings = {
+        main = {
+          font = "JetBrains Mono:size=20";
+          dpi-aware = false;
+          prompt = "'> '";
+          terminal = "footclient";
+          launch-prefix = "swaymsg exec --";
+
+          lines = 20;
+          width = 60;
+          horizontal-pad = 8;
+          vertical-pad = 4;
+          inner-pad = 4;
+
+          exit-on-keyboard-focus-loss = false;
+        };
+        colors = {
+          background = "282828e0";
+          text = "ebdbb2ff";
+          match = "98971aff";
+          selection = "ebdbb2ff";
+          selection-text = "282828ff";
+          border = "8ec07cff";
+        };
+        border = {
+          width = 5;
+          radius = 10;
+        };
+      };
     };
   };
 }
