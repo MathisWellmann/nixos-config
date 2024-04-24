@@ -116,8 +116,7 @@
           font = "JetBrains Mono:size=20";
           dpi-aware = false;
           prompt = "'> '";
-          terminal = "footclient";
-          launch-prefix = "swaymsg exec --";
+          terminal = "alacritty";
 
           lines = 20;
           width = 60;
