@@ -41,18 +41,20 @@
     neofetch
     onefetch
     diskonaut
-    gitui
     oxker # Docker tui
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
-    helix
     openvpn
     mullvad
     kmon # Linux kernel manager and activity monitor
     mprocs # TUI tool to run multiple commands in parallel
+    cloak # CLI OTP Authentication
+
+    # Development
+    gitui
     cargo-expand # Expands rust macros
     cargo-info
-    cloak # CLI OTP Authentication
+    gdb
     zig
 
     # Cryptography
@@ -123,7 +125,8 @@
     helix = {
       enable = true;
       settings = {
-        theme = "ayu_mirage";
+        # theme = "ayu_mirage"; # Dark
+        theme = "everforest_light";
         editor = {
           scroll-lines = 1;
           cursorline = true;
