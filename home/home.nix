@@ -20,7 +20,6 @@
     # Misc
     typst
     zola # Static site generator that I want to use for my blog.
-    vault # CLI for hashicorp vault.
     lux # Video download CLI
 
     # Nix
