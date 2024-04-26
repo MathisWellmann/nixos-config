@@ -29,6 +29,11 @@
     nvd
     nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
 
+    # LSPs
+    marksman # Markdown LSP
+    nil # Nix LSP
+    yaml-language-server
+
     # Terminal
     tokei
     ttyper
@@ -37,10 +42,8 @@
     diskonaut
     gitui
     oxker # Docker tui
-    nil # Nix LSP
     alejandra # Nix formatter
     delta # A syntax-highlighting pager for git
-    yaml-language-server
     helix
     openvpn
     mullvad
@@ -55,6 +58,7 @@
     safecloset
     gokey # Vault-less password derivation from master key
 
+    # Misc
     nerdfonts
 
     # Cryptocurrency
