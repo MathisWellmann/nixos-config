@@ -33,6 +33,7 @@
     marksman # Markdown LSP
     nil # Nix LSP
     yaml-language-server
+    libclang # Includes `clangd`
 
     # Terminal
     tokei
