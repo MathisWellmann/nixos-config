@@ -253,7 +253,13 @@
           ];
           play = [
             {
-              run = "vls $@";
+              run = "vlc $@";
+              block = true;
+            }
+          ];
+          document = [
+            {
+              run = "zathura $@";
               block = true;
             }
           ];
@@ -275,6 +281,10 @@
             {
               name = "*.mp4";
               use = "play";
+            }
+            {
+              name = "*.pdf";
+              use = "document";
             }
           ];
         };
