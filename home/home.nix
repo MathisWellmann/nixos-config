@@ -47,6 +47,7 @@
     kmon # Linux kernel manager and activity monitor
     mprocs # TUI tool to run multiple commands in parallel
     cargo-expand # Expands rust macros
+    cargo-info
     cloak # CLI OTP Authentication
 
     # Cryptography
