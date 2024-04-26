@@ -30,10 +30,11 @@
     nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
 
     # LSPs
-    marksman # Markdown LSP
-    nil # Nix LSP
+    marksman             # Markdown LSP
+    nil                  # Nix LSP
     yaml-language-server
-    libclang # Includes `clangd`
+    libclang             # Includes `clangd`
+    zls                  # Zig LSP
 
     # Terminal
     tokei
@@ -53,6 +54,7 @@
     cargo-expand # Expands rust macros
     cargo-info
     cloak # CLI OTP Authentication
+    zig
 
     # Cryptography
     sequoia-sq
