@@ -125,7 +125,7 @@
     helix = {
       enable = true;
       settings = {
-        # theme = "ayu_mirage"; # Dark
+        # theme = "monokai_pro_machine"; # Dark
         theme = "everforest_light";
         editor = {
           scroll-lines = 1;

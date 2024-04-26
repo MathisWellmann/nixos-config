@@ -45,6 +45,9 @@
     # Photo Editing
     hugin # Panorama stitching
     darktable
+
+    # Development
+    tracy
   ];
 
   wayland.windowManager.hyprland = {
