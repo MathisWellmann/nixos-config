@@ -77,4 +77,21 @@
       };
     };
   };
+
+  virtualisation.oci-containers.containers."greptimedb" = {
+    image = "greptime/greptimedb";
+    cmd = [
+      "standalone"
+      "start"  
+    ];
+    ports = [
+      "4000:4000"
+      "4001:4001"
+      "4002:4002"
+      "4003:4003"
+    ];
+    volumes = [
+      "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
+    ];
+  };
 }
