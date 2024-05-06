@@ -14,6 +14,8 @@
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/namecoin.nix
+    ./../../modules/monero.nix
+    ./../../modules/local_ai.nix
   ];
 
   networking.hostName = "poweredge"; # Define your hostname.
@@ -46,4 +48,33 @@
   boot.zfs.forceImportRoot = false;
   # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
   networking.hostId = "d198feeb";
+
+  networking.firewall.allowedTCPPorts = [2049];
+  services = {
+    nfs.server = {
+      enable = true;
+      exports = ''
+        /SATA_SSD_POOL/video/ razerblade(rw,sync,no_subtree_check)
+      '';
+    };
+    prometheus = {
+      exporters = {
+        node = {
+          enable = true;
+          enabledCollectors = ["systemd" "zfs" "nfs"];
+          port = 9002;
+        };
+      };
+    };
+    grafana = {
+      enable = true;
+      settings = {
+        server = {
+          # Listening Address
+          http_addr = "0.0.0.0";
+          http_port = 3000;
+        };
+      };
+    };
+  };
 }
