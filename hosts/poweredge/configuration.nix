@@ -13,6 +13,7 @@
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
+    ./../../modules/namecoin.nix
   ];
 
   networking.hostName = "poweredge"; # Define your hostname.
@@ -22,7 +23,6 @@
     isNormalUser = true;
     description = "magewe";
     extraGroups = ["networkmanager" "wheel"];
-    packages = [];
     shell = pkgs.nushell;
   };
 
