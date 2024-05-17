@@ -1,6 +1,7 @@
 {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     monero-cli
+    monero-gui
   ];
   services.monero = {
     enable = true;
@@ -19,7 +20,7 @@
       autosave = true;
       cpu = {
         enable = true;
-        max-threads-hint = 10;
+        max-threads-hint = 5;
       };
       opencl = false;
       cuda = false;
