@@ -56,6 +56,7 @@
     cargo-info
     gdb
     zig
+    hvm # A massively parallel, optimal functional runtime
 
     # Cryptography
     sequoia-sq
@@ -126,7 +127,7 @@
       enable = true;
       settings = {
         # theme = "monokai_pro_machine"; # Dark
-        theme = "everforest_light";
+        theme = "ayu_light";
         editor = {
           scroll-lines = 1;
           cursorline = true;
