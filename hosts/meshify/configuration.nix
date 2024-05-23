@@ -110,7 +110,7 @@
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../../home/home_hyprland.nix;
+      "magewe" = import ./../../home/meshify.nix;
     };
   };
 
