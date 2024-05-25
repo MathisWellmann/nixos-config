@@ -10,6 +10,7 @@
     };
 
     agenix.url = "github:ryantm/agenix";
+    lan-mouse.url = "github:feschber/lan-mouse";
   };
 
   outputs = {

@@ -13,7 +13,6 @@
     mate.eom # Image viewer
     geeqie # Better image viewer
     zathura # PDF reader
-    lan-mouse
     qbittorrent
     mongodb-compass
     virtualbox
