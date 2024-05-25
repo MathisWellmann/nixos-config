@@ -32,6 +32,7 @@
     wl-clipboard
     wl-gammarelay-rs
     wlr-randr
+    wdisplays
 
     # Communication
     halloy # IRC GUI written in Rust
