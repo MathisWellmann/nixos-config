@@ -49,6 +49,7 @@
     kmon # Linux kernel manager and activity monitor
     mprocs # TUI tool to run multiple commands in parallel
     cloak # CLI OTP Authentication
+    unzip
 
     # Development
     gitui
