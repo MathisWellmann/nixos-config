@@ -1,4 +1,4 @@
-{...}: {
+{lib, ...}: {
   hardware.opengl = {
     enable = true;
     driSupport = true;
@@ -27,5 +27,6 @@
     enable = true;
     autorun = false;
     videoDrivers = ["nvidia"];
+    displayManager.startx.enable = true;
   };
 }
