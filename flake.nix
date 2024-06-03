@@ -57,6 +57,13 @@
           inputs.home-manager.nixosModules.default
         ];
       };
+      genoa = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/genoa/configuration.nix
+          inputs.home-manager.nixosModules.default
+        ];
+      };
     };
   };
 }
