@@ -18,6 +18,7 @@
     virtualbox
     cinnamon.nemo
     mindustry
+    steam
 
     # Video
     vlc
