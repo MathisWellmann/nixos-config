@@ -287,6 +287,10 @@
               use = "image";
             }
             {
+              name = "*.png";
+              use = "image";
+            }
+            {
               name = "*.webm";
               use = "play";
             }
