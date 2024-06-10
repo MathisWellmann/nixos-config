@@ -20,7 +20,7 @@
       autosave = true;
       cpu = {
         enable = true;
-        max-threads-hint = 5;
+        max-threads-hint = 25;
       };
       opencl = false;
       cuda = false;

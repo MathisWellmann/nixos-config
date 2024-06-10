@@ -16,77 +16,84 @@
 
   # The home.packages option allows you to install Nix packages into your
   # environment.
-  home.packages = with pkgs; [
-    # Misc
-    typst
-    zola # Static site generator that I want to use for my blog.
-    lux # Video download CLI
+  home.packages = let
+    my-python-packages = ps:
+      with ps; [
+        numpy
+      ];
+  in
+    with pkgs; [
+      # Misc
+      typst
+      zola # Static site generator that I want to use for my blog.
+      lux # Video download CLI
 
-    # Nix
-    # Package version diff tool. E.g Compare system revision 405 with 420:
-    # `nvd diff /nix/var/nix/profiles/system-405-link/ /nix/var/nix/profiles/system-420-link/`
-    nvd
-    nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
+      # Nix
+      # Package version diff tool. E.g Compare system revision 405 with 420:
+      # `nvd diff /nix/var/nix/profiles/system-405-link/ /nix/var/nix/profiles/system-420-link/`
+      nvd
+      nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
 
-    # LSPs
-    marksman             # Markdown LSP
-    nil                  # Nix LSP
-    yaml-language-server
-    libclang             # Includes `clangd`
-    zls                  # Zig LSP
+      # LSPs
+      marksman # Markdown LSP
+      nil # Nix LSP
+      yaml-language-server
+      libclang # Includes `clangd`
+      zls # Zig LSP
 
-    # Terminal
-    tokei
-    ttyper
-    neofetch
-    onefetch
-    diskonaut
-    oxker # Docker tui
-    alejandra # Nix formatter
-    delta # A syntax-highlighting pager for git
-    openvpn
-    mullvad
-    kmon # Linux kernel manager and activity monitor
-    mprocs # TUI tool to run multiple commands in parallel
-    cloak # CLI OTP Authentication
-    unzip
+      # Terminal
+      tokei
+      ttyper
+      neofetch
+      onefetch
+      diskonaut
+      oxker # Docker tui
+      alejandra # Nix formatter
+      delta # A syntax-highlighting pager for git
+      openvpn
+      mullvad
+      kmon # Linux kernel manager and activity monitor
+      mprocs # TUI tool to run multiple commands in parallel
+      cloak # CLI OTP Authentication
+      unzip
+      (python3.withPackages my-python-packages)
 
-    # Development
-    gitui
-    cargo-expand        # Expands rust macros
-    cargo-info
-    cargo-semver-checks # A tool to scan your rust crate for semver violations
-    gdb
-    zig
-    hvm # A massively parallel, optimal functional runtime
+      # Development
+      gitui
+      cargo-expand # Expands rust macros
+      cargo-info
+      cargo-semver-checks # A tool to scan your rust crate for semver violations
+      gdb
+      zig
+      hvm # A massively parallel, optimal functional runtime
 
-    # Cryptography
-    sequoia-sq
-    safecloset
-    gokey # Vault-less password derivation from master key
+      # Cryptography
+      sequoia-sq
+      safecloset
+      gokey # Vault-less password derivation from master key
 
-    # Misc
-    nerdfonts
+      # Misc
+      nerdfonts
 
-    # Cryptocurrency
-    cointop
+      # Cryptocurrency
+      cointop
 
-    # Bittorrent
-    intermodal # Command line BitTorrent metainfo utility, execute `imdl`
+      # Bittorrent
+      intermodal # Command line BitTorrent metainfo utility, execute `imdl`
 
-    # # It is sometimes useful to fine-tune packages, for example, by applying
-    # # overrides. You can do that directly here, just don't forget the
-    # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
-    # # fonts?
-    # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
+      # # It is sometimes useful to fine-tune packages, for example, by applying
+      # # overrides. You can do that directly here, just don't forget the
+      # # parentheses. Maybe you want to install Nerd Fonts with a limited number of
+      # # fonts?
+      # (pkgs.nerdfonts.override { fonts = [ "FantasqueSansMono" ]; })
 
-    # # You can also create simple shell scripts directly inside your
-    # # configuration. For example, this adds a command 'my-hello' to your
-    # # environment:
-    # (pkgs.writeShellScriptBin "my-hello" ''
-    #   echo "Hello, ${config.home.username}!"
-    # '')
-  ];
+      # # You can also create simple shell scripts directly inside your
+      # # configuration. For example, this adds a command 'my-hello' to your
+      # # environment:
+      # (pkgs.writeShellScriptBin "my-hello" ''
+      #   echo "Hello, ${config.home.username}!"
+      # '')
+    ];
 
   # Home Manager is pretty good at managing dotfiles. The primary way to manage
   # plain files is through 'home.file'.
