@@ -9,7 +9,15 @@
   networking.networkmanager.enable = true;
   systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
 
-  security.polkit.enable = true;
+  security = {
+    polkit.enable = true;
+    pam.loginLimits = [{
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "8192";
+    }];
+  };
 
   services.openssh.enable = true;
   services.tailscale.enable = true;
