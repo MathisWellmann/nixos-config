@@ -34,6 +34,7 @@
     wl-gammarelay-rs
     wlr-randr
     wdisplays
+    input-leap
 
     # Communication
     halloy # IRC GUI written in Rust
