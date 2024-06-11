@@ -20,6 +20,9 @@
       left = {
         hostname = "madcatz";
       };
+      right = {
+        hostname = "genoa";
+      };
     };
   };
 }
