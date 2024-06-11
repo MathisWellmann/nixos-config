@@ -32,7 +32,9 @@
       # Package version diff tool. E.g Compare system revision 405 with 420:
       # `nvd diff /nix/var/nix/profiles/system-405-link/ /nix/var/nix/profiles/system-420-link/`
       nvd
-      nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
+      nix-output-monitor   # `nom` is a drop in replacement for `nix` that has pretty output
+      nix-prefetch-scripts # Is used to obtain source hashes of urls. aka `nix-prefetch-url`
+      nurl                 # CLI to generate nix fetcher calls from repository URLs.
 
       # LSPs
       marksman # Markdown LSP
