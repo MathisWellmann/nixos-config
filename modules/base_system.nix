@@ -11,12 +11,14 @@
 
   security = {
     polkit.enable = true;
-    pam.loginLimits = [{
-      domain = "*";
-      type = "soft";
-      item = "nofile";
-      value = "8192";
-    }];
+    pam.loginLimits = [
+      {
+        domain = "*";
+        type = "soft";
+        item = "nofile";
+        value = "8192";
+      }
+    ];
   };
 
   services.openssh.enable = true;

@@ -15,6 +15,7 @@
       url = "path:/home/magewe/MathisWellmann/tikr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+    penrose-personal.url = "path:/home/magewe/MathisWellmann/penrose-personal";
   };
 
   outputs = {
@@ -30,7 +31,7 @@
           ./hosts/meshify/configuration.nix
           inputs.home-manager.nixosModules.default
           agenix.nixosModules.default
-          { _module.args = inputs; }
+          {_module.args = inputs;}
         ];
       };
       superserver = nixpkgs.lib.nixosSystem {
@@ -66,7 +67,7 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/genoa/configuration.nix
-          inputs.home-manager.nixosModules.default
+          {_module.args = inputs;}
         ];
       };
     };
