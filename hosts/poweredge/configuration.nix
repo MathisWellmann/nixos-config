@@ -49,7 +49,10 @@
   # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
   networking.hostId = "d198feeb";
 
-  networking.firewall.allowedTCPPorts = [2049];
+  networking.firewall.allowedTCPPorts = [
+    2049 # ?
+    4001 # Greptimedb
+  ];
   services = {
     nfs.server = {
       enable = true;
@@ -88,7 +91,15 @@
     image = "greptime/greptimedb";
     cmd = [
       "standalone"
-      "start"  
+      "start" 
+      "--http-addr" 
+      "0.0.0.0:4000"
+      "--rpc-addr" 
+      "0.0.0.0:4001"
+      "--mysql-addr"
+      "0.0.0.0:4002"
+      "--postgres-addr"
+      "0.0.0.0:4003"
     ];
     ports = [
       "4000:4000"
