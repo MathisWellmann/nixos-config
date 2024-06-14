@@ -120,4 +120,17 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
+
+  fileSystems."/mnt/poweredge_video" = {
+    device = "poweredge:/SATA_SSD_POOL/video";
+    fsType = "nfs";
+  };
+  fileSystems."/mnt/poweredge_music" = {
+    device = "poweredge:/SATA_SSD_POOL/music";
+    fsType = "nfs";
+  };
+  fileSystems."/mnt/poweredge_enc" = {
+    device = "poweredge:/SATA_SSD_POOL/music";
+    fsType = "nfs";
+  };
 }
