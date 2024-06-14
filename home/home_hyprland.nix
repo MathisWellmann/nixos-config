@@ -54,7 +54,7 @@
 
   wayland.windowManager.hyprland = {
     enable = true;
-    xwayland.enable = true;
+    # xwayland.enable = true;
     settings = {
       # monitors should be configured in host specific file
       "exec-once" = "waybar & hyprpaper";
@@ -93,6 +93,10 @@
         "col.active_border" = "rgba(33ccffee) rgba(00ff99ee) 45deg";
         "col.inactive_border" = "rgba(595959aa)";
         layout = "dwindle";
+        resize_on_border = true;
+      };
+      decoration = {
+        rounding = "20";
       };
       dwindle = {
         smart_split = true;
