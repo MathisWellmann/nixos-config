@@ -103,6 +103,9 @@
   programs = {
     chromium = {
       enable = true;
+      commandLineArgs = [
+        "--ozone-platform=wayland"
+      ];
       extensions = [
         "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
         "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark reader
