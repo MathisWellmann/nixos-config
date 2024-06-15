@@ -11,6 +11,10 @@
 
     agenix.url = "github:ryantm/agenix";
     lan-mouse.url = "github:feschber/lan-mouse";
+    tikr = {
+      url = "path:/home/magewe/MathisWellmann/tikr";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
   outputs = {
@@ -26,6 +30,7 @@
           ./hosts/meshify/configuration.nix
           inputs.home-manager.nixosModules.default
           agenix.nixosModules.default
+          { _module.args = inputs; }
         ];
       };
       superserver = nixpkgs.lib.nixosSystem {

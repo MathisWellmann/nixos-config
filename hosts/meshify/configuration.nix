@@ -5,6 +5,7 @@
   pkgs,
   inputs,
   config,
+  tikr,
   ...
 }: {
   imports = [
@@ -133,4 +134,8 @@
     device = "poweredge:/SATA_SSD_POOL/music";
     fsType = "nfs";
   };
+
+  environment.systemPackages = [
+    tikr.defaultPackage.${pkgs.system}
+  ];
 }
