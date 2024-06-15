@@ -91,10 +91,10 @@
     image = "greptime/greptimedb";
     cmd = [
       "standalone"
-      "start" 
-      "--http-addr" 
+      "start"
+      "--http-addr"
       "0.0.0.0:4000"
-      "--rpc-addr" 
+      "--rpc-addr"
       "0.0.0.0:4001"
       "--mysql-addr"
       "0.0.0.0:4002"
