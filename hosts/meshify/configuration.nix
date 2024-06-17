@@ -131,7 +131,7 @@
     fsType = "nfs";
   };
   fileSystems."/mnt/poweredge_enc" = {
-    device = "poweredge:/SATA_SSD_POOL/music";
+    device = "poweredge:/SATA_SSD_POOL/enc";
     fsType = "nfs";
   };
 
