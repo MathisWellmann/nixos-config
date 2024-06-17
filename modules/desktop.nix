@@ -17,17 +17,18 @@
   # systemctl --user restart pipewire-pulse.service
   sound.enable = true;
   security.rtkit.enable = true;
-  services.pipewire = {
-    enable = true;
-    alsa.enable = true;
-    alsa.support32Bit = true;
-    pulse.enable = true;
-  };
-
-  services.xserver = {
-    enable = true;
-    autorun = false;
-    videoDrivers = ["nvidia"];
-    displayManager.startx.enable = true;
+  services = {
+    pipewire = {
+      enable = true;
+      alsa.enable = true;
+      alsa.support32Bit = true;
+      pulse.enable = true;
+    };
+    xserver = {
+      enable = true;
+      autorun = false;
+      videoDrivers = ["nvidia"];
+      displayManager.startx.enable = true;
+    };
   };
 }

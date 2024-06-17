@@ -31,7 +31,6 @@
     hyprpaper
     wayland-utils
     wl-clipboard
-    wl-gammarelay-rs
     wlr-randr
     wdisplays
     input-leap
@@ -147,6 +146,17 @@
           radius = 10;
         };
       };
+    };
+  };
+
+  services.gammastep = {
+    enable = true;
+    provider = "manual";
+    latitude = 50.0;
+    longitude = 10.0;
+    temperature = {
+      day = 5000;
+      night = 3000;
     };
   };
 }
