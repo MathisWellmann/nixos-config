@@ -1,15 +1,23 @@
-{...}: {
+{
+  config,
+  pkgs,
+  ...
+}: {
   hardware.opengl = {
     enable = true;
     driSupport = true;
     driSupport32Bit = true;
   };
   hardware.nvidia = {
-    open = true;
+    open = false;
     modesetting.enable = true;
     nvidiaSettings = true;
-    # package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
+
+  environment.systemPackages = with pkgs; [
+    egl-wayland
+  ];
 
   # Sound
   # Some tricks:
@@ -29,6 +37,7 @@
       autorun = false;
       videoDrivers = ["nvidia"];
       displayManager.startx.enable = true;
+      xkb.variant = ",qwerty";
     };
   };
 }

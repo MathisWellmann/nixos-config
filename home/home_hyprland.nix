@@ -60,6 +60,17 @@
       "$terminal" = "alacritty";
       "$menu" = "fuzzel";
       "$mainMod" = "SUPER";
+      env = [
+        "HYPRLAND_LOG_WLR=1"
+        "LIBVA_DRIVER_NAME,nvidia"
+        "XDG_CURRENT_DESKPOT,Hyprland"
+        "XDG_SESSION_TYPE,wayland"
+        "XDG_SESSION_DESKTOP,Hyprland"
+        "GBM_BACKEND,nvidia-drm"
+        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+        "__GL_GSYNC_ALLOWED,1"
+        "__GL_VRR_ALLOWED,0"
+      ];
       bind = [
         "$mainMod, RETURN, exec, $terminal"
         "$mainMod, Q, killactive,"

@@ -11,11 +11,12 @@
 
     agenix.url = "github:ryantm/agenix";
     lan-mouse.url = "github:feschber/lan-mouse";
+
+    # Local paths
     tikr = {
       url = "path:/home/magewe/MathisWellmann/tikr";
       inputs.nixpkgs.follows = "nixpkgs";
     };
-    penrose-personal.url = "path:/home/magewe/MathisWellmann/penrose-personal";
   };
 
   outputs = {
