@@ -4,7 +4,6 @@
 {
   pkgs,
   inputs,
-  penrose-personal,
   ...
 }: {
   imports = [

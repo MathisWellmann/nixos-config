@@ -28,7 +28,6 @@
     ffmpeg # Used for encoding the output of `gource`
 
     # Window manager
-    hyprpaper
     wayland-utils
     wl-clipboard
     wlr-randr
@@ -158,16 +157,26 @@
         };
       };
     };
+    wpaperd = {
+      enable = true;
+      settings = {
+        any = {
+          path = "/home/magewe/wallpaper.jpg";
+        };
+      };
+    };
   };
 
-  services.gammastep = {
-    enable = true;
-    provider = "manual";
-    latitude = 50.0;
-    longitude = 10.0;
-    temperature = {
-      day = 5000;
-      night = 3000;
+  services = {
+    gammastep = {
+      enable = true;
+      provider = "manual";
+      latitude = 50.0;
+      longitude = 10.0;
+      temperature = {
+        day = 5000;
+        night = 3000;
+      };
     };
   };
 }
