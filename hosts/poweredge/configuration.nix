@@ -57,12 +57,14 @@
     nfs.server = {
       enable = true;
       exports = ''
+        /SATA_SSD_POOL/video/ genoa(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/video/ meshify(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/music/ meshify(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/enc/ meshify(rw,sync,no_subtree_check)
-
         /SATA_SSD_POOL/video/ razerblade(rw,sync,no_subtree_check)
+        /SATA_SSD_POOL/music/ genoa(rw,sync,no_subtree_check)
+        /SATA_SSD_POOL/music/ meshify(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/music/ razerblade(rw,sync,no_subtree_check)
+        /SATA_SSD_POOL/enc/ genoa(rw,sync,no_subtree_check)
+        /SATA_SSD_POOL/enc/ meshify(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/enc/ razerblade(rw,sync,no_subtree_check)
       '';
     };
