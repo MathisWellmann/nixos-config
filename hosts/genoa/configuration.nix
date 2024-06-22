@@ -13,6 +13,7 @@
     ./../../modules/base_system.nix
     ./../../modules/desktop.nix
     ./../../modules/local_ai.nix
+    ./../../modules/mount_external_drives.nix
     ./../../modules/mount_poweredge_exports.nix
   ];
 
