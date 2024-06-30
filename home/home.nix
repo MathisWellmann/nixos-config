@@ -60,6 +60,7 @@
       unzip
       (python3.withPackages my-python-packages)
       systeroid # More powerful alternative to `sysctl` with a tui
+      musikcube
 
       # Development
       gitui
@@ -311,6 +312,10 @@
             {
               name = "*.pdf";
               use = "document";
+            }
+            {
+              name = "*.flac";
+              use = "musikcube";
             }
           ];
         };
