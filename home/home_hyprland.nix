@@ -9,6 +9,7 @@
   home.packages = with pkgs; [
     # Desktop
     firefox
+    ladybird
     keepassxc
     mate.eom # Image viewer
     geeqie # Better image viewer
