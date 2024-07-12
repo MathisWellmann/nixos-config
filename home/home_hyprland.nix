@@ -41,7 +41,7 @@
     slack
 
     # Cryptocurrency
-    electron-cash # BCH wallet with CashFusion privacy tech.
+    # electron-cash # BCH wallet with CashFusion privacy tech.
 
     # Photo Editing
     hugin # Panorama stitching
