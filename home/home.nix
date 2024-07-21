@@ -198,7 +198,7 @@
       settings = {
         window.opacity = 0.8;
         font = {
-          size = 20.0;
+          size = 18.0;
           normal.family = "HackNerdFont";
         };
         shell.program = "nu";
