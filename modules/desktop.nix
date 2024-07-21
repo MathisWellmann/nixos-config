@@ -21,7 +21,6 @@
   # Some tricks:
   # systemctl --user restart pipewire.service
   # systemctl --user restart pipewire-pulse.service
-  sound.enable = true;
   security.rtkit.enable = true;
   services = {
     pipewire = {
