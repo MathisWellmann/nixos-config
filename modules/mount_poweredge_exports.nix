@@ -1,5 +1,4 @@
-{...}:
-{
+{...}: {
   fileSystems."/mnt/poweredge_video" = {
     device = "poweredge:/SATA_SSD_POOL/video";
     fsType = "nfs";

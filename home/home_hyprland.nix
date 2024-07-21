@@ -20,6 +20,7 @@
     cinnamon.nemo
     mindustry
     steam
+    minetest
 
     # Video
     mpv
