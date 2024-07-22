@@ -45,7 +45,15 @@
   system.stateVersion = "23.05"; # Did you read the comment?
 
   boot.supportedFilesystems = ["zfs"];
-  boot.zfs.forceImportRoot = false;
+  boot.zfs = {
+    forceImportRoot = false;
+    extraPools = ["SATA_SSD_POOL"];
+  };
+  services.zfs = {
+    autoScrub.enable = true;
+    autoSnapshot.enable = true;
+  };
+
   # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
   networking.hostId = "d198feeb";
 
