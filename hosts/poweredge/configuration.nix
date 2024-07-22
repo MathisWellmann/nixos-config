@@ -95,6 +95,11 @@
         };
       };
     };
+    jellyfin = {
+      # Runs on port 8096
+      enable = true;
+      openFirewall = true;  
+    };
   };
 
   virtualisation.oci-containers.containers."greptimedb" = {
