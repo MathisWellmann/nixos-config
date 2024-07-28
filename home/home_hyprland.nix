@@ -31,7 +31,7 @@
     sdlpop
     uchess
     typespeed
-    
+
     # Video
     mpv
     vlc

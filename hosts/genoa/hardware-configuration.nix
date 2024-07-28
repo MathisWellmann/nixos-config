@@ -4,7 +4,6 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }: {
@@ -13,12 +12,12 @@
   ];
 
   boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
-  boot.initrd.kernelModules = [];
+  boot.initrd.kernelModules = ["amdgpu"];
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/a589f4d0-2407-4cd8-b4d5-7800072c446c";
+    device = "/dev/disk/by-uuid/39a24096-bef9-4bc1-8c36-f44383cc337d";
     fsType = "ext4";
   };
 
@@ -26,6 +25,11 @@
     device = "/dev/disk/by-uuid/4A0C-90FB";
     fsType = "vfat";
     options = ["fmask=0022" "dmask=0022"];
+  };
+
+  fileSystems."/home" = {
+    device = "/dev/disk/by-uuid/240d462d-19e8-472b-86bf-654cd379c683";
+    fsType = "ext4";
   };
 
   swapDevices = [];

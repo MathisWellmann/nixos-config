@@ -14,7 +14,7 @@
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
-    ./../../modules/desktop.nix
+    ./../../modules/desktop_nvidia.nix
   ];
 
   i18n.defaultLocale = lib.mkForce "de_DE.UTF-8";

@@ -17,7 +17,7 @@
     ./../../modules/root_pkgs.nix
     ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
-    ./../../modules/desktop.nix
+    ./../../modules/desktop_nvidia.nix
     ./../../modules/backup.nix
     ./../../modules/buildkite.nix
     ./../../modules/monero.nix

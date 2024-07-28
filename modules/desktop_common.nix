@@ -1,22 +1,13 @@
 {
-  config,
   pkgs,
   ...
 }: {
   hardware.graphics = {
     enable = true;
   };
-  hardware.nvidia = {
-    open = false;
-    modesetting.enable = true;
-    nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
-  };
-
   environment.systemPackages = with pkgs; [
     egl-wayland
   ];
-
   # Sound
   # Some tricks:
   # systemctl --user restart pipewire.service
@@ -32,7 +23,6 @@
     xserver = {
       enable = true;
       autorun = false;
-      videoDrivers = ["nvidia"];
       displayManager.startx.enable = true;
       xkb.variant = ",qwerty";
     };

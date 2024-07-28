@@ -11,7 +11,7 @@
     ./../../modules/root_pkgs.nix
     ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
-    ./../../modules/desktop.nix
+    ./../../modules/desktop_amd.nix
     ./../../modules/local_ai.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_poweredge_exports.nix

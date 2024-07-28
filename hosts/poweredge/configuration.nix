@@ -98,7 +98,7 @@
     jellyfin = {
       # Runs on port 8096
       enable = true;
-      openFirewall = true;  
+      openFirewall = true;
     };
   };
 
