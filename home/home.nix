@@ -61,6 +61,7 @@
       (python3.withPackages my-python-packages)
       systeroid # More powerful alternative to `sysctl` with a tui
       musikcube
+      hwinfo
 
       # Development
       gitui
