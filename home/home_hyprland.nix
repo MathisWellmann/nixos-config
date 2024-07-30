@@ -18,6 +18,7 @@
     mongodb-compass
     virtualbox
     cinnamon.nemo
+    blender
 
     # Games
     mindustry
