@@ -62,6 +62,7 @@
       systeroid # More powerful alternative to `sysctl` with a tui
       musikcube
       hwinfo
+      dmidecode
 
       # Development
       gitui
