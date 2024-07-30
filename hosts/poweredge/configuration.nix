@@ -50,7 +50,7 @@
     extraPools = ["SATA_SSD_POOL"];
   };
   services.zfs = {
-    autoScrub.enable = true;
+    # autoScrub.enable = true;
     autoSnapshot.enable = true;
   };
 
