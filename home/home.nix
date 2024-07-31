@@ -63,6 +63,9 @@
       musikcube
       hwinfo
       dmidecode
+      iperf
+      iperf2
+      iperf3
 
       # Development
       gitui
