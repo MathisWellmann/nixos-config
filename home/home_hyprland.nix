@@ -9,7 +9,7 @@
   home.packages = with pkgs; [
     # Desktop
     firefox
-    ladybird
+    # ladybird
     keepassxc
     mate.eom # Image viewer
     geeqie # Better image viewer
@@ -17,7 +17,7 @@
     qbittorrent
     mongodb-compass
     virtualbox
-    cinnamon.nemo
+    nemo
     blender
 
     # Games

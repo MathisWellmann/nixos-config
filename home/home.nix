@@ -77,7 +77,7 @@
       hvm # A massively parallel, optimal functional runtime
 
       # Cryptography
-      sequoia-sq
+      # sequoia-sq
       safecloset
       gokey # Vault-less password derivation from master key
 

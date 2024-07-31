@@ -15,7 +15,7 @@
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
-    ./../../modules/local_ai.nix
+    # ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/backup.nix
@@ -84,11 +84,17 @@
 
   virtualisation.docker.enable = true;
 
-  services.mongodb = {
+  services.mongodb = 
+  let
+    system = pkgs.system;
+    # pkgs-stable = import inputs.nixpkgs-stable { inherit system; config.allowUnfree = true; };
+  in {
     enable = true;
     dbpath = "/home/magewe/mongodb";
     user = "root";
     bind_ip = "0.0.0.0";
+    # package = pkgs-stable.legacyPackages."${pkgs.system}".mongodb;
+    # package = pkgs-stable.mongodb;
   };
   services.prometheus = {
     exporters = {

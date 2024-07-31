@@ -2,69 +2,74 @@
   description = "Nixos config flake";
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    # nixpkgs-stable.url = "nixpkgs/release-24.05";
+    nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
 
     home-manager = {
       url = "github:nix-community/home-manager";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
     agenix.url = "github:ryantm/agenix";
+    # TODO: remove
     lan-mouse.url = "github:feschber/lan-mouse";
 
     # Local paths
     tikr = {
       url = "path:/home/magewe/MathisWellmann/tikr";
-      inputs.nixpkgs.follows = "nixpkgs";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
 
   outputs = {
-    self,
-    nixpkgs,
-    agenix,
+    # self,
+    nixpkgs-unstable,
+    home-manager,
     ...
-  } @ inputs: {
+  } @inputs: {
     nixosConfigurations = {
-      meshify = nixpkgs.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
+      meshify = nixpkgs-unstable.lib.nixosSystem {
+        system = "x86_64-linux";
+        specialArgs = {
+          inherit inputs;
+        };
         modules = [
           ./hosts/meshify/configuration.nix
-          inputs.home-manager.nixosModules.default
-          agenix.nixosModules.default
+          home-manager.nixosModules.default
+          inputs.agenix.nixosModules.default
           {_module.args = inputs;}
         ];
       };
-      superserver = nixpkgs.lib.nixosSystem {
+      superserver = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/superserver/configuration.nix
           inputs.home-manager.nixosModules.default
-          agenix.nixosModules.default
+          inputs.agenix.nixosModules.default
         ];
       };
-      elitedesk = nixpkgs.lib.nixosSystem {
+      elitedesk = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/elitedesk/configuration.nix
           inputs.home-manager.nixosModules.default
         ];
       };
-      madcatz = nixpkgs.lib.nixosSystem {
+      madcatz = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/madcatz/configuration.nix
           inputs.home-manager.nixosModules.default
         ];
       };
-      poweredge = nixpkgs.lib.nixosSystem {
+      poweredge = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/poweredge/configuration.nix
           inputs.home-manager.nixosModules.default
         ];
       };
-      genoa = nixpkgs.lib.nixosSystem {
+      genoa = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/genoa/configuration.nix
