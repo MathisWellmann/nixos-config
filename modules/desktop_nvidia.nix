@@ -1,4 +1,4 @@
-{config, ...}: {
+{pkgs, config, ...}: {
   imports = [
     ./desktop_common.nix
   ];
@@ -10,4 +10,14 @@
   };
 
   services.xserver.videoDrivers = ["nvidia"];
+
+  environment.systemPackages = with pkgs; [
+    cudatoolkit
+    cudaPackages.libcublas
+    cudaPackages.libcufft
+    cudaPackages.libcurand
+    cudaPackages.libcusparse
+    cudaPackages.libcusolver
+    # cudaPackages.nsight_compute
+  ];
 }
