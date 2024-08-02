@@ -194,6 +194,21 @@
         "type": "github"
       }
     },
+    "nixpkgs-stable": {
+      "locked": {
+        "lastModified": 1722595723,
+        "narHash": "sha256-PZe1ftw05n72Z0c+ZiEGLoNT2q8GtbUQPzMd72aeEhs=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "f35679d2fb9086e1ff014ed222f5161b031bac92",
+        "type": "github"
+      },
+      "original": {
+        "id": "nixpkgs",
+        "ref": "release-24.05",
+        "type": "indirect"
+      }
+    },
     "nixpkgs-unstable": {
       "locked": {
         "lastModified": 1722421184,
@@ -247,6 +262,7 @@
         "agenix": "agenix",
         "home-manager": "home-manager_2",
         "lan-mouse": "lan-mouse",
+        "nixpkgs-stable": "nixpkgs-stable",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "tikr": "tikr"
       }
