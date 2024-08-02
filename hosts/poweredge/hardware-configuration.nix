@@ -4,7 +4,6 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }: {
@@ -36,8 +35,49 @@
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
   # networking.interfaces.eno2.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp65s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp65s0d1.useDHCP = lib.mkDefault true;
+  networking.interfaces.enp65s0 = {
+    name = "mellanox-40G-0";
+    useDHCP = false;
+    mtu = 9000;
+    ipv4 = {
+      addresses = [
+        {
+          address = "10.0.0.1";
+          prefixLength = 16;
+        }
+      ];
+      routes = [
+        {
+          address = "10.0.0.1";
+          prefixLength = 16;
+          via = "10.0.0.1";
+        }
+      ];
+    };
+  };
+  networking.interfaces.enp65s0d1 = {
+    name = "mellanox-40G-1";
+    useDHCP = false;
+    mtu = 9000;
+    ipv4 = {
+      addresses = [
+        {
+          address = "10.0.0.2";
+          prefixLength = 16;
+        }
+      ];
+      routes = [
+        {
+          address = "10.0.0.2";
+          prefixLength = 16;
+          via = "10.0.0.2";
+        }
+      ];
+    };
+  };
+  networking.firewall.allowedTCPPorts = [
+    5201 # iperf
+  ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
