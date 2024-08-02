@@ -69,15 +69,26 @@
     shell = pkgs.nushell;
   };
 
-  services.prometheus = {
-    exporters = {
-      node = {
-        enable = true;
-        enabledCollectors = ["systemd"];
-        port = 9002;
+  services = {
+    prometheus = {
+      exporters = {
+        node = {
+          enable = true;
+          enabledCollectors = ["systemd"];
+          port = 9002;
+        };
       };
     };
+    nfs.server = {
+      enable = true;
+      exports = ''
+        /home/magewe/temp_nfs_dir/  169.254.51.104(rw,sync,no_subtree_check)
+      '';
+    };
   };
+  networking.firewall.allowedTCPPorts = [
+    2049 # nfs
+  ];
 
   home-manager = {
     # also pass inputs to home-manager modules
