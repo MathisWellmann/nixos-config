@@ -11,7 +11,7 @@
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "usb_storage" "sd_mod"];
+  boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid"];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
@@ -24,6 +24,7 @@
   fileSystems."/boot" = {
     device = "/dev/disk/by-uuid/DDAD-03D2";
     fsType = "vfat";
+    options = ["fmask=0022" "dmask=0022"];
   };
 
   swapDevices = [];
@@ -35,8 +36,41 @@
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
   # networking.interfaces.eno2.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp97s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp97s0d1.useDHCP = lib.mkDefault true;
+  networking.interfaces.enp6s0 = {
+    name = "mellanox-40G-0";
+    macAddress = "98:03:9b:d4:a0:e0";
+    useDHCP = false;
+    mtu = 9000;
+    ipv4 = {
+      addresses = [
+        {
+          address = "10.0.0.3";
+          prefixLength = 16;
+        }
+      ];
+      # routes = [
+      #   {
+      #     address = "10.0.0.3";
+      #     prefixLength = 16;
+      #     via = "10.0.0.3";
+      #   }
+      # ];
+    };
+  };
+  networking.interfaces.enp6s0d1 = {
+    name = "mellanox-40G-1";
+    macAddress = "98:03:9b:d4:a0:e1";
+    useDHCP = false;
+    mtu = 9000;
+    ipv4 = {
+      addresses = [
+        {
+          address = "10.0.0.4";
+          prefixLength = 16;
+        }
+      ];
+    };
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

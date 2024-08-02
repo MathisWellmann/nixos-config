@@ -26,7 +26,7 @@
     nixpkgs-unstable,
     home-manager,
     ...
-  } @inputs: {
+  } @ inputs: {
     nixosConfigurations = {
       meshify = nixpkgs-unstable.lib.nixosSystem {
         system = "x86_64-linux";

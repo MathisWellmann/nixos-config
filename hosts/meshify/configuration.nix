@@ -84,8 +84,7 @@
 
   virtualisation.docker.enable = true;
 
-  services.mongodb = 
-  let
+  services.mongodb = let
     system = pkgs.system;
     # pkgs-stable = import inputs.nixpkgs-stable { inherit system; config.allowUnfree = true; };
   in {

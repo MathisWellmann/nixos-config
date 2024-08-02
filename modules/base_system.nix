@@ -6,8 +6,8 @@
   nixpkgs.config.allowUnfree = true;
 
   # Enable networking
-  networking.networkmanager.enable = true;
-  systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
+  # networking.networkmanager.enable = true;
+  # systemd.services.NetworkManager-wait-online.enable = lib.mkForce false;
 
   security = {
     polkit.enable = true;

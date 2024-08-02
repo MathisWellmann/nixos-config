@@ -13,7 +13,7 @@
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
-    ./../../modules/desktop.nix
+    ./../../modules/desktop_nvidia.nix
     ./../../modules/buildkite.nix
   ];
 
@@ -21,43 +21,44 @@
   buildkite_agent = "superserver";
   buildkite_queue = "nixos";
 
-  networking.nat.enable = true;
+  networking = {
+    hostName = "superserver";
+    nat.enable = true;
+  };
 
   # Native `systemd-nspawn` container
-  containers.buildkiteGensyn = {
-    autoStart = true;
+  # containers.buildkiteGensyn = {
+  #   autoStart = true;
 
-    config = {
-      config,
-      pkgs,
-      lib,
-      ...
-    }: {
-      imports = [
-        ./../../modules/buildkite.nix
-      ];
-      buildkite_agent = "ss-gensyn";
-      buildkite_queue = "nixos";
+  #   config = {
+  #     config,
+  #     pkgs,
+  #     lib,
+  #     ...
+  #   }: {
+  #     imports = [
+  #       ./../../modules/buildkite.nix
+  #     ];
+  #     buildkite_agent = "ss-gensyn";
+  #     buildkite_queue = "nixos";
 
-      networking = {
-        firewall.enable = true;
-        # Use systemd-resolved inside the container
-        # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
-        useHostResolvConf = lib.mkForce false;
-      };
+  #     networking = {
+  #       firewall.enable = true;
+  #       # Use systemd-resolved inside the container
+  #       # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
+  #       useHostResolvConf = lib.mkForce false;
+  #     };
 
-      services.resolved.enable = true;
+  #     services.resolved.enable = true;
 
-      system.stateVersion = "23.11";
-      nix.settings.experimental-features = ["nix-command" "flakes"];
-    };
-  };
+  #     system.stateVersion = "23.11";
+  #     nix.settings.experimental-features = ["nix-command" "flakes"];
+  #   };
+  # };
 
   # Enable ip forwarding for exposing tailscale subnet routes.
   boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
   boot.kernel.sysctl."ipv6.conf.all.forwarding" = 1;
-
-  networking.hostName = "superserver"; # Define your hostname.
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
@@ -82,7 +83,7 @@
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../home/home.nix;
+      "magewe" = import ./../../home/home.nix;
     };
   };
 
