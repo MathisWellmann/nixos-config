@@ -39,6 +39,7 @@
     iperf
     lshw
     nmap
+    pciutils
     inputs.agenix.packages."${system}".default
   ];
 }
