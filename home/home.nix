@@ -67,6 +67,7 @@
       iperf2
       iperf3
       hyperfine # Benchmarking of terminal commands
+      parallel
 
       # Development
       gitui
