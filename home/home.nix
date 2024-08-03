@@ -27,6 +27,7 @@
       typst
       zola # Static site generator that I want to use for my blog.
       lux # Video download CLI
+      terminus_font
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
@@ -205,7 +206,7 @@
       settings = {
         window.opacity = 0.8;
         font = {
-          size = 18.0;
+          size = 20.0;
           # normal.family = "HackNerdFont";
           normal.family = "Terminus";
         };
