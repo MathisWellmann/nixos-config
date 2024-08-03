@@ -1,7 +1,16 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{inputs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: let
+  username = "magewe";
+  backup_host_ip = "169.254.80.160"; # Using the mellanox 100G NIC
+  backup_host_name = "poweredge";
+  backup_target_dir = "/SATA_SSD_POOL/backup_genoa";
+in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -26,9 +35,9 @@
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.magewe = {
+  users.users.${username} = {
     isNormalUser = true;
-    description = "magewe";
+    description = "${username}";
     extraGroups = ["networkmanager" "wheel"];
     packages = [];
   };
@@ -37,7 +46,7 @@
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../../home/genoa.nix;
+      "${username}" = import ./../../home/genoa.nix;
     };
   };
 
@@ -57,26 +66,32 @@
     NIXOS_OZONE_WL = 1;
   };
 
-  services = {
-    mullvad-vpn.enable = true;
-    nfs.server = {
-      enable = true;
-      exports = ''
-        /home/magewe/temp_nfs_dir/  169.254.80.160(rw,sync,no_subtree_check)
-      '';
-    };
-    # restic.backups = {
-    #   localbackup = {
-    #     initialize = true;
-    #     paths = [
-    #       "/home/magewe"
-    #     ];
-    #     exclude = [
-    #       "/home/*/.cache"
-    #     ];
-    #     repository = "/mnt/SATA_SSD_POOL/backup_genoa";
-    #     pruneOpts = ["--keep-daily 7"];
-    #   };
-    # };
+  services.mullvad-vpn.enable = true;
+
+  ### Backup Section ###
+  fileSystems."/mnt/${backup_host_name}_backup" = {
+    device = "${backup_host_name}:${backup_target_dir}";
+    fsType = "nfs";
+    options = ["rw" "nofail"];
   };
+  services = {
+    restic.backups = {
+      home = {
+        initialize = true;
+        paths = [
+          "/home/${username}/"
+        ];
+        exclude = [
+          "/home/${username}/.cache/"
+        ];
+        passwordFile = "/etc/nixos/secrets/restic/password";
+        repository = "/mnt/${backup_host_name}_backup/";
+        pruneOpts = ["--keep-daily 14"];
+        user = "${username}";
+      };
+    };
+  };
+  environment.systemPackages = with pkgs; [
+    restic
+  ];
 }
