@@ -17,10 +17,13 @@
     ./../../modules/mount_poweredge_exports.nix
   ];
 
-  networking.hostName = "genoa"; # Define your hostname.
-  networking.firewall.allowedTCPPorts = [
-    8231 # Tikr
-  ];
+  networking = {
+    hostName = "genoa";
+    firewall.allowedTCPPorts = [
+      8231 # Tikr
+      2049 # NFS
+    ];
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
@@ -54,5 +57,26 @@
     NIXOS_OZONE_WL = 1;
   };
 
-  services.mullvad-vpn.enable = true;
+  services = {
+    mullvad-vpn.enable = true;
+    nfs.server = {
+      enable = true;
+      exports = ''
+        /home/magewe/temp_nfs_dir/  169.254.80.160(rw,sync,no_subtree_check)
+      '';
+    };
+    # restic.backups = {
+    #   localbackup = {
+    #     initialize = true;
+    #     paths = [
+    #       "/home/magewe"
+    #     ];
+    #     exclude = [
+    #       "/home/*/.cache"
+    #     ];
+    #     repository = "/mnt/SATA_SSD_POOL/backup_genoa";
+    #     pruneOpts = ["--keep-daily 7"];
+    #   };
+    # };
+  };
 }

@@ -41,6 +41,7 @@
   networking.useDHCP = lib.mkDefault true;
   # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
   # networking.interfaces.enp199s0f4u1u2.useDHCP = lib.mkDefault true;
+  networking.networkmanager.enable = false;
   networking.interfaces.enp1s0f0np0 = {
     name = "mellanox-100G-0";
     useDHCP = false;
@@ -48,7 +49,7 @@
     ipv4 = {
       addresses = [
         {
-          address = "10.0.0.5";
+          address = "169.254.3.1";
           prefixLength = 16;
         }
       ];
@@ -61,7 +62,7 @@
     ipv4 = {
       addresses = [
         {
-          address = "10.0.0.6";
+          address = "169.254.3.2";
           prefixLength = 16;
         }
       ];
