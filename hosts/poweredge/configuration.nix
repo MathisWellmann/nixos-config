@@ -58,7 +58,7 @@
   networking.hostId = "d198feeb";
 
   networking.firewall.allowedTCPPorts = [
-    2049 # ?
+    2049 # nfs
     4001 # Greptimedb
   ];
   services = {
@@ -125,5 +125,11 @@
     volumes = [
       "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
     ];
+  };
+
+  fileSystems."/mnt/superserver_temp" = {
+    device = "169.254.180.183:/home/magewe/temp_nfs_dir";
+    fsType = "nfs";
+    options = ["rw" "users" "rsize=131072" "wsize=131072"];
   };
 }
