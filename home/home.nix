@@ -244,6 +244,13 @@
           append ($env.HOME| path join .cargo/bin));
       '';
     };
+    zellij = {
+      enable = true;
+      settings = {
+        pane_frames = false;
+        theme = "dracula";
+      };
+    };
     starship = {
       enable = true;
       settings = {
