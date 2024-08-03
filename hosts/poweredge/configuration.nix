@@ -5,7 +5,11 @@
   pkgs,
   inputs,
   ...
-}: {
+}: let
+  username = "magewe";
+  backup_host = "elitedesk";
+  backup_target_dir = "/mnt/backup_hdd";
+in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -23,7 +27,7 @@
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
     isNormalUser = true;
-    description = "magewe";
+    description = "${username}";
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
   };
@@ -32,7 +36,7 @@
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../../home/home.nix;
+      "${username}" = import ./../../home/home.nix;
     };
   };
 
@@ -127,9 +131,25 @@
     ];
   };
 
-  fileSystems."/mnt/superserver_temp" = {
-    device = "169.254.180.183:/home/magewe/temp_nfs_dir";
+  ### Backup Section ###
+  fileSystems."/mnt/${backup_host}_backup" = {
+    device = "${backup_host}:${backup_target_dir}";
     fsType = "nfs";
-    options = ["rw" "users" "rsize=131072" "wsize=131072"];
+    options = ["rw" "rsize=131072" "wsize=131072"];
   };
+  services.restic.backups = {
+    zfs_sata_ssd_pool = {
+      initialize = true;
+      paths = [
+        "/SATA_SSD_POOL/*"
+      ];
+      passwordFile = "/etc/nixos/secrets/restic/password";
+      repository = "/mnt/${backup_host}_backup/restic/SATA_SSD_POOL";
+      pruneOpts = ["--keep-daily 14"];
+      user = "${username}";
+    };
+  };
+  environment.systemPackages = with pkgs; [
+    restic
+  ];
 }

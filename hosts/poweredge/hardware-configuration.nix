@@ -42,15 +42,8 @@
     ipv4 = {
       addresses = [
         {
-          address = "10.0.0.1";
+          address = "169.254.1.1";
           prefixLength = 16;
-        }
-      ];
-      routes = [
-        {
-          address = "10.0.0.1";
-          prefixLength = 16;
-          via = "10.0.0.1";
         }
       ];
     };
@@ -62,15 +55,8 @@
     ipv4 = {
       addresses = [
         {
-          address = "10.0.0.2";
+          address = "169.254.1.2";
           prefixLength = 16;
-        }
-      ];
-      routes = [
-        {
-          address = "10.0.0.2";
-          prefixLength = 16;
-          via = "10.0.0.2";
         }
       ];
     };
