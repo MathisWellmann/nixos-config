@@ -7,7 +7,7 @@
     ./desktop_common.nix
   ];
   hardware.nvidia = {
-    open = true;
+    open = false;
     modesetting.enable = true;
     nvidiaSettings = true;
     package = config.boot.kernelPackages.nvidiaPackages.stable;
@@ -22,6 +22,7 @@
     cudaPackages.libcurand
     cudaPackages.libcusparse
     cudaPackages.libcusolver
+    cudaPackages.cuda_nvrtc
     # cudaPackages.nsight_compute
   ];
 }

@@ -206,7 +206,8 @@
         window.opacity = 0.8;
         font = {
           size = 18.0;
-          normal.family = "HackNerdFont";
+          # normal.family = "HackNerdFont";
+          normal.family = "Terminus";
         };
         shell.program = "nu";
       };
