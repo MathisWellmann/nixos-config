@@ -4,7 +4,6 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
 }: {
@@ -16,6 +15,7 @@
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
+  boot.loader.efi.efiSysMountPoint = "/boot/efi";
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/6e31e996-7785-4949-a995-a04fe9321bba";

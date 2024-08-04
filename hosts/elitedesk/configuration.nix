@@ -5,7 +5,10 @@
   pkgs,
   inputs,
   ...
-}: {
+}: 
+let
+  backup_dir = "/mnt/backup_hdd";
+in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -15,10 +18,6 @@
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
   ];
-
-  boot.loader.efi.efiSysMountPoint = "/boot/efi";
-
-  nixpkgs.config.pulseaudio = true;
 
   networking.hostName = "elitedesk";
 
@@ -39,15 +38,6 @@
     };
   };
 
-  # Mount the 16TB backup drive
-  fileSystems."/mnt/backup_hdd" = {
-    device = "/dev/disk/by-uuid/e15ce1db-586f-4e7b-a5d8-d8a4a0b45e48";
-    fsType = "btrfs";
-    options = [
-      "users" # Allows any user to mount and unmount
-      "nofail" # Prevent system from failing if this drive doesn't mount
-    ];
-  };
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
@@ -56,4 +46,26 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
+
+  ### Backup Target ###
+  # Mount the 16TB backup drive
+  fileSystems."${backup_dir}" = {
+    device = "/dev/disk/by-uuid/e15ce1db-586f-4e7b-a5d8-d8a4a0b45e48";
+    fsType = "btrfs";
+    options = [
+      "users" # Allows any user to mount and unmount
+      "nofail" # Prevent system from failing if this drive doesn't mount
+    ];
+  };
+  services = {
+    nfs.server = {
+      enable = true;
+      exports = ''
+        ${backup_dir}  poweredge(rw,sync,no_subtree_check)
+      '';
+    };
+  };
+  environment.systemPackages = with pkgs; [
+    restic
+  ];
 }
