@@ -2,6 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
+  lib,
   pkgs,
   inputs,
   ...
@@ -9,8 +10,6 @@
   username = "magewe";
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
-  genoa_mellanox_ip = "169.254.79.94";
-  genoa_mellanox_subnet = "16";
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -70,26 +69,32 @@ in {
   };
 
   services = {
-    nfs.server = {
+    nfs.server = let
+      # Using ip of mellanox 100G NIC. would be cool if tailscale would use that route, but that a future todo.
+      genoa_addr = "169.254.79.94";
+      genoa_subnet = "16";
+      meshify_addr = "meshify";
+      exports_for_genoa =
+        lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${genoa_addr}/${genoa_subnet}(rw,sync,no_subtree_check)\n")
+        [
+          "video"
+          "music"
+          "series"
+          "movies"
+          "backup_genoa"
+        ];
+      exports_for_meshify =
+        lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")
+        [
+          "video"
+          "music"
+          "series"
+          "movies"
+          "backup_meshify"
+        ];
+    in {
       enable = true;
-      exports = ''
-        /SATA_SSD_POOL/video/ genoa(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/video/ meshify(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/video/ razerblade(rw,sync,no_subtree_check)
-
-        /SATA_SSD_POOL/music/ genoa(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/music/ meshify(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/music/ razerblade(rw,sync,no_subtree_check)
-
-        /SATA_SSD_POOL/series/ genoa(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/movies/ genoa(rw,sync,no_subtree_check)
-
-        /SATA_SSD_POOL/enc/ genoa(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/enc/ meshify(rw,sync,no_subtree_check)
-        /SATA_SSD_POOL/enc/ razerblade(rw,sync,no_subtree_check)
-
-        /SATA_SSD_POOL/backup_genoa/ genoa(rw,sync,no_subtree_check)
-      '';
+      exports = lib.strings.concatStrings [exports_for_genoa exports_for_meshify];
     };
     prometheus = {
       exporters = {
