@@ -15,7 +15,7 @@
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
-    # ./../../modules/local_ai.nix
+    ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/backup.nix
