@@ -7,7 +7,11 @@
   config,
   tikr,
   ...
-}: {
+}: let
+  username = "magewe";
+  backup_host_name = "poweredge";
+  backup_target_dir = "/SATA_SSD_POOL/backup_meshify";
+in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -128,7 +132,32 @@
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
 
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
     tikr.defaultPackage.${pkgs.system}
+    restic
   ];
+
+  ### Backup Section ###
+  fileSystems."/mnt/${backup_host_name}_backup" = {
+    device = "${backup_host_name}:${backup_target_dir}";
+    fsType = "nfs";
+    options = ["rw" "nofail"];
+  };
+  services = {
+    restic.backups = {
+      home = {
+        initialize = true;
+        paths = [
+          "/home/${username}/"
+        ];
+        exclude = [
+          "/home/${username}/.cache/"
+        ];
+        passwordFile = "/etc/nixos/secrets/restic/password";
+        repository = "/mnt/${backup_host_name}_backup/";
+        pruneOpts = ["--keep-daily 14"];
+        user = "${username}";
+      };
+    };
+  };
 }
