@@ -9,6 +9,8 @@
   username = "magewe";
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
+  genoa_mellanox_ip = "169.254.79.94";
+  genoa_mellanox_subnet = "16";
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -54,17 +56,19 @@ in {
     extraPools = ["SATA_SSD_POOL"];
   };
   services.zfs = {
-    # autoScrub.enable = true;
+    autoScrub.enable = true;
     autoSnapshot.enable = true;
   };
 
-  # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
-  networking.hostId = "d198feeb";
+  networking = {
+    # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
+    hostId = "d198feeb";
+    firewall.allowedTCPPorts = [
+      2049 # nfs
+      4001 # Greptimedb
+    ];
+  };
 
-  networking.firewall.allowedTCPPorts = [
-    2049 # nfs
-    4001 # Greptimedb
-  ];
   services = {
     nfs.server = {
       enable = true;
@@ -72,12 +76,19 @@ in {
         /SATA_SSD_POOL/video/ genoa(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/video/ meshify(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/video/ razerblade(rw,sync,no_subtree_check)
+
         /SATA_SSD_POOL/music/ genoa(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/music/ meshify(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/music/ razerblade(rw,sync,no_subtree_check)
+
+        /SATA_SSD_POOL/series/ genoa(rw,sync,no_subtree_check)
+        /SATA_SSD_POOL/movies/ genoa(rw,sync,no_subtree_check)
+
         /SATA_SSD_POOL/enc/ genoa(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/enc/ meshify(rw,sync,no_subtree_check)
         /SATA_SSD_POOL/enc/ razerblade(rw,sync,no_subtree_check)
+
+        /SATA_SSD_POOL/backup_genoa/ genoa(rw,sync,no_subtree_check)
       '';
     };
     prometheus = {

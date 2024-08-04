@@ -5,8 +5,7 @@
   pkgs,
   inputs,
   ...
-}: 
-let
+}: let
   backup_dir = "/mnt/backup_hdd";
 in {
   imports = [
@@ -37,7 +36,6 @@ in {
       "magewe" = import ./../../home/home.nix;
     };
   };
-
 
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
