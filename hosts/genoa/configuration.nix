@@ -70,7 +70,7 @@ in {
 
   ### Backup Section ###
   fileSystems."/mnt/${backup_host_name}_backup" = {
-    device = "${backup_host_name}:${backup_target_dir}";
+    device = "${backup_host_ip}:${backup_target_dir}";
     fsType = "nfs";
     options = ["rw" "nofail"];
   };

@@ -1,21 +1,24 @@
-{...}: {
-  fileSystems."/mnt/poweredge_video" = {
-    device = "poweredge:/SATA_SSD_POOL/video";
+{...}: let
+  nfs_host_name = "poweredge";
+  nfs_host_addr = "169.254.90.239";
+in {
+  fileSystems."/mnt/${nfs_host_name}_video" = {
+    device = "${nfs_host_addr}:/SATA_SSD_POOL/video";
     fsType = "nfs";
     options = ["rw" "nofail"];
   };
-  fileSystems."/mnt/poweredge_series" = {
-    device = "poweredge:/SATA_SSD_POOL/series";
+  fileSystems."/mnt/${nfs_host_name}_series" = {
+    device = "${nfs_host_addr}:/SATA_SSD_POOL/series";
     fsType = "nfs";
     options = ["rw" "nofail"];
   };
-  fileSystems."/mnt/poweredge_movies" = {
-    device = "poweredge:/SATA_SSD_POOL/movies";
+  fileSystems."/mnt/${nfs_host_name}_movies" = {
+    device = "${nfs_host_addr}:/SATA_SSD_POOL/movies";
     fsType = "nfs";
     options = ["rw" "nofail"];
   };
-  fileSystems."/mnt/poweredge_music" = {
-    device = "poweredge:/SATA_SSD_POOL/music";
+  fileSystems."/mnt/${nfs_host_name}_music" = {
+    device = "${nfs_host_addr}:/SATA_SSD_POOL/music";
     fsType = "nfs";
     options = ["rw" "nofail"];
   };
