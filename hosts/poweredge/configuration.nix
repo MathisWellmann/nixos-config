@@ -82,6 +82,7 @@ in {
           "series"
           "movies"
           "backup_genoa"
+          "magewe"
         ];
       exports_for_meshify =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")
@@ -91,6 +92,7 @@ in {
           "series"
           "movies"
           "backup_meshify"
+          "magewe"
         ];
     in {
       enable = true;
