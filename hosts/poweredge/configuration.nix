@@ -74,6 +74,7 @@ in {
       genoa_addr = "169.254.79.94";
       genoa_subnet = "16";
       meshify_addr = "meshify";
+      razerblade_addr = "razerblade";
       exports_for_genoa =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${genoa_addr}/${genoa_subnet}(rw,sync,no_subtree_check)\n")
         [
@@ -94,9 +95,19 @@ in {
           "backup_meshify"
           "magewe"
         ];
+      exports_for_razerblade =
+        lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${razerblade_addr}(rw,sync,no_subtree_check)\n")
+        [
+          "video"
+          "music"
+          "series"
+          "movies"
+          "backup_razerblade"
+          "magewe"
+        ];
     in {
       enable = true;
-      exports = lib.strings.concatStrings [exports_for_genoa exports_for_meshify];
+      exports = lib.strings.concatStrings [exports_for_genoa exports_for_meshify exports_for_razerblade];
     };
     prometheus = {
       exporters = {
