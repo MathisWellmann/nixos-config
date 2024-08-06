@@ -24,7 +24,7 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/backup.nix
     ./../../modules/buildkite.nix
-    ./../../modules/monero.nix
+    # ./../../modules/monero.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_poweredge_exports.nix
   ];
