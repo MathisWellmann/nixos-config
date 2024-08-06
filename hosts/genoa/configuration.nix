@@ -24,6 +24,7 @@ in {
     ./../../modules/local_ai.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_poweredge_exports.nix
+    ./../../modules/prometheus_exporter.nix
   ];
 
   networking = {
