@@ -19,14 +19,14 @@ in {
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
-    ./../../modules/local_ai.nix
+    # ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/backup.nix
     ./../../modules/buildkite.nix
-    # ./../../modules/monero.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_poweredge_exports.nix
+    ./../../modules/prometheus_exporter.nix
   ];
 
   buildkite_queue = "nixos";
@@ -99,20 +99,12 @@ in {
     # package = pkgs-stable.legacyPackages."${pkgs.system}".mongodb;
     # package = pkgs-stable.mongodb;
   };
-  services.prometheus = {
-    exporters = {
-      node = {
-        enable = true;
-        enabledCollectors = ["systemd"];
-        port = 9002;
-      };
-    };
-  };
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
     27017 # Mongodb
     8231 # Tikr
+    9002 # Prometheus exporter
   ];
   networking.nameservers = ["192.168.0.75"];
 
