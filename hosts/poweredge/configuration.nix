@@ -119,7 +119,7 @@ in {
         node = {
           enable = true;
           port = 9002;
-          enabledCollectors = ["systemd" "zfs" ];
+          enabledCollectors = ["systemd" "zfs"];
         };
         # mongodb.enable = true;
         # bitcoin.enable = true;

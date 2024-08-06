@@ -1,11 +1,16 @@
-{...}: {
+{...}: let
+  port = 9002;
+in {
   ### Monitoring ###
   services.prometheus = {
     exporters = {
       node = {
         enable = true;
-        port = 9002;
+        port = port;
       };
     };
   };
+  networking.firewall.allowedTCPPorts = [
+    port
+  ];
 }

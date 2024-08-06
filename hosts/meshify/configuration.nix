@@ -104,7 +104,6 @@ in {
   networking.firewall.allowedTCPPorts = [
     27017 # Mongodb
     8231 # Tikr
-    9002 # Prometheus exporter
   ];
   networking.nameservers = ["192.168.0.75"];
 
