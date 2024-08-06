@@ -22,6 +22,11 @@ in {
     fsType = "nfs";
     options = ["rw" "nofail"];
   };
+  fileSystems."/mnt/${nfs_host_name}_magewe" = {
+    device = "${nfs_host_addr}:/SATA_SSD_POOL/magewe";
+    fsType = "nfs";
+    options = ["rw" "nofail"];
+  };
   # fileSystems."/mnt/poweredge_enc" = {
   #   device = "poweredge:/SATA_SSD_POOL/enc";
   #   fsType = "nfs";
