@@ -5,6 +5,7 @@
   lib,
   pkgs,
   inputs,
+  config,
   ...
 }: let
   username = "magewe";
@@ -110,13 +111,30 @@ in {
       exports = lib.strings.concatStrings [exports_for_genoa exports_for_meshify exports_for_razerblade];
     };
     prometheus = {
+      enable = true;
+      listenAddress = "0.0.0.0";
+      retentionTime = "1y";
+      port = 9001;
       exporters = {
         node = {
           enable = true;
-          enabledCollectors = ["systemd" "zfs" "nfs"];
           port = 9002;
+          enabledCollectors = ["systemd" "zfs"];
         };
+        # mongodb.enable = true;
+        # bitcoin.enable = true;
+        # buildkite-agent.enable = true;
       };
+      scrapeConfigs = [
+        {
+          job_name = "poweredge-node";
+          static_configs = [
+            {
+              targets = ["127.0.0.1:${toString config.services.prometheus.exporters.node.port}"];
+            }
+          ];
+        }
+      ];
     };
     grafana = {
       enable = true;
