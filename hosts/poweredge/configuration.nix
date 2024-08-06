@@ -119,22 +119,20 @@ in {
         node = {
           enable = true;
           port = 9002;
-          enabledCollectors = ["systemd" "zfs"];
+          enabledCollectors = ["systemd" "zfs" ];
         };
         # mongodb.enable = true;
         # bitcoin.enable = true;
         # buildkite-agent.enable = true;
       };
-      scrapeConfigs = [
-        {
-          job_name = "poweredge-node";
-          static_configs = [
-            {
-              targets = ["127.0.0.1:${toString config.services.prometheus.exporters.node.port}"];
-            }
-          ];
-        }
-      ];
+      scrapeConfigs = map (host: {
+        job_name = "${host}-node";
+        static_configs = [
+          {
+            targets = ["${host}:${toString config.services.prometheus.exporters.node.port}"];
+          }
+        ];
+      }) ["127.0.0.1" "genoa" "meshify" "superserver" "elitedesk"];
     };
     grafana = {
       enable = true;
