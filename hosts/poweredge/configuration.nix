@@ -66,6 +66,7 @@ in {
     firewall.allowedTCPPorts = [
       2049 # nfs
       4001 # Greptimedb
+      3000 # Grafana
     ];
   };
 
@@ -132,7 +133,7 @@ in {
             targets = ["${host}:${toString config.services.prometheus.exporters.node.port}"];
           }
         ];
-      }) ["127.0.0.1" "genoa" "meshify" "superserver" "elitedesk"];
+      }) ["127.0.0.1" "genoa" "meshify" "superserver" "elitedesk" "razerblade"];
     };
     grafana = {
       enable = true;
@@ -196,5 +197,6 @@ in {
   };
   environment.systemPackages = with pkgs; [
     restic
+    timescaledb
   ];
 }
