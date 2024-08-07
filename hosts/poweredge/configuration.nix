@@ -197,6 +197,5 @@ in {
   };
   environment.systemPackages = with pkgs; [
     restic
-    timescaledb
   ];
 }
