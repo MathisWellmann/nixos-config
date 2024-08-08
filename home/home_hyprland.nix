@@ -28,7 +28,6 @@
     hyperrogue
     n2048
     neverball
-    sgt-puzzles
     sdlpop
     uchess
     typespeed
