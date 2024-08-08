@@ -54,7 +54,6 @@
       alejandra # Nix formatter
       delta # A syntax-highlighting pager for git
       openvpn
-      mullvad
       kmon # Linux kernel manager and activity monitor
       mprocs # TUI tool to run multiple commands in parallel
       cloak # CLI OTP Authentication

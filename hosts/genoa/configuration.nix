@@ -67,8 +67,6 @@ in {
     NIXOS_OZONE_WL = 1;
   };
 
-  services.mullvad-vpn.enable = true;
-
   ### Backup Section ###
   fileSystems."/mnt/${backup_host_name}_backup" = {
     device = "${backup_host_ip}:${backup_target_dir}";

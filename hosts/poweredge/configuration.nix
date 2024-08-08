@@ -24,8 +24,6 @@ in {
     ./../../modules/local_ai.nix
   ];
 
-  networking.hostName = "poweredge"; # Define your hostname.
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
     isNormalUser = true;
@@ -61,13 +59,20 @@ in {
   };
 
   networking = {
+    hostName = "poweredge"; # Define your hostname.
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
       2049 # nfs
       4001 # Greptimedb
-      3000 # Grafana
+      3001 # Grafana
     ];
+    # For containers to access the internet.
+    nat = {
+      enable = true;
+      internalInterfaces = ["ve-+"]; # All container interfaces that need internet access.
+      externalInterface = "eno1";
+    };
   };
 
   services = {
@@ -141,7 +146,7 @@ in {
         server = {
           # Listening Address
           http_addr = "0.0.0.0";
-          http_port = 3000;
+          http_port = 3001;
         };
       };
     };
@@ -176,6 +181,59 @@ in {
       "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
     ];
   };
+
+  ### VPN Container for torrenting linux ISOs of course.
+  containers.torrent = {
+    bindMounts = {
+      "/torrents_transmission" = {
+        hostPath = "/SATA_SSD_POOL/torrents_transmission";
+        isReadOnly = false;
+      };
+    };
+    autoStart = true;
+    privateNetwork = true;
+    hostAddress = "192.168.100.1";
+    localAddress = "192.168.100.2";
+    config = {...}: {
+      system.stateVersion = "24.11";
+      # networking.defaultGateway.address = "192.168.100.1";
+      services = {
+        mullvad-vpn.enable = true;
+        transmission = {
+          enable = true;
+          settings = {
+            download-dir = "/torrents_transmission/finished";
+            incomplete-dir = "/torrents_tranmission/incomplete";
+            incomplete-dir-enabled = true;
+            watch-dir = "/torrents_transmission/watch_dir";
+            watch-dir-enable = true;
+            speed-limit-down-enabled = true;
+            speed-limit-down = 5000; # in KB/s
+            speed-limit-up-enabled = true;
+            speed-limit-up = 5000;
+          };
+        };
+      };
+      systemd.services."mullvad-daemon".postStart = ''
+        while ! ${pkgs.mullvad}/bin/mullvad status >/dev/null; do sleep 1; done
+
+        ${pkgs.mullvad}/bin/mullvad lan set allow
+        ${pkgs.mullvad}/bin/mullvad lockdown-mode set on
+        ${pkgs.mullvad}/bin/mullvad auto-connect set on
+        ${pkgs.mullvad}/bin/mullvad connect
+      '';
+    };
+  };
+  # critical fix for mullvad-daemon to run in container, otherwise errors with: "EPERM: Operation not permitted"
+  # It seems net_cls API filesystem is deprecated as it's part of cgroup v1. So it's not available by default on hosts using cgroup v2.
+  # https://github.com/mullvad/mullvadvpn-app/issues/5408#issuecomment-1805189128
+  fileSystems."/tmp/net_cls" = {
+    device = "net_cls";
+    fsType = "cgroup";
+    options = ["net_cls"];
+  };
+  # Needed for DNS to work within the container.
+  networking.firewall.interfaces."ve-torrent".allowedUDPPorts = [53];
 
   ### Backup Section ###
   fileSystems."/mnt/${backup_host}_backup" = {
