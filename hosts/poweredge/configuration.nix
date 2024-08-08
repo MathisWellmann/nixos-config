@@ -91,6 +91,7 @@ in {
           "movies"
           "backup_genoa"
           "magewe"
+          "torrents_transmission"
         ];
       exports_for_meshify =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")
@@ -101,6 +102,7 @@ in {
           "movies"
           "backup_meshify"
           "magewe"
+          "torrents_transmission"
         ];
       exports_for_razerblade =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${razerblade_addr}(rw,sync,no_subtree_check)\n")
@@ -111,6 +113,7 @@ in {
           "movies"
           "backup_razerblade"
           "magewe"
+          "torrents_transmission"
         ];
     in {
       enable = true;
@@ -196,7 +199,6 @@ in {
     localAddress = "192.168.100.2";
     config = {...}: {
       system.stateVersion = "24.11";
-      # networking.defaultGateway.address = "192.168.100.1";
       services = {
         mullvad-vpn.enable = true;
         transmission = {
