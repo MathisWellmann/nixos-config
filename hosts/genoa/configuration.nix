@@ -92,5 +92,6 @@ in {
   };
   environment.systemPackages = with pkgs; [
     restic
+    flood
   ];
 }
