@@ -4,7 +4,6 @@
 {
   pkgs,
   inputs,
-  lib,
   ...
 }: let
   username = "magewe";
@@ -16,7 +15,6 @@ in {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
-    inputs.tikr.nixosModules.default
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -96,12 +94,4 @@ in {
     restic
     flood
   ];
-
-  services.tikr = {
-    enable = true;
-    database = "GreptimeDb";
-    database-addr = "poweredge:4001";
-    exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
-    data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
-  };
 }

@@ -67,6 +67,7 @@
         modules = [
           ./hosts/poweredge/configuration.nix
           inputs.home-manager.nixosModules.default
+          inputs.tikr.nixosModules.default
         ];
       };
       genoa = nixpkgs-unstable.lib.nixosSystem {

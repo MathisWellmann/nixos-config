@@ -63,10 +63,10 @@ in {
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
-      2049  # nfs
-      4000  # Greptimedb
-      4001  # Greptimedb
-      3001  # Grafana
+      2049 # nfs
+      4000 # Greptimedb
+      4001 # Greptimedb
+      3001 # Grafana
       50000 # rtorrent in container
     ];
     # For containers to access the internet.
@@ -201,7 +201,7 @@ in {
     localAddress = "192.168.100.2";
     config = {...}: {
       system.stateVersion = "24.11";
-      users.users."${username}"= {
+      users.users."${username}" = {
         isNormalUser = true;
         description = "${username}";
         extraGroups = ["wheel"];
@@ -274,4 +274,12 @@ in {
   environment.systemPackages = with pkgs; [
     restic
   ];
+
+  services.tikr = {
+    enable = true;
+    database = "GreptimeDb";
+    database-addr = "poweredge:4001";
+    exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
+    data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
+  };
 }
