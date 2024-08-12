@@ -4,6 +4,7 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
 }: let
   username = "magewe";
@@ -100,7 +101,7 @@ in {
     enable = true;
     database = "GreptimeDb";
     database-addr = "poweredge:4001";
-    exchange = "BinanceUsdMargin";
-    data-type = "Trades";
+    exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
+    data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
   };
 }
