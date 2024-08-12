@@ -28,7 +28,7 @@ in {
   users.users.magewe = {
     isNormalUser = true;
     description = "${username}";
-    extraGroups = ["networkmanager" "wheel"];
+    extraGroups = ["wheel"];
     shell = pkgs.nushell;
   };
 
@@ -63,9 +63,11 @@ in {
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
-      2049 # nfs
-      4001 # Greptimedb
-      3001 # Grafana
+      2049  # nfs
+      4000  # Greptimedb
+      4001  # Greptimedb
+      3001  # Grafana
+      50000 # rtorrent in container
     ];
     # For containers to access the internet.
     nat = {
@@ -199,22 +201,36 @@ in {
     localAddress = "192.168.100.2";
     config = {...}: {
       system.stateVersion = "24.11";
+      users.users."${username}"= {
+        isNormalUser = true;
+        description = "${username}";
+        extraGroups = ["wheel"];
+      };
       services = {
         mullvad-vpn.enable = true;
-        transmission = {
+        rtorrent = {
           enable = true;
-          settings = {
-            download-dir = "/torrents_transmission/finished";
-            incomplete-dir = "/torrents_tranmission/incomplete";
-            incomplete-dir-enabled = true;
-            watch-dir = "/torrents_transmission/watch_dir";
-            watch-dir-enable = true;
-            speed-limit-down-enabled = true;
-            speed-limit-down = 5000; # in KB/s
-            speed-limit-up-enabled = true;
-            speed-limit-up = 5000;
-          };
+          downloadDir = "/torrents_transmission";
+          user = "${username}";
+          port = 50000;
+          openFirewall = true;
         };
+        # transmission = {
+        #   enable = true;
+        #   home = "/torrents_transmission/";
+        #   user = "${username}";
+        #   settings = {
+        #     download-dir = "/torrents_transmission/finished";
+        #     incomplete-dir = "/torrents_transmission/incomplete";
+        #     incomplete-dir-enabled = true;
+        #     watch-dir = "/torrents_transmission/watch_dir";
+        #     watch-dir-enable = true;
+        #     speed-limit-down-enabled = true;
+        #     speed-limit-down = 5000; # in KB/s
+        #     speed-limit-up-enabled = true;
+        #     speed-limit-up = 5000;
+        #   };
+        # };
       };
       systemd.services."mullvad-daemon".postStart = ''
         while ! ${pkgs.mullvad}/bin/mullvad status >/dev/null; do sleep 1; done
