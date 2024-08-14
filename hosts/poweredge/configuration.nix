@@ -282,4 +282,16 @@ in {
     exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
     data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
   };
+
+  # Music server
+  services.minidlna = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      friendly_name = "poweredge_music_server";
+      media_dir = ["/SATA_SSD_POOL/music"];
+      inotify = "yes";
+      port = 8200;
+    };
+  };
 }
