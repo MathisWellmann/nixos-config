@@ -25,7 +25,7 @@ in {
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.magewe = {
+  users.users."${username}"= {
     isNormalUser = true;
     description = "${username}";
     extraGroups = ["wheel"];
@@ -293,5 +293,17 @@ in {
       inotify = "yes";
       port = 8200;
     };
+  };
+
+  # LLM models
+  users.users.ollama= {
+    isSystemUser = true;
+    description = "ollama";
+  };
+  services.ollama = {
+    enable = true;
+    # acceleration = "cuda"; # TODO: buy like a P40 GPU for acceleration.
+    models = "/SATA_SSD_POOL/ollama_models";
+    user = "ollama";
   };
 }
