@@ -14,6 +14,7 @@
         ];
 
         modules-right = [
+          "custom/brightness"
           "custom/arrow8"
           "idle_inhibitor"
           "custom/arrow7"

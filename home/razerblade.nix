@@ -3,5 +3,5 @@
     ./home_hyprland.nix
   ];
 
-  programs.alacritty.settings.font.size = lib.mkForce 16;
+  programs.alacritty.settings.font.size = lib.mkForce 13;
 }
