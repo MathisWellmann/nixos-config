@@ -31,6 +31,7 @@
     sdlpop
     uchess
     typespeed
+    alienarena
 
     # Video
     mpv
