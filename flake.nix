@@ -77,6 +77,13 @@
           {_module.args = inputs;}
         ];
       };
+      razerblade = nixpkgs-unstable.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/razerblade/configuration.nix
+          {_module.args = inputs;}
+        ];
+      };
     };
   };
 }
