@@ -31,7 +31,6 @@
     minetest
     dwarf-fortress
     hyperrogue
-    n2048
     neverball
     sdlpop
     uchess
