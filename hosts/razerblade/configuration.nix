@@ -39,7 +39,7 @@ in {
   users.users."${username}" = {
     isNormalUser = true;
     description = "${username}";
-    extraGroups = ["networkmanager" "wheel"];
+    extraGroups = ["networkmanager" "wheel" "audio"];
     packages = [];
     shell = pkgs.nushell;
   };

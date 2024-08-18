@@ -66,7 +66,6 @@ in {
   #   };
   # };
 
-  nixpkgs.config.pulseaudio = true;
   age.identityPaths = ["${config.users.users.magewe.home}/.ssh/magewe_meshify"];
 
   networking.hostName = "meshify";
