@@ -219,7 +219,8 @@
         la = "lsd -la";
         dt = "date now";
         night = "redshift -P -O 5000";
-        bright = "sudo xbacklight -set 100";
+        bright = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -A 10";
+        dim = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -U 10";
         # Cargo
         udeps = "cargo +nightly udeps --all-targets";
         fmt = "cargo +nightly fmt --all";
@@ -232,8 +233,6 @@
         crr = "cargo run --release";
         cte = "cargo test";
 
-        jjl = "jj log -r main::mine()";
-        jjlo = "jj log -r main@origin::mine()";
       };
       extraConfig = ''
         $env.config = {
