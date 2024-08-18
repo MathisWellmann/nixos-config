@@ -232,7 +232,6 @@
         cr = "cargo run";
         crr = "cargo run --release";
         cte = "cargo test";
-
       };
       extraConfig = ''
         $env.config = {

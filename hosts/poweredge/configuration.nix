@@ -25,7 +25,7 @@ in {
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users."${username}"= {
+  users.users."${username}" = {
     isNormalUser = true;
     description = "${username}";
     extraGroups = ["wheel"];
@@ -84,39 +84,26 @@ in {
       genoa_subnet = "16";
       meshify_addr = "meshify";
       razerblade_addr = "razerblade";
+      common_dirs = [
+        "video"
+        "music"
+        "series"
+        "movies"
+        "magewe"
+        "torrents_transmission"
+      ];
       exports_for_genoa =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${genoa_addr}/${genoa_subnet}(rw,sync,no_subtree_check)\n")
-        [
-          "video"
-          "music"
-          "series"
-          "movies"
-          "backup_genoa"
-          "magewe"
-          "torrents_transmission"
-        ];
+        (common_dirs
+          ++ ["backup_genoa"]);
       exports_for_meshify =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")
-        [
-          "video"
-          "music"
-          "series"
-          "movies"
-          "backup_meshify"
-          "magewe"
-          "torrents_transmission"
-        ];
+        (common_dirs
+          ++ ["backup_meshify"]);
       exports_for_razerblade =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${razerblade_addr}(rw,sync,no_subtree_check)\n")
-        [
-          "video"
-          "music"
-          "series"
-          "movies"
-          "backup_razerblade"
-          "magewe"
-          "torrents_transmission"
-        ];
+        (common_dirs
+          ++ ["backup_razerblade"]);
     in {
       enable = true;
       exports = lib.strings.concatStrings [exports_for_genoa exports_for_meshify exports_for_razerblade];
@@ -296,7 +283,7 @@ in {
   };
 
   # LLM models
-  users.users.ollama= {
+  users.users.ollama = {
     isSystemUser = true;
     description = "ollama";
   };
