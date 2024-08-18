@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, inputs, ...}: {
   imports = [
     ./home.nix
     ./waybar
@@ -19,6 +19,7 @@
     virtualbox
     nemo
     blender
+    amfora
 
     # Games
     mindustry
@@ -31,6 +32,8 @@
     sdlpop
     uchess
     typespeed
+    openarena
+    openspades
 
     # Video
     mpv
