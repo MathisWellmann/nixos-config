@@ -21,6 +21,7 @@ in {
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_poweredge_exports.nix
     ./../../modules/prometheus_exporter.nix
+    ./../../modules/backup_home_to_remote.nix
   ];
 
   networking = {
@@ -73,5 +74,13 @@ in {
   services.zfs = {
     autoScrub.enable = true;
     autoSnapshot.enable = true;
+  };
+
+  services.backup_home_to_remote = {
+    enable = true;
+    local_username = "${username}";
+    backup_host_addr = "poweredge";
+    backup_host_name = "poweredge";
+    backup_host_dir = "/SATA_SSD_POOL/backup_razerblade";
   };
 }
