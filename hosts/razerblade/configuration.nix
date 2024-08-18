@@ -25,6 +25,8 @@ in {
 
   networking = {
     hostName = "razerblade"; # Define your hostname.
+    # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
+    hostId = "5d140ae5";
     networkmanager.enable = true;
   };
 
@@ -62,4 +64,14 @@ in {
   };
 
   hardware.brillo.enable = true; # Brightness adjustment, e.g.: `brillo -u 150000 -S 100`
+
+  boot.supportedFilesystems = ["zfs"];
+  boot.zfs = {
+    forceImportRoot = false;
+    extraPools = ["saber"];
+  };
+  services.zfs = {
+    autoScrub.enable = true;
+    autoSnapshot.enable = true;
+  };
 }
