@@ -1,6 +1,6 @@
 {...}: let
   nfs_host_name = "poweredge";
-  nfs_host_addr = "169.254.90.239";
+  nfs_host_addr = "poweredge";
 in {
   fileSystems."/mnt/${nfs_host_name}_video" = {
     device = "${nfs_host_addr}:/SATA_SSD_POOL/video";
@@ -32,9 +32,4 @@ in {
     fsType = "nfs";
     options = ["rw" "nofail"];
   };
-  # fileSystems."/mnt/poweredge_enc" = {
-  #   device = "poweredge:/SATA_SSD_POOL/enc";
-  #   fsType = "nfs";
-  #   options = ["rw" "nofail"];
-  # };
 }

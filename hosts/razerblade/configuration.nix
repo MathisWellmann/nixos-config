@@ -23,17 +23,10 @@ in {
     ./../../modules/prometheus_exporter.nix
   ];
 
-  networking.hostName = "razerblade"; # Define your hostname.
-  # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
-
-  # Enable networking
-  networking.networkmanager.enable = true;
-
-  # Set your time zone.
-  time.timeZone = "Europe/Berlin";
-
-  # Select internationalisation properties.
-  i18n.defaultLocale = "en_US.UTF-8";
+  networking = {
+    hostName = "razerblade"; # Define your hostname.
+    networkmanager.enable = true;
+  };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."${username}" = {
