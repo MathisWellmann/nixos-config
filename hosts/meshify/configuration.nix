@@ -8,9 +8,8 @@
   tikr,
   ...
 }: let
+  hostname = "meshify";
   username = "magewe";
-  backup_host_name = "poweredge";
-  backup_target_dir = "/SATA_SSD_POOL/backup_meshify";
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -68,7 +67,7 @@ in {
 
   age.identityPaths = ["${config.users.users.magewe.home}/.ssh/magewe_meshify"];
 
-  networking.hostName = "meshify";
+  networking.hostName = "${hostname}";
 
   # TODO: Move to `home.nix`
   programs.gnupg.agent = {
@@ -79,7 +78,7 @@ in {
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
     isNormalUser = true;
-    description = "magewe";
+    description = "${username}";
     extraGroups = ["networkmanager" "wheel" "docker"];
     packages = [];
     shell = pkgs.nushell;
@@ -110,7 +109,7 @@ in {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../../home/meshify.nix;
+      "${username}" = import ./../../home/${hostname}.nix;
     };
   };
 
@@ -127,27 +126,18 @@ in {
     restic
   ];
 
-  ### Backup Section ###
-  fileSystems."/mnt/${backup_host_name}_backup" = {
-    device = "${backup_host_name}:${backup_target_dir}";
-    fsType = "nfs";
-    options = ["rw" "nofail"];
+  services.backup_home_to_remote = {
+    enable = true;
+    local_username = "${username}";
+    backup_host_addr = "poweredge";
+    backup_host_name = "poweredge";
+    backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
   };
-  services = {
-    restic.backups = {
-      home = {
-        initialize = true;
-        paths = [
-          "/home/${username}/"
-        ];
-        exclude = [
-          "/home/${username}/.cache/"
-        ];
-        passwordFile = "/etc/nixos/secrets/restic/password";
-        repository = "/mnt/${backup_host_name}_backup/";
-        pruneOpts = ["--keep-daily 14"];
-        user = "${username}";
-      };
-    };
+
+  services.mount_remote_nfs_exports = {
+    enable = true;
+    nfs_host_name = "poweredge";
+    nfs_host_addr = "poweredge";
+    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
   };
 }

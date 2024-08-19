@@ -6,6 +6,7 @@
   inputs,
   ...
 }: let
+  hostname = "razerblade";
   username = "magewe";
 in {
   imports = [
@@ -25,7 +26,7 @@ in {
   ];
 
   networking = {
-    hostName = "razerblade"; # Define your hostname.
+    hostName = "${hostname}";
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "5d140ae5";
     networkmanager.enable = true;
@@ -44,7 +45,7 @@ in {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${username}" = import ./../../home/razerblade.nix;
+      "${username}" = import ./../../home/${hostname}.nix;
     };
   };
 
@@ -81,6 +82,13 @@ in {
     local_username = "${username}";
     backup_host_addr = "poweredge";
     backup_host_name = "poweredge";
-    backup_host_dir = "/SATA_SSD_POOL/backup_razerblade";
+    backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
+  };
+
+  services.mount_remote_nfs_exports = {
+    enable = true;
+    nfs_host_name = "poweredge";
+    nfs_host_addr = "poweredge";
+    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
   };
 }

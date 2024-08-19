@@ -6,7 +6,10 @@
   inputs,
   lib,
   ...
-}: {
+}: let
+  hostname = "madcatz";
+  username = "magewe";
+in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -19,7 +22,7 @@
 
   i18n.defaultLocale = lib.mkForce "de_DE.UTF-8";
 
-  networking.hostName = "madcatz"; # Define your hostname.
+  networking.hostName = "${hostname}";
   networking.nat.enable = true;
 
   # Native `systemd-nspawn` container
@@ -56,9 +59,9 @@
   # };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.magewe = {
+  users.users."${username}" = {
     isNormalUser = true;
-    description = "magewe";
+    description = "${username}";
     extraGroups = ["networkmanager" "wheel"];
     packages = [];
     shell = pkgs.nushell;
@@ -68,7 +71,7 @@
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../../home/madcatz.nix;
+      "${username}" = import ./../../home/${hostname}.nix;
     };
   };
 
@@ -79,4 +82,19 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
+
+  services.backup_home_to_remote = {
+    enable = true;
+    local_username = "${username}";
+    backup_host_addr = "poweredge";
+    backup_host_name = "poweredge";
+    backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
+  };
+
+  services.mount_remote_nfs_exports = {
+    enable = true;
+    nfs_host_name = "poweredge";
+    nfs_host_addr = "poweredge";
+    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
+  };
 }

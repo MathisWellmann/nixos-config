@@ -16,7 +16,7 @@ in {
     ./../../modules/desktop_amd.nix
     ./../../modules/local_ai.nix
     ./../../modules/mount_external_drives.nix
-    ./../../modules/mount_poweredge_exports.nix
+    ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
   ];
@@ -63,8 +63,15 @@ in {
   services.backup_home_to_remote = {
     enable = true;
     local_username = "${username}";
-    backup_host_addr = "169.254.90.239/16";
+    backup_host_addr = "169.254.90.239";
     backup_host_name = "poweredge";
     backup_host_dir = "/SATA_SSD_POOL/backup_genoa";
+  };
+
+  services.mount_remote_nfs_exports = {
+    enable = true;
+    nfs_host_name = "poweredge";
+    nfs_host_addr = "169.254.90.239";
+    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
   };
 }
