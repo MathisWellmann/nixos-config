@@ -1,7 +1,6 @@
-{inputs, ...}: {
+{...}: {
   imports = [
     ./home_hyprland.nix
-    inputs.lan-mouse.homeManagerModules.default
   ];
 
   wayland.windowManager.hyprland = {
@@ -16,15 +15,24 @@
     };
   };
 
-  # programs = {
-  #   lan-mouse = {
-  #     enable = true;
-  #     systemd = true;
-  #     settings = {
-  #       left = {
-  #         hostname = "meshify";
-  #       };
-  #     };
-  #   };
-  # };
+  services.hyprpaper = {
+    enable = true;
+    settings = {
+      ipc = "on";
+      splash = false;
+      splash_offset = 2.0;
+      preload = [
+        "/home/magewe/wallpaper_rolls-royce-phantom_monitor_0.jpg"
+        "/home/magewe/wallpaper_rolls-royce-phantom_monitor_1.jpg"
+        "/home/magewe/wallpaper_rolls-royce-phantom_monitor_2.jpg"
+      ];
+      # Convert single image into slices using `imagemagick`:
+      # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
+      wallpaper = [
+        "DP-3,/home/magewe/wallpaper_rolls-royce-phantom_monitor_0.jpg"
+        "DP-4,/home/magewe/wallpaper_rolls-royce-phantom_monitor_1.jpg"
+        "DP-5,/home/magewe/wallpaper_rolls-royce-phantom_monitor_2.jpg"
+      ];
+    };
+  };
 }

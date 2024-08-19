@@ -11,8 +11,6 @@
     };
 
     agenix.url = "github:ryantm/agenix";
-    # TODO: remove
-    lan-mouse.url = "github:feschber/lan-mouse";
 
     # Local paths
     tikr = {

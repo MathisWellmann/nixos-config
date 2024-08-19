@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
     ./home.nix
     ./waybar
@@ -22,7 +18,6 @@
     mongodb-compass
     virtualbox
     nemo
-    blender
     amfora
 
     # Games
@@ -55,8 +50,8 @@
 
     # Communication
     halloy # IRC GUI written in Rust
-    discord
-    slack
+    # discord
+    # slack
 
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
@@ -64,6 +59,9 @@
     # Photo Editing
     hugin # Panorama stitching
     darktable
+    blender
+    gimp
+    imagemagick
 
     # Development
     tracy

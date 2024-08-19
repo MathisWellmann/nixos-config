@@ -2,6 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {inputs, ...}: let
+  hostname = "genoa";
   username = "magewe";
 in {
   imports = [
@@ -22,7 +23,7 @@ in {
   ];
 
   networking = {
-    hostName = "genoa";
+    hostName = "${hostname}";
     firewall.allowedTCPPorts = [
       8231 # Tikr
     ];
@@ -40,7 +41,7 @@ in {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${username}" = import ./../../home/genoa.nix;
+      "${username}" = import ./../../home/${hostname}.nix;
     };
   };
 
@@ -65,7 +66,7 @@ in {
     local_username = "${username}";
     backup_host_addr = "169.254.90.239";
     backup_host_name = "poweredge";
-    backup_host_dir = "/SATA_SSD_POOL/backup_genoa";
+    backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
   };
 
   services.mount_remote_nfs_exports = {
