@@ -43,24 +43,6 @@
         "type": "github"
       }
     },
-    "flake-utils": {
-      "inputs": {
-        "systems": "systems_2"
-      },
-      "locked": {
-        "lastModified": 1705309234,
-        "narHash": "sha256-uNRRNRKmJyCRC/8y1RqBkqWBLM034y4qN7EprSdmgyA=",
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "rev": "1ef2e671c3b0c19053962c07dbda38332dcebf26",
-        "type": "github"
-      },
-      "original": {
-        "owner": "numtide",
-        "repo": "flake-utils",
-        "type": "github"
-      }
-    },
     "home-manager": {
       "inputs": {
         "nixpkgs": [
@@ -110,11 +92,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1717067539,
-        "narHash": "sha256-oIs5EF+6VpHJRvvpVWuqCYJMMVW/6h59aYUv9lABLtY=",
+        "lastModified": 1721727458,
+        "narHash": "sha256-r/xppY958gmZ4oTfLiHN0ZGuQ+RSTijDblVgVLFi1mw=",
         "owner": "nix-community",
         "repo": "naersk",
-        "rev": "fa19d8c135e776dc97f4dcca08656a0eeb28d5c0",
+        "rev": "3fb418eaf352498f6b6c30592e3beb63df42ef11",
         "type": "github"
       },
       "original": {
@@ -186,6 +168,19 @@
         "type": "github"
       }
     },
+    "rerun": {
+      "flake": false,
+      "locked": {
+        "lastModified": 1724149211,
+        "narHash": "sha256-XQRr3HoTAzd6F5erbG0C+pA+k51fNqyI/0ljconuHPA=",
+        "path": "/home/magewe/MathisWellmann/tikr/rerun",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/magewe/MathisWellmann/tikr/rerun",
+        "type": "path"
+      }
+    },
     "root": {
       "inputs": {
         "agenix": "agenix",
@@ -197,18 +192,17 @@
     },
     "rust-overlay": {
       "inputs": {
-        "flake-utils": "flake-utils",
         "nixpkgs": [
           "tikr",
           "nixpkgs"
         ]
       },
       "locked": {
-        "lastModified": 1718417877,
-        "narHash": "sha256-s8QrTANEtY6UxzfkcBfoN93bgW9aCRIq54LPRVNu/4c=",
+        "lastModified": 1723947704,
+        "narHash": "sha256-TcVf66N2NgGhxORFytzgqWcg0XJ+kk8uNLNsTRI5sYM=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "7c2d603cb67c974ef8c5cfee1150060dbb299e04",
+        "rev": "456e78a55feade2c3bc6d7bc0bf5e710c9d86120",
         "type": "github"
       },
       "original": {
@@ -232,21 +226,6 @@
         "type": "github"
       }
     },
-    "systems_2": {
-      "locked": {
-        "lastModified": 1681028828,
-        "narHash": "sha256-Vy1rq5AaRuLzOxct8nz4T6wlgyUR7zLU309k9mBC768=",
-        "owner": "nix-systems",
-        "repo": "default",
-        "rev": "da67096a3b9bf56a91d16901293e51ba5b49a27e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nix-systems",
-        "repo": "default",
-        "type": "github"
-      }
-    },
     "tikr": {
       "inputs": {
         "naersk": "naersk",
@@ -254,11 +233,12 @@
           "nixpkgs-unstable"
         ],
         "nixpks": "nixpks",
+        "rerun": "rerun",
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1723483174,
-        "narHash": "sha256-1iIINliaVsAnUk2x8O+pdFKXwqwG/BjCnBlGwi+Pq8A=",
+        "lastModified": 1724154555,
+        "narHash": "sha256-ErR1TOpy3Wq7YWjzZe9j3v3GRWGG96GtEJV4PiDseAg=",
         "path": "/home/magewe/MathisWellmann/tikr",
         "type": "path"
       },

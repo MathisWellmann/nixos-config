@@ -66,6 +66,7 @@ in {
       2049 # nfs
       4000 # Greptimedb
       4001 # Greptimedb
+      4003 # Greptimedb
       3001 # Grafana
       50000 # rtorrent in container
     ];
@@ -149,8 +150,11 @@ in {
     };
   };
 
-  virtualisation.oci-containers.containers."greptimedb" = {
-    image = "greptime/greptimedb";
+  virtualisation.oci-containers.containers."greptimedb" = 
+  let 
+    version = "v0.9.2";
+  in {
+    image = "greptime/greptimedb:${version}";
     cmd = [
       "standalone"
       "start"
