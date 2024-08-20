@@ -27,7 +27,9 @@
       typst
       zola # Static site generator that I want to use for my blog.
       lux # Video download CLI
+      yt-dlp # youtube downloader
       terminus_font
+      rdfind # Find duplicate files: e.g.: `rdfind .`
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
@@ -60,7 +62,6 @@
       unzip
       (python3.withPackages my-python-packages)
       systeroid # More powerful alternative to `sysctl` with a tui
-      musikcube
       hwinfo
       dmidecode
       iperf

@@ -19,6 +19,8 @@
     virtualbox
     nemo
     amfora
+    clementine
+    bitmagnet
 
     # Games
     mindustry
