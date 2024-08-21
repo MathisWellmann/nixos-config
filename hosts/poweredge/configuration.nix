@@ -11,6 +11,7 @@
   username = "magewe";
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
+  tikr_base_port = 9184;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -96,7 +97,7 @@ in {
       exports_for_genoa =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${genoa_addr}/${genoa_subnet}(rw,sync,no_subtree_check)\n")
         (common_dirs
-          ++ ["backup_genoa"]);
+          ++ ["backup_genoa" "ilka"]);
       exports_for_meshify =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")
         (common_dirs
@@ -109,7 +110,31 @@ in {
       enable = true;
       exports = lib.strings.concatStrings [exports_for_genoa exports_for_meshify exports_for_razerblade];
     };
-    prometheus = {
+    prometheus = let
+      node_scrape_configs = map (host: {
+        job_name = "${host}-node";
+        static_configs = [
+          {
+            targets = ["${host}:${toString config.services.prometheus.exporters.node.port}"];
+          }
+        ];
+      }) ["127.0.0.1" "genoa" "meshify" "superserver" "elitedesk" "razerblade"];
+      n_tikr_services =
+        builtins.length config.services.tikr.exchanges
+        + builtins.length config.services.tikr.data-types;
+      tikr_max_port = tikr_base_port + n_tikr_services;
+      tikr_ports = lib.range tikr_base_port tikr_max_port;
+      tikr_scrape_configs =
+        map (local_tikr_port: {
+          job_name = "tikr-${toString local_tikr_port}";
+          static_configs = [
+            {
+              targets = ["127.0.0.1:${toString local_tikr_port}"];
+            }
+          ];
+        })
+        tikr_ports;
+    in {
       enable = true;
       listenAddress = "0.0.0.0";
       retentionTime = "1y";
@@ -124,14 +149,7 @@ in {
         # bitcoin.enable = true;
         # buildkite-agent.enable = true;
       };
-      scrapeConfigs = map (host: {
-        job_name = "${host}-node";
-        static_configs = [
-          {
-            targets = ["${host}:${toString config.services.prometheus.exporters.node.port}"];
-          }
-        ];
-      }) ["127.0.0.1" "genoa" "meshify" "superserver" "elitedesk" "razerblade"];
+      scrapeConfigs = node_scrape_configs ++ tikr_scrape_configs;
     };
     grafana = {
       enable = true;
@@ -150,8 +168,7 @@ in {
     };
   };
 
-  virtualisation.oci-containers.containers."greptimedb" = 
-  let 
+  virtualisation.oci-containers.containers."greptimedb" = let
     version = "v0.9.2";
   in {
     image = "greptime/greptimedb:${version}";
@@ -272,6 +289,7 @@ in {
     database-addr = "poweredge:4001";
     exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
     data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
+    prometheus_exporter_base_port = tikr_base_port;
   };
 
   # Music server
