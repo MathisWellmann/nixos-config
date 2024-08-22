@@ -64,11 +64,12 @@ in {
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
-      2049 # nfs
-      4000 # Greptimedb
-      4001 # Greptimedb
-      4003 # Greptimedb
-      3001 # Grafana
+      2049  # nfs
+      4000  # Greptimedb
+      4001  # Greptimedb
+      4003  # Greptimedb
+      3001  # Grafana
+      27017 # Mongodb
       50000 # rtorrent in container
     ];
     # For containers to access the internet.
@@ -314,5 +315,12 @@ in {
     # acceleration = "cuda"; # TODO: buy like a P40 GPU for acceleration.
     models = "/SATA_SSD_POOL/ollama_models";
     user = "ollama";
+  };
+
+  services.mongodb = {
+    enable = true;
+    dbpath = "/SATA_SSD_POOL/mongodb";
+    user = "root";
+    bind_ip = "0.0.0.0";
   };
 }

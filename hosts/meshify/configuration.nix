@@ -87,18 +87,6 @@ in {
 
   virtualisation.docker.enable = true;
 
-  services.mongodb = let
-    system = pkgs.system;
-    # pkgs-stable = import inputs.nixpkgs-stable { inherit system; config.allowUnfree = true; };
-  in {
-    enable = true;
-    dbpath = "/home/magewe/mongodb";
-    user = "root";
-    bind_ip = "0.0.0.0";
-    # package = pkgs-stable.legacyPackages."${pkgs.system}".mongodb;
-    # package = pkgs-stable.mongodb;
-  };
-
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
     27017 # Mongodb
