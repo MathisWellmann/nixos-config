@@ -75,4 +75,6 @@ in {
     nfs_host_addr = "169.254.90.239";
     nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "ilka"];
   };
+
+  services.fstrim.enable = true;
 }
