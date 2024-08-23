@@ -6,11 +6,11 @@
   wayland.windowManager.hyprland = {
     settings = {
       monitor = [
-        "DP-1, 1920x1080@60, 0x0, 1"
-        "DP-2, 1920x1080@60, 0x1080, 1"
-        "DP-3, 3840x2160@60, 1920x0, 1, transform, 1"
-        "DP-4, 3840x2160@60, 4080x0, 1, transform, 1"
-        "DP-5, 3840x2160@60, 6240x0, 1, transform, 1"
+        "DP-5, 1920x1080@60, 0x0, 1"
+        "DP-6, 1920x1080@60, 0x1080, 1"
+        "DP-7, 3840x2160@60, 1920x0, 1, transform, 1"
+        "DP-8, 3840x2160@60, 4080x0, 1, transform, 1"
+        "DP-9, 3840x2160@60, 6240x0, 1, transform, 1"
       ];
     };
   };
@@ -29,9 +29,9 @@
       # Convert single image into slices using `imagemagick`:
       # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
       wallpaper = [
-        "DP-3,/home/magewe/wallpaper_rolls-royce-phantom_monitor_0.jpg"
-        "DP-4,/home/magewe/wallpaper_rolls-royce-phantom_monitor_1.jpg"
-        "DP-5,/home/magewe/wallpaper_rolls-royce-phantom_monitor_2.jpg"
+        "DP-7,/home/magewe/wallpaper_rolls-royce-phantom_monitor_0.jpg"
+        "DP-8,/home/magewe/wallpaper_rolls-royce-phantom_monitor_1.jpg"
+        "DP-9,/home/magewe/wallpaper_rolls-royce-phantom_monitor_2.jpg"
       ];
     };
   };
