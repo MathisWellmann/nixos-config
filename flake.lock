@@ -237,8 +237,8 @@
         "rust-overlay": "rust-overlay"
       },
       "locked": {
-        "lastModified": 1724251538,
-        "narHash": "sha256-Rh+obhezMIa77rZnUOkIIeCdbPcPqP7cDg0sDkIHK5g=",
+        "lastModified": 1724529720,
+        "narHash": "sha256-IVkEdsoc1pX9RW0Z7i3ibPbs/rTjPkkJFRg8fteLHCk=",
         "path": "/home/magewe/MathisWellmann/tikr",
         "type": "path"
       },

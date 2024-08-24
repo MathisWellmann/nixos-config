@@ -24,7 +24,8 @@ in {
     ./../../modules/backup.nix
     ./../../modules/buildkite.nix
     ./../../modules/mount_external_drives.nix
-    ./../../modules/mount_poweredge_exports.nix
+    ./../../modules/mount_remote_nfs_exports.nix
+    ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
   ];
 
@@ -120,11 +121,6 @@ in {
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
-
-  environment.systemPackages = with pkgs; [
-    tikr.defaultPackage.${pkgs.system}
-    restic
-  ];
 
   services.backup_home_to_remote = {
     enable = true;
