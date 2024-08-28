@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, inputs, ...}: {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "magewe";
@@ -74,7 +74,7 @@
       # Development
       gitui
       cargo-expand # Expands rust macros
-      cargo-info
+      # cargo-info
       cargo-semver-checks # A tool to scan your rust crate for semver violations
       gdb
       zig
