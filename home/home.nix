@@ -1,4 +1,4 @@
-{pkgs, inputs, ...}: {
+{pkgs, ...}: {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "magewe";
@@ -39,6 +39,7 @@
       nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
       nix-prefetch-scripts # Is used to obtain source hashes of urls. aka `nix-prefetch-url`
       nurl # CLI to generate nix fetcher calls from repository URLs.
+      nh
 
       # LSPs
       marksman # Markdown LSP
@@ -74,7 +75,7 @@
       # Development
       gitui
       cargo-expand # Expands rust macros
-      # cargo-info
+      cargo-info
       cargo-semver-checks # A tool to scan your rust crate for semver violations
       gdb
       zig
