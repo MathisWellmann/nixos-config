@@ -12,6 +12,7 @@
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
   tikr_base_port = 9184;
+  mongodb_port = 27017;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -69,7 +70,7 @@ in {
       4001  # Greptimedb
       4003  # Greptimedb
       3001  # Grafana
-      27017 # Mongodb
+      mongodb_port # Mongodb
       50000 # rtorrent in container
     ];
     # For containers to access the internet.
@@ -144,13 +145,58 @@ in {
         node = {
           enable = true;
           port = 9002;
-          enabledCollectors = ["systemd" "zfs"];
+          enabledCollectors = ["systemd"];
         };
-        # mongodb.enable = true;
+        zfs = {
+          enable = true;
+          port = 9134;
+        };
+        postgres = {
+          enable = true;
+          dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
+          port = 9187;
+        };
+        mongodb = {
+          enable = true;
+          collectAll = true;
+          uri = "mongodb://localhost:${toString mongodb_port}";
+          port = 9216;
+        };
+        restic = {
+          enable = true;
+          port = 9753;
+          repository = config.services.restic.backups.zfs_sata_ssd_pool.repository;
+          passwordFile = "/etc/nixos/secrets/restic/password";
+        };
         # bitcoin.enable = true;
         # buildkite-agent.enable = true;
       };
-      scrapeConfigs = node_scrape_configs ++ tikr_scrape_configs;
+      scrapeConfigs = node_scrape_configs ++ tikr_scrape_configs ++ [
+        {
+          job_name = "postgres-greptimedb";
+          static_configs = [
+            { targets = ["127.0.0.1:${toString config.services.prometheus.exporters.postgres.port}"];}
+          ];
+        }
+        {
+          job_name = "zfs";
+          static_configs = [
+            { targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
+          ];
+        }
+        {
+          job_name = "mongodb";
+          static_configs = [
+            { targets = ["127.0.0.1:${toString config.services.prometheus.exporters.mongodb.port}"];}
+          ];
+        }
+        {
+          job_name = "restic";
+          static_configs = [
+            { targets = ["127.0.0.1:${toString config.services.prometheus.exporters.restic.port}"];}
+          ];
+        }
+      ];
     };
     grafana = {
       enable = true;
