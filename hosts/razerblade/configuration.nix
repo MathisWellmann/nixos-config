@@ -91,4 +91,6 @@ in {
     nfs_host_addr = "poweredge";
     nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
   };
+  # services.mullvad-vpn.enable = true;
+  # services.resolved.enable = true;
 }
