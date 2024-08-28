@@ -30,6 +30,7 @@
       yt-dlp # youtube downloader
       terminus_font
       rdfind # Find duplicate files: e.g.: `rdfind .`
+      fend # Unit aware calculator
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
