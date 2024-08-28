@@ -154,7 +154,7 @@ in {
         postgres = {
           enable = true;
           dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
-          port = 9187;
+          port = 9188;
         };
         mongodb = {
           enable = true;
@@ -261,6 +261,10 @@ in {
         description = "${username}";
         extraGroups = ["wheel"];
       };
+      environment.systemPackages = with pkgs; [
+        rqbit
+        zellij
+      ];
       services = {
         mullvad-vpn.enable = true;
         rtorrent = {
