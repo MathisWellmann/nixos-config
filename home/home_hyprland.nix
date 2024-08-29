@@ -21,6 +21,7 @@
     amfora
     clementine
     bitmagnet
+    hyprshot
 
     # Games
     mindustry

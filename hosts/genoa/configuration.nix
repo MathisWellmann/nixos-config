@@ -15,6 +15,7 @@ in {
     ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_amd.nix
+    ./../../modules/desktop_nvidia.nix
     ./../../modules/local_ai.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_remote_nfs_exports.nix
@@ -76,5 +77,7 @@ in {
     nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "ilka"];
   };
 
+  # Care must be taken when usin luks, see: 
+  # https://kokada.capivaras.dev/blog/an-unordered-list-of-hidden-gems-inside-nixos/
   services.fstrim.enable = true;
 }
