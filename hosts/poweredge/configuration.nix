@@ -13,6 +13,7 @@
   backup_target_dir = "/mnt/backup_hdd";
   tikr_base_port = 9184;
   mongodb_port = 27017;
+  gitea_port = 3000;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -65,11 +66,12 @@ in {
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
-      2049  # nfs
-      4000  # Greptimedb
-      4001  # Greptimedb
-      4003  # Greptimedb
-      3001  # Grafana
+      2049 # nfs
+      4000 # Greptimedb
+      4001 # Greptimedb
+      4003 # Greptimedb
+      gitea_port
+      3001 # Grafana
       mongodb_port # Mongodb
       50000 # rtorrent in container
     ];
@@ -171,32 +173,35 @@ in {
         # bitcoin.enable = true;
         # buildkite-agent.enable = true;
       };
-      scrapeConfigs = node_scrape_configs ++ tikr_scrape_configs ++ [
-        {
-          job_name = "postgres-greptimedb";
-          static_configs = [
-            { targets = ["127.0.0.1:${toString config.services.prometheus.exporters.postgres.port}"];}
-          ];
-        }
-        {
-          job_name = "zfs";
-          static_configs = [
-            { targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
-          ];
-        }
-        {
-          job_name = "mongodb";
-          static_configs = [
-            { targets = ["127.0.0.1:${toString config.services.prometheus.exporters.mongodb.port}"];}
-          ];
-        }
-        {
-          job_name = "restic";
-          static_configs = [
-            { targets = ["127.0.0.1:${toString config.services.prometheus.exporters.restic.port}"];}
-          ];
-        }
-      ];
+      scrapeConfigs =
+        node_scrape_configs
+        ++ tikr_scrape_configs
+        ++ [
+          {
+            job_name = "postgres-greptimedb";
+            static_configs = [
+              {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.postgres.port}"];}
+            ];
+          }
+          {
+            job_name = "zfs";
+            static_configs = [
+              {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
+            ];
+          }
+          {
+            job_name = "mongodb";
+            static_configs = [
+              {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.mongodb.port}"];}
+            ];
+          }
+          {
+            job_name = "restic";
+            static_configs = [
+              {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.restic.port}"];}
+            ];
+          }
+        ];
     };
     grafana = {
       enable = true;
@@ -372,5 +377,14 @@ in {
     dbpath = "/SATA_SSD_POOL/mongodb";
     user = "root";
     bind_ip = "0.0.0.0";
+  };
+
+  # Self hosted Git
+  services.gitea = {
+    enable = true;
+    appName = "MW-Trading-Systems";
+    repositoryRoot = "/SATA_SSD_POOL/gitea";
+    user = "${username}";
+    settings.server.HTTP_PORT = gitea_port;
   };
 }

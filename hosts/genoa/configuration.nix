@@ -77,7 +77,7 @@ in {
     nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "ilka"];
   };
 
-  # Care must be taken when usin luks, see: 
+  # Care must be taken when usin luks, see:
   # https://kokada.capivaras.dev/blog/an-unordered-list-of-hidden-gems-inside-nixos/
   services.fstrim.enable = true;
 }
