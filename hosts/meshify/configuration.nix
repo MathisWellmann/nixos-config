@@ -89,7 +89,6 @@ in {
 
   # Open ports in the firewall.
   networking.firewall.allowedTCPPorts = [
-    27017 # Mongodb
     8231 # Tikr
   ];
   networking.nameservers = ["192.168.0.75"];
