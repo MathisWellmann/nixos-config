@@ -1,6 +1,7 @@
 {
   pkgs,
   config,
+  inputs,
   ...
 }: {
   imports = [
@@ -15,7 +16,7 @@
 
   services.xserver.videoDrivers = ["nvidia"];
 
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages = with pkgs;  [
     cudatoolkit
     cudaPackages.libcublas
     cudaPackages.libcufft
@@ -23,6 +24,8 @@
     cudaPackages.libcusparse
     cudaPackages.libcusolver
     cudaPackages.cuda_nvrtc
+    cudaPackages.cuda_nvprof
     # cudaPackages.nsight_compute
+    # cudaPackages.nsight_systems
   ];
 }

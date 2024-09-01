@@ -8,7 +8,7 @@
   # environment.
   home.packages = with pkgs; [
     # Desktop
-    firefox
+    # firefox
     # ladybird
     keepassxc
     mate.eom # Image viewer
@@ -22,6 +22,7 @@
     clementine
     bitmagnet
     hyprshot
+    pavucontrol
 
     # Games
     mindustry
@@ -35,6 +36,7 @@
     typespeed
     openarena
     openspades
+    # veloren
 
     # Video
     mpv
@@ -52,7 +54,7 @@
     input-leap
 
     # Communication
-    halloy # IRC GUI written in Rust
+    # halloy # IRC GUI written in Rust
     # discord
     # slack
 

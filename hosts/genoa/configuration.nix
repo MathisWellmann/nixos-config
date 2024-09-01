@@ -1,7 +1,7 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-{inputs, ...}: let
+{pkgs, inputs, ...}: let
   hostname = "genoa";
   username = "magewe";
 in {
@@ -80,4 +80,8 @@ in {
   # Care must be taken when usin luks, see:
   # https://kokada.capivaras.dev/blog/an-unordered-list-of-hidden-gems-inside-nixos/
   services.fstrim.enable = true;
+
+  environment.systemPackages = with inputs.nixpkgs-stable.legacyPackages.${pkgs.system}; [
+    firefox
+  ];
 }
