@@ -219,7 +219,7 @@
       enable = true;
       shellAliases = {
         ns = "nix-shell";
-        la = "lsd -la";
+        la = "lsd -la --group-directories-first -g --header";
         dt = "date now";
         night = "redshift -P -O 5000";
         bright = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -A 10";

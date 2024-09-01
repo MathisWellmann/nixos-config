@@ -1,7 +1,7 @@
 {...}: {
   programs.bash.shellAliases = {
     ns = "nix-shell";
-    la = "lsd -la";
+    la = "lsd -la --group-directories-first -g --header";
     skhx = "sk | xargs hx"; # Fuzzy search and open the selected file with `helix`
     fhx = "fzf | xargs hx"; # Same as above but with `fzf`
     night = "redshift -P -O 5000";
