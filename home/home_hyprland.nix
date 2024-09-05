@@ -23,6 +23,7 @@
     bitmagnet
     hyprshot
     pavucontrol
+    octaveFull
 
     # Games
     mindustry
