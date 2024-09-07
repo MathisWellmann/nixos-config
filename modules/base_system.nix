@@ -30,7 +30,7 @@
   nix.settings.trusted-users = ["root" "magewe"];
 
   # From: https://kokada.capivaras.dev/blog/an-unordered-list-of-hidden-gems-inside-nixos/
-  networking.nftables.enable = true;
+  # networking.nftables.enable = true;
   # Essentially re-writes the script for changing the configuration to rust.
   system.switch = {
     enable = false;

@@ -221,7 +221,7 @@ in {
   };
 
   virtualisation.oci-containers.containers."greptimedb" = let
-    version = "v0.9.2";
+    version = "v0.9.3";
   in {
     image = "greptime/greptimedb:${version}";
     cmd = [
@@ -337,6 +337,7 @@ in {
   };
   environment.systemPackages = with pkgs; [
     restic
+    gitea
   ];
 
   services.tikr = {
