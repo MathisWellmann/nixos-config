@@ -362,6 +362,18 @@ in {
     };
   };
 
+  # Music streaming
+  services.navidrome = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      MusicFolder = "/SATA_SSD_POOL/music";
+      Address = "0.0.0.0";
+      port = 4533;
+    };
+    user = "${username}";
+  };
+
   # LLM models
   users.users.ollama = {
     isSystemUser = true;
