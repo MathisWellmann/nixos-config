@@ -341,6 +341,7 @@ in {
   environment.systemPackages = with pkgs; [
     restic
     gitea
+    radicle-node
   ];
 
   services.tikr = {
@@ -404,4 +405,30 @@ in {
     settings.server.HTTP_PORT = gitea_port;
     stateDir = "${gitea_state_dir}";
   };
+
+  # Decentralized git protocol
+  # services.radicle = 
+  # let 
+  #   port = 8776;
+  #   domain = "mw_systems";
+  # in {
+  #   enable = true;
+  #   node = {
+  #     listenAddress = "0.0.0.0";
+  #     listenPort = port;
+  #     openFirewall = true;
+  #   };
+  #   privateKeyFile = "/etc/nixos/secrets/radicle/private_key";
+  #   publicKey = "/etc/nixos/secrets/radicle/public_key";
+  #   settings = {
+  #     node = {
+  #       alias = "seed.radicle.${domain}";
+  #       externalAddresses = ["seed.radicle.${domain}:${builtins.toString port}"];
+  #       seedingPolicy = {
+  #         default = "allow";
+  #         scope = "all";
+  #       };
+  #     };
+  #   };
+  # };
 }
