@@ -3,7 +3,7 @@
     ./home_hyprland.nix
   ];
 
-  programs.alacritty.settings.font.size = lib.mkForce 13;
+  programs.alacritty.settings.font.size = lib.mkForce 12;
   services.hyprpaper = {
     enable = true;
     settings = {

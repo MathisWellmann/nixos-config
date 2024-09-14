@@ -8,7 +8,7 @@
   # environment.
   home.packages = with pkgs; [
     # Desktop
-    # firefox
+    firefox
     # ladybird
     keepassxc
     mate.eom # Image viewer
@@ -61,6 +61,7 @@
 
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
+    ledger-live-desktop
 
     # Photo Editing
     hugin # Panorama stitching

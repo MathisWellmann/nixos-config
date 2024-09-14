@@ -93,4 +93,6 @@ in {
   };
   # services.mullvad-vpn.enable = true;
   # services.resolved.enable = true;
+
+  hardware.ledger.enable = true;
 }
