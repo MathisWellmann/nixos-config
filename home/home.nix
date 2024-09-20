@@ -77,6 +77,7 @@
       cargo-expand # Expands rust macros
       cargo-info
       cargo-semver-checks # A tool to scan your rust crate for semver violations
+      cargo-wizard
       gdb
       zig
       hvm # A massively parallel, optimal functional runtime
