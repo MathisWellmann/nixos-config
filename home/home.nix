@@ -241,8 +241,9 @@
         $env.config = {
           show_banner: false,
         };
-        def skhx [] = { sk | xargs hx };
-        def fhx [] = { fzf | xargs hx };
+        # using the `fd` command to respect `.gitignore` 
+        def shx [] = { fd --type f --strip-cwd-prefix | sk | xargs hx };
+        def fhx [] = { fd --type f --strip-cwd-prefix | fzf | xargs hx };
 
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin));
