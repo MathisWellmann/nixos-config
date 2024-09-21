@@ -157,7 +157,7 @@ in {
         postgres = {
           enable = true;
           dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
-          port = 9188;
+          port = 9215;
         };
         mongodb = {
           enable = true;
