@@ -14,6 +14,7 @@
   tikr_base_port = 9184;
   mongodb_port = 27017;
   gitea_port = 3000;
+  gitea_state_dir = "/var/lib/gitea";
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -329,6 +330,7 @@ in {
       initialize = true;
       paths = [
         "/SATA_SSD_POOL/*"
+        "${gitea_state_dir}"
       ];
       passwordFile = "/etc/nixos/secrets/restic/password";
       repository = "/mnt/${backup_host}_backup/restic/SATA_SSD_POOL";
@@ -400,5 +402,6 @@ in {
     repositoryRoot = "/SATA_SSD_POOL/gitea";
     user = "${username}";
     settings.server.HTTP_PORT = gitea_port;
+    stateDir = "${gitea_state_dir}";
   };
 }
