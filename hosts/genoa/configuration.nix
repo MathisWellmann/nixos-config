@@ -35,7 +35,7 @@ in {
     isNormalUser = true;
     description = "${username}";
     extraGroups = ["networkmanager" "wheel"];
-    packages = [];
+    shell = pkgs.nushell;
   };
 
   home-manager = {
