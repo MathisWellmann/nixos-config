@@ -40,6 +40,7 @@
       nix-prefetch-scripts # Is used to obtain source hashes of urls. aka `nix-prefetch-url`
       nurl # CLI to generate nix fetcher calls from repository URLs.
       nh
+      nix-tree
 
       # LSPs
       marksman # Markdown LSP
@@ -47,6 +48,7 @@
       yaml-language-server
       libclang # Includes `clangd`
       zls # Zig LSP
+      julia
 
       # Terminal
       tokei
