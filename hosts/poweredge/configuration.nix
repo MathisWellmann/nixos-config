@@ -23,7 +23,6 @@ in {
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
-    ./../../modules/namecoin.nix
     ./../../modules/monero.nix
     ./../../modules/local_ai.nix
   ];
@@ -431,4 +430,38 @@ in {
   #     };
   #   };
   # };
+
+  services.homepage-dashboard = {
+    enable = true;
+    openFirewall = true;
+    listenPort = 8082;
+    widgets = [
+      {
+        resources = {
+          cpu = true;
+          disk = "/";
+          memory = true;
+        };
+      }
+      {
+        search = {
+          provider = "duckduckgo";
+          target = "_blank";
+        };
+      }
+      {
+        widget = {
+          type = "fritzbox";
+          url = "http://192.168.178.1";
+        };
+      }
+      {
+        widget = {
+          type = "gitea";
+          url = "http://127.0.0.1:${builtins.toString gitea_port}";
+          key = "giteaapitoken"; # TODO: load token from file.
+        };
+      }
+    ];
+  };
 }
