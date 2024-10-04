@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, inputs, ...}: {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "magewe";
@@ -151,6 +151,7 @@
     home-manager.enable = true;
     helix = {
       enable = true;
+      package = inputs.helix;
       settings = {
         theme = "everforest_dark"; # Dark
         # theme = "ayu_light";

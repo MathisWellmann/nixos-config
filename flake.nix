@@ -11,6 +11,7 @@
     };
 
     agenix.url = "github:ryantm/agenix";
+    helix.url = "github:helix-editor/helix";
 
     # Local paths
     tikr = {
