@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{pkgs, inputs, ...}: {
   imports = [
     ./home.nix
     ./waybar
@@ -76,9 +76,14 @@
     tracy
   ];
 
-  wayland.windowManager.hyprland = {
+  wayland.windowManager.hyprland = 
+  let
+    system = pkgs.system;
+    stable = import inputs.nixpkgs-stable { inherit system; };
+  in {
     enable = true;
     # xwayland.enable = true;
+    package = stable.hyprland;
     settings = {
       # monitors should be configured in host specific file
       "exec-once" = "waybar & hyprpaper";
@@ -136,6 +141,7 @@
       dwindle = {
         smart_split = true;
       };
+      debug.disable_logs = false;
     };
   };
 
