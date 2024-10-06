@@ -10,6 +10,7 @@
     # Desktop
     firefox
     # ladybird
+    nyxt # Keyboard driven browser
     keepassxc
     mate.eom # Image viewer
     geeqie # Better image viewer
