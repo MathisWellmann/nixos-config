@@ -140,18 +140,7 @@
   };
 
   programs = {
-    chromium = {
-      enable = true;
-      commandLineArgs = [
-        "--ozone-platform=wayland"
-      ];
-      extensions = [
-        "cjpalhdlnbpafiamejdnhcphjbkeiagm" # ublock origin
-        "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark reader
-        "fijngjgcjhjmmpcmkeiomlglpeiijkld" # Talisman
-        "onhogfjeacnfoofkfgppdlbmlmnplgbn" # SubWallet
-      ];
-    };
+    librewolf.enable = true;
     fuzzel = {
       enable = true;
       settings = {
