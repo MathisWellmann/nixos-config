@@ -31,6 +31,7 @@
       terminus_font
       rdfind # Find duplicate files: e.g.: `rdfind .`
       fend # Unit aware calculator
+      cmatrix
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
@@ -212,7 +213,7 @@
       settings = {
         window.opacity = 0.8;
         font = {
-          size = 20.0;
+          size = 19.0;
           # normal.family = "HackNerdFont";
           normal.family = "Terminus";
         };
