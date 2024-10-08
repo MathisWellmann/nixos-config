@@ -63,6 +63,7 @@
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
     ledger-live-desktop
+    trezor-suite
 
     # Photo Editing
     hugin # Panorama stitching
