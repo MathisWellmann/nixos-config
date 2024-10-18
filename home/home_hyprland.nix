@@ -68,6 +68,7 @@
     # Photo Editing
     hugin # Panorama stitching
     darktable
+    rawtherapee
     blender
     gimp
     imagemagick
