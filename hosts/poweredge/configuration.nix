@@ -464,4 +464,13 @@ in {
       }
     ];
   };
+
+  services.calibre-web = {
+    enable = true;
+    listen = {
+      ip = "0.0.0.0";
+      port = 8083;
+    };
+    openFirewall = true;
+  };
 }
