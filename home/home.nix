@@ -37,18 +37,18 @@
       # Package version diff tool. E.g Compare system revision 405 with 420:
       # `nvd diff /nix/var/nix/profiles/system-405-link/ /nix/var/nix/profiles/system-420-link/`
       nvd
-      nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
+      nix-output-monitor   # `nom` is a drop in replacement for `nix` that has pretty output
       nix-prefetch-scripts # Is used to obtain source hashes of urls. aka `nix-prefetch-url`
-      nurl # CLI to generate nix fetcher calls from repository URLs.
+      nurl                 # CLI to generate nix fetcher calls from repository URLs.
       nh
       nix-tree
 
       # LSPs
-      marksman # Markdown LSP
-      nil # Nix LSP
+      marksman             # Markdown LSP
+      nil                  # Nix LSP
       yaml-language-server
-      libclang # Includes `clangd`
-      zls # Zig LSP
+      libclang             # Includes `clangd`
+      zls                  # Zig LSP
       julia
 
       # Terminal
@@ -57,9 +57,10 @@
       neofetch
       onefetch
       diskonaut
-      oxker # Docker tui
+      oxker     # Docker tui
       alejandra # Nix formatter
-      delta # A syntax-highlighting pager for git
+      delta     # A syntax-highlighting pager for git
+      diffedit3 # jj helper to edit diffs in 3 panes
       openvpn
       kmon # Linux kernel manager and activity monitor
       mprocs # TUI tool to run multiple commands in parallel
@@ -204,7 +205,12 @@
           name = "${me}";
           email = "${email}";
         };
-        ui.editor = "hx";
+        ui = {
+          editor = "hx";
+          pager = "delta";
+          paginate = "never";
+          diff.format = "git";
+        };
         snapshot.max-new-file-size = "10MB";
       };
     };
