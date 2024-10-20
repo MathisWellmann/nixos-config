@@ -84,7 +84,7 @@
   in {
     enable = true;
     # xwayland.enable = true;
-    package = stable.hyprland;
+    # package = stable.hyprland;
     settings = {
       # monitors should be configured in host specific file
       "exec-once" = "waybar & hyprpaper";

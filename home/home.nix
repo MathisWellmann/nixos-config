@@ -155,7 +155,7 @@
       enable = true;
       package = inputs.helix;
       settings = {
-        theme = "everforest_dark"; # Dark
+        theme = "papercolor-dark"; # Dark
         # theme = "ayu_light";
         editor = {
           scroll-lines = 1;
