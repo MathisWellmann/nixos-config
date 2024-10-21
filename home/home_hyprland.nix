@@ -25,6 +25,8 @@
     pavucontrol
     octaveFull
     hwloc
+    lux # Video download CLI
+    yt-dlp # youtube downloader
 
     # Games
     mindustry
@@ -190,6 +192,18 @@
         any = {
           path = "/home/magewe/wallpaper.jpg";
         };
+      };
+    };
+    alacritty = {
+      enable = true;
+      settings = {
+        window.opacity = 0.8;
+        font = {
+          size = 19.0;
+          # normal.family = "HackNerdFont";
+          normal.family = "Terminus";
+        };
+        terminal.shell.program = "nu";
       };
     };
   };

@@ -247,8 +247,8 @@
     "rerun": {
       "flake": false,
       "locked": {
-        "lastModified": 1726855833,
-        "narHash": "sha256-aEIEuwoDtdTMFmfA48FYJhcffOyE8gIlS/MAW7JXBzQ=",
+        "lastModified": 1733086942,
+        "narHash": "sha256-5Ez1uwYDQgKMA4P2DP7eU9APXNyGnr8kNzQfGh7lOnw=",
         "path": "/home/magewe/MathisWellmann/tikr/rerun",
         "type": "path"
       },
@@ -300,11 +300,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1726799228,
-        "narHash": "sha256-wn1leQyMAc/TrLRKcPc0GX6YtoziKQpc/MtZjPNiJ2Q=",
+        "lastModified": 1733020719,
+        "narHash": "sha256-Chv9+3zrf1DhdB9JyskjoV0vJbCQEgkVqrU3p4RPLv8=",
         "owner": "oxalica",
         "repo": "rust-overlay",
-        "rev": "ab150c7412db7bea5879ce2776718f53fba37aa2",
+        "rev": "8e18f10703112e6c33e1c0d8b93e8305f6f0a75c",
         "type": "github"
       },
       "original": {
@@ -354,8 +354,8 @@
         "rust-overlay": "rust-overlay_2"
       },
       "locked": {
-        "lastModified": 1726862267,
-        "narHash": "sha256-mVEGtHF5aHbQTstUERCZuV/fGrB6d6llaJT+V7VCdYQ=",
+        "lastModified": 1733087944,
+        "narHash": "sha256-Cf7DHszgVixeEzUKYcWzBY8//MscEqzcbtCHEAVC1ww=",
         "path": "/home/magewe/MathisWellmann/tikr",
         "type": "path"
       },

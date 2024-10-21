@@ -12,7 +12,7 @@
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
   tikr_base_port = 9184;
-  mongodb_port = 27017;
+  # mongodb_port = 27017;
   gitea_port = 3000;
   gitea_state_dir = "/var/lib/gitea";
 in {
@@ -24,7 +24,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/monero.nix
-    ./../../modules/local_ai.nix
+    # ./../../modules/local_ai.nix
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -73,7 +73,7 @@ in {
       4003 # Greptimedb
       gitea_port
       3001 # Grafana
-      mongodb_port # Mongodb
+      # mongodb_port # Mongodb
       50000 # rtorrent in container
     ];
     # For containers to access the internet.
@@ -98,6 +98,7 @@ in {
         "movies"
         "magewe"
         "torrents_transmission"
+        "pdfs"
       ];
       exports_for_genoa =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${genoa_addr}/${genoa_subnet}(rw,sync,no_subtree_check)\n")
@@ -142,7 +143,7 @@ in {
     in {
       enable = true;
       listenAddress = "0.0.0.0";
-      retentionTime = "1y";
+      retentionTime = "30d";
       port = 9001;
       exporters = {
         node = {
@@ -159,12 +160,12 @@ in {
           dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
           port = 9215;
         };
-        mongodb = {
-          enable = true;
-          collectAll = true;
-          uri = "mongodb://localhost:${toString mongodb_port}";
-          port = 9216;
-        };
+        # mongodb = {
+        #   enable = true;
+        #   collectAll = true;
+        #   uri = "mongodb://localhost:${toString mongodb_port}";
+        #   port = 9216;
+        # };
         restic = {
           enable = true;
           port = 9753;
@@ -190,12 +191,12 @@ in {
               {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
             ];
           }
-          {
-            job_name = "mongodb";
-            static_configs = [
-              {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.mongodb.port}"];}
-            ];
-          }
+          # {
+          #   job_name = "mongodb";
+          #   static_configs = [
+          #     {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.mongodb.port}"];}
+          #   ];
+          # }
           {
             job_name = "restic";
             static_configs = [
@@ -249,74 +250,74 @@ in {
   };
 
   ### VPN Container for torrenting linux ISOs of course.
-  containers.torrent = {
-    bindMounts = {
-      "/torrents_transmission" = {
-        hostPath = "/SATA_SSD_POOL/torrents_transmission";
-        isReadOnly = false;
-      };
-    };
-    autoStart = true;
-    privateNetwork = true;
-    hostAddress = "192.168.100.1";
-    localAddress = "192.168.100.2";
-    config = {...}: {
-      system.stateVersion = "24.11";
-      users.users."${username}" = {
-        isNormalUser = true;
-        description = "${username}";
-        extraGroups = ["wheel"];
-      };
-      environment.systemPackages = with pkgs; [
-        rqbit
-        zellij
-      ];
-      services = {
-        mullvad-vpn.enable = true;
-        rtorrent = {
-          enable = true;
-          downloadDir = "/torrents_transmission";
-          user = "${username}";
-          port = 50000;
-          openFirewall = true;
-        };
-        # transmission = {
-        #   enable = true;
-        #   home = "/torrents_transmission/";
-        #   user = "${username}";
-        #   settings = {
-        #     download-dir = "/torrents_transmission/finished";
-        #     incomplete-dir = "/torrents_transmission/incomplete";
-        #     incomplete-dir-enabled = true;
-        #     watch-dir = "/torrents_transmission/watch_dir";
-        #     watch-dir-enable = true;
-        #     speed-limit-down-enabled = true;
-        #     speed-limit-down = 5000; # in KB/s
-        #     speed-limit-up-enabled = true;
-        #     speed-limit-up = 5000;
-        #   };
-        # };
-      };
-      systemd.services."mullvad-daemon".postStart = ''
-        while ! ${pkgs.mullvad}/bin/mullvad status >/dev/null; do sleep 1; done
+  # containers.torrent = {
+  #   bindMounts = {
+  #     "/torrents_transmission" = {
+  #       hostPath = "/SATA_SSD_POOL/torrents_transmission";
+  #       isReadOnly = false;
+  #     };
+  #   };
+  #   autoStart = true;
+  #   privateNetwork = true;
+  #   hostAddress = "192.168.100.1";
+  #   localAddress = "192.168.100.2";
+  #   config = {...}: {
+  #     system.stateVersion = "24.11";
+  #     users.users."${username}" = {
+  #       isNormalUser = true;
+  #       description = "${username}";
+  #       extraGroups = ["wheel"];
+  #     };
+  #     environment.systemPackages = with pkgs; [
+  #       rqbit
+  #       zellij
+  #     ];
+  #     services = {
+  #       mullvad-vpn.enable = true;
+  #       rtorrent = {
+  #         enable = true;
+  #         downloadDir = "/torrents_transmission";
+  #         user = "${username}";
+  #         port = 50000;
+  #         openFirewall = true;
+  #       };
+  #       # transmission = {
+  #       #   enable = true;
+  #       #   home = "/torrents_transmission/";
+  #       #   user = "${username}";
+  #       #   settings = {
+  #       #     download-dir = "/torrents_transmission/finished";
+  #       #     incomplete-dir = "/torrents_transmission/incomplete";
+  #       #     incomplete-dir-enabled = true;
+  #       #     watch-dir = "/torrents_transmission/watch_dir";
+  #       #     watch-dir-enable = true;
+  #       #     speed-limit-down-enabled = true;
+  #       #     speed-limit-down = 5000; # in KB/s
+  #       #     speed-limit-up-enabled = true;
+  #       #     speed-limit-up = 5000;
+  #       #   };
+  #       # };
+  #     };
+  #     systemd.services."mullvad-daemon".postStart = ''
+  #       while ! ${pkgs.mullvad}/bin/mullvad status >/dev/null; do sleep 1; done
 
-        ${pkgs.mullvad}/bin/mullvad lan set allow
-        ${pkgs.mullvad}/bin/mullvad lockdown-mode set on
-        ${pkgs.mullvad}/bin/mullvad auto-connect set on
-        ${pkgs.mullvad}/bin/mullvad connect
-      '';
-    };
-  };
-  # critical fix for mullvad-daemon to run in container, otherwise errors with: "EPERM: Operation not permitted"
-  # It seems net_cls API filesystem is deprecated as it's part of cgroup v1. So it's not available by default on hosts using cgroup v2.
-  # https://github.com/mullvad/mullvadvpn-app/issues/5408#issuecomment-1805189128
-  fileSystems."/tmp/net_cls" = {
-    device = "net_cls";
-    fsType = "cgroup";
-    options = ["net_cls"];
-  };
-  # Needed for DNS to work within the container.
-  networking.firewall.interfaces."ve-torrent".allowedUDPPorts = [53];
+  #       ${pkgs.mullvad}/bin/mullvad lan set allow
+  #       ${pkgs.mullvad}/bin/mullvad lockdown-mode set on
+  #       ${pkgs.mullvad}/bin/mullvad auto-connect set on
+  #       ${pkgs.mullvad}/bin/mullvad connect
+  #     '';
+  #   };
+  # };
+  # # critical fix for mullvad-daemon to run in container, otherwise errors with: "EPERM: Operation not permitted"
+  # # It seems net_cls API filesystem is deprecated as it's part of cgroup v1. So it's not available by default on hosts using cgroup v2.
+  # # https://github.com/mullvad/mullvadvpn-app/issues/5408#issuecomment-1805189128
+  # fileSystems."/tmp/net_cls" = {
+  #   device = "net_cls";
+  #   fsType = "cgroup";
+  #   options = ["net_cls"];
+  # };
+  # # Needed for DNS to work within the container.
+  # networking.firewall.interfaces."ve-torrent".allowedUDPPorts = [53];
 
   ### Backup Section ###
   fileSystems."/mnt/${backup_host}_backup" = {
@@ -353,16 +354,16 @@ in {
   };
 
   # Music server
-  services.minidlna = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      friendly_name = "poweredge_music_server";
-      media_dir = ["/SATA_SSD_POOL/music"];
-      inotify = "yes";
-      port = 8200;
-    };
-  };
+  # services.minidlna = {
+  #   enable = true;
+  #   openFirewall = true;
+  #   settings = {
+  #     friendly_name = "poweredge_music_server";
+  #     media_dir = ["/SATA_SSD_POOL/music"];
+  #     inotify = "yes";
+  #     port = 8200;
+  #   };
+  # };
 
   # Music streaming
   services.navidrome = {
@@ -377,23 +378,23 @@ in {
   };
 
   # LLM models
-  users.users.ollama = {
-    isSystemUser = true;
-    description = "ollama";
-  };
-  services.ollama = {
-    enable = true;
-    # acceleration = "cuda"; # TODO: buy like a P40 GPU for acceleration.
-    models = "/SATA_SSD_POOL/ollama_models";
-    user = "ollama";
-  };
+  # users.users.ollama = {
+  #   isSystemUser = true;
+  #   description = "ollama";
+  # };
+  # services.ollama = {
+  #   enable = true;
+  #   # acceleration = "cuda"; # TODO: buy like a P40 GPU for acceleration.
+  #   models = "/SATA_SSD_POOL/ollama_models";
+  #   user = "ollama";
+  # };
 
-  services.mongodb = {
-    enable = true;
-    dbpath = "/SATA_SSD_POOL/mongodb";
-    user = "root";
-    bind_ip = "0.0.0.0";
-  };
+  # services.mongodb = {
+  #   enable = true;
+  #   dbpath = "/SATA_SSD_POOL/mongodb";
+  #   user = "${username}";
+  #   bind_ip = "0.0.0.0";
+  # };
 
   # Self hosted Git
   services.gitea = {
