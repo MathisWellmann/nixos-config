@@ -73,7 +73,6 @@
       iperf
       iperf2
       iperf3
-      hyperfine # Benchmarking of terminal commands
       parallel
 
       # Development
@@ -84,7 +83,10 @@
       cargo-wizard
       gdb
       zig
-      hvm # A massively parallel, optimal functional runtime
+      # Performance tuning
+      hyperfine # Benchmarking of terminal commands
+      linuxKernel.packages.linux_6_6.perf
+      hotspot # GUI for Linux perf
 
       # Cryptography
       # sequoia-sq
