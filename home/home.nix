@@ -49,7 +49,8 @@
       yaml-language-server
       libclang             # Includes `clangd`
       zls                  # Zig LSP
-      julia
+      typst-lsp            # Typst markup language with `.typ` file extension
+      # julia
 
       # Terminal
       tokei
@@ -85,8 +86,6 @@
       zig
       # Performance tuning
       hyperfine # Benchmarking of terminal commands
-      linuxKernel.packages.linux_6_6.perf
-      hotspot # GUI for Linux perf
 
       # Cryptography
       # sequoia-sq

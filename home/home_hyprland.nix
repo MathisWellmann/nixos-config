@@ -74,7 +74,9 @@
     imagemagick
 
     # Development
-    tracy
+    linuxKernel.packages.linux_6_6.perf
+    hotspot                             # GUI for Linux perf
+    tracy                               # A real time, nanosecond resolution profiler
   ];
 
   wayland.windowManager.hyprland = 
