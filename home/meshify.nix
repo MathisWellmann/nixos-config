@@ -6,8 +6,8 @@
   wayland.windowManager.hyprland = {
     settings = {
       monitor = [
-        "DP-3, preferred, 0x0, 1, transform, 1"
-        "DP-2, preferred, 2160x0, 1, transform, 1"
+        "DP-3, preferred, 0x0, 1"
+        "DP-4, preferred, 0x1080, 1"
       ];
     };
   };

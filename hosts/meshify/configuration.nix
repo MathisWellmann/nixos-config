@@ -21,12 +21,13 @@ in {
     # ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
-    ./../../modules/backup.nix
+    # ./../../modules/backup.nix
     ./../../modules/buildkite.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
+    ./../../modules/monero.nix
   ];
 
   buildkite_queue = "nixos";
