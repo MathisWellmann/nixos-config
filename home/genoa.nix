@@ -13,7 +13,7 @@
         "DP-9, 3840x2160@60, 6240x0, 1, transform, 1"
       ];
       env = [
-        "AQ_DRM_DEVICES,/dev/dri/card3:/dev/dri/card2" # Use AMD GPU first, then NVIDIA 
+        "AQ_DRM_DEVICES,/dev/dri/card3" # Use AMD GPU.
       ];
     };
   };
