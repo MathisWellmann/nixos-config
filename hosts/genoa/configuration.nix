@@ -21,7 +21,7 @@ in {
     ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
-    ./../../modules/monero.nix
+    # ./../../modules/monero.nix
   ];
 
   networking = {

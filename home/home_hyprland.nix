@@ -25,6 +25,7 @@
     hyprshot
     pavucontrol
     octaveFull
+    hwloc
 
     # Games
     mindustry
