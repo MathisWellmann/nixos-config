@@ -224,7 +224,7 @@
           # normal.family = "HackNerdFont";
           normal.family = "Terminus";
         };
-        shell.program = "nu";
+        terminal.shell.program = "nu";
       };
     };
     nushell = {
