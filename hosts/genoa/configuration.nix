@@ -85,4 +85,10 @@ in {
   environment.systemPackages = with inputs.nixpkgs-stable.legacyPackages.${pkgs.system}; [
     firefox
   ];
+  services.mongodb = {
+    enable = true;
+    dbpath = "/mongodb";
+    user = "${username}";
+    bind_ip = "0.0.0.0";
+  };
 }
