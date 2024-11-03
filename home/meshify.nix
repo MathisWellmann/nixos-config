@@ -1,4 +1,4 @@
-{inputs, ...}: {
+{...}: {
   imports = [
     ./home_hyprland.nix
   ];
