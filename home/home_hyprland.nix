@@ -17,7 +17,6 @@
     zathura # PDF reader
     qbittorrent
     mongodb-compass
-    virtualbox
     nemo
     amfora
     clementine

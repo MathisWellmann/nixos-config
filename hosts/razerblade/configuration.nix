@@ -98,4 +98,7 @@ in {
   hardware.ledger.enable = true;
 
   services.trezord.enable = true;
+
+  virtualisation.virtualbox.host.enable = true;
+  users.extraGroups.vboxusers.members = [ "${username}" ];
 }
