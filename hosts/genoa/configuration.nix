@@ -14,7 +14,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
-    ./../../modules/desktop_amd.nix
+    # ./../../modules/desktop_amd.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/local_ai.nix
     ./../../modules/mount_external_drives.nix
