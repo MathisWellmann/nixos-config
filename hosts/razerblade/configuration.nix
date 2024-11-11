@@ -101,4 +101,10 @@ in {
 
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = [ "${username}" ];
+  services.openvpn.servers = {
+    mullvad = { 
+      config = '' config /home/magewe/mullvad_config_linux_se_got/mullvad_se_got.conf '';
+      updateResolvConf = true;
+    };
+  };
 }
