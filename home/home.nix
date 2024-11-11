@@ -78,6 +78,7 @@
       cargo-info
       cargo-semver-checks # A tool to scan your rust crate for semver violations
       cargo-wizard
+      cargo-llvm-cov
       gdb
       zig
       # Performance tuning

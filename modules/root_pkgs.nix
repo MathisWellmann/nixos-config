@@ -42,5 +42,6 @@
     nmap
     pciutils
     inputs.agenix.packages."${system}".default
+    exfat
   ];
 }
