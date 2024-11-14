@@ -77,6 +77,7 @@
     linuxKernel.packages.linux_6_6.perf
     hotspot                             # GUI for Linux perf
     tracy                               # A real time, nanosecond resolution profiler
+    heaptrack                           # Heap memory profiler for linux
   ];
 
   wayland.windowManager.hyprland = 
