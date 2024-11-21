@@ -44,17 +44,10 @@
     ipv4 = {
       addresses = [
         {
-          address = "10.0.0.3";
+          address = "169.254.2.1";
           prefixLength = 16;
         }
       ];
-      # routes = [
-      #   {
-      #     address = "10.0.0.3";
-      #     prefixLength = 16;
-      #     via = "10.0.0.3";
-      #   }
-      # ];
     };
   };
   networking.interfaces.enp6s0d1 = {
@@ -65,7 +58,7 @@
     ipv4 = {
       addresses = [
         {
-          address = "10.0.0.4";
+          address = "169.254.2.2";
           prefixLength = 16;
         }
       ];
