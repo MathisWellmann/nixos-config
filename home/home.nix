@@ -93,7 +93,7 @@
       gokey # Vault-less password derivation from master key
 
       # Misc
-      nerdfonts
+      # nerdfonts
 
       # Cryptocurrency
       cointop
