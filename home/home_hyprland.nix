@@ -25,8 +25,10 @@
     pavucontrol
     octaveFull
     hwloc
-    lux # Video download CLI
-    yt-dlp # youtube downloader
+    lux                      # Video download CLI
+    yt-dlp                   # youtube downloader
+    # nerdfonts
+    departure-mono # Font
 
     # Games
     mindustry
@@ -199,9 +201,10 @@
       settings = {
         window.opacity = 0.8;
         font = {
-          size = 19.0;
+          size = 14.0;
           # normal.family = "HackNerdFont";
-          normal.family = "Terminus";
+          # normal.family = "Terminus";
+          normal.family = "DepartureMono";
         };
         terminal.shell.program = "nu";
       };
