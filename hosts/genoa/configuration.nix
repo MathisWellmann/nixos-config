@@ -4,6 +4,7 @@
 {pkgs, inputs, ...}: let
   hostname = "genoa";
   username = "magewe";
+  mongodb_port = 27017;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -28,6 +29,7 @@ in {
     hostName = "${hostname}";
     firewall.allowedTCPPorts = [
       8231 # Tikr
+      mongodb_port
     ];
   };
 
