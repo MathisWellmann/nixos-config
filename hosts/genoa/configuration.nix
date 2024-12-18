@@ -22,7 +22,7 @@ in {
     ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
-    # ./../../modules/monero.nix
+    ./../../modules/monero.nix
   ];
 
   networking = {
@@ -76,8 +76,8 @@ in {
   services.mount_remote_nfs_exports = {
     enable = true;
     nfs_host_name = "poweredge";
-    nfs_host_addr = "169.254.90.239";
-    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "ilka"];
+    nfs_host_addr = "169.254.80.160";
+    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "ilka" "pdfs"];
   };
 
   # Care must be taken when usin luks, see:
