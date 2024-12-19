@@ -10,11 +10,11 @@
     # Desktop
     firefox
     # ladybird
-    nyxt # Keyboard driven browser
+    nyxt     # Keyboard driven browser
     keepassxc
     mate.eom # Image viewer
-    geeqie # Better image viewer
-    zathura # PDF reader
+    geeqie   # Better image viewer
+    zathura  # PDF reader
     qbittorrent
     mongodb-compass
     nemo
@@ -27,8 +27,6 @@
     hwloc
     lux                      # Video download CLI
     yt-dlp                   # youtube downloader
-    # nerdfonts
-    departure-mono # Font
 
     # Games
     mindustry
@@ -204,7 +202,7 @@
           size = 14.0;
           # normal.family = "HackNerdFont";
           # normal.family = "Terminus";
-          normal.family = "DepartureMono";
+          normal.family = "DepartureMonoNerdFont";
         };
         terminal.shell.program = "nu";
       };

@@ -27,4 +27,8 @@
     # cudaPackages.nsight_compute
     # cudaPackages.nsight_systems
   ];
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.departure-mono
+  ];
 }
