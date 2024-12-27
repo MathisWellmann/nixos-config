@@ -89,10 +89,8 @@ in {
     enable = true;
     nfs_host_name = "poweredge";
     nfs_host_addr = "poweredge";
-    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
+    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "pdfs"];
   };
-  # mullvad-vpn requires `resolved.enable = true`
-  services.mullvad-vpn.enable = true;
   services.resolved.enable = true;
 
   hardware.ledger.enable = true;
