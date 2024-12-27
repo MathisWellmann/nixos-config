@@ -24,7 +24,6 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/monero.nix
-    # ./../../modules/local_ai.nix
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -172,8 +171,6 @@ in {
           repository = config.services.restic.backups.zfs_sata_ssd_pool.repository;
           passwordFile = "/etc/nixos/secrets/restic/password";
         };
-        # bitcoin.enable = true;
-        # buildkite-agent.enable = true;
       };
       scrapeConfigs =
         node_scrape_configs
@@ -293,31 +290,6 @@ in {
   #     inotify = "yes";
   #     port = 8200;
   #   };
-  # };
-
-  # Music streaming
-  # TODO: remove as the service is not very good.
-  services.navidrome = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      MusicFolder = "/SATA_SSD_POOL/music";
-      Address = "0.0.0.0";
-      port = 4533;
-    };
-    user = "${username}";
-  };
-
-  # LLM models
-  # users.users.ollama = {
-  #   isSystemUser = true;
-  #   description = "ollama";
-  # };
-  # services.ollama = {
-  #   enable = true;
-  #   # acceleration = "cuda"; # TODO: buy like a P40 GPU for acceleration.
-  #   models = "/SATA_SSD_POOL/ollama_models";
-  #   user = "ollama";
   # };
 
   # services.mongodb = {
