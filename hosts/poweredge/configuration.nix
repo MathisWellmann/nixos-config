@@ -249,76 +249,6 @@ in {
     ];
   };
 
-  ### VPN Container for torrenting linux ISOs of course.
-  # containers.torrent = {
-  #   bindMounts = {
-  #     "/torrents_transmission" = {
-  #       hostPath = "/SATA_SSD_POOL/torrents_transmission";
-  #       isReadOnly = false;
-  #     };
-  #   };
-  #   autoStart = true;
-  #   privateNetwork = true;
-  #   hostAddress = "192.168.100.1";
-  #   localAddress = "192.168.100.2";
-  #   config = {...}: {
-  #     system.stateVersion = "24.11";
-  #     users.users."${username}" = {
-  #       isNormalUser = true;
-  #       description = "${username}";
-  #       extraGroups = ["wheel"];
-  #     };
-  #     environment.systemPackages = with pkgs; [
-  #       rqbit
-  #       zellij
-  #     ];
-  #     services = {
-  #       mullvad-vpn.enable = true;
-  #       rtorrent = {
-  #         enable = true;
-  #         downloadDir = "/torrents_transmission";
-  #         user = "${username}";
-  #         port = 50000;
-  #         openFirewall = true;
-  #       };
-  #       # transmission = {
-  #       #   enable = true;
-  #       #   home = "/torrents_transmission/";
-  #       #   user = "${username}";
-  #       #   settings = {
-  #       #     download-dir = "/torrents_transmission/finished";
-  #       #     incomplete-dir = "/torrents_transmission/incomplete";
-  #       #     incomplete-dir-enabled = true;
-  #       #     watch-dir = "/torrents_transmission/watch_dir";
-  #       #     watch-dir-enable = true;
-  #       #     speed-limit-down-enabled = true;
-  #       #     speed-limit-down = 5000; # in KB/s
-  #       #     speed-limit-up-enabled = true;
-  #       #     speed-limit-up = 5000;
-  #       #   };
-  #       # };
-  #     };
-  #     systemd.services."mullvad-daemon".postStart = ''
-  #       while ! ${pkgs.mullvad}/bin/mullvad status >/dev/null; do sleep 1; done
-
-  #       ${pkgs.mullvad}/bin/mullvad lan set allow
-  #       ${pkgs.mullvad}/bin/mullvad lockdown-mode set on
-  #       ${pkgs.mullvad}/bin/mullvad auto-connect set on
-  #       ${pkgs.mullvad}/bin/mullvad connect
-  #     '';
-  #   };
-  # };
-  # # critical fix for mullvad-daemon to run in container, otherwise errors with: "EPERM: Operation not permitted"
-  # # It seems net_cls API filesystem is deprecated as it's part of cgroup v1. So it's not available by default on hosts using cgroup v2.
-  # # https://github.com/mullvad/mullvadvpn-app/issues/5408#issuecomment-1805189128
-  # fileSystems."/tmp/net_cls" = {
-  #   device = "net_cls";
-  #   fsType = "cgroup";
-  #   options = ["net_cls"];
-  # };
-  # # Needed for DNS to work within the container.
-  # networking.firewall.interfaces."ve-torrent".allowedUDPPorts = [53];
-
   ### Backup Section ###
   fileSystems."/mnt/${backup_host}_backup" = {
     device = "${backup_host}:${backup_target_dir}";
@@ -366,6 +296,7 @@ in {
   # };
 
   # Music streaming
+  # TODO: remove as the service is not very good.
   services.navidrome = {
     enable = true;
     openFirewall = true;
