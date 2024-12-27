@@ -377,4 +377,18 @@ in {
     };
     openFirewall = true;
   };
+
+  services.polaris = {
+    enable = true;
+    openFirewall = true;
+    port = 5050;
+    settings = {
+      mount_dirs = [
+        {
+          name = "SATA_SSD_POOL";
+          source = "/SATA_SSD_POOL/music";
+        }
+      ];
+    };
+  };
 }
