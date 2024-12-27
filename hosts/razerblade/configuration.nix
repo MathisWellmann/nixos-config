@@ -91,6 +91,11 @@ in {
     nfs_host_addr = "poweredge";
     nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "pdfs"];
   };
+  fileSystems."/mnt/elitedesk_backup_hdd" = {
+    device = "elitedesk:/mnt/backup_hdd";
+    fsType = "nfs";
+    options = ["rw" "nofail"];
+  };
   services.resolved.enable = true;
 
   hardware.ledger.enable = true;
