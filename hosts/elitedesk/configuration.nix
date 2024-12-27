@@ -17,6 +17,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
+    ./../../modules/mount_remote_nfs_exports.nix
   ];
 
   networking.hostName = "elitedesk";
@@ -61,6 +62,7 @@ in {
       enable = true;
       exports = ''
         ${backup_dir}  poweredge(rw,sync,no_subtree_check)
+        ${backup_dir}  razerblade(rw,sync,no_subtree_check)
       '';
     };
   };
