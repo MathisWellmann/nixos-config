@@ -71,6 +71,7 @@
       iperf2
       iperf3
       parallel
+      du-dust
 
       # Development
       gitui
