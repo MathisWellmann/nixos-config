@@ -12,10 +12,10 @@
         "DP-2, 3840x2160@144, 6240x0, 1, transform, 1"
       ];
       env = [
-         "LIBVA_DRIVER_NAME,nvidia"
-         "XDG_SESSION_TYPE,wayland"
-         "GBM_BACKEND,nvidia-drm"
-         "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+        "LIBVA_DRIVER_NAME,nvidia"
+        "XDG_SESSION_TYPE,wayland"
+        "GBM_BACKEND,nvidia-drm"
+        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
       ];
       cursor.no_hardware_cursors = true;
       # env = [

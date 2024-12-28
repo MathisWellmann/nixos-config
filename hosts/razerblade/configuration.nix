@@ -103,10 +103,10 @@ in {
   services.trezord.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = [ "${username}" ];
+  users.extraGroups.vboxusers.members = ["${username}"];
   services.openvpn.servers = {
-    mullvad = { 
-      config = '' config /home/magewe/mullvad_config_linux_se_got/mullvad_se_got.conf '';
+    mullvad = {
+      config = ''config /home/magewe/mullvad_config_linux_se_got/mullvad_se_got.conf '';
       updateResolvConf = true;
     };
   };

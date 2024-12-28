@@ -1,4 +1,8 @@
-{pkgs, inputs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "magewe";
@@ -34,19 +38,19 @@
       # Package version diff tool. E.g Compare system revision 405 with 420:
       # `nvd diff /nix/var/nix/profiles/system-405-link/ /nix/var/nix/profiles/system-420-link/`
       nvd
-      nix-output-monitor   # `nom` is a drop in replacement for `nix` that has pretty output
+      nix-output-monitor # `nom` is a drop in replacement for `nix` that has pretty output
       nix-prefetch-scripts # Is used to obtain source hashes of urls. aka `nix-prefetch-url`
-      nurl                 # CLI to generate nix fetcher calls from repository URLs.
+      nurl # CLI to generate nix fetcher calls from repository URLs.
       nh
       nix-tree
 
       # LSPs
-      marksman             # Markdown LSP
-      nil                  # Nix LSP
+      marksman # Markdown LSP
+      nil # Nix LSP
       yaml-language-server
-      libclang             # Includes `clangd`
-      zls                  # Zig LSP
-      typst-lsp            # Typst markup language with `.typ` file extension
+      libclang # Includes `clangd`
+      zls # Zig LSP
+      typst-lsp # Typst markup language with `.typ` file extension
 
       # Terminal
       tokei
@@ -84,7 +88,7 @@
       zig
       # Performance tuning
       hyperfine # Benchmarking of terminal commands, written in rust
-      poop      # Performance Optimizer Observation Platform, written in zig.
+      poop # Performance Optimizer Observation Platform, written in zig.
 
       # Cryptography
       # sequoia-sq
@@ -194,7 +198,7 @@
         $env.config = {
           show_banner: false,
         };
-        # using the `fd` command to respect `.gitignore` 
+        # using the `fd` command to respect `.gitignore`
         def shx [] = { fd --type f --strip-cwd-prefix | sk | xargs hx };
         def fhx [] = { fd --type f --strip-cwd-prefix | fzf | xargs hx };
 

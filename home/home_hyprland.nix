@@ -1,4 +1,8 @@
-{pkgs, inputs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: {
   imports = [
     ./home.nix
     ./waybar
@@ -10,11 +14,11 @@
     # Desktop
     firefox
     # ladybird
-    nyxt     # Keyboard driven browser
+    nyxt # Keyboard driven browser
     keepassxc
     mate.eom # Image viewer
-    geeqie   # Better image viewer
-    zathura  # PDF reader
+    geeqie # Better image viewer
+    zathura # PDF reader
     qbittorrent
     mongodb-compass
     nemo
@@ -25,8 +29,8 @@
     pavucontrol
     octaveFull
     hwloc
-    lux                      # Video download CLI
-    yt-dlp                   # youtube downloader
+    lux # Video download CLI
+    yt-dlp # youtube downloader
 
     # Games
     mindustry
@@ -77,15 +81,14 @@
 
     # Development
     linuxKernel.packages.linux_6_6.perf
-    hotspot                             # GUI for Linux perf
-    tracy                               # A real time, nanosecond resolution profiler
-    heaptrack                           # Heap memory profiler for linux
+    hotspot # GUI for Linux perf
+    tracy # A real time, nanosecond resolution profiler
+    heaptrack # Heap memory profiler for linux
   ];
 
-  wayland.windowManager.hyprland = 
-  let
+  wayland.windowManager.hyprland = let
     system = pkgs.system;
-    stable = import inputs.nixpkgs-stable { inherit system; };
+    stable = import inputs.nixpkgs-stable {inherit system;};
   in {
     enable = true;
     # xwayland.enable = true;
