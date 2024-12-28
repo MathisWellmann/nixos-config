@@ -391,4 +391,12 @@ in {
       ];
     };
   };
+
+  services.bitmagnet = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      http_server.port = "3333";
+    };
+  };
 }
