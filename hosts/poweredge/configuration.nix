@@ -18,6 +18,7 @@
   grafana_port = 3001;
   mafl_port = 3002;
   homer_port = 3003;
+  readeck_port = 3004;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -245,6 +246,16 @@ in {
     ];
   };
 
+  virtualisation.oci-containers.containers."readeck" = {
+    image = "codeberg.org/readeck/readeck:latest";
+    ports = [
+      "${builtins.toString readeck_port}:8000"
+    ];
+    volumes = [
+      "/SATA_SSD_POOL/readeck:/readeck"
+    ];
+  };
+
   virtualisation.oci-containers.containers."greptimedb" = let
     version = "v0.9.3";
   in {
@@ -336,8 +347,8 @@ in {
   };
 
   # Decentralized git protocol
-  # services.radicle = 
-  # let 
+  # services.radicle =
+  # let
   #   port = 8776;
   #   domain = "mw_systems";
   # in {
