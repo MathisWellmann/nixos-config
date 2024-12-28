@@ -15,7 +15,9 @@
   # mongodb_port = 27017;
   gitea_port = 3000;
   gitea_state_dir = "/var/lib/gitea";
+  grafana_port = 3001;
   mafl_port = 3002;
+  homer_port = 3003;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -72,8 +74,9 @@ in {
       4001 # Greptimedb
       4003 # Greptimedb
       gitea_port
-      3001 # Grafana
+      grafana_port
       mafl_port
+      homer_port
       # mongodb_port # Mongodb
       50000 # rtorrent in container
     ];
@@ -210,7 +213,7 @@ in {
         server = {
           # Listening Address
           http_addr = "0.0.0.0";
-          http_port = 3001;
+          http_port = grafana_port;
         };
       };
     };
@@ -229,6 +232,16 @@ in {
     ];
     volumes = [
       "/SATA_SSD_POOL/mafl:/app/data"
+    ];
+  };
+
+  virtualisation.oci-containers.containers."homer" = {
+    image = "b4bz/homer";
+    ports = [
+      "${builtins.toString homer_port}:8080"
+    ];
+    volumes = [
+      "/SATA_SSD_POOL/homer:/www/assets"
     ];
   };
 
