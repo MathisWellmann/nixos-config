@@ -15,6 +15,7 @@
   # mongodb_port = 27017;
   gitea_port = 3000;
   gitea_state_dir = "/var/lib/gitea";
+  mafl_port = 3002;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -72,6 +73,7 @@ in {
       4003 # Greptimedb
       gitea_port
       3001 # Grafana
+      mafl_port
       # mongodb_port # Mongodb
       50000 # rtorrent in container
     ];
@@ -217,6 +219,17 @@ in {
       enable = true;
       openFirewall = true;
     };
+  };
+
+  # Containers
+  virtualisation.oci-containers.containers."mafl" = {
+    image = "hywax/mafl";
+    ports = [
+      "${builtins.toString mafl_port}:3000"
+    ];
+    volumes = [
+      "/SATA_SSD_POOL/mafl:/app/data"
+    ];
   };
 
   virtualisation.oci-containers.containers."greptimedb" = let
