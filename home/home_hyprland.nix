@@ -45,6 +45,7 @@
     openarena
     openspades
     # veloren
+    pokerth
 
     # Video
     mpv
