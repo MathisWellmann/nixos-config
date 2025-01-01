@@ -34,6 +34,7 @@
       fend    # Unit aware calculator
       cmatrix
       glow    # Render markdown in the terminal
+      iotop 
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
