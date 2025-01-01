@@ -19,6 +19,7 @@ in {
       "nofail" # Prevent system from failing if this drive doesn't mount
     ];
   };
+
   fileSystems.${ventoy_mount} = {
     device = "/dev/disk/by-uuid/${ventoy_uuid}";
     fsType = "exfat";
@@ -28,6 +29,7 @@ in {
       "nofail" # Prevent system from failing if this drive doesn't mount
     ];
   };
+
   fileSystems.${kingston_mount} = {
     device = "/dev/disk/by-uuid/${kingston_uuid}";
     fsType = "ext4";
@@ -47,6 +49,7 @@ in {
       "nofail" # Prevent system from failing if this drive doesn't mount
     ];
   };
+
   fileSystems.${fiio_card} = {
     device = "/dev/disk/by-uuid/${fiio_uuid}";
     fsType = "exfat";
