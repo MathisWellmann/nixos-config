@@ -30,9 +30,10 @@
       # Misc
       typst
       terminus_font
-      rdfind # Find duplicate files: e.g.: `rdfind .`
-      fend # Unit aware calculator
+      rdfind  # Find duplicate files: e.g.: `rdfind .`
+      fend    # Unit aware calculator
       cmatrix
+      glow    # Render markdown in the terminal
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
