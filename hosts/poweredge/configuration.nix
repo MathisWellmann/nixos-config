@@ -19,6 +19,7 @@
   mafl_port = 3002;
   homer_port = 3003;
   readeck_port = 3004;
+  mealie_port = 3005;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -78,8 +79,8 @@ in {
       grafana_port
       mafl_port
       homer_port
+      mealie_port
       # mongodb_port # Mongodb
-      50000 # rtorrent in container
     ];
     # For containers to access the internet.
     nat = {
@@ -401,5 +402,10 @@ in {
     settings = {
       http_server.port = "3333";
     };
+  };
+
+  services.mealie = {
+    enable = true;
+    port = mealie_port;
   };
 }
