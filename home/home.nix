@@ -87,6 +87,7 @@
       cargo-semver-checks # A tool to scan your rust crate for semver violations
       cargo-wizard
       cargo-llvm-cov
+      rust-bindgen
       gdb
       zig
       # Performance tuning
@@ -117,7 +118,7 @@
       enable = true;
       package = inputs.helix;
       settings = {
-        theme = "catppuccin_frappe"; # Dark
+        theme = "snazzy"; # Dark
         # theme = "ayu_light";
         editor = {
           scroll-lines = 1;
@@ -142,6 +143,11 @@
             left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
             center = [];
             right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
+          };
+          # Minimum severity to show a diagnostic after the end of a line.
+          end-of-line-diagnostics = "hint";
+          inline-diagnostics = {
+            cursor-line = "error";
           };
         };
       };

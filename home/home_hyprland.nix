@@ -216,10 +216,10 @@
       settings = {
         window.opacity = 0.8;
         font = {
-          size = 14.0;
+          size = 16.0;
           # normal.family = "HackNerdFont";
-          # normal.family = "Terminus";
-          normal.family = "DepartureMonoNerdFont";
+          normal.family = "Terminus";
+          # normal.family = "DepartureMonoNerdFont";
         };
         terminal.shell.program = "nu";
       };
