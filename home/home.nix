@@ -202,8 +202,8 @@
           show_banner: false,
         };
         # using the `fd` command to respect `.gitignore`
-        def shx [] = { fd --type f --strip-cwd-prefix | sk | xargs hx };
-        def fhx [] = { fd --type f --strip-cwd-prefix | fzf | xargs hx };
+        def shx [] { fd --type f --strip-cwd-prefix | sk | xargs hx };
+        def fhx [] { fd --type f --strip-cwd-prefix | fzf | xargs hx };
 
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin));

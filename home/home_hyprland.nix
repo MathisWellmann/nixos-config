@@ -42,10 +42,10 @@
     sdlpop
     uchess
     typespeed
-    openarena
-    openspades
+    # openarena
+    # openspades
     # veloren
-    pokerth
+    # pokerth
 
     # Video
     mpv
