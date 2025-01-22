@@ -28,6 +28,7 @@ in {
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
+    ./../../modules/monero_miner.nix
   ];
 
   buildkite_queue = "nixos";
