@@ -70,7 +70,7 @@ in {
   boot.supportedFilesystems = ["zfs"];
   boot.zfs = {
     forceImportRoot = false;
-    extraPools = ["saber"];
+    extraPools = [];
   };
   services.zfs = {
     autoScrub.enable = true;
