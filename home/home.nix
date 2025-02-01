@@ -87,6 +87,7 @@
       cargo-semver-checks # A tool to scan your rust crate for semver violations
       cargo-wizard
       cargo-llvm-cov
+      cargo-machete
       rust-bindgen
       gdb
       zig
