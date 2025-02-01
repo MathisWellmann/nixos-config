@@ -37,7 +37,6 @@
     steam
     minetest
     dwarf-fortress
-    hyperrogue
     neverball
     sdlpop
     uchess

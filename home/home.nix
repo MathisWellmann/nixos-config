@@ -53,14 +53,13 @@
       yaml-language-server
       libclang # Includes `clangd`
       zls # Zig LSP
-      typst-lsp # Typst markup language with `.typ` file extension
+      tinymist # Typst markup language with `.typ` file extension
 
       # Terminal
       tokei
       ttyper
       neofetch
       onefetch
-      diskonaut
       # oxker     # Docker tui
       alejandra # Nix formatter
       # delta     # A syntax-highlighting pager for git
