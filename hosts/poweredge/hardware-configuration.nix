@@ -16,13 +16,23 @@
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
 
+  # Old disk
+  # fileSystems."/" = {
+  #   device = "/dev/disk/by-uuid/2aeb1cf4-e11d-417e-b3de-31c781912d4f";
+  #   fsType = "ext4";
+  # };
+  # fileSystems."/boot" = {
+  #   device = "/dev/disk/by-uuid/A936-D659";
+  #   fsType = "vfat";
+  # };
+
+  # NVME disk
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/2aeb1cf4-e11d-417e-b3de-31c781912d4f";
+    device = "/dev/disk/by-uuid/aa996a56-374d-4cee-aacf-14f4f44ff014";
     fsType = "ext4";
   };
-
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/A936-D659";
+    device = "/dev/disk/by-uuid/8E8C-F51F";
     fsType = "vfat";
   };
 
