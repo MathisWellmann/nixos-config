@@ -27,8 +27,6 @@
     # Rust
     rustup
     rustfmt
-    cargo-flamegraph
-    cargo-outdated
     crate2nix
     taplo-cli
     # Dev

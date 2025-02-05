@@ -87,6 +87,8 @@
       cargo-wizard
       cargo-llvm-cov
       cargo-machete
+      cargo-flamegraph
+      cargo-outdated
       rust-bindgen
       gdb
       zig
