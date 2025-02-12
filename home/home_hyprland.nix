@@ -31,6 +31,7 @@
     hwloc
     lux # Video download CLI
     yt-dlp # youtube downloader
+    veracrypt
 
     # Games
     mindustry
