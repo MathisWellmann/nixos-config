@@ -30,15 +30,16 @@
       # Misc
       typst
       terminus_font
-      rdfind  # Find duplicate files: e.g.: `rdfind .`
-      fend    # Unit aware calculator
+      rdfind # Find duplicate files: e.g.: `rdfind .`
+      fend # Unit aware calculator
       cmatrix
-      glow    # Render markdown in the terminal
-      iotop 
+      glow # Render markdown in the terminal
+      iotop
       trippy # Network diagnostics with traceroute and ping
       qmk
       qmk_hid
       appimage-run
+      fuse # Required for onekey wallet appimage to recognize the device
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
