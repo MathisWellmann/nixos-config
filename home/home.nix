@@ -38,6 +38,7 @@
       trippy # Network diagnostics with traceroute and ping
       qmk
       qmk_hid
+      appimage-run
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
