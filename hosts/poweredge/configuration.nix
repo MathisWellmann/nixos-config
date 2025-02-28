@@ -20,6 +20,7 @@
   homer_port = 3003;
   readeck_port = 3004;
   mealie_port = 3005;
+  gotosocial_port = 3006;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -407,5 +408,20 @@ in {
   services.mealie = {
     enable = true;
     port = mealie_port;
+  };
+
+  services.gotosocial = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      application-name = "gotosocial-magewe";
+      bind-address = "0.0.0.0";
+      host = "localhost";
+      db-address = "/var/lib/gotosocial/database.sqlite";
+      db-type = "sqlite";
+      port = gotosocial_port;
+      protocol = "https";
+      storage-local-base-path = "/var/lib/gotosocial/storage";
+    };
   };
 }
