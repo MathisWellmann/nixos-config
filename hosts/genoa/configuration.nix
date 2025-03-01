@@ -97,4 +97,7 @@ in {
     user = "${username}";
     bind_ip = "0.0.0.0";
   };
+
+  hardware.ledger.enable = true;
+  services.trezord.enable = true;
 }

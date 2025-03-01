@@ -99,7 +99,6 @@ in {
   services.resolved.enable = true;
 
   hardware.ledger.enable = true;
-
   services.trezord.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
