@@ -14,6 +14,7 @@
     # Desktop
     firefox
     # ladybird
+    brave
     nyxt # Keyboard driven browser
     keepassxc
     mate.eom # Image viewer
@@ -169,7 +170,7 @@
         "eimadpbcbfnmbkopoojfekhnkhdbieeh" # Dark reader
         "fijngjgcjhjmmpcmkeiomlglpeiijkld" # Talisman
         "onhogfjeacnfoofkfgppdlbmlmnplgbn" # SubWallet
-        # "jnmbobjmhlngoefaiojfljckilhhlhcj" # OneKey
+        "jnmbobjmhlngoefaiojfljckilhhlhcj" # OneKey Wallet
       ];
     };
     librewolf.enable = true;
