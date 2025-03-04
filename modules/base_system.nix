@@ -36,4 +36,6 @@
     enable = false;
     enableNg = true;
   };
+
+  hardware.keyboard.qmk.enable = true;
 }
