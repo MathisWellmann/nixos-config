@@ -15,6 +15,7 @@
     firefox
     # ladybird
     brave
+    floorp
     nyxt # Keyboard driven browser
     keepassxc
     mate.eom # Image viewer
