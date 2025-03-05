@@ -21,6 +21,7 @@
   readeck_port = 3004;
   mealie_port = 3005;
   gotosocial_port = 3006;
+  immich_port = 3007;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -423,5 +424,13 @@ in {
       protocol = "https";
       storage-local-base-path = "/var/lib/gotosocial/storage";
     };
+  };
+
+  services.immich = {
+    enable = true;
+    host = "0.0.0.0";
+    mediaLocation = "/SATA_SSD_POOL/immich";
+    openFirewall = true;
+    port = immich_port;
   };
 }
