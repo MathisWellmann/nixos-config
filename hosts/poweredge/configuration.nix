@@ -22,6 +22,7 @@
   mealie_port = 3005;
   gotosocial_port = 3006;
   immich_port = 3007;
+  photoprism_port = 3008;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -432,5 +433,13 @@ in {
     mediaLocation = "/SATA_SSD_POOL/immich";
     openFirewall = true;
     port = immich_port;
+  };
+
+  services.photoprism = {
+    enable = true;
+    port = photoprism_port;
+    address = "0.0.0.0";
+    originalsPath = "/SATA_SSD_POOL/magewe/bilder";
+    passwordFile = "/etc/nixos/secrets/photoprism";
   };
 }
