@@ -442,4 +442,44 @@ in {
     originalsPath = "/SATA_SSD_POOL/magewe/bilder";
     passwordFile = "/etc/nixos/secrets/photoprism";
   };
+
+  programs.rust-motd = {
+    enable = true;
+    settings = {
+      banner = {
+        color = "black";
+        command = "${pkgs.neofetch}/bin/neofetch";
+      };
+      filesystems = {
+        root = "/";
+      };
+      service_status = {
+        tailscale = "tailscaled";
+        prometheus-exporter = "prometheus-node-exporter";
+        mnt-elitedesk_backup = "mnt-elitedesk_backup.mount";
+        bitmagnet = "bitmagnet";
+        calibre-web = "calibre-web";
+        gitea = "gitea";
+        gotosocial = "gotosocial";
+        grafana = "grafana";
+        immich = "immich-server";
+        jellyfin = "jellyfin";
+        mealie = "mealie";
+        monero = "monero";
+        photoprism = "photoprism";
+        greptimedb = "podman-greptimedb";
+        homer = "podman-homer";
+        mafl = "podman-mafl";
+        readeck = "podman-readeck";
+        polaris = "polaris";
+        tikr_BinanceCoinMargin_L2OrderBookDelta = "tikr@BinanceCoinMargin_L2OrderBookDelta";
+        tikr_BinanceCoinMargin_Quotes = "tikr@BinanceCoinMargin_Quotes";
+        tikr_BinanceCoinMargin_Trades = "tikr@BinanceCoinMargin_Trades";
+        tikr_BinanceUsdMargin_L2OrderBookDelta = "tikr@BinanceUsdMargin_L2OrderBookDelta";
+        tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
+        tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
+      };
+      uptime.prefix = "up";
+    };
+  };
 }
