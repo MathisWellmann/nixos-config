@@ -13,8 +13,7 @@
   home.packages = with pkgs; [
     # Desktop
     firefox
-    # ladybird
-    brave
+    ladybird
     floorp
     nyxt # Keyboard driven browser
     keepassxc
