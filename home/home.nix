@@ -323,11 +323,12 @@
       };
     };
     # to cleanup old nix generations manually: nh clean all --keep 3
+    # Its got `nh search`, `nh os switch`
     nh = {
       enable = true;
       clean = {
         enable = true;
-        dates = "weekly";
+        dates = "daily";
         extraArgs = "--keep 5 --keep-since 7d";
       };
     };
