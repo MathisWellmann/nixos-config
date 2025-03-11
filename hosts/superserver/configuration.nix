@@ -105,4 +105,21 @@
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
+
+  programs.rust-motd = {
+    enable = true;
+    settings = {
+      banner = {
+        color = "black";
+        command = "${pkgs.neofetch}/bin/neofetch";
+      };
+      filesystems.root = "/";
+      service_status = {
+        tailscale = "tailscaled";
+        buildkite = "buildkite-agent-superserver";
+        prometheus-exporter = "prometheus-node-exporter";
+      };
+      uptime.prefix = "up";
+    };
+  };
 }
