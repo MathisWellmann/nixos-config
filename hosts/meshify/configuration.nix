@@ -5,7 +5,6 @@
   pkgs,
   inputs,
   config,
-  tikr,
   ...
 }: let
   hostname = "meshify";
@@ -124,5 +123,32 @@ in {
     nfs_host_name = "poweredge";
     nfs_host_addr = "poweredge";
     nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
+  };
+
+  programs.rust-motd = {
+    enable = true;
+    settings = {
+      banner = {
+        color = "black";
+        command = "${pkgs.neofetch}/bin/neofetch";
+      };
+      filesystems = {
+        root = "/";
+      };
+      service_status = {
+        tailscale = "tailscaled";
+        prometheus-exporter = "prometheus-node-exporter";
+        mnt-poweredge-magewe = "mnt-poweredge_SATA_SSD_POOL_magewe.mount";
+        mnt-poweredge-movies = "mnt-poweredge_SATA_SSD_POOL_movies.mount";
+        mnt-poweredge-music = "mnt-poweredge_SATA_SSD_POOL_music.mount";
+        mnt-poweredge-pdfs = "mnt-poweredge_SATA_SSD_POOL_pdfs.mount";
+        mnt-poweredge-series= "mnt-poweredge_SATA_SSD_POOL_series.mount";
+        mnt-poweredge-video = "mnt-poweredge_SATA_SSD_POOL_video.mount";
+        mongodb = "mongodb";
+        buildkite = "buildkite-agent-meshify";
+        restic-backups-home = "restic-backups-home";
+      };
+      uptime.prefix = "up";
+    };
   };
 }
