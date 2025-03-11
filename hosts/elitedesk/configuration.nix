@@ -69,4 +69,23 @@ in {
   environment.systemPackages = with pkgs; [
     restic
   ];
+
+  programs.rust-motd = {
+    enable = true;
+    settings = {
+      banner = {
+        color = "black";
+        command = "${pkgs.neofetch}/bin/neofetch";
+      };
+      filesystems = {
+        root = "/";
+      };
+      service_status = {
+        tailscale = "tailscaled";
+        prometheus-exporter = "prometheus-node-exporter";
+        nfs-server = "nfs-server";
+      };
+      uptime.prefix = "up";
+    };
+  };
 }
