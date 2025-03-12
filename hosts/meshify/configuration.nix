@@ -17,7 +17,7 @@ in {
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
-    # ./../../modules/local_ai.nix
+    ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     # ./../../modules/backup.nix
@@ -142,7 +142,7 @@ in {
         mnt-poweredge-movies = "mnt-poweredge_SATA_SSD_POOL_movies.mount";
         mnt-poweredge-music = "mnt-poweredge_SATA_SSD_POOL_music.mount";
         mnt-poweredge-pdfs = "mnt-poweredge_SATA_SSD_POOL_pdfs.mount";
-        mnt-poweredge-series= "mnt-poweredge_SATA_SSD_POOL_series.mount";
+        mnt-poweredge-series = "mnt-poweredge_SATA_SSD_POOL_series.mount";
         mnt-poweredge-video = "mnt-poweredge_SATA_SSD_POOL_video.mount";
         mongodb = "mongodb";
         buildkite = "buildkite-agent-meshify";

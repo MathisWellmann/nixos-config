@@ -109,7 +109,7 @@ in {
   #     updateResolvConf = true;
   #   };
   # };
-  
+
   programs.rust-motd = {
     enable = true;
     settings = {
@@ -129,7 +129,7 @@ in {
         mnt-poweredge-movies = "mnt-poweredge_SATA_SSD_POOL_movies.mount";
         mnt-poweredge-music = "mnt-poweredge_SATA_SSD_POOL_music.mount";
         mnt-poweredge-pdfs = "mnt-poweredge_SATA_SSD_POOL_pdfs.mount";
-        mnt-poweredge-series= "mnt-poweredge_SATA_SSD_POOL_series.mount";
+        mnt-poweredge-series = "mnt-poweredge_SATA_SSD_POOL_series.mount";
         mnt-poweredge-video = "mnt-poweredge_SATA_SSD_POOL_video.mount";
         mnt-poweredge-backup = "mnt-poweredge_SATA_SSD_POOL_backup.mount";
         mnt-elitedesk-backup_hdd = "mnt-elitedesk_backup_hdd.mount";
