@@ -402,12 +402,12 @@ in {
   #   };
   # };
 
-  # services.mongodb = {
-  #   enable = true;
-  #   dbpath = "/SATA_SSD_POOL/mongodb";
-  #   user = "${username}";
-  #   bind_ip = "0.0.0.0";
-  # };
+  services.mongodb = {
+    enable = true;
+    dbpath = "/SATA_SSD_POOL/mongodb";
+    user = "${username}";
+    bind_ip = "0.0.0.0";
+  };
 
   # Self hosted Git
   services.gitea = {
