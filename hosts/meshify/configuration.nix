@@ -9,6 +9,7 @@
 }: let
   hostname = "meshify";
   username = "magewe";
+  open-webui_port = 8080;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -150,5 +151,12 @@ in {
       };
       uptime.prefix = "up";
     };
+  };
+
+  services.open-webui = {
+    enable = true;
+    host = "0.0.0.0";
+    port = open-webui_port;
+    openFirewall = true;
   };
 }
