@@ -13,6 +13,7 @@
   backup_target_dir = "/mnt/backup_hdd";
   tikr_base_port = 9184;
   # mongodb_port = 27017;
+  jellyfin_port = 8096;
   gitea_port = 3000;
   gitea_state_dir = "/var/lib/gitea";
   grafana_port = 3001;
@@ -23,6 +24,9 @@
   gotosocial_port = 3006;
   immich_port = 3007;
   photoprism_port = 3008;
+  bitmagnet_port = 3009;
+  polaris_port = 3010;
+  calibre_port = 3011;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -230,13 +234,78 @@ in {
   };
 
   # Containers
-  virtualisation.oci-containers.containers."mafl" = {
+  virtualisation.oci-containers.containers."mafl" = let
+    # Write mafl config.
+    mafl_config = ''
+      title: Dashboard of MGW
+      lang: en
+      theme: dark
+      checkUpdates: true
+      tags:
+        - name: media
+          color: green
+        - name: development
+          color: orange
+      services:
+        - title: Jellyfin
+          description: Movies and Series
+          link: http://poweredge:${jellyfin_port}
+          icon:
+            url: https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Fuybguvnj1p821.png&f=1&nofb=1&ipt=b317f7cc53b5d1b35a5e26f5cd58f7c8dbc72861b640c515e628bb3f41be1b25&ipo=images
+          tags:
+            - media
+        - title: Polaris
+          description: Music library
+          link: http://poweredge:${polaris_port}
+          tags:
+            - media
+        - title: Bitmagnet
+          description: DHT Torrent Tracker
+          link: http://poweredge:${bitmagnet_port}
+          tags:
+            - media
+        - title: Gitea
+          description: My Git Server
+          link: http://poweredge:${gitea_port}
+          tags:
+            - development
+        - title: Grafana
+          description: Server Monitoring Dashboard
+          link: http://poweredge:${grafana_port}
+          tags:
+            - development
+        - title: Readeck
+          description: Bookmarks
+          link: http://poweredge:${readeck_port}
+          tags:
+            - media
+        - title: Mealie
+          description: Recipes
+          link: http://poweredge:${mealie_port}
+        - title: Immich
+          description: Photo hosting
+          link: http://poweredge:${immich_port}
+          tags:
+            - media
+        - title: Photoprism
+          description: AI-powered Photo App
+          link: http://poweredge:${photoprism_port}
+          tags:
+            - media
+        - title: Calibre
+          description: E-books and pdfs
+          link: http://poweredge:${calibre_port}
+          tags:
+            - media
+    '';
+    config_file = pkgs.writeText "/SATA_SSD_POOL/mafl/config.yml" mafl_config;
+  in {
     image = "hywax/mafl";
     ports = [
       "${builtins.toString mafl_port}:3000"
     ];
     volumes = [
-      "/SATA_SSD_POOL/mafl:/app/data"
+      "${config_file}:/app/data/config.yml"
     ];
   };
 
@@ -380,7 +449,7 @@ in {
     enable = true;
     listen = {
       ip = "0.0.0.0";
-      port = 8083;
+      port = calibre_port;
     };
     openFirewall = true;
   };
@@ -388,7 +457,7 @@ in {
   services.polaris = {
     enable = true;
     openFirewall = true;
-    port = 5050;
+    port = polaris_port;
     settings = {
       mount_dirs = [
         {
@@ -403,7 +472,7 @@ in {
     enable = true;
     openFirewall = true;
     settings = {
-      http_server.port = "3333";
+      http_server.port = "${bitmagnet_port}";
     };
   };
 

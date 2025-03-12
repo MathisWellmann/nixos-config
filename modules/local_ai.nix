@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  newer_ollama = pkgs.ollama.overrideAttrs(old: {
+  newer_ollama = pkgs.ollama.overrideAttrs (old: {
     version = "0.6.0";
     src = pkgs.fetchFromGitHub {
       owner = "ollama";
