@@ -93,12 +93,12 @@
       cargo-machete
       cargo-flamegraph
       cargo-outdated
-      rust-bindgen
       gdb
       zig
       # Performance tuning
       hyperfine # Benchmarking of terminal commands, written in rust
       poop # Performance Optimizer Observation Platform, written in zig.
+      lsp-ai # language server that serves as a backend for AI-powered functionality
 
       # Cryptography
       # sequoia-sq

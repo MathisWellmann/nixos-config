@@ -27,7 +27,7 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/monero.nix
-    ./../../modules/monero_miner.nix
+    # ./../../modules/monero_miner.nix
   ];
 
   networking = {
