@@ -17,7 +17,7 @@
     floorp
     nyxt # Keyboard driven browser
     keepassxc
-    mate.eom # Image viewer
+    gthumb # Image viewer with support for ARW files
     geeqie # Better image viewer
     zathura # PDF reader
     qbittorrent
