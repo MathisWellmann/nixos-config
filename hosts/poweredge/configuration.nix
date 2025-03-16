@@ -87,7 +87,7 @@ in {
       mafl_port
       homer_port
       mealie_port
-      # mongodb_port # Mongodb
+      mongodb_port # Mongodb
     ];
     # For containers to access the internet.
     nat = {
@@ -173,12 +173,12 @@ in {
           dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
           port = 9215;
         };
-        # mongodb = {
-        #   enable = true;
-        #   collectAll = true;
-        #   uri = "mongodb://localhost:${toString mongodb_port}";
-        #   port = 9216;
-        # };
+        mongodb = {
+          enable = true;
+          collectAll = true;
+          uri = "mongodb://localhost:${toString mongodb_port}";
+          port = 9216;
+        };
         restic = {
           enable = true;
           port = 9753;
@@ -202,12 +202,12 @@ in {
               {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
             ];
           }
-          # {
-          #   job_name = "mongodb";
-          #   static_configs = [
-          #     {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.mongodb.port}"];}
-          #   ];
-          # }
+          {
+            job_name = "mongodb";
+            static_configs = [
+              {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.mongodb.port}"];}
+            ];
+          }
           {
             job_name = "restic";
             static_configs = [
