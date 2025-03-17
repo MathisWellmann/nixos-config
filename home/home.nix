@@ -260,7 +260,7 @@
           ];
           image = [
             {
-              run = "geeqie $@";
+              run = "gthumb $@";
               block = true;
             }
           ];

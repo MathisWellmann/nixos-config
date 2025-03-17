@@ -67,6 +67,7 @@
     # halloy # IRC GUI written in Rust
     # discord
     # slack
+    briar # P2P secure messaging
 
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
