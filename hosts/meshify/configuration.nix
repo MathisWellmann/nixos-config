@@ -10,6 +10,7 @@
   hostname = "meshify";
   username = "magewe";
   open-webui_port = 8080;
+  metastable_port = 4000;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -28,7 +29,7 @@ in {
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
-    ./../../modules/monero_miner.nix
+    # ./../../modules/monero_miner.nix
   ];
 
   buildkite_queue = "nixos";
@@ -145,11 +146,9 @@ in {
         mnt-poweredge-pdfs = "mnt-poweredge_SATA_SSD_POOL_pdfs.mount";
         mnt-poweredge-series = "mnt-poweredge_SATA_SSD_POOL_series.mount";
         mnt-poweredge-video = "mnt-poweredge_SATA_SSD_POOL_video.mount";
-        mongodb = "mongodb";
         buildkite = "buildkite-agent-meshify";
         restic-backups-home = "restic-backups-home";
       };
-      uptime.prefix = "up";
     };
   };
 
@@ -158,5 +157,13 @@ in {
     host = "0.0.0.0";
     port = open-webui_port;
     openFirewall = true;
+  };
+
+  virtualisation.oci-containers.containers."metastable" = {
+    image = "ghcr.io/mat-sz/metastable:cuda";
+    ports = [
+      "${builtins.toString metastable_port}:5001"
+    ];
+    volumes = [];
   };
 }
