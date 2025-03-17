@@ -40,6 +40,8 @@
       qmk_hid
       appimage-run
       fuse # Required for onekey wallet appimage to recognize the device
+      fio # Flexible IO tester: fio --name=seqwrite --ioengine=libaio --direct=1 --bs=1M --numjobs=1 --size=1G --rw=write --filename=/mnt/nfs/testfile
+      ueberzugpp # Required to display images in alacritty with yazi
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
@@ -58,6 +60,7 @@
       libclang # Includes `clangd`
       zls # Zig LSP
       tinymist # Typst markup language with `.typ` file extension
+      lsp-ai # language server that serves as a backend for AI-powered functionality
 
       # Terminal
       tokei
@@ -98,7 +101,6 @@
       # Performance tuning
       hyperfine # Benchmarking of terminal commands, written in rust
       poop # Performance Optimizer Observation Platform, written in zig.
-      lsp-ai # language server that serves as a backend for AI-powered functionality
 
       # Cryptography
       # sequoia-sq
