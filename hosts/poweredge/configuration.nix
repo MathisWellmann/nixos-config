@@ -44,6 +44,9 @@ in {
     description = "${username}";
     extraGroups = ["wheel"];
     shell = pkgs.nushell;
+    packages = with pkgs; [
+      cloudflared
+    ];
   };
 
   home-manager = {
@@ -549,6 +552,18 @@ in {
         tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
       };
       uptime.prefix = "up";
+    };
+  };
+
+  services.cloudflared = {
+    enable = true;
+    tunnels."poweredge" = {
+      credentialsFile = "/home/magewe/.cloudflared/9c4b5093-598c-45cb-89b7-8fa608bfb363.json";
+      default = "http_status:404";
+      ingress = {
+        "immich.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
+        "www.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
+      };
     };
   };
 }
