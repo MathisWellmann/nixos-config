@@ -28,7 +28,6 @@
   in
     with pkgs; [
       # Misc
-      typst
       terminus_font
       rdfind # Find duplicate files: e.g.: `rdfind .`
       fend # Unit aware calculator
