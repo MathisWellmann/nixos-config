@@ -75,8 +75,9 @@
     monero-gui
 
     # Photo Editing
-    hugin # Panorama stitching
     darktable
+    digikam
+    hugin # Panorama stitching
     rawtherapee
     blender
     gimp
@@ -229,14 +230,6 @@
       temperature = {
         day = 5000;
         night = 3000;
-      };
-    };
-    wpaperd = {
-      enable = true;
-      settings = {
-        any = {
-          path = "/home/magewe/wallpaper.jpg";
-        };
       };
     };
   };
