@@ -254,7 +254,7 @@
         opener = {
           edit = [
             {
-              run = "hx $@";
+              run = "hx $0";
               block = true;
             }
           ];
@@ -266,7 +266,7 @@
           ];
           play = [
             {
-              run = "vlc $@";
+              run = "mpv \"$@\"";
               block = true;
             }
           ];
