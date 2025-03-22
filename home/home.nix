@@ -41,6 +41,7 @@
       fuse # Required for onekey wallet appimage to recognize the device
       fio # Flexible IO tester: fio --name=seqwrite --ioengine=libaio --direct=1 --bs=1M --numjobs=1 --size=1G --rw=write --filename=/mnt/nfs/testfile
       ueberzugpp # Required to display images in alacritty with yazi
+      compose2nix
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
