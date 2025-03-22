@@ -550,8 +550,8 @@ in {
         tikr_BinanceUsdMargin_L2OrderBookDelta = "tikr@BinanceUsdMargin_L2OrderBookDelta";
         tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
         tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
+        cloudflare-tunnel = "cloudflared-tunnel-poweredge";
       };
-      uptime.prefix = "up";
     };
   };
 
@@ -563,6 +563,7 @@ in {
       ingress = {
         "immich.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
         "www.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
+        "@.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
       };
     };
   };
