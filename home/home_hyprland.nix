@@ -87,6 +87,7 @@
     hotspot # GUI for Linux perf
     tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
+    zed
   ];
 
   wayland.windowManager.hyprland = let
