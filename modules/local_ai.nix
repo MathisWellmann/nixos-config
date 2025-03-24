@@ -1,11 +1,11 @@
 {pkgs, ...}: let
   newer_ollama = pkgs.ollama.overrideAttrs (old: {
-    version = "0.6.0";
+    version = "0.6.2";
     src = pkgs.fetchFromGitHub {
       owner = "ollama";
       repo = "ollama";
-      tag = "v0.6.0";
-      hash = "sha256-xcnzLBrTbH5IRDZoUR0OoXslcTvml9d/jnQEM52Rmyg=";
+      tag = "v0.6.2";
+      hash = "sha256-ZQiBbVQbMYxC73DAPyWi6Yn/cPySpsPcTiCOHK3F35w=";
       fetchSubmodules = true;
     };
     vendorHash = "sha256-Zpzn2YWpiDAl4cwgrrSpN8CFy4GqqhE1mWsRxtYwdDA=";
