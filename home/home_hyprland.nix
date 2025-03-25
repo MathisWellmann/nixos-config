@@ -219,6 +219,13 @@
         terminal.shell.program = "nu";
       };
     };
+    zed-editor = let
+      system = pkgs.system;
+      stable = import inputs.nixpkgs-stable {inherit system;};
+    in{
+      enable = true;
+      package = stable.zed-editor;
+    };
   };
 
   services = {
