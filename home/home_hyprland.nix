@@ -87,7 +87,6 @@
     hotspot # GUI for Linux perf
     tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
-    zed
   ];
 
   wayland.windowManager.hyprland = let
@@ -218,13 +217,6 @@
         };
         terminal.shell.program = "nu";
       };
-    };
-    zed-editor = let
-      system = pkgs.system;
-      stable = import inputs.nixpkgs-stable {inherit system;};
-    in{
-      enable = true;
-      package = stable.zed-editor;
     };
   };
 

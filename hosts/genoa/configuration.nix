@@ -89,9 +89,6 @@ in {
   # https://kokada.capivaras.dev/blog/an-unordered-list-of-hidden-gems-inside-nixos/
   services.fstrim.enable = true;
 
-  environment.systemPackages = with inputs.nixpkgs-stable.legacyPackages.${pkgs.system}; [
-    firefox
-  ];
   services.mongodb = {
     enable = true;
     dbpath = "/mongodb";
