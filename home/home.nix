@@ -43,6 +43,7 @@
       ueberzugpp # Required to display images in alacritty with yazi
       compose2nix
       cfspeedtest # CLI for speed.cloudflare.com
+      ventoy
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
