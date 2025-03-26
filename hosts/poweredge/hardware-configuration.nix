@@ -2,11 +2,14 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
+  pkgs,
   config,
   lib,
   modulesPath,
   ...
-}: {
+}: let
+  static_ips = import ../../modules/static_ips.nix;
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -38,41 +41,79 @@
 
   swapDevices = [];
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
-  # networking.interfaces.eno2.useDHCP = lib.mkDefault true;
-  networking.interfaces.enp65s0 = {
-    name = "mellanox-40G-0";
-    useDHCP = false;
-    mtu = 9000;
-    ipv4 = {
-      addresses = [
-        {
-          address = "169.254.1.1";
-          prefixLength = 16;
-        }
-      ];
+  networking = {
+    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+    # (the default) this is the recommended approach. When using systemd-networkd it's
+    # still possible to use this option, but it's recommended to use it in conjunction
+    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+    useDHCP = lib.mkDefault true;
+
+    networkmanager.enable = false;
+
+    defaultGateway = {
+      interface = "eno1";
+      address = "192.168.0.55";
     };
-  };
-  networking.interfaces.enp65s0d1 = {
-    name = "mellanox-40G-1";
-    useDHCP = false;
-    mtu = 9000;
-    ipv4 = {
-      addresses = [
-        {
-          address = "169.254.1.2";
-          prefixLength = 16;
-        }
-      ];
+    nameservers = [
+      "192.168.0.55"
+      "1.1.1.1"
+      "8.8.8.8"
+      "9.9.9.9"
+    ];
+
+    interfaces = {
+      eno1 = {
+        name = "eno1";
+        useDHCP = false;
+        ipv4 = {
+          addresses = [
+            {
+              address = static_ips.poweredge_ip;
+              prefixLength = 24;
+            }
+          ];
+        };
+      };
+      enp65s0 = {
+        name = "mellanox-40G-0";
+        useDHCP = false;
+        mtu = 9000;
+        ipv4 = {
+          addresses = [
+            {
+              address = "169.254.1.1";
+              prefixLength = 16;
+            }
+          ];
+        };
+      };
+      enp65s0d1 = {
+        name = "mellanox-40G-1";
+        useDHCP = false;
+        mtu = 9000;
+        ipv4 = {
+          addresses = [
+            {
+              address = "169.254.1.2";
+              prefixLength = 16;
+            }
+          ];
+        };
+      };
     };
+    firewall.allowedTCPPorts = [
+      5201 # iperf server
+    ];
   };
-  networking.firewall.allowedTCPPorts = [
-    5201 # iperf
+
+  hardware.infiniband = {
+    enable = true;
+    # Get `guids` with `ibstat -p` (package `opensm`)
+    guids = [
+    ];
+  };
+  environment.systemPackages = with pkgs; [
+    opensm # Infiniband subnet manager
   ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
