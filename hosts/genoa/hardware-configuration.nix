@@ -6,8 +6,7 @@
   lib,
   modulesPath,
   ...
-}:
-let
+}: let
   static_ips = import ../../modules/static_ips.nix;
 in {
   imports = [
