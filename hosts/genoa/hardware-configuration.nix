@@ -2,6 +2,7 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
+  pkgs,
   config,
   lib,
   modulesPath,
@@ -69,27 +70,28 @@ in {
           ];
         };
       };
-      enp1s0f0np0 = {
-        name = "mellanox-100G-0";
+      # Mellanox ConnectX-4 100G
+      enp2s0f0np0 = {
+        name = "enp2s0f0np0";
         useDHCP = false;
         mtu = 9000;
         ipv4 = {
           addresses = [
             {
-              address = "169.254.3.1";
+              address = static_ips.genoa_mellanox_0;
               prefixLength = 16;
             }
           ];
         };
       };
-      enp1s0f1np1 = {
-        name = "mellanox-100G-1";
+      enp2s0f1np1 = {
+        name = "enp2s0f1np1";
         useDHCP = false;
         mtu = 9000;
         ipv4 = {
           addresses = [
             {
-              address = "169.254.3.2";
+              address = static_ips.genoa_mellanox_1;
               prefixLength = 16;
             }
           ];
@@ -97,6 +99,18 @@ in {
       };
     };
   };
+
+  hardware.infiniband = {
+    enable = true;
+    # Get `guids` with `ibstat -p` (package `opensm`)
+    guids = [
+      "0xee0d9afffe4b2126"
+      "0xee0d9afffe4b2127"
+    ];
+  };
+  environment.systemPackages = with pkgs; [
+    opensm # Infiniband subnet manager
+  ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
