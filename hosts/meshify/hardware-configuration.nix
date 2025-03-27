@@ -6,7 +6,9 @@
   lib,
   modulesPath,
   ...
-}: {
+}:let
+  static_ips = import ../../modules/static_ips.nix;
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -31,41 +33,67 @@
     {device = "/dev/disk/by-uuid/c792f5a1-1c4a-4fba-a2f4-976b4fc7a384";}
   ];
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.docker0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp4s0.useDHCP = lib.mkDefault true;
-  networking.interfaces.enp6s0 = {
-    name = "mellanox-40G-0";
-    useDHCP = false;
-    mtu = 9000;
-    ipv4 = {
-      addresses = [
-        {
-          address = "169.254.4.1";
-          prefixLength = 16;
-        }
-      ];
+  networking = {
+    # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
+    # (the default) this is the recommended approach. When using systemd-networkd it's
+    # still possible to use this option, but it's recommended to use it in conjunction
+    # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
+    useDHCP = lib.mkDefault false;
+
+    networkmanager.enable = false;
+
+    defaultGateway = {
+      interface = "enp4s0";
+      address = "192.168.0.55";
     };
+    nameservers = [
+      "192.168.0.55"
+      "1.1.1.1"
+      "8.8.8.8"
+      "9.9.9.9"
+    ];
+
+    interfaces = {
+      enp4s0 = {
+        name = "enp4s0";
+        useDHCP = false;
+        ipv4 = {
+          addresses = [
+            {
+              address = static_ips.meshify_ip;
+              prefixLength = 24;
+            }
+          ];
+        };
+      };
+      enp6s0 = {
+        name = "mellanox-40G-0";
+        useDHCP = false;
+        mtu = 9000;
+        ipv4 = {
+          addresses = [
+            {
+              address = "169.254.4.1";
+              prefixLength = 16;
+            }
+          ];
+        };
+      };
+      enp6s0d1 = {
+        name = "mellanox-40G-1";
+        useDHCP = false;
+        mtu = 9000;
+        ipv4 = {
+          addresses = [
+            {
+              address = "169.254.4.2";
+              prefixLength = 16;
+            }
+          ];
+        };
+      };
+    } ;
   };
-  networking.interfaces.enp6s0d1 = {
-    name = "mellanox-40G-1";
-    useDHCP = false;
-    mtu = 9000;
-    ipv4 = {
-      addresses = [
-        {
-          address = "169.254.4.2";
-          prefixLength = 16;
-        }
-      ];
-    };
-  };
-  # networking.interfaces.tailscale0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlo1.useDHCP = lib.mkDefault true;
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.intel.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
