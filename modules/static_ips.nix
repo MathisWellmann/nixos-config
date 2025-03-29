@@ -3,7 +3,7 @@
 
   # In server rack
   poweredge_ip = "192.168.0.10";
-  elitdesk_ip = "192.168.0.11";
+  elitedesk_ip = "192.168.0.11";
   superserver_ip = "192.168.0.12";
 
   # In shack.
