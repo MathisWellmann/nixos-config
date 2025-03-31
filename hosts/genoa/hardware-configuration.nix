@@ -47,7 +47,7 @@ in {
     networkmanager.enable = false;
 
     defaultGateway = {
-      interface = "eno1";
+      interface = "enp4s0";
       address = "192.168.0.55";
     };
     nameservers = [
@@ -59,7 +59,7 @@ in {
 
     interfaces = {
       eno1 = {
-        name = "eno1";
+        name = "enp4s0";
         useDHCP = false;
         ipv4 = {
           addresses = [
