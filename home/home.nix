@@ -102,6 +102,7 @@
       # Performance tuning
       hyperfine # Benchmarking of terminal commands, written in rust
       poop # Performance Optimizer Observation Platform, written in zig.
+      code2prompt
 
       # Cryptography
       # sequoia-sq
