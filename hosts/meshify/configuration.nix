@@ -152,12 +152,12 @@ in {
     };
   };
 
-  # services.open-webui = {
-  #   enable = true;
-  #   host = "0.0.0.0";
-  #   port = open-webui_port;
-  #   openFirewall = true;
-  # };
+  services.open-webui = {
+    enable = true;
+    host = "0.0.0.0";
+    port = open-webui_port;
+    openFirewall = true;
+  };
 
   virtualisation.oci-containers.containers."metastable" = {
     image = "ghcr.io/mat-sz/metastable:cuda";

@@ -78,7 +78,7 @@
       cloak # CLI OTP Authentication
       unzip
       (python3.withPackages my-python-packages)
-      systeroid # More powerful alternative to `sysctl` with a tui
+      # systeroid # More powerful alternative to `sysctl` with a tui
       hwinfo
       dmidecode
       iperf
