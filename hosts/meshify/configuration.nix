@@ -166,4 +166,8 @@ in {
     ];
     volumes = [];
   };
+
+  # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
+  services.mullvad-vpn.enable = true;
+  services.resolved.enable = true;
 }
