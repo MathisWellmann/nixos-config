@@ -6,11 +6,15 @@
   wayland.windowManager.hyprland = {
     settings = {
       monitor = [
-        # "DP-1, 1920x1080@60, 0x1080, 1"
-        "DP-3, 3840x2160@144, 1920x0, 1, transform, 1"
-        "DP-2, 3840x2160@144, 4080x0, 1, transform, 1"
-        "DP-1, 3840x2160@144, 6240x0, 1, transform, 1"
-        # "DP-2, 3840x2160@144, 6240x0, 1"
+        # Triple Vertical
+        "DP-3, 3840x2160@144, 0x0, 1, transform, 1"
+        "DP-2, 3840x2160@144, 2160x0, 1, transform, 1"
+        "DP-1, 3840x2160@144, 4320x0, 1, transform, 1"
+         
+        # Middle monitor horizontal
+        # "DP-3, 3840x2160@144, 0x0, 1, transform, 1"
+        # "DP-2, 3840x2160@144, 2160x0, 1"
+        # "DP-1, 3840x2160@144, 6000x0, 1, transform, 1"
       ];
       env = [
         "LIBVA_DRIVER_NAME,nvidia"

@@ -76,7 +76,6 @@
     # Photo Editing
     darktable
     digikam
-    hugin # Panorama stitching
     rawtherapee
     blender
     gimp
