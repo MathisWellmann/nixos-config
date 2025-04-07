@@ -212,6 +212,12 @@
         cr = "cargo run";
         crr = "cargo run --release";
         cte = "cargo test";
+
+        # Jujutsu `jj` aliases
+        jjl = "jj log";
+        jjn = "jj new";
+        jjr = "jj rebase";
+        jjf = "jj git fetch";
       };
       extraConfig = ''
         $env.config = {
