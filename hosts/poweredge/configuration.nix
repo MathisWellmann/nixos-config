@@ -102,9 +102,7 @@ in {
 
   services = {
     nfs.server = let
-      # Using ip of mellanox 100G NIC. would be cool if tailscale would use that route, but that a future todo.
-      genoa_addr = "169.254.79.94";
-      genoa_subnet = "16";
+      genoa_addr = "genoa";
       meshify_addr = "meshify";
       razerblade_addr = "razerblade";
       common_dirs = [
@@ -117,7 +115,7 @@ in {
         "pdfs"
       ];
       exports_for_genoa =
-        lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${genoa_addr}/${genoa_subnet}(rw,sync,no_subtree_check)\n")
+        lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${genoa_addr}(rw,sync,no_subtree_check)\n")
         (common_dirs
           ++ ["backup_genoa" "ilka"]);
       exports_for_meshify =
