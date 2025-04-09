@@ -216,6 +216,7 @@
         # Jujutsu `jj` aliases
         jjl = "jj log";
         jjn = "jj new";
+        jjd = "jj describe -m ";
         jjr = "jj rebase";
         jjf = "jj git fetch";
       };

@@ -122,6 +122,7 @@
         "$mainMod, COMMA, exec, $menu"
         "$mainMod, P, pseudo"
         "$mainMod, S, togglesplit"
+        "$mainMod, F, fullscreen"
 
         "$mainMod, m, movefocus, l"
         "$mainMod, i, movefocus, r"

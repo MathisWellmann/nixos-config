@@ -5,11 +5,13 @@
 
   wayland.windowManager.hyprland = {
     settings = {
+      # Top left corner is 0x0 is x and y. increasing y means physically a lower position.
       monitor = [
         # Triple Vertical
-        "DP-3, 3840x2160@144, 0x0, 1, transform, 1"
-        "DP-2, 3840x2160@144, 2160x0, 1, transform, 1"
-        "DP-1, 3840x2160@144, 4320x0, 1, transform, 1"
+        "DP-3, 3840x2160@144, 0x1080, 1, transform, 1"
+        "DP-2, 3840x2160@144, 2160x1080, 1, transform, 1"
+        "DP-1, 3840x2160@144, 4320x1080, 1, transform, 1"
+        "HDMI-A-1, 1920x1080@60, 3240x0, 1"
          
         # Middle monitor horizontal
         # "DP-3, 3840x2160@144, 0x0, 1, transform, 1"
