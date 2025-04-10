@@ -8,30 +8,8 @@
   config,
   ...
 }: let
-  # TODO: extract all variable into new file.
-  hostname = "poweredge";
-  username = "magewe";
-  backup_host = "elitedesk";
-  backup_target_dir = "/mnt/backup_hdd";
-  mafl_port = 80;
-  tikr_base_port = 9184;
-  mongodb_port = 27017;
-  jellyfin_port = 8096;
-  gitea_port = 3000;
-  gitea_state_dir = "/var/lib/gitea";
-  grafana_port = 3001;
-  homer_port = 3003;
-  readeck_port = 3004;
-  mealie_port = 3005;
-  gotosocial_port = 3006;
-  immich_port = 3007;
-  photoprism_port = 3008;
-  bitmagnet_port = 3009;
-  polaris_port = 3010;
-  calibre_port = 3011;
-  ncps_port = 3501;
-  ncps_otel_port = 3501;
-in {
+  const = import ./constants.nix;
+in{
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
@@ -43,9 +21,9 @@ in {
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users."${username}" = {
+  users.users."${const.username}" = {
     isNormalUser = true;
-    description = "${username}";
+    description = "${const.username}";
     extraGroups = ["wheel"];
     shell = pkgs.nushell;
     packages = with pkgs; [
@@ -57,7 +35,7 @@ in {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${username}" = import ./../../home/home.nix;
+      "${const.username}" = import ./../../home/home.nix;
     };
   };
 
@@ -81,7 +59,7 @@ in {
   };
 
   networking = {
-    hostName = hostname;
+    hostName = const.hostname;
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
@@ -89,12 +67,12 @@ in {
       4000 # Greptimedb
       4001 # Greptimedb
       4003 # Greptimedb
-      gitea_port
-      grafana_port
-      mafl_port
-      homer_port
-      mealie_port
-      mongodb_port # Mongodb
+      const.gitea_port
+      const.grafana_port
+      const.mafl_port
+      const.homer_port
+      const.mealie_port
+      const.mongodb_port # Mongodb
     ];
     # For containers to access the internet.
     nat = {
@@ -146,8 +124,8 @@ in {
       n_tikr_services =
         builtins.length config.services.tikr.exchanges
         + builtins.length config.services.tikr.data-types;
-      tikr_max_port = tikr_base_port + n_tikr_services;
-      tikr_ports = lib.range tikr_base_port tikr_max_port;
+      tikr_max_port = const.tikr_base_port + n_tikr_services;
+      tikr_ports = lib.range const.tikr_base_port tikr_max_port;
       tikr_scrape_configs =
         map (local_tikr_port: {
           job_name = "tikr-${toString local_tikr_port}";
@@ -181,7 +159,7 @@ in {
         mongodb = {
           enable = true;
           collectAll = true;
-          uri = "mongodb://localhost:${toString mongodb_port}";
+          uri = "mongodb://localhost:${toString const.mongodb_port}";
           port = 9216;
         };
         restic = {
@@ -222,7 +200,7 @@ in {
           {
             job_name = "ncps";
             static_configs = [
-              {targets = ["127.0.0.1:${toString ncps_otel_port}"];}
+              {targets = ["127.0.0.1:${toString const.ncps_otel_port}"];}
             ];
           }
         ];
@@ -233,7 +211,7 @@ in {
         server = {
           # Listening Address
           http_addr = "0.0.0.0";
-          http_port = grafana_port;
+          http_port = const.grafana_port;
         };
       };
     };
@@ -260,52 +238,52 @@ in {
       services:
         - title: Jellyfin
           description: Movies and Series
-          link: http://poweredge:${builtins.toString jellyfin_port}
+          link: http://poweredge:${builtins.toString const.jellyfin_port}
           icon:
             url: https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Fuybguvnj1p821.png&f=1&nofb=1&ipt=b317f7cc53b5d1b35a5e26f5cd58f7c8dbc72861b640c515e628bb3f41be1b25&ipo=images
           tags:
             - media
         - title: Polaris
           description: Music library
-          link: http://poweredge:${builtins.toString polaris_port}
+          link: http://poweredge:${builtins.toString const.polaris_port}
           tags:
             - media
         - title: Bitmagnet
           description: DHT Torrent Tracker
-          link: http://poweredge:${builtins.toString bitmagnet_port}
+          link: http://poweredge:${builtins.toString const.bitmagnet_port}
           tags:
             - media
         - title: Gitea
           description: My Git Server
-          link: http://poweredge:${builtins.toString gitea_port}
+          link: http://poweredge:${builtins.toString const.gitea_port}
           tags:
             - development
         - title: Grafana
           description: Server Monitoring Dashboard
-          link: http://poweredge:${builtins.toString grafana_port}
+          link: http://poweredge:${builtins.toString const.grafana_port}
           tags:
             - development
         - title: Readeck
           description: Bookmarks
-          link: http://poweredge:${builtins.toString readeck_port}
+          link: http://poweredge:${builtins.toString const.readeck_port}
           tags:
             - media
         - title: Mealie
           description: Recipes
-          link: http://poweredge:${builtins.toString mealie_port}
+          link: http://poweredge:${builtins.toString const.mealie_port}
         - title: Immich
           description: Photo hosting
-          link: http://poweredge:${builtins.toString immich_port}
+          link: http://poweredge:${builtins.toString const.immich_port}
           tags:
             - media
         - title: Photoprism
           description: AI-powered Photo App
-          link: http://poweredge:${builtins.toString photoprism_port}
+          link: http://poweredge:${builtins.toString const.photoprism_port}
           tags:
             - media
         - title: Calibre
           description: E-books and pdfs
-          link: http://poweredge:${builtins.toString calibre_port}
+          link: http://poweredge:${builtins.toString const.calibre_port}
           tags:
             - media
     '';
@@ -313,7 +291,7 @@ in {
   in {
     image = "hywax/mafl";
     ports = [
-      "${builtins.toString mafl_port}:3000"
+      "${builtins.toString const.mafl_port}:3000"
     ];
     volumes = [
       "${config_file}:/app/data/config.yml"
@@ -323,7 +301,7 @@ in {
   virtualisation.oci-containers.containers."homer" = {
     image = "b4bz/homer";
     ports = [
-      "${builtins.toString homer_port}:8080"
+      "${builtins.toString const.homer_port}:8080"
     ];
     volumes = [
       "/SATA_SSD_POOL/homer:/www/assets"
@@ -333,7 +311,7 @@ in {
   virtualisation.oci-containers.containers."readeck" = {
     image = "codeberg.org/readeck/readeck:latest";
     ports = [
-      "${builtins.toString readeck_port}:8000"
+      "${builtins.toString const.readeck_port}:8000"
     ];
     volumes = [
       "/SATA_SSD_POOL/readeck:/readeck"
@@ -368,8 +346,8 @@ in {
   };
 
   ### Backup Section ###
-  fileSystems."/mnt/${backup_host}_backup" = {
-    device = "${backup_host}:${backup_target_dir}";
+  fileSystems."/mnt/${const.backup_host}_backup" = {
+    device = "${const.backup_host}:${const.backup_target_dir}";
     fsType = "nfs";
     options = ["rw" "rsize=131072" "wsize=131072"];
   };
@@ -378,12 +356,12 @@ in {
       initialize = true;
       paths = [
         "/SATA_SSD_POOL/*"
-        "${gitea_state_dir}"
+        "${const.gitea_state_dir}"
       ];
       passwordFile = "/etc/nixos/secrets/restic/password";
-      repository = "/mnt/${backup_host}_backup/restic/SATA_SSD_POOL";
+      repository = "/mnt/${const.backup_host}_backup/restic/SATA_SSD_POOL";
       pruneOpts = ["--keep-daily 14"];
-      user = "${username}";
+      user = "${const.username}";
     };
   };
   environment.systemPackages = with pkgs; [
@@ -398,7 +376,7 @@ in {
     database-addr = "poweredge:4001";
     exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
     data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
-    prometheus_exporter_base_port = tikr_base_port;
+    prometheus_exporter_base_port = const.tikr_base_port;
   };
 
   # Music server
@@ -416,7 +394,7 @@ in {
   services.mongodb = {
     enable = true;
     dbpath = "/SATA_SSD_POOL/mongodb";
-    user = "${username}";
+    user = "${const.username}";
     bind_ip = "0.0.0.0";
   };
 
@@ -425,9 +403,9 @@ in {
     enable = true;
     appName = "MW-Trading-Systems";
     repositoryRoot = "/SATA_SSD_POOL/gitea";
-    user = "${username}";
-    settings.server.HTTP_PORT = gitea_port;
-    stateDir = "${gitea_state_dir}";
+    user = "${const.username}";
+    settings.server.HTTP_PORT = const.gitea_port;
+    stateDir = "${const.gitea_state_dir}";
   };
 
   # Decentralized git protocol
@@ -460,7 +438,7 @@ in {
     enable = true;
     listen = {
       ip = "0.0.0.0";
-      port = calibre_port;
+      port = const.calibre_port;
     };
     openFirewall = true;
   };
@@ -468,7 +446,7 @@ in {
   services.polaris = {
     enable = true;
     openFirewall = true;
-    port = polaris_port;
+    port = const.polaris_port;
     settings = {
       mount_dirs = [
         {
@@ -483,13 +461,13 @@ in {
     enable = true;
     openFirewall = true;
     settings = {
-      http_server.port = "${builtins.toString bitmagnet_port}";
+      http_server.port = "${builtins.toString const.bitmagnet_port}";
     };
   };
 
   services.mealie = {
     enable = true;
-    port = mealie_port;
+    port = const.mealie_port;
   };
 
   services.gotosocial = {
@@ -501,7 +479,7 @@ in {
       host = "localhost";
       db-address = "/var/lib/gotosocial/database.sqlite";
       db-type = "sqlite";
-      port = gotosocial_port;
+      port = const.gotosocial_port;
       protocol = "https";
       storage-local-base-path = "/var/lib/gotosocial/storage";
     };
@@ -512,12 +490,12 @@ in {
     host = "0.0.0.0";
     mediaLocation = "/SATA_SSD_POOL/immich";
     openFirewall = true;
-    port = immich_port;
+    port = const.immich_port;
   };
 
   services.photoprism = {
     enable = true;
-    port = photoprism_port;
+    port = const.photoprism_port;
     address = "0.0.0.0";
     originalsPath = "/SATA_SSD_POOL/magewe/bilder";
     passwordFile = "/etc/nixos/secrets/photoprism";
@@ -569,9 +547,9 @@ in {
       credentialsFile = "/home/magewe/.cloudflared/9c4b5093-598c-45cb-89b7-8fa608bfb363.json";
       default = "http_status:404";
       ingress = {
-        "immich.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
-        "www.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
-        "@.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
+        "immich.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
+        "www.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
+        "@.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
       };
     };
   };
@@ -579,12 +557,12 @@ in {
   # Nix Cache Proxy Server
   services.ncps = {
     enable = true;
-    server.addr = "0.0.0.0:${builtins.toString ncps_port}";
+    server.addr = "0.0.0.0:${builtins.toString const.ncps_port}";
     cache = {
       allowPutVerb = true;
       databaseURL = "sqlite:/var/lib/ncps/db/db.sqlite";
       dataPath = "/var/lib/ncps";
-      hostName = hostname;
+      hostName = const.hostname;
       maxSize = "512G";
     };
     upstream = {
@@ -594,7 +572,7 @@ in {
     };
     openTelemetry = {
       enable = true;
-      grpcURL = "127.0.0.1:${builtins.toString ncps_otel_port}";
+      grpcURL = "127.0.0.1:${builtins.toString const.ncps_otel_port}";
     };
   };
 }
