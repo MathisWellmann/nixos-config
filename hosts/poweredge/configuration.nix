@@ -8,6 +8,8 @@
   config,
   ...
 }: let
+  # TODO: extract all variable into new file.
+  hostname = "poweredge";
   username = "magewe";
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
@@ -27,6 +29,8 @@
   bitmagnet_port = 3009;
   polaris_port = 3010;
   calibre_port = 3011;
+  ncps_port = 3501;
+  ncps_otel_port = 3501;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -77,7 +81,7 @@ in {
   };
 
   networking = {
-    hostName = "poweredge"; # Define your hostname.
+    hostName = hostname;
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
@@ -213,6 +217,12 @@ in {
             job_name = "restic";
             static_configs = [
               {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.restic.port}"];}
+            ];
+          }
+          {
+            job_name = "ncps";
+            static_configs = [
+              {targets = ["127.0.0.1:${toString ncps_otel_port}"];}
             ];
           }
         ];
@@ -563,6 +573,28 @@ in {
         "www.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
         "@.mwtradingsystems.com" = "http://localhost:${builtins.toString immich_port}";
       };
+    };
+  };
+
+  # Nix Cache Proxy Server
+  services.ncps = {
+    enable = true;
+    server.addr = "0.0.0.0:${builtins.toString ncps_port}";
+    cache = {
+      allowPutVerb = true;
+      databaseURL = "sqlite:/var/lib/ncps/db/db.sqlite";
+      dataPath = "/var/lib/ncps";
+      hostName = hostname;
+      maxSize = "512G";
+    };
+    upstream = {
+      caches = [
+        "https://cache.nixos.org"
+      ];
+    };
+    openTelemetry = {
+      enable = true;
+      grpcURL = "127.0.0.1:${builtins.toString ncps_otel_port}";
     };
   };
 }
