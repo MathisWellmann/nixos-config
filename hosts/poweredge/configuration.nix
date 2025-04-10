@@ -140,7 +140,7 @@ in {
       enable = true;
       listenAddress = "0.0.0.0";
       retentionTime = "30d";
-      port = 9001;
+      port = const.prometheus_port;
       exporters = {
         node = {
           enable = true;
@@ -195,12 +195,6 @@ in {
             job_name = "restic";
             static_configs = [
               {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.restic.port}"];}
-            ];
-          }
-          {
-            job_name = "ncps";
-            static_configs = [
-              {targets = ["127.0.0.1:${toString const.ncps_otel_port}"];}
             ];
           }
         ];
@@ -571,8 +565,8 @@ in {
       ];
     };
     openTelemetry = {
-      enable = true;
-      grpcURL = "127.0.0.1:${builtins.toString const.ncps_otel_port}";
+      enable = false;
+      grpcURL = "http://127.0.0.1:${builtins.toString const.prometheus_port}";
     };
   };
 }

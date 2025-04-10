@@ -21,5 +21,5 @@
   polaris_port = 3010;
   calibre_port = 3011;
   ncps_port = 3501;
-  ncps_otel_port = 3501;
+  prometheus_port = 9001;
 }
