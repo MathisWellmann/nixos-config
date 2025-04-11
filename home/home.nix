@@ -2,7 +2,18 @@
   pkgs,
   inputs,
   ...
-}: {
+}:
+let
+  # Tool for cloning all starred github repos
+  solar = pkgs.buildGoModule{
+    name = "solar";
+    src = builtins.fetchGit{
+      url = "https://github.com/gleich/solar";
+      rev = "6b271d88f3b85cec06b3894ea775376e733c3fe5";
+    };
+    vendorHash = "sha256-FIaGChSMHufD+OE9ZP/fgI8TAtVdw/JCuhMAm4vMn/w=";
+  };
+in {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "magewe";
@@ -44,6 +55,7 @@
       compose2nix
       cfspeedtest # CLI for speed.cloudflare.com
       ventoy
+      solar
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
