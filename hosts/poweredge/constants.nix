@@ -20,6 +20,7 @@
   bitmagnet_port = 3009;
   polaris_port = 3010;
   calibre_port = 3011;
+  uptime_kuma_port = 3012;
   ncps_port = 3501;
   harmonia_port = 5000;
   prometheus_port = 9001;

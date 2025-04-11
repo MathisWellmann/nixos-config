@@ -73,7 +73,8 @@ in {
       const.mafl_port
       const.homer_port
       const.mealie_port
-      const.mongodb_port # Mongodb
+      const.mongodb_port
+      const.uptime_kuma_port
     ];
     # For containers to access the internet.
     nat = {
@@ -230,6 +231,8 @@ in {
           color: green
         - name: development
           color: orange
+        - name: observability
+          color: blue
       services:
         - title: Jellyfin
           description: Movies and Series
@@ -257,7 +260,7 @@ in {
           description: Server Monitoring Dashboard
           link: http://poweredge:${builtins.toString const.grafana_port}
           tags:
-            - development
+            - obserservability
         - title: Readeck
           description: Bookmarks
           link: http://poweredge:${builtins.toString const.readeck_port}
@@ -281,6 +284,11 @@ in {
           link: http://poweredge:${builtins.toString const.calibre_port}
           tags:
             - media
+        - title: UptimeKuma
+          description: Check uptime of my websites
+          link: http://poweredge:${builtins.toString const.uptime_kuma_port}
+          tags:
+            - observability
     '';
     config_file = pkgs.writeText "/SATA_SSD_POOL/mafl/config.yml" mafl_config;
   in {
@@ -569,6 +577,14 @@ in {
     openTelemetry = {
       enable = false;
       grpcURL = "http://127.0.0.1:${builtins.toString const.prometheus_port}";
+    };
+  };
+
+  services.uptime-kuma = {
+    enable = true;
+    settings = {
+      UPTIME_KUMA_HOST = "0.0.0.0";
+      PORT = "${builtins.toString const.uptime_kuma_port}";
     };
   };
 }
