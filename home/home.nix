@@ -66,6 +66,7 @@ in {
       nh
       nix-tree
       nix-inspect
+      deadnix # Dead code detection for nix
 
       # LSPs
       marksman # Markdown LSP

@@ -3,3 +3,5 @@ procs:
     shell: "nix flake check"
   fmt:
     shell: "alejandra ."
+  dead_code:
+    shell: "deadnix"
