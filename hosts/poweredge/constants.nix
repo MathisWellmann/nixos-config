@@ -23,4 +23,5 @@
   ncps_port = 3501;
   harmonia_port = 5000;
   prometheus_port = 9001;
+  iperf_port = 5201;
 }

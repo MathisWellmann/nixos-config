@@ -2,13 +2,13 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
-  pkgs,
   config,
   lib,
   modulesPath,
   ...
 }: let
   static_ips = import ../../modules/static_ips.nix;
+  const = import ./constants.nix;
 in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -18,16 +18,6 @@ in {
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
-
-  # Old disk
-  # fileSystems."/" = {
-  #   device = "/dev/disk/by-uuid/2aeb1cf4-e11d-417e-b3de-31c781912d4f";
-  #   fsType = "ext4";
-  # };
-  # fileSystems."/boot" = {
-  #   device = "/dev/disk/by-uuid/A936-D659";
-  #   fsType = "vfat";
-  # };
 
   # NVME disk
   fileSystems."/" = {
@@ -75,26 +65,26 @@ in {
         };
       };
       enp65s0 = {
-        name = "mellanox-40G-0";
+        name = "enp65s0";
         useDHCP = false;
         mtu = 9000;
         ipv4 = {
           addresses = [
             {
-              address = "169.254.1.1";
+              address = static_ips.poweredge_mellanox_0;
               prefixLength = 16;
             }
           ];
         };
       };
       enp65s0d1 = {
-        name = "mellanox-40G-1";
+        name = "enp65s0d1";
         useDHCP = false;
         mtu = 9000;
         ipv4 = {
           addresses = [
             {
-              address = "169.254.1.2";
+              address = static_ips.poweredge_mellanox_1;
               prefixLength = 16;
             }
           ];
@@ -102,19 +92,9 @@ in {
       };
     };
     firewall.allowedTCPPorts = [
-      5201 # iperf server
+      const.iperf_port # iperf server
     ];
   };
-
-  hardware.infiniband = {
-    enable = true;
-    # Get `guids` with `ibstat -p` (package `opensm`)
-    guids = [
-    ];
-  };
-  environment.systemPackages = with pkgs; [
-    opensm # Infiniband subnet manager
-  ];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
