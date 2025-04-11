@@ -6,7 +6,7 @@
   lib,
   modulesPath,
   ...
-}:let
+}: let
   static_ips = import ../../modules/static_ips.nix;
 in {
   imports = [
@@ -92,7 +92,7 @@ in {
           ];
         };
       };
-    } ;
+    };
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
