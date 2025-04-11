@@ -17,6 +17,7 @@ in {
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
+    ./../../modules/harmonia_cache.nix
     ./../../modules/monero.nix
   ];
 
