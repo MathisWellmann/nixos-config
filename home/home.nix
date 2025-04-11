@@ -54,6 +54,7 @@
       nurl # CLI to generate nix fetcher calls from repository URLs.
       nh
       nix-tree
+      nix-inspect
 
       # LSPs
       marksman # Markdown LSP
