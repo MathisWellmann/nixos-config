@@ -79,7 +79,7 @@
       cloak # CLI OTP Authentication
       unzip
       (python3.withPackages my-python-packages)
-      # systeroid # More powerful alternative to `sysctl` with a tui
+      systeroid # More powerful alternative to `sysctl` with a tui
       hwinfo
       dmidecode
       iperf
@@ -92,23 +92,13 @@
       gitui
       cargo-expand # Expands rust macros
       cargo-info
-      cargo-semver-checks # A tool to scan your rust crate for semver violations
       cargo-wizard
-      cargo-llvm-cov
-      cargo-machete
-      cargo-flamegraph
-      cargo-outdated
-      gdb
       zig
-      # Performance tuning
-      hyperfine # Benchmarking of terminal commands, written in rust
-      poop # Performance Optimizer Observation Platform, written in zig.
-      code2prompt
 
       # Cryptography
       # sequoia-sq
       safecloset
-      gokey # Vault-less password derivation from master key
+      gokey # Vault-less password derived from master key.
 
       # Cryptocurrency
       cointop
