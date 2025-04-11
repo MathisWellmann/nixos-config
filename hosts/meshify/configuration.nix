@@ -31,6 +31,7 @@ in {
     ./../../modules/monero.nix
     # ./../../modules/monero_miner.nix
   ];
+  boot.kernelPackages = pkgs.linuxPackages_latest;
 
   buildkite_queue = "nixos";
 
