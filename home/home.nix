@@ -2,12 +2,11 @@
   pkgs,
   inputs,
   ...
-}:
-let
+}: let
   # Tool for cloning all starred github repos
-  solar = pkgs.buildGoModule{
+  solar = pkgs.buildGoModule {
     name = "solar";
-    src = builtins.fetchGit{
+    src = builtins.fetchGit {
       url = "https://github.com/gleich/solar";
       rev = "6b271d88f3b85cec06b3894ea775376e733c3fe5";
     };

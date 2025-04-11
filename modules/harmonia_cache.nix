@@ -5,7 +5,7 @@ in {
     enable = true;
     # generate a public/private key pair like this:
     # $ nix-store --generate-binary-cache-key cache.yourdomain.tld-1 /var/lib/secrets/harmonia.secret /var/lib/secrets/harmonia.pub
-    signKeyPaths = [ "/var/lib/secrets/harmonia.secret" ];
+    signKeyPaths = ["/var/lib/secrets/harmonia.secret"];
     # Example using sops-nix to store the signing key
     #services.harmonia.signKeyPaths = [ config.sops.secrets.harmonia-key.path ];
     #sops.secrets.harmonia-key = { };
@@ -15,9 +15,9 @@ in {
   };
 
   # optional if you use allowed-users in other places
-  nix.settings.allowed-users = [ "harmonia" ];
+  nix.settings.allowed-users = ["harmonia"];
 
-  networking.firewall.allowedTCPPorts = [ 443 80 ];
+  networking.firewall.allowedTCPPorts = [443 80];
 
   # security.acme.defaults.email = "wellmannmathis@gmail.com";
   # security.acme.acceptTerms = true;
