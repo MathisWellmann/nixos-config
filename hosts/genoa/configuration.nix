@@ -97,6 +97,15 @@ in {
     user = "${username}";
     bind_ip = "0.0.0.0";
   };
+  # Raise open file limits for mongodb.
+  security.pam.services.mongodb.limits = [
+      {
+        domain = "*";
+        type = "soft";
+        item = "nofile";
+        value = "65536";
+      }
+  ];
 
   hardware.ledger.enable = true;
   services.trezord.enable = true;
