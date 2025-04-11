@@ -1,0 +1,5 @@
+procs:
+  check:
+    shell: "nix flake check"
+  fmt:
+    shell: "alejandra ."
