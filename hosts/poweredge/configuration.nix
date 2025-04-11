@@ -563,6 +563,7 @@ in {
     upstream = {
       caches = [
         "https://cache.nixos.org"
+        "https://nix-community.cachix.org"
       ];
     };
     openTelemetry = {
