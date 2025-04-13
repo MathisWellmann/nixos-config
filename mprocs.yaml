@@ -5,3 +5,5 @@ procs:
     shell: "alejandra ."
   dead_code:
     shell: "deadnix"
+  statix:
+    shell: "statix check"
