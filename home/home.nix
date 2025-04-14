@@ -1,4 +1,5 @@
 {
+  lib,
   pkgs,
   inputs,
   ...
@@ -35,6 +36,24 @@ in {
       with ps; [
         numpy
       ];
+    # Will be merged to nixpkgs soon: https://github.com/NixOS/nixpkgs/pull/398406
+    codebook = pkgs.rustPlatform.buildRustPackage {
+      name = "codebook";
+      src = builtins.fetchGit {
+        url = "https://github.com/blopker/codebook";
+        rev = "d3a636da214f2ca2232413e5b2232532830e74ac";
+      };
+      cargoHash = "sha256-Olk5SjvJ5598sXjiuAQD/sW6MIfQpK9Q3JnDZWj9J7w=";
+      nativeBuildInputs = with pkgs; [
+        perl
+        pkg-config
+      ];
+      buildinputs = with pkgs; [
+        openssl
+      ];
+      buildAndTestSubdir = "crates/codebook-lsp";
+      useFetchCargoVendor = true;
+    };
   in
     with pkgs; [
       # Misc
@@ -72,11 +91,13 @@ in {
 
       # LSPs
       marksman # Markdown LSP
+      markdown-oxide # Personal knowledge management system LSP
       nil # Nix LSP
       yaml-language-server
       zls # Zig LSP
       tinymist # Typst markup language with `.typ` file extension
       lsp-ai # language server that serves as a backend for AI-powered functionality
+      codebook
 
       # Terminal
       tokei
@@ -132,6 +153,18 @@ in {
     helix = {
       enable = true;
       package = inputs.helix;
+      languages = {
+        language-server.codebook = {
+          command = "codebook-lsp";
+          args = ["serve"];
+        };
+        language = [
+          {
+            name = "rust";
+            language-servers = ["rust-analyzer" "codebook"];
+          }
+        ];
+      };
       settings = {
         theme = "snazzy"; # Dark
         # theme = "ayu_light";
