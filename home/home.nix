@@ -55,6 +55,7 @@ in {
       cfspeedtest # CLI for speed.cloudflare.com
       ventoy
       solar
+      ethtool
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
