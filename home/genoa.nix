@@ -35,19 +35,21 @@
     enable = true;
     settings = {
       ipc = "on";
-      splash = false;
+      splash = true;
       splash_offset = 2.0;
       preload = [
-        "/home/magewe/wallpaper_rolls-royce-phantom_monitor_0.jpg"
-        "/home/magewe/wallpaper_rolls-royce-phantom_monitor_1.jpg"
-        "/home/magewe/wallpaper_rolls-royce-phantom_monitor_2.jpg"
+        "/home/magewe/acapulco_wallpaper.jxl"
+        "/home/magewe/acapulco_wallpaper_0.jxl"
+        "/home/magewe/acapulco_wallpaper_1.jxl"
+        "/home/magewe/acapulco_wallpaper_2.jxl"
       ];
       # Convert single image into slices using `imagemagick`:
       # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
       wallpaper = [
-        "DP-3,/home/magewe/wallpaper_rolls-royce-phantom_monitor_0.jpg"
-        "DP-2,/home/magewe/wallpaper_rolls-royce-phantom_monitor_1.jpg"
-        "DP-1,/home/magewe/wallpaper_rolls-royce-phantom_monitor_2.jpg"
+        "DP-3,/home/magewe/acapulco_wallpaper_0.jxl"
+        "DP-2,/home/magewe/acapulco_wallpaper_1.jxl"
+        "DP-1,/home/magewe/acapulco_wallpaper_2.jxl"
+        "HDMI-A-1,/home/magewe/acapulco_wallpaper.jxl"
       ];
     };
   };
