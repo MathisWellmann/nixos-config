@@ -19,6 +19,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/harmonia_cache.nix
     ./../../modules/monero.nix
+    ./../../modules/nats_cluster.nix
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
