@@ -9,6 +9,7 @@
   hostname = "genoa";
   username = "magewe";
   mongodb_port = 27017;
+  nats_port = 4222;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -137,6 +138,19 @@ in {
         restic-backups-home = "restic-backups-home";
       };
       uptime.prefix = "up";
+    };
+  };
+
+  services.nats = {
+    enable = true;
+    jetstream = true;
+    port = nats_port;
+    serverName = "nats-${hostname}";
+    settings = {
+      jetstream = {
+        max_mem = "1G";
+        max_file = "10G";
+      };
     };
   };
 }
