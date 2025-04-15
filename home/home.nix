@@ -35,6 +35,7 @@ in {
     my-python-packages = ps:
       with ps; [
         numpy
+        openai # Not using ClosedAi, but the package allows interacting with locally hosted ai services as well
       ];
     # Will be merged to nixpkgs soon: https://github.com/NixOS/nixpkgs/pull/398406
     codebook = pkgs.rustPlatform.buildRustPackage {
@@ -75,6 +76,8 @@ in {
       ventoy
       solar
       ethtool
+      mistral-rs # LLM inference written in Rust
+      llama-cpp # LLM inference written in C++
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
@@ -158,10 +161,48 @@ in {
           command = "codebook-lsp";
           args = ["serve"];
         };
+        language-server.lsp-ai = let
+          max_context = 4096;
+        in {
+          command = "lsp-ai";
+          environment = { LSP_AI_LOG = "debug"; };
+          timeout = 60;
+          config = {
+            memory.file_store = {};
+            models.gemma3 = {
+              type = "ollama";
+              model = "gemma3:12b";
+            };
+            completion = {
+              model = "gemma3";
+              parameters = {
+                max_context = max_context;
+                options.num_predict = 32;
+              };
+            };
+            chat = [
+              {
+                trigger =  "!C";
+                action_display_name = "chat_gemma3:12b";
+                model = "gemma3";
+                parameters = {
+                  max_context = max_context;
+                  max_tokens = 4096;
+                  messages = [
+                    {
+                      role = "system";
+                      content = "You are a rust code assistant chatbot. You will give expertly responses and follow best rust coding practices.";
+                    }
+                  ];
+                };
+              }
+            ];
+          };
+        };
         language = [
           {
             name = "rust";
-            language-servers = ["rust-analyzer" "codebook"];
+            language-servers = ["rust-analyzer" "codebook" "lsp-ai"];
           }
         ];
       };
