@@ -9,6 +9,8 @@
   ...
 }: let
   const = import ./constants.nix;
+  const_meshify = import ./../meshify/constants.nix;
+  static_ips = import ./../../modules/static_ips.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -234,60 +236,67 @@ in {
           color: orange
         - name: observability
           color: blue
+        - name: ai
+          color: pink
       services:
+        - title: LocalAI
+          description: open-webui frontend for self hosted LLMs using ollama, hosted on `meshify`.
+          link: http://${static_ips.meshify_ip}:${builtins.toString const_meshify.open_webui_port}
+          tags:
+            - ai
         - title: Jellyfin
           description: Movies and Series
-          link: http://poweredge:${builtins.toString const.jellyfin_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.jellyfin_port}
           icon:
             url: https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Fuybguvnj1p821.png&f=1&nofb=1&ipt=b317f7cc53b5d1b35a5e26f5cd58f7c8dbc72861b640c515e628bb3f41be1b25&ipo=images
           tags:
             - media
         - title: Polaris
           description: Music library
-          link: http://poweredge:${builtins.toString const.polaris_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.polaris_port}
           tags:
             - media
         - title: Bitmagnet
           description: DHT Torrent Tracker
-          link: http://poweredge:${builtins.toString const.bitmagnet_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.bitmagnet_port}
           tags:
             - media
         - title: Gitea
           description: My Git Server
-          link: http://poweredge:${builtins.toString const.gitea_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.gitea_port}
           tags:
             - development
         - title: Grafana
           description: Server Monitoring Dashboard
-          link: http://poweredge:${builtins.toString const.grafana_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.grafana_port}
           tags:
             - obserservability
         - title: Readeck
           description: Bookmarks
-          link: http://poweredge:${builtins.toString const.readeck_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.readeck_port}
           tags:
             - media
         - title: Mealie
           description: Recipes
-          link: http://poweredge:${builtins.toString const.mealie_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.mealie_port}
         - title: Immich
           description: Photo hosting
-          link: http://poweredge:${builtins.toString const.immich_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.immich_port}
           tags:
             - media
         - title: Photoprism
           description: AI-powered Photo App
-          link: http://poweredge:${builtins.toString const.photoprism_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.photoprism_port}
           tags:
             - media
         - title: Calibre
           description: E-books and pdfs
-          link: http://poweredge:${builtins.toString const.calibre_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.calibre_port}
           tags:
             - media
         - title: UptimeKuma
           description: Check uptime of my websites
-          link: http://poweredge:${builtins.toString const.uptime_kuma_port}
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.uptime_kuma_port}
           tags:
             - observability
     '';
