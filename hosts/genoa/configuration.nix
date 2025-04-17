@@ -48,6 +48,9 @@ in {
     description = "${username}";
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
+    packages = with pkgs;[
+      dart
+    ];
   };
 
   home-manager = {
