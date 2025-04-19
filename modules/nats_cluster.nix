@@ -1,5 +1,4 @@
-{...}:
-let
+{...}: let
   nats_port = 4222;
   nats_cluster_port = 4223;
   # static_ips = import ../../modules/static_ips.nix;
@@ -29,5 +28,4 @@ in {
       };
     };
   };
-
 }

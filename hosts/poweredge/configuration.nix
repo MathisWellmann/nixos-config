@@ -21,7 +21,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/harmonia_cache.nix
     ./../../modules/monero.nix
-    ./../../modules/nats_cluster.nix
+    # ./../../modules/nats_cluster.nix
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -78,6 +78,7 @@ in {
       const.mealie_port
       const.mongodb_port
       const.uptime_kuma_port
+      const.nats_port
     ];
     # For containers to access the internet.
     nat = {
@@ -595,6 +596,20 @@ in {
     settings = {
       UPTIME_KUMA_HOST = "0.0.0.0";
       PORT = "${builtins.toString const.uptime_kuma_port}";
+    };
+  };
+
+  services.nats = {
+    enable = true;
+    jetstream = true;
+    port = const.nats_port;
+    serverName = "nats-${const.hostname}";
+    settings = {
+      host = "0.0.0.0";
+      jetstream = {
+        max_mem = "1G";
+        max_file = "10G";
+      };
     };
   };
 }

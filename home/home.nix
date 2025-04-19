@@ -165,7 +165,7 @@ in {
           max_context = 4096;
         in {
           command = "lsp-ai";
-          environment = { LSP_AI_LOG = "debug"; };
+          environment = {LSP_AI_LOG = "debug";};
           timeout = 60;
           config = {
             memory.file_store = {};
@@ -182,7 +182,7 @@ in {
             };
             chat = [
               {
-                trigger =  "!C";
+                trigger = "!C";
                 action_display_name = "chat_gemma3:12b";
                 model = "gemma3";
                 parameters = {

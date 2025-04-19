@@ -19,6 +19,7 @@
   calibre_port = 3011;
   uptime_kuma_port = 3012;
   ncps_port = 3501;
+  nats_port = 4222;
   harmonia_port = 5000;
   iperf_port = 5201;
   jellyfin_port = 8096;
