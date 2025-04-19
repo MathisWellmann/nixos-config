@@ -5,6 +5,7 @@
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
   mafl_port = 80;
+  nfs_port = 2049;
   gitea_port = 3000;
   gitea_state_dir = "/var/lib/gitea";
   grafana_port = 3001;
@@ -18,6 +19,7 @@
   polaris_port = 3010;
   calibre_port = 3011;
   uptime_kuma_port = 3012;
+  searx_port = 3013;
   ncps_port = 3501;
   nats_port = 4222;
   harmonia_port = 5000;

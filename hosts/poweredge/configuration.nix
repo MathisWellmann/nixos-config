@@ -21,6 +21,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/harmonia_cache.nix
     ./../../modules/monero.nix
+    ./../../modules/searx.nix
     # ./../../modules/nats_cluster.nix
   ];
 
@@ -79,6 +80,7 @@ in {
       const.mongodb_port
       const.uptime_kuma_port
       const.nats_port
+      const.searx_port
     ];
     # For containers to access the internet.
     nat = {
@@ -300,6 +302,9 @@ in {
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.uptime_kuma_port}
           tags:
             - observability
+        - title: SearXNG
+          description: Local meta search engine
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.searx_port};
     '';
     config_file = pkgs.writeText "/SATA_SSD_POOL/mafl/config.yml" mafl_config;
   in {
