@@ -78,7 +78,9 @@ in {
       mistral-rs # LLM inference written in Rust
       llama-cpp # LLM inference written in C++
       natscli
-      ipmitool # Fan speed control
+      # For setting fan speed on supermicro BMC: `ipmitool -I lan -U ADMIN -H 192.168.0.31 sensor thresh FAN1 lcr 300`
+      # Or `ipmitool -I lan -U ADMIN -H 192.168.0.31 sensor`
+      ipmitool
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:

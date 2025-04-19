@@ -1,35 +1,37 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ inputs, pkgs, ... }:
-let
+{
+  inputs,
+  pkgs,
+  ...
+}: let
   username = "magewe";
   hostname = "desg0";
-in{
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
+in {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
     ./../../modules/base_system.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
-      inputs.home-manager.nixosModules.default
-    ];
+    inputs.home-manager.nixosModules.default
+  ];
 
   networking.hostName = hostname;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.${username}= {
+  users.users.${username} = {
     isNormalUser = true;
     description = username;
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
     packages = with pkgs; [
-      	git
-      	helix
+      git
+      helix
     ];
   };
 
@@ -67,5 +69,4 @@ in{
       uptime.prefix = "up";
     };
   };
-
 }

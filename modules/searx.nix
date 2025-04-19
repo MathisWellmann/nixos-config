@@ -1,12 +1,11 @@
-{lib, ...}:
-let
+{lib, ...}: let
   searx_port = 3013;
 in {
   services.searx = {
     enable = true;
     environmentFile = "/home/magewe/.searxng.env";
     redisCreateLocally = true;
-    
+
     settings = {
       server = {
         bind_address = "0.0.0.0";
@@ -15,7 +14,7 @@ in {
         public_instance = false;
         image_proxy = true;
       };
-       general = {
+      general = {
         debug = true;
         instance_name = "MGW SearXNG Instance";
         donation_url = false;
@@ -53,7 +52,7 @@ in {
         chmod-socket = "660";
       };
 
-      engines = lib.mapAttrsToList (name: value: { inherit name; } // value) {
+      engines = lib.mapAttrsToList (name: value: {inherit name;} // value) {
         "duckduckgo".disabled = true;
         "brave".disabled = true;
         "bing".disabled = false;

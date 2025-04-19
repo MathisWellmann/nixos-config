@@ -23,7 +23,6 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     # ./../../modules/backup.nix
-    ./../../modules/buildkite.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/backup_home_to_remote.nix
@@ -33,42 +32,7 @@ in {
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  buildkite_queue = "nixos";
-
   networking.nat.enable = true;
-
-  # Native `systemd-nspawn` container
-  # containers.buildkiteGensyn = {
-  #   autoStart = true;
-
-  #   config = {
-  #     config,
-  #     pkgs,
-  #     lib,
-  #     ...
-  #   }: {
-  #     imports = [
-  #       ./../../modules/buildkite.nix
-  #     ];
-  #     buildkite_agent = "meshify-gensyn";
-  #     buildkite_queue = "nixos";
-
-  #     networking = {
-  #       firewall.enable = true;
-  #       # Use systemd-resolved inside the container
-  #       # Workaround for bug https://github.com/NixOS/nixpkgs/issues/162686
-  #       useHostResolvConf = lib.mkForce false;
-  #     };
-
-  #     services.resolved.enable = true;
-
-  #     system.stateVersion = "23.11";
-  #     nix.settings.experimental-features = ["nix-command" "flakes"];
-  #     environment.systemPackages = with pkgs; [
-  #       lsd
-  #     ];
-  #   };
-  # };
 
   age.identityPaths = ["${config.users.users.magewe.home}/.ssh/magewe_meshify"];
 
@@ -147,7 +111,6 @@ in {
         mnt-poweredge-pdfs = "mnt-poweredge_SATA_SSD_POOL_pdfs.mount";
         mnt-poweredge-series = "mnt-poweredge_SATA_SSD_POOL_series.mount";
         mnt-poweredge-video = "mnt-poweredge_SATA_SSD_POOL_video.mount";
-        buildkite = "buildkite-agent-meshify";
         restic-backups-home = "restic-backups-home";
       };
     };
