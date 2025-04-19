@@ -78,6 +78,7 @@ in {
       mistral-rs # LLM inference written in Rust
       llama-cpp # LLM inference written in C++
       natscli
+      ipmitool # Fan speed control
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
