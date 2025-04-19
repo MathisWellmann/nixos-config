@@ -82,6 +82,13 @@
           {_module.args = inputs;}
         ];
       };
+      desg0 = nixpkgs-unstable.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/desg0/configuration.nix
+          {_module.args = inputs;}
+        ];
+      };
     };
   };
 }
