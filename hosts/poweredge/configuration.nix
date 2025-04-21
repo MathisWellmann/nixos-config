@@ -128,7 +128,7 @@ in {
             targets = ["${host}:${toString config.services.prometheus.exporters.node.port}"];
           }
         ];
-      }) ["127.0.0.1" "genoa" "meshify" "superserver" "elitedesk" "razerblade"];
+      }) ["127.0.0.1" "genoa" "meshify" "superserver" "elitedesk" "razerblade" "desg0"];
       n_tikr_services =
         builtins.length config.services.tikr.exchanges
         + builtins.length config.services.tikr.data-types;
