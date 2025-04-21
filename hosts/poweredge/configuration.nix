@@ -399,16 +399,16 @@ in {
   };
 
   # Music server
-  # services.minidlna = {
-  #   enable = true;
-  #   openFirewall = true;
-  #   settings = {
-  #     friendly_name = "poweredge_music_server";
-  #     media_dir = ["/SATA_SSD_POOL/music"];
-  #     inotify = "yes";
-  #     port = 8200;
-  #   };
-  # };
+  services.minidlna = {
+    enable = true;
+    openFirewall = true;
+    settings = {
+      friendly_name = "poweredge_minidlna";
+      media_dir = ["/SATA_SSD_POOL/music"];
+      inotify = "yes";
+      port = 8200;
+    };
+  };
 
   services.mongodb = {
     enable = true;
