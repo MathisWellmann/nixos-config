@@ -53,13 +53,6 @@
           inputs.home-manager.nixosModules.default
         ];
       };
-      madcatz = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/madcatz/configuration.nix
-          inputs.home-manager.nixosModules.default
-        ];
-      };
       poweredge = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [

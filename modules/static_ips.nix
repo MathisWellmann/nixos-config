@@ -11,7 +11,6 @@ in {
   # In shack.
   genoa_ip = "192.168.0.20";
   meshify_ip = "192.168.0.21";
-  madcatz_ip = "192.168.0.22";
 
   # Infiniband in /16 subnet
   poweredge_mellanox_0 = "${prefix}.1.1";
