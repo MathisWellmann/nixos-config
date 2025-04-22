@@ -8,7 +8,6 @@
 }: let
   hostname = "genoa";
   username = "magewe";
-  mongodb_port = 27017;
   nats_port = 4222;
 in {
   imports = [
@@ -38,7 +37,6 @@ in {
     hostName = "${hostname}";
     firewall.allowedTCPPorts = [
       8231 # Tikr
-      mongodb_port
     ];
   };
 
@@ -97,22 +95,6 @@ in {
   # https://kokada.capivaras.dev/blog/an-unordered-list-of-hidden-gems-inside-nixos/
   services.fstrim.enable = true;
 
-  services.mongodb = {
-    enable = true;
-    dbpath = "/mongodb";
-    user = "${username}";
-    bind_ip = "0.0.0.0";
-  };
-  # Raise open file limits for mongodb.
-  security.pam.services.mongodb.limits = [
-    {
-      domain = "*";
-      type = "soft";
-      item = "nofile";
-      value = "65536";
-    }
-  ];
-
   hardware.ledger.enable = true;
   services.trezord.enable = true;
 
@@ -137,7 +119,6 @@ in {
         mnt-poweredge-pdfs = "mnt-poweredge_SATA_SSD_POOL_pdfs.mount";
         mnt-poweredge-series = "mnt-poweredge_SATA_SSD_POOL_series.mount";
         mnt-poweredge-video = "mnt-poweredge_SATA_SSD_POOL_video.mount";
-        mongodb = "mongodb";
         restic-backups-home = "restic-backups-home";
       };
       uptime.prefix = "up";
