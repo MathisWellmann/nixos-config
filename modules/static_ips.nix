@@ -7,6 +7,7 @@ in {
   poweredge_ip = "192.168.0.10";
   elitedesk_ip = "192.168.0.11";
   superserver_ip = "192.168.0.12";
+  desg0_ip = "192.168.0.13";
 
   # In shack.
   genoa_ip = "192.168.0.20";
@@ -21,4 +22,6 @@ in {
   genoa_mellanox_1 = "${prefix}.0.6";
   meshify_mellanox_0 = "${prefix}.0.7";
   meshify_mellanox_1 = "${prefix}.1.8";
+  desg0_mellanox_0 = "${prefix}.0.9";
+  desg0_mellanox_1 = "${prefix}.0.10";
 }

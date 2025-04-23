@@ -4,10 +4,11 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
-}: {
+}:let
+  static_ips = import ../../modules/static_ips.nix;
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -57,8 +58,32 @@
         ipv4 = {
           addresses = [
             {
-              address = "192.168.0.13";
+              address = static_ips.desg0_ip;
               prefixLength = 24;
+            }
+          ];
+        };
+      };
+      enp133s0 = {
+        name = "enp133s0";
+        useDHCP = false;
+        ipv4 = {
+          addresses = [
+            {
+              address = static_ips.desg0_mellanox_0;
+              prefixLength = 16;
+            }
+          ];
+        };
+      };
+      enp133s0d1 = {
+        name = "enp133s0d1";
+        useDHCP = false;
+        ipv4 = {
+          addresses = [
+            {
+              address = static_ips.desg0_mellanox_1;
+              prefixLength = 16;
             }
           ];
         };
