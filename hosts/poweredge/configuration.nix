@@ -222,6 +222,148 @@ in {
       enable = true;
       openFirewall = true;
     };
+    tikr = {
+      enable = true;
+      database = "GreptimeDb";
+      database-addr = "poweredge:4001";
+      exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
+      data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
+      prometheus_exporter_base_port = const.tikr_base_port;
+    };
+    # Music server
+    minidlna = {
+      enable = true;
+      openFirewall = true;
+      settings = {
+        friendly_name = "poweredge_minidlna";
+        media_dir = ["/SATA_SSD_POOL/music"];
+        inotify = "yes";
+        port = 8200;
+      };
+    };
+    # Self hosted Git
+    gitea = {
+      enable = true;
+      appName = "MW-Trading-Systems";
+      repositoryRoot = "/SATA_SSD_POOL/gitea";
+      user = "${const.username}";
+      settings.server.HTTP_PORT = const.gitea_port;
+      stateDir = "${const.gitea_state_dir}";
+    };
+    calibre-web = {
+      enable = true;
+      listen = {
+        ip = "0.0.0.0";
+        port = const.calibre_port;
+      };
+      openFirewall = true;
+    };
+    polaris = {
+      enable = true;
+      openFirewall = true;
+      port = const.polaris_port;
+      settings = {
+        mount_dirs = [
+          {
+            name = "SATA_SSD_POOL";
+            source = "/SATA_SSD_POOL/music";
+          }
+        ];
+      };
+    };
+    bitmagnet = {
+      enable = true;
+      openFirewall = true;
+      settings = {
+        http_server.port = "${builtins.toString const.bitmagnet_port}";
+      };
+    };
+    mealie = {
+      enable = true;
+      port = const.mealie_port;
+    };
+    # gotosocial = {
+    #   enable = true;
+    #   openFirewall = true;
+    #   settings = {
+    #     application-name = "gotosocial-magewe";
+    #     bind-address = "0.0.0.0";
+    #     host = "localhost";
+    #     db-address = "/var/lib/gotosocial/database.sqlite";
+    #     db-type = "sqlite";
+    #     port = const.gotosocial_port;
+    #     protocol = "https";
+    #     storage-local-base-path = "/var/lib/gotosocial/storage";
+    #   };
+    # };
+    immich = {
+      enable = true;
+      host = "0.0.0.0";
+      mediaLocation = "/SATA_SSD_POOL/immich";
+      openFirewall = true;
+      port = const.immich_port;
+    };
+    photoprism = {
+      enable = true;
+      port = const.photoprism_port;
+      address = "0.0.0.0";
+      originalsPath = "/SATA_SSD_POOL/magewe/bilder";
+      passwordFile = "/etc/nixos/secrets/photoprism";
+    };
+    cloudflared = {
+      enable = true;
+      tunnels."poweredge" = {
+        credentialsFile = "/home/magewe/.cloudflared/9c4b5093-598c-45cb-89b7-8fa608bfb363.json";
+        default = "http_status:404";
+        ingress = {
+          "immich.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
+          "www.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
+          "@.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
+        };
+      };
+    };
+    # Nix Cache Proxy Server
+    ncps = {
+      enable = true;
+      server.addr = "0.0.0.0:${builtins.toString const.ncps_port}";
+      cache = {
+        allowPutVerb = true;
+        databaseURL = "sqlite:/var/lib/ncps/db/db.sqlite";
+        dataPath = "/var/lib/ncps";
+        hostName = const.hostname;
+        maxSize = "512G";
+      };
+      upstream = {
+        caches = [
+          "https://cache.nixos.org"
+          "https://nix-community.cachix.org"
+        ];
+      };
+      openTelemetry = {
+        enable = false;
+        grpcURL = "http://127.0.0.1:${builtins.toString const.prometheus_port}";
+      };
+    };
+    uptime-kuma = {
+      enable = true;
+      settings = {
+        UPTIME_KUMA_HOST = "0.0.0.0";
+        PORT = "${builtins.toString const.uptime_kuma_port}";
+      };
+    };
+    nats = {
+      enable = true;
+      jetstream = true;
+      port = const.nats_port;
+      serverName = "nats-${const.hostname}";
+      settings = {
+        host = "0.0.0.0";
+        jetstream = {
+          max_mem = "1G";
+          max_file = "10G";
+        };
+      };
+    };
   };
 
   # Containers
@@ -389,27 +531,6 @@ in {
     radicle-node
   ];
 
-  services.tikr = {
-    enable = true;
-    database = "GreptimeDb";
-    database-addr = "poweredge:4001";
-    exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
-    data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
-    prometheus_exporter_base_port = const.tikr_base_port;
-  };
-
-  # Music server
-  services.minidlna = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      friendly_name = "poweredge_minidlna";
-      media_dir = ["/SATA_SSD_POOL/music"];
-      inotify = "yes";
-      port = 8200;
-    };
-  };
-
   services.mongodb = {
     enable = true;
     dbpath = "/SATA_SSD_POOL/mongodb";
@@ -425,16 +546,6 @@ in {
       value = "1000000";
     }
   ];
-
-  # Self hosted Git
-  services.gitea = {
-    enable = true;
-    appName = "MW-Trading-Systems";
-    repositoryRoot = "/SATA_SSD_POOL/gitea";
-    user = "${const.username}";
-    settings.server.HTTP_PORT = const.gitea_port;
-    stateDir = "${const.gitea_state_dir}";
-  };
 
   # Decentralized git protocol
   # services.radicle =
@@ -461,73 +572,6 @@ in {
   #     };
   #   };
   # };
-
-  services.calibre-web = {
-    enable = true;
-    listen = {
-      ip = "0.0.0.0";
-      port = const.calibre_port;
-    };
-    openFirewall = true;
-  };
-
-  services.polaris = {
-    enable = true;
-    openFirewall = true;
-    port = const.polaris_port;
-    settings = {
-      mount_dirs = [
-        {
-          name = "SATA_SSD_POOL";
-          source = "/SATA_SSD_POOL/music";
-        }
-      ];
-    };
-  };
-
-  services.bitmagnet = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      http_server.port = "${builtins.toString const.bitmagnet_port}";
-    };
-  };
-
-  services.mealie = {
-    enable = true;
-    port = const.mealie_port;
-  };
-
-  services.gotosocial = {
-    enable = true;
-    openFirewall = true;
-    settings = {
-      application-name = "gotosocial-magewe";
-      bind-address = "0.0.0.0";
-      host = "localhost";
-      db-address = "/var/lib/gotosocial/database.sqlite";
-      db-type = "sqlite";
-      port = const.gotosocial_port;
-      protocol = "https";
-      storage-local-base-path = "/var/lib/gotosocial/storage";
-    };
-  };
-
-  services.immich = {
-    enable = true;
-    host = "0.0.0.0";
-    mediaLocation = "/SATA_SSD_POOL/immich";
-    openFirewall = true;
-    port = const.immich_port;
-  };
-
-  services.photoprism = {
-    enable = true;
-    port = const.photoprism_port;
-    address = "0.0.0.0";
-    originalsPath = "/SATA_SSD_POOL/magewe/bilder";
-    passwordFile = "/etc/nixos/secrets/photoprism";
-  };
 
   programs.rust-motd = {
     enable = true;
@@ -565,64 +609,6 @@ in {
         tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
         tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
-      };
-    };
-  };
-
-  services.cloudflared = {
-    enable = true;
-    tunnels."poweredge" = {
-      credentialsFile = "/home/magewe/.cloudflared/9c4b5093-598c-45cb-89b7-8fa608bfb363.json";
-      default = "http_status:404";
-      ingress = {
-        "immich.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
-        "www.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
-        "@.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
-      };
-    };
-  };
-
-  # Nix Cache Proxy Server
-  services.ncps = {
-    enable = true;
-    server.addr = "0.0.0.0:${builtins.toString const.ncps_port}";
-    cache = {
-      allowPutVerb = true;
-      databaseURL = "sqlite:/var/lib/ncps/db/db.sqlite";
-      dataPath = "/var/lib/ncps";
-      hostName = const.hostname;
-      maxSize = "512G";
-    };
-    upstream = {
-      caches = [
-        "https://cache.nixos.org"
-        "https://nix-community.cachix.org"
-      ];
-    };
-    openTelemetry = {
-      enable = false;
-      grpcURL = "http://127.0.0.1:${builtins.toString const.prometheus_port}";
-    };
-  };
-
-  services.uptime-kuma = {
-    enable = true;
-    settings = {
-      UPTIME_KUMA_HOST = "0.0.0.0";
-      PORT = "${builtins.toString const.uptime_kuma_port}";
-    };
-  };
-
-  services.nats = {
-    enable = true;
-    jetstream = true;
-    port = const.nats_port;
-    serverName = "nats-${const.hostname}";
-    settings = {
-      host = "0.0.0.0";
-      jetstream = {
-        max_mem = "1G";
-        max_file = "10G";
       };
     };
   };
