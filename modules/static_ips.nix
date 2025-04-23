@@ -13,12 +13,12 @@ in {
   meshify_ip = "192.168.0.21";
 
   # Infiniband in /16 subnet
-  poweredge_mellanox_0 = "${prefix}.1.1";
-  poweredge_mellanox_1 = "${prefix}.1.2";
-  dell_r710_mellanox_0 = "${prefix}.1.3";
-  dell_r710_mellanox_1 = "${prefix}.1.4";
-  genoa_mellanox_0 = "${prefix}.1.5";
-  genoa_mellanox_1 = "${prefix}.1.6";
-  meshify_mellanox_0 = "${prefix}.1.7";
+  poweredge_mellanox_0 = "${prefix}.0.1";
+  poweredge_mellanox_1 = "${prefix}.0.2";
+  dell_r710_mellanox_0 = "${prefix}.0.3";
+  dell_r710_mellanox_1 = "${prefix}.0.4";
+  genoa_mellanox_0 = "${prefix}.0.5";
+  genoa_mellanox_1 = "${prefix}.0.6";
+  meshify_mellanox_0 = "${prefix}.0.7";
   meshify_mellanox_1 = "${prefix}.1.8";
 }
