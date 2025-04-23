@@ -23,6 +23,7 @@ in {
     ./../../modules/monero.nix
     ./../../modules/searx.nix
     ./freshrss.nix
+    ./firefly.nix
     # ./../../modules/nats_cluster.nix
   ];
 

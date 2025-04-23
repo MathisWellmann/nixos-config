@@ -21,6 +21,7 @@
   uptime_kuma_port = 3012;
   searx_port = 3013;
   freshrss_port = 3014;
+  firefly_port = 3015;
   ncps_port = 3501;
   nats_port = 4222;
   harmonia_port = 5000;

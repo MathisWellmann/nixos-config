@@ -1,5 +1,4 @@
-{...}:
-let
+{...}: let
   const = import ./constants.nix;
   virtHost = "freshrss";
 in {
@@ -12,10 +11,12 @@ in {
       virtualHost = virtHost;
     };
     nginx.virtualHosts.${virtHost} = {
-      listen = [{
-        addr = "0.0.0.0";
-        port = const.freshrss_port;
-      }];
+      listen = [
+        {
+          addr = "0.0.0.0";
+          port = const.freshrss_port;
+        }
+      ];
     };
   };
 }
