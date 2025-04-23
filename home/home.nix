@@ -35,6 +35,8 @@ in {
       with ps; [
         numpy
         openai # Not using ClosedAi, but the package allows interacting with locally hosted ai services as well
+        pymc3 # markov chain monte carlo methods.
+        matplotlib # Plotting
       ];
     # Will be merged to nixpkgs soon: https://github.com/NixOS/nixpkgs/pull/398406
     codebook = pkgs.rustPlatform.buildRustPackage {
