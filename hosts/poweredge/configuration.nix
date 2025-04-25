@@ -22,6 +22,7 @@ in {
     ./../../modules/harmonia_cache.nix
     ./../../modules/monero.nix
     ./../../modules/searx.nix
+    ./freshrss.nix
     # ./../../modules/nats_cluster.nix
   ];
 
@@ -447,6 +448,11 @@ in {
         - title: SearXNG
           description: Local meta search engine
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.searx_port};
+        - title: FreshRSS
+          description: RSS Feed reader
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.freshrss_port};
+          tags:
+            - media
     '';
     config_file = pkgs.writeText "/SATA_SSD_POOL/mafl/config.yml" mafl_config;
   in {
