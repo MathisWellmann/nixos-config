@@ -9,6 +9,7 @@
   ...
 }: let
   const = import ./constants.nix;
+  static_ips = import ./../../modules/static_ips.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -33,7 +34,7 @@ in {
     extraGroups = ["wheel"];
     shell = pkgs.nushell;
     packages = with pkgs; [
-      cloudflared
+      gitea-actions-runner
     ];
   };
 
@@ -248,8 +249,26 @@ in {
       appName = "MW-Trading-Systems";
       repositoryRoot = "/SATA_SSD_POOL/gitea";
       user = "${const.username}";
-      settings.server.HTTP_PORT = const.gitea_port;
+      settings = {
+        server = {
+          HTTP_PORT = const.gitea_port;
+          ROOT_URL = "http://${toString static_ips.poweredge_ip}:${toString const.gitea_port}";
+        };
+      };
       stateDir = "${const.gitea_state_dir}";
+    };
+    gitea-actions-runner.instances.${const.hostname} = {
+      enable = true;
+      name = "${const.hostname}";
+      labels = [
+        "nixos"
+      ];
+      tokenFile = /var/secrets/gitea-actions-runner;
+      url = config.services.gitea.settings.server.ROOT_URL;
+      settings = {
+        # Had to generate this with `sudo act_runner register`
+        runner.file = "/var/lib/.runner";
+      };
     };
     calibre-web = {
       enable = true;
@@ -279,10 +298,12 @@ in {
         http_server.port = "${builtins.toString const.bitmagnet_port}";
       };
     };
-    mealie = {
-      enable = true;
-      port = const.mealie_port;
-    };
+    # Marked as broken. TODO: re-enable
+    # mealie = {
+    #   enable = true;
+    #   port = const.mealie_port;
+    # };
+
     # gotosocial = {
     #   enable = true;
     #   openFirewall = true;

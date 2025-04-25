@@ -86,6 +86,7 @@ in {
       ipmitool
       nvme-cli
       ouch # Obvious unified compression helper
+      cloudflared
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:

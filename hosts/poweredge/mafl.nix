@@ -94,7 +94,7 @@ in{
           description: Personal Finance Manager
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.firefly_port};
           tags:
-            - finaance
+            - finance
     '';
     config_file = pkgs.writeText "/SATA_SSD_POOL/mafl/config.yml" mafl_config;
   in {
