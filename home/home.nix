@@ -85,6 +85,7 @@ in {
       # Or `ipmitool -I lan -U ADMIN -H 192.168.0.31 sensor`
       ipmitool
       nvme-cli
+      ouch # Obvious unified compression helper
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
