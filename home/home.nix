@@ -246,6 +246,7 @@ in {
           inline-diagnostics = {
             cursor-line = "error";
           };
+          file-picker.hidden = false; # Don't hide hidden files
         };
       };
     };

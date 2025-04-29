@@ -15,7 +15,6 @@
     firefox
     ladybird
     floorp
-    nyxt # Keyboard driven browser
     keepassxc
     gthumb # Image viewer with support for ARW files
     geeqie # Better image viewer
