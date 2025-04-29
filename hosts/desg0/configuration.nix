@@ -18,6 +18,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
+    ./../../modules/local_ai.nix
     inputs.home-manager.nixosModules.default
   ];
 

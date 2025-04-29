@@ -1,20 +1,20 @@
 {pkgs, ...}: let
-  newer_ollama = pkgs.ollama.overrideAttrs (old: {
-    version = "0.6.4";
-    src = pkgs.fetchFromGitHub {
-      owner = "ollama";
-      repo = "ollama";
-      tag = "v0.6.4";
-      hash = "sha256-d8TPVa/kujFDrHbjwv++bUe2txMlkOxAn34t7wXg4qE=";
-      fetchSubmodules = true;
-    };
-    vendorHash = "sha256-4wYgtdCHvz+ENNMiHptu6ulPJAznkWetQcdba3IEB6s=";
-  });
+  # newer_ollama = pkgs.ollama.overrideAttrs (old: {
+  #   version = "0.6.4";
+  #   src = pkgs.fetchFromGitHub {
+  #     owner = "ollama";
+  #     repo = "ollama";
+  #     tag = "v0.6.4";
+  #     hash = "sha256-d8TPVa/kujFDrHbjwv++bUe2txMlkOxAn34t7wXg4qE=";
+  #     fetchSubmodules = true;
+  #   };
+  #   vendorHash = "sha256-4wYgtdCHvz+ENNMiHptu6ulPJAznkWetQcdba3IEB6s=";
+  # });
 in {
   services.ollama = {
-    package = newer_ollama;
+    # package = newer_ollama;
     enable = true;
-    acceleration = "cuda";
+    # acceleration = "cuda";
     environmentVariables = {
       OLLAMA_NUM_PARALLEL = "1";
       OLLAMA_KEEP_ALIVE = "1";
