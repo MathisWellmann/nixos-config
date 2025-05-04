@@ -14,7 +14,7 @@ in {
   services.ollama = {
     # package = newer_ollama;
     enable = true;
-    # acceleration = "cuda";
+    acceleration = "cuda";
     environmentVariables = {
       OLLAMA_NUM_PARALLEL = "1";
       OLLAMA_KEEP_ALIVE = "1";

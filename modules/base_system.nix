@@ -38,4 +38,6 @@
   };
 
   hardware.keyboard.qmk.enable = true;
+
+  programs.dconf.enable = true;
 }
