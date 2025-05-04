@@ -33,6 +33,7 @@
     yt-dlp # youtube downloader
     veracrypt
     libreoffice
+    affine
 
     # Games
     mindustry
