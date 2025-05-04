@@ -32,6 +32,7 @@
     lux # Video download CLI
     yt-dlp # youtube downloader
     veracrypt
+    libreoffice
 
     # Games
     mindustry
@@ -64,6 +65,7 @@
     # halloy # IRC GUI written in Rust
     # discord
     # slack
+    simplex-chat-desktop
 
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
