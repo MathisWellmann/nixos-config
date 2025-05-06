@@ -20,6 +20,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/harmonia_cache.nix
     ./../../modules/monero.nix
+    ./../../modules/monero_miner.nix
     ./../../modules/searx.nix
     ./freshrss.nix
     ./firefly.nix
@@ -262,13 +263,22 @@ in {
       name = "${const.hostname}";
       labels = [
         "nixos"
+        "poweredge"
       ];
+      # put in `TOKEN= ...` with the token
       tokenFile = /var/secrets/gitea-actions-runner;
       url = config.services.gitea.settings.server.ROOT_URL;
-      settings = {
-        # Had to generate this with `sudo act_runner register`
-        runner.file = "/var/lib/.runner";
-      };
+      hostPackages = with pkgs; [
+        bash
+        coreutils
+        curl
+        gawk
+        gitMinimal
+        gnused
+        nodejs
+        wget
+        nix
+      ];
     };
     calibre-web = {
       enable = true;
