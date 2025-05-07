@@ -68,6 +68,7 @@ in {
       trippy # Network diagnostics with traceroute and ping
       qmk
       qmk_hid
+      hid-listen # Prints debugging information from usb HID devices
       appimage-run
       fuse # Required for onekey wallet appimage to recognize the device
       fio # Flexible IO tester: fio --name=seqwrite --ioengine=libaio --direct=1 --bs=1M --numjobs=1 --size=1G --rw=write --filename=/mnt/nfs/testfile
@@ -110,6 +111,7 @@ in {
       tinymist # Typst markup language with `.typ` file extension
       lsp-ai # language server that serves as a backend for AI-powered functionality
       codebook
+      # dart
 
       # Terminal
       tokei

@@ -34,6 +34,7 @@
     veracrypt
     libreoffice
     affine
+    zed-editor
 
     # Games
     mindustry
