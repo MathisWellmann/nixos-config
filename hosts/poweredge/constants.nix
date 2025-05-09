@@ -30,4 +30,5 @@
   prometheus_port = 9001;
   tikr_base_port = 9184;
   mongodb_port = 27017;
+  dragonfly_port = 27018;
 }

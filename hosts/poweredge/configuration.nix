@@ -487,6 +487,14 @@ in {
     }
   ];
 
+  virtualisation.oci-containers.containers."dragonfly" = {
+    image = "docker.dragonflydb.io/dragonflydb/dragonfly";
+    ports = [
+      "${builtins.toString const.dragonfly_port}:6379"
+    ];
+    extraOptions = ["--ulimit" "memlock=-1"];
+  };
+
   # Decentralized git protocol
   # services.radicle =
   # let
