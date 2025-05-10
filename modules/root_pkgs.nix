@@ -42,5 +42,6 @@
     inputs.agenix.packages."${system}".default
     exfat
     uutils-coreutils
+    dart
   ];
 }
