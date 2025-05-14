@@ -35,6 +35,8 @@
     libreoffice
     affine
     zed-editor
+    tlaplusToolbox
+    redisinsight
 
     # Games
     mindustry

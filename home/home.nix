@@ -86,7 +86,6 @@ in {
       # Or `ipmitool -I lan -U ADMIN -H 192.168.0.31 sensor`
       ipmitool
       nvme-cli
-      ouch # Obvious unified compression helper
       cloudflared
 
       # Nix
@@ -111,7 +110,6 @@ in {
       tinymist # Typst markup language with `.typ` file extension
       lsp-ai # language server that serves as a backend for AI-powered functionality
       codebook
-      # dart
 
       # Terminal
       tokei
@@ -120,8 +118,6 @@ in {
       onefetch
       # oxker     # Docker tui
       alejandra # Nix formatter
-      # delta     # A syntax-highlighting pager for git
-      # diffedit3 # jj helper to edit diffs in 3 panes
       openvpn
       kmon # Linux kernel manager and activity monitor
       mprocs # TUI tool to run multiple commands in parallel
@@ -136,6 +132,8 @@ in {
       iperf3
       parallel
       du-dust
+      ouch # Obvious unified compression helper
+      rage # Modern encryption implemented in rust. Go reference is `age`
 
       # Development
       gitui
