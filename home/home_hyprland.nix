@@ -146,20 +146,29 @@
         "$mainMod, 9, workspace, 9"
 
         "$mainMod, w, exec, busctl --user -- set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 4500"
+
+      ];
+      bindm = [
+        # Move/resize windows with mainMod + LMB/RMB and dragging
+        "$mainMod, mouse:272, movewindow" # NOTE: mouse:272 = left click
+        "$mainMod, mouse:273, resizewindow" # NOTE: mouse:273 = right click
       ];
       general = {
         "col.active_border" = "rgba(f1c232ee) rgba(00ff99ee) 45deg";
         "col.inactive_border" = "rgba(595959aa)";
         layout = "dwindle";
         resize_on_border = true;
+        border_size = 3;
+        gaps_in = 0;
+        gaps_out = 0;
       };
       decoration = {
-        rounding = "20";
+        rounding = 0;
       };
       dwindle = {
         smart_split = true;
       };
-      debug.disable_logs = false;
+      # debug.disable_logs = false;
     };
   };
 
