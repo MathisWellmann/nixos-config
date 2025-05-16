@@ -8,7 +8,7 @@
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.
       monitor = [
         # Triple Vertical
-        "DP-5, preferred, 0x0, 1, transform, 1"
+        "DP-5, preferred, 0x1080, 1, transform, 1"
         "DP-4, 3840x2160@159, 2160x1080, 1, transform, 1"
         "DP-3, 3840x2160@159, 4320x1080, 1, transform, 1"
         "HDMI-A-5, 1920x1080@60, 3240x0, 1"

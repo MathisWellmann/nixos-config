@@ -44,12 +44,10 @@
     minetest
     dwarf-fortress
     neverball
-    sdlpop
     uchess
     typespeed
-    # openarena
+    beyond-all-reason
     # openspades
-    # veloren
     # pokerth
 
     # Video
