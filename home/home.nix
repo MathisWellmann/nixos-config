@@ -75,7 +75,6 @@ in {
       ueberzugpp # Required to display images in alacritty with yazi
       compose2nix
       cfspeedtest # CLI for speed.cloudflare.com
-      ventoy
       solar
       ethtool
       mistral-rs # LLM inference written in Rust
