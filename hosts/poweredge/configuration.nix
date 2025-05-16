@@ -152,6 +152,7 @@ in {
       listenAddress = "0.0.0.0";
       retentionTime = "30d";
       port = const.prometheus_port;
+      # TODO: clean up exporter ports.
       exporters = {
         node = {
           enable = true;
@@ -206,6 +207,12 @@ in {
             job_name = "restic";
             static_configs = [
               {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.restic.port}"];}
+            ];
+          }
+          {
+            job_name = "dragonflydb";
+            static_configs = [
+              {targets = ["127.0.0.1:${toString const.dragonfly_port}"];}
             ];
           }
         ];
