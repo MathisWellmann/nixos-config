@@ -47,6 +47,7 @@
     uchess
     typespeed
     beyond-all-reason
+    hyperspeedcube # 3D and 4D Rubik's cube simulator
     # openspades
     # pokerth
 

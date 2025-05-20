@@ -86,6 +86,7 @@ in {
       ipmitool
       nvme-cli
       cloudflared
+      jjui # terminal user interface for working with jujutsu VSC
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
@@ -216,7 +217,7 @@ in {
       };
       settings = {
         theme = "snazzy"; # Dark
-        # theme = "ayu_light";
+        # theme = "onelight";
         editor = {
           scroll-lines = 1;
           cursorline = true;
