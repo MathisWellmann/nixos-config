@@ -30,6 +30,7 @@ in {
     ./../../modules/monero.nix
     # ./../../modules/monero_miner.nix
     ./../../modules/virtualization_host.nix
+    # ./../../modules/tari_docker.nix
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
