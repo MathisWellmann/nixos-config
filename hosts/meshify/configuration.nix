@@ -29,6 +29,7 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
     # ./../../modules/monero_miner.nix
+    ./../../modules/virtualization_host.nix
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
