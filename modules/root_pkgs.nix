@@ -24,14 +24,8 @@
     nvtopPackages.full
     bat
     lsof
-    # Rust
-    rustup
-    rustfmt
-    crate2nix
-    taplo-cli
     # Dev
     git
-    gcc
     docker-compose
     # Misc
     killall
