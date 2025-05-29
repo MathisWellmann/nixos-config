@@ -145,7 +145,6 @@
         "$mainMod, 9, workspace, 9"
 
         "$mainMod, w, exec, busctl --user -- set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 4500"
-
       ];
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging

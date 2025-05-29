@@ -2,7 +2,7 @@
   const = import ./constants.nix;
   const_meshify = import ./../meshify/constants.nix;
   static_ips = import ./../../modules/static_ips.nix;
-in{
+in {
   virtualisation.oci-containers.containers."mafl" = let
     # Write mafl config.
     mafl_config = ''

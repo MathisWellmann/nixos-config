@@ -23,10 +23,12 @@ in {
       user = const.username;
     };
     nginx.virtualHosts.${virtHost} = {
-      listen = [ {
-        addr = "0.0.0.0";
-        port = const.firefly_port;
-      }];
+      listen = [
+        {
+          addr = "0.0.0.0";
+          port = const.firefly_port;
+        }
+      ];
     };
   };
 }
