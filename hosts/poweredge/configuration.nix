@@ -452,6 +452,7 @@ in {
       "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
     ];
   };
+  virtualisation.docker.enable = true;
 
   ### Backup Section ###
   fileSystems."/mnt/${const.backup_host}_backup" = {
