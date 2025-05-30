@@ -13,6 +13,7 @@ in {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     ./../../modules/base_system.nix
+    ./../../modules/desktop_nvidia.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -70,4 +71,7 @@ in {
       uptime.prefix = "up";
     };
   };
+  networking.firewall.allowedTCPPorts = [
+    18142 # tari node
+  ];
 }
