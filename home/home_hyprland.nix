@@ -20,7 +20,6 @@
     geeqie # Better image viewer
     zathura # PDF reader
     qbittorrent
-    mongodb-compass
     nemo
     amfora
     clementine
@@ -34,18 +33,11 @@
     veracrypt
     libreoffice
     affine
-    zed-editor
-    tlaplusToolbox
-    redisinsight
 
     # Games
     mindustry
     steam
     minetest
-    dwarf-fortress
-    neverball
-    uchess
-    typespeed
     beyond-all-reason
     hyperspeedcube # 3D and 4D Rubik's cube simulator
     # openspades
@@ -89,6 +81,10 @@
     hotspot # GUI for Linux perf
     tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
+    tlaplusToolbox
+    zed-editor
+    redisinsight
+    mongodb-compass
   ];
 
   wayland.windowManager.hyprland = let

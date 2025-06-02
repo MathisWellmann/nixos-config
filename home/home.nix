@@ -69,6 +69,7 @@ in {
       nvme-cli
       cloudflared
       jjui # terminal user interface for working with jujutsu VSC
+      typespeed
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
@@ -88,7 +89,6 @@ in {
       markdown-oxide # Personal knowledge management system LSP
       nil # Nix LSP
       yaml-language-server
-      zls # Zig LSP
       tinymist # Typst markup language with `.typ` file extension
       lsp-ai # language server that serves as a backend for AI-powered functionality
       codebook
@@ -122,7 +122,6 @@ in {
       cargo-expand # Expands rust macros
       cargo-info
       cargo-wizard
-      zig
 
       # Cryptography
       # sequoia-sq

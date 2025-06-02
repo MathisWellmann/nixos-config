@@ -136,4 +136,10 @@ in {
   # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
   services.mullvad-vpn.enable = true;
   services.resolved.enable = true;
+
+  # E.g `kani` requires this if installed with `cargo install --locked kani`
+  programs.nix-ld = {
+    enable = true;
+    libraries = [];
+  };
 }
