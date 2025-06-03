@@ -13,7 +13,7 @@
     cbr = "cargo build --release";
     cr = "cargo run";
     crr = "cargo run --release";
-    cte = "cargo test";
+    cte = "cargo nextest run";
     fmt = "cargo +nightly fmt";
     tfmt = "taplo fmt";
     udeps = "cargo +nightly udeps --all-targets";

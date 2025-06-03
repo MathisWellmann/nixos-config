@@ -122,6 +122,7 @@ in {
       cargo-expand # Expands rust macros
       cargo-info
       cargo-wizard
+      cargo-nextest
 
       # Cryptography
       # sequoia-sq
@@ -281,7 +282,7 @@ in {
         cbr = "cargo build --release";
         cr = "cargo run";
         crr = "cargo run --release";
-        cte = "cargo test";
+        cte = "cargo nextest run";
 
         # Jujutsu `jj` aliases
         jjl = "jj log";
