@@ -261,6 +261,7 @@ in {
           diff.format = "git";
         };
         snapshot.max-new-file-size = "10MB";
+        git.write-change-id-header = true;
       };
     };
     nushell = {
