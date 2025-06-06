@@ -82,7 +82,6 @@
     tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
     tlaplusToolbox
-    zed-editor
     redisinsight
     mongodb-compass
   ];
@@ -223,6 +222,23 @@
           # normal.family = "DepartureMonoNerdFont";
         };
         terminal.shell.program = "nu";
+      };
+    };
+    zed-editor = {
+      enable = true;
+      extensions = [
+        "nix"
+      ];
+      userSettings = {
+        features = {
+          copilot = false;
+        };
+        telemetry = {
+          metrics = false;
+        };
+        vim_mode = false;
+        ui_font_size = 18;
+        buffer_font_size = 18;
       };
     };
     # looking-glass-client = {
