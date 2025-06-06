@@ -73,7 +73,7 @@ in {
         ipv4 = {
           addresses = [
             {
-              address = "169.254.4.1";
+              address = static_ips.meshify_mellanox_0;
               prefixLength = 16;
             }
           ];
@@ -86,7 +86,7 @@ in {
         ipv4 = {
           addresses = [
             {
-              address = "169.254.4.2";
+              address = static_ips.meshify_mellanox_1;
               prefixLength = 16;
             }
           ];
