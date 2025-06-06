@@ -46,11 +46,17 @@ in {
     enableSSHSupport = true;
   };
 
+  # TODO: extract to own module and use on all hosts
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.magewe = {
     isNormalUser = true;
     description = "${username}";
-    extraGroups = ["networkmanager" "wheel" "docker"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "docker"
+      "dialout" # Allow access to serial device (for Arduino dev)
+    ];
     packages = [];
     shell = pkgs.nushell;
   };
