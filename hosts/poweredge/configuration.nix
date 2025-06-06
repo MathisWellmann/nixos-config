@@ -32,7 +32,7 @@ in {
   users.users."${const.username}" = {
     isNormalUser = true;
     description = "${const.username}";
-    extraGroups = ["wheel"];
+    extraGroups = ["wheel" "docker"];
     shell = pkgs.nushell;
     packages = with pkgs; [
       gitea-actions-runner

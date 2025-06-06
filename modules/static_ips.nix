@@ -1,5 +1,5 @@
 let
-  prefix = "10.10";
+  prefix = "192.168";
 in {
   # Contains static IPv4 addresses for the primary NICs of each host.
 
@@ -14,14 +14,10 @@ in {
   meshify_ip = "192.168.0.21";
 
   # Infiniband in /16 subnet
-  poweredge_mellanox_0 = "${prefix}.0.1";
-  poweredge_mellanox_1 = "${prefix}.0.2";
-  dell_r710_mellanox_0 = "${prefix}.0.3";
-  dell_r710_mellanox_1 = "${prefix}.0.4";
-  genoa_mellanox_0 = "${prefix}.0.5";
-  genoa_mellanox_1 = "${prefix}.0.6";
-  meshify_mellanox_0 = "${prefix}.0.7";
-  meshify_mellanox_1 = "${prefix}.1.8";
-  desg0_mellanox_0 = "${prefix}.0.9";
-  desg0_mellanox_1 = "${prefix}.0.10";
+  poweredge_mellanox_0 = "${prefix}.0.30";
+  poweredge_mellanox_1 = "${prefix}.0.31";
+  desg0_mellanox_0 = "${prefix}.0.32";
+  desg0_mellanox_1 = "${prefix}.0.33";
+  meshify_mellanox_0 = "${prefix}.0.34";
+  meshify_mellanox_1 = "${prefix}.1.35";
 }
