@@ -212,7 +212,7 @@ in {
           {
             job_name = "dragonflydb";
             static_configs = [
-              {targets = ["127.0.0.1:${toString const.dragonfly_port}"];}
+              {targets = ["${static_ips.de-rosen_ip}:${toString const.dragonfly_port}"];}
             ];
           }
         ];
@@ -478,30 +478,6 @@ in {
     gitea
     radicle-node
   ];
-
-  services.mongodb = {
-    enable = true;
-    dbpath = "/SATA_SSD_POOL/mongodb";
-    user = "${const.username}";
-    bind_ip = "0.0.0.0";
-  };
-  # Raise open file limits for mongodb.
-  security.pam.services.mongodb.limits = [
-    {
-      domain = "*";
-      type = "soft";
-      item = "nofile";
-      value = "1000000";
-    }
-  ];
-
-  virtualisation.oci-containers.containers."dragonfly" = {
-    image = "docker.dragonflydb.io/dragonflydb/dragonfly";
-    ports = [
-      "${builtins.toString const.dragonfly_port}:6379"
-    ];
-    extraOptions = ["--ulimit" "memlock=-1"];
-  };
 
   # Decentralized git protocol
   # services.radicle =

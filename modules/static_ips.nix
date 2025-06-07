@@ -10,7 +10,7 @@ in {
   desg0_ip = "192.168.0.13";
 
   # In shack.
-  genoa_ip = "192.168.0.20";
+  de-rosen_ip = "192.168.0.20";
   meshify_ip = "192.168.0.21";
 
   poweredge_mellanox_0 = "${prefix}1";

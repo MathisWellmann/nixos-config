@@ -63,7 +63,7 @@ in {
         ipv4 = {
           addresses = [
             {
-              address = static_ips.genoa_ip;
+              address = static_ips.de-rosen_ip;
               prefixLength = 24;
             }
           ];
