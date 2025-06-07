@@ -6,7 +6,7 @@
   inputs,
   ...
 }: let
-  hostname = "genoa";
+  hostname = "de-rosen";
   username = "magewe";
   nats_port = 4222;
 in {

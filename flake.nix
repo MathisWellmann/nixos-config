@@ -62,10 +62,10 @@
           inputs.tikr.nixosModules."x86_64-linux".default
         ];
       };
-      genoa = nixpkgs-unstable.lib.nixosSystem {
+      de-rosen = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
-          ./hosts/genoa/configuration.nix
+          ./hosts/de-rosen/configuration.nix
           {_module.args = inputs;}
         ];
       };

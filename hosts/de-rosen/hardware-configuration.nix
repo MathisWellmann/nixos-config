@@ -77,7 +77,7 @@ in {
         ipv4 = {
           addresses = [
             {
-              address = static_ips.genoa_mellanox_0;
+              address = static_ips.de-rosen_mellanox_0;
               prefixLength = 16;
             }
           ];
@@ -90,7 +90,7 @@ in {
         ipv4 = {
           addresses = [
             {
-              address = static_ips.genoa_mellanox_1;
+              address = static_ips.de-rosen_mellanox_1;
               prefixLength = 16;
             }
           ];

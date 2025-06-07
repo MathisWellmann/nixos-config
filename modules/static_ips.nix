@@ -20,4 +20,6 @@ in {
   desg0_mellanox_1 = "${prefix}.0.33";
   meshify_mellanox_0 = "${prefix}.0.34";
   meshify_mellanox_1 = "${prefix}.1.35";
+  de-rosen_mellanox_0 = "${prefix}.0.34";
+  de-rosen_mellanox_1 = "${prefix}.1.35";
 }
