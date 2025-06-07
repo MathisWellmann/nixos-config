@@ -70,19 +70,19 @@ in {
         };
       };
       # Mellanox ConnectX-3-Pro 40G
-      enp7s0 = {
-        name = "enp7s0";
-        useDHCP = false;
-        mtu = 9000;
-        ipv4 = {
-          addresses = [
-            {
-              address = static_ips.de-rosen_mellanox_0;
-              prefixLength = 16;
-            }
-          ];
-        };
-      };
+      # enp7s0 = {
+      #   name = "enp7s0";
+      #   useDHCP = false;
+      #   mtu = 9000;
+      #   ipv4 = {
+      #     addresses = [
+      #       {
+      #         address = static_ips.de-rosen_mellanox_0;
+      #         prefixLength = 16;
+      #       }
+      #     ];
+      #   };
+      # };
       enp7s0d1 = {
         name = "enp7s0d1";
         useDHCP = false;
@@ -91,12 +91,15 @@ in {
           addresses = [
             {
               address = static_ips.de-rosen_mellanox_1;
-              prefixLength = 16;
+              prefixLength = 28;
             }
           ];
         };
       };
     };
+    firewall.allowedTCPPorts = [
+      5201 # iperf server
+    ];
   };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
