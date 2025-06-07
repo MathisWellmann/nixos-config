@@ -228,6 +228,11 @@
       enable = true;
       extensions = [
         "nix"
+        "codebook"
+        "docker-compose"
+        "marksman"
+        "nickel"
+        "nu"
       ];
       userSettings = {
         features = {
