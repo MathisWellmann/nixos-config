@@ -1,5 +1,5 @@
 let
-  prefix = "10.0.0.";
+  prefix = "10.0.1.";
 in {
   # Contains static IPv4 addresses for the primary NICs of each host.
 
@@ -13,7 +13,6 @@ in {
   genoa_ip = "192.168.0.20";
   meshify_ip = "192.168.0.21";
 
-  # Infiniband in /16 subnet
   poweredge_mellanox_0 = "${prefix}1";
   poweredge_mellanox_1 = "${prefix}2";
   desg0_mellanox_0 = "${prefix}3";
