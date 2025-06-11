@@ -43,10 +43,10 @@ in {
 
     networkmanager.enable = false;
 
-    # defaultGateway = {
-    #   interface = "enp4s0";
-    #   address = "192.168.0.55";
-    # };
+    defaultGateway = {
+      interface = "enp4s0";
+      address = "192.168.0.55";
+    };
     nameservers = [
       "192.168.0.55"
       "1.1.1.1"
