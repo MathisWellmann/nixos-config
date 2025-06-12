@@ -273,6 +273,10 @@ in {
         night = "redshift -P -O 5000";
         bright = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -A 10";
         dim = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -U 10";
+
+        # Find all the TODO comments in my codebases
+        todos = "${pkgs.ripgrep} --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
+
         # Cargo
         udeps = "cargo +nightly udeps --all-targets";
         fmt = "cargo +nightly fmt --all";

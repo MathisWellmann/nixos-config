@@ -17,5 +17,6 @@
     fmt = "cargo +nightly fmt";
     tfmt = "taplo fmt";
     udeps = "cargo +nightly udeps --all-targets";
+    todos = "rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
   };
 }
