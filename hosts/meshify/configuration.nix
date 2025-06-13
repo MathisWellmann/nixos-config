@@ -6,8 +6,8 @@
   inputs,
   ...
 }: let
-  hostname = "meshify";
   # TODO: move to `constants.nix`
+  hostname = "meshify";
   open-webui_port = 8080;
   metastable_port = 4000;
   static_ips = import ../../modules/static_ips.nix;

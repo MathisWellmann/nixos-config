@@ -1,4 +1,7 @@
-{lib, ...}: {
+{lib, ...}:
+let
+  global_const = import ../global_constants.nix;
+  in {
   imports = [
     ./home_hyprland.nix
   ];
@@ -10,9 +13,9 @@
       ipc = "on";
       splash = false;
       splash_offset = 2.0;
-      preload = ["/home/magewe/wallpaper.jpg"];
+      preload = ["/home/${global_const.username}/wallpaper.jpg"];
       wallpaper = [
-        "eDP-1,/home/magewe/wallpaper.jpg"
+        "eDP-1,/home/${global_const.username}/wallpaper.jpg"
       ];
     };
   };

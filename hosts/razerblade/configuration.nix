@@ -7,7 +7,7 @@
   ...
 }: let
   hostname = "razerblade";
-  username = "magewe";
+  global_const = import ../../global_constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -33,9 +33,9 @@ in {
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users."${username}" = {
+  users.users."${global_const.username}" = {
     isNormalUser = true;
-    description = "${username}";
+    description = "${global_const.username}";
     extraGroups = ["networkmanager" "wheel" "audio"];
     packages = [];
     shell = pkgs.nushell;
@@ -45,7 +45,7 @@ in {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${username}" = import ./../../home/${hostname}.nix;
+      "${global_const.username}" = import ./../../home/${hostname}.nix;
     };
   };
 
@@ -79,7 +79,7 @@ in {
 
   services.backup_home_to_remote = {
     enable = true;
-    local_username = "${username}";
+    local_username = "${global_const.username}";
     backup_host_addr = "poweredge";
     backup_host_name = "poweredge";
     backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
@@ -96,16 +96,18 @@ in {
     fsType = "nfs";
     options = ["rw" "nofail"];
   };
+  # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
+  services.mullvad-vpn.enable = true;
   services.resolved.enable = true;
 
   hardware.ledger.enable = true;
   services.trezord.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = ["${username}"];
+  users.extraGroups.vboxusers.members = ["${global_const.username}"];
   # services.openvpn.servers = {
   #   mullvad = {
-  #     config = ''config /home/magewe/mullvad_config_linux_se_got/mullvad_se_got.conf '';
+  #     config = ''config /home/${global_const.username}/mullvad_config_linux_se_got/mullvad_se_got.conf '';
   #     updateResolvConf = true;
   #   };
   # };
@@ -138,4 +140,5 @@ in {
       uptime.prefix = "up";
     };
   };
+
 }
