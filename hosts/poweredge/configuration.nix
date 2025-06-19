@@ -318,10 +318,10 @@ in {
       };
     };
     # Marked as broken. TODO: re-enable
-    # mealie = {
-    #   enable = true;
-    #   port = const.mealie_port;
-    # };
+    mealie = {
+      enable = true;
+      port = const.mealie_port;
+    };
 
     # gotosocial = {
     #   enable = true;
@@ -429,7 +429,7 @@ in {
   };
 
   virtualisation.oci-containers.containers."greptimedb" = let
-    version = "v0.14.4";
+    version = "v0.9.3";
   in {
     image = "greptime/greptimedb:${version}";
     cmd = [
