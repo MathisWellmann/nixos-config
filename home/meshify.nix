@@ -37,7 +37,7 @@
       splash = true;
       splash_offset = 2.0;
       preload = [
-        "/home/magewe/acapulco_wallpaper.jxl"
+        # "/home/magewe/acapulco_wallpaper.jxl"
         "/home/magewe/acapulco_wallpaper_0.jxl"
         "/home/magewe/acapulco_wallpaper_1.jxl"
         "/home/magewe/acapulco_wallpaper_2.jxl"
@@ -48,7 +48,7 @@
         "DP-5,/home/magewe/acapulco_wallpaper_0.jxl"
         "DP-4,/home/magewe/acapulco_wallpaper_1.jxl"
         "DP-3,/home/magewe/acapulco_wallpaper_2.jxl"
-        "HDMI-A-5,/home/magewe/acapulco_wallpaper.jxl"
+        # "HDMI-A-5,/home/magewe/acapulco_wallpaper.jxl"
       ];
     };
   };

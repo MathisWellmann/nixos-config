@@ -35,7 +35,7 @@ in {
       with ps; [
         numpy
         openai # Not using ClosedAi, but the package allows interacting with locally hosted ai services as well
-        pymc3 # markov chain monte carlo methods.
+        # pymc3 # markov chain monte carlo methods.
         matplotlib # Plotting
       ];
   in
@@ -70,6 +70,7 @@ in {
       cloudflared
       jjui # terminal user interface for working with jujutsu VSC
       typespeed
+      lazyjj
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:

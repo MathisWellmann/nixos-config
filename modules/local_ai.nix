@@ -9,6 +9,7 @@
       hash = "sha256-+8UHE9M2JWUARuuIRdKwNkn1hoxtuitVH7do5V5uEg0=";
       fetchSubmodules = true;
     };
+    vendorHash = "sha256-t7+GLNC6mRcXq9ErxN6gGki5WWWoEcMfzRVjta4fddA=";
   };
 in {
   services.ollama = {
