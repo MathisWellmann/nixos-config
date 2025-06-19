@@ -23,6 +23,10 @@
   freshrss_port = 3014;
   firefly_port = 3015;
   ncps_port = 3501;
+  greptimedb_http_port = 4000;
+  greptimedb_rpc_port = 4001;
+  greptimedb_mysql_port = 4002;
+  greptimedb_postgres_port = 4003;
   nats_port = 4222;
   harmonia_port = 5000;
   iperf_port = 5201;

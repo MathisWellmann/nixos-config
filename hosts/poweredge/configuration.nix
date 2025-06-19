@@ -73,9 +73,10 @@ in {
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
       2049 # nfs
-      4000 # Greptimedb
-      4001 # Greptimedb
-      4003 # Greptimedb
+      const.greptimedb_http_port
+      const.greptimedb_rpc_port
+      const.greptimedb_mysql_port
+      const.greptimedb_postgres_port
       const.gitea_port
       const.grafana_port
       const.mafl_port
@@ -435,19 +436,19 @@ in {
       "standalone"
       "start"
       "--http-addr"
-      "0.0.0.0:4000"
+      "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
       "--rpc-addr"
-      "0.0.0.0:4001"
+      "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
       "--mysql-addr"
-      "0.0.0.0:4002"
+      "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
       "--postgres-addr"
-      "0.0.0.0:4003"
+      "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
     ];
     ports = [
-      "4000:4000"
-      "4001:4001"
-      "4002:4002"
-      "4003:4003"
+      "${builtins.toString const.greptimedb_http_port}:4000"
+      "${builtins.toString const.greptimedb_rpc_port}:4001"
+      "${builtins.toString const.greptimedb_mysql_port}:4002"
+      "${builtins.toString const.greptimedb_postgres_port}:4003"
     ];
     volumes = [
       "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
