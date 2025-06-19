@@ -10,7 +10,7 @@
   username = "magewe";
   nats_port = 4222;
   mongodb_port = 27017;
-  dragonfly_port = 27018;
+  const = import ./constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -143,7 +143,7 @@ in {
   virtualisation.oci-containers.containers."dragonfly" = {
     image = "docker.dragonflydb.io/dragonflydb/dragonfly";
     ports = [
-      "${builtins.toString dragonfly_port}:6379"
+      "${builtins.toString const.dragonfly_port}:6379"
     ];
     extraOptions = ["--ulimit" "memlock=-1"];
   };

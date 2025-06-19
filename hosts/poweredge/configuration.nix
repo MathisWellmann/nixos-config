@@ -10,6 +10,7 @@
 }: let
   const = import ./constants.nix;
   static_ips = import ./../../modules/static_ips.nix;
+  de_rosen_const = import ../../hosts/de-rosen/constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -212,7 +213,7 @@ in {
           {
             job_name = "dragonflydb";
             static_configs = [
-              {targets = ["${static_ips.de-rosen_ip}:${toString const.dragonfly_port}"];}
+              {targets = ["${static_ips.de-rosen_ip}:${toString de_rosen_const.dragonfly_port}"];}
             ];
           }
         ];
