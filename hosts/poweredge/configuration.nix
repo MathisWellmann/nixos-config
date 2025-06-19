@@ -429,7 +429,7 @@ in {
   };
 
   virtualisation.oci-containers.containers."greptimedb" = let
-    version = "v0.9.3";
+    version = "v0.14.4";
   in {
     image = "greptime/greptimedb:${version}";
     cmd = [
