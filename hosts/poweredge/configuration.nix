@@ -57,7 +57,7 @@ in {
   system.stateVersion = "23.05"; # Did you read the comment?
 
   boot.supportedFilesystems = ["zfs"];
-  boot.kernelParams = [ "zfs.zfs_arc_max=128000000000" ]; # 128 GB ARC size limit
+  boot.kernelParams = ["zfs.zfs_arc_max=128000000000"]; # 128 GB ARC size limit
   boot.zfs = {
     forceImportRoot = false;
     extraPools = ["SATA_SSD_POOL"];
@@ -472,7 +472,7 @@ in {
       value = "1000000";
     }
   ];
-  
+
   fileSystems."/mnt/desg0_magewe" = {
     device = "${static_ips.desg0_ip}:/nvme_pool/magewe";
     fsType = "nfs";

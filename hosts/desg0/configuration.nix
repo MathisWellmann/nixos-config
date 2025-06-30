@@ -29,7 +29,7 @@ in {
   };
 
   boot.supportedFilesystems = ["zfs"];
-  boot.kernelParams = [ "zfs.zfs_arc_max=128000000000" ]; # 128 GB ARC size limit
+  boot.kernelParams = ["zfs.zfs_arc_max=128000000000"]; # 128 GB ARC size limit
   boot.zfs = {
     forceImportRoot = false;
     extraPools = [
