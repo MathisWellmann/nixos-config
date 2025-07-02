@@ -12,6 +12,7 @@
   # environment.
   home.packages = with pkgs; [
     # Desktop
+    nwg-displays
     firefox
     ladybird
     floorp
