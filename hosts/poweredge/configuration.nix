@@ -264,6 +264,12 @@ in {
           HTTP_PORT = const.gitea_port;
           ROOT_URL = "http://${toString static_ips.poweredge_ip}:${toString const.gitea_port}";
         };
+        mailer = {
+          ENABLED = true;
+          MAILER_TYPE = "sendmail";
+          FROM = "gitea@mwtradingsystems.com";
+          SENDMAIL_PATH = "${pkgs.system-sendmail}/bin/sendmail";
+        };
       };
       stateDir = "${const.gitea_state_dir}";
     };
