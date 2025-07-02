@@ -12,7 +12,6 @@
   # environment.
   home.packages = with pkgs; [
     # Desktop
-    nwg-displays
     firefox
     ladybird
     floorp
@@ -35,15 +34,6 @@
     libreoffice
     affine
 
-    # Games
-    mindustry
-    steam
-    minetest
-    beyond-all-reason
-    # hyperspeedcube # 3D and 4D Rubik's cube simulator
-    # openspades
-    # pokerth
-
     # Video
     mpv
     # Visualize git repo history
@@ -56,6 +46,7 @@
     wl-clipboard
     wlr-randr
     wdisplays
+    nwg-displays
 
     # Communication
     # halloy # IRC GUI written in Rust

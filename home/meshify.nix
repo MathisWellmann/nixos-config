@@ -1,6 +1,7 @@
 {...}: {
   imports = [
     ./home_hyprland.nix
+    ./games.nix
   ];
 
   wayland.windowManager.hyprland = {
