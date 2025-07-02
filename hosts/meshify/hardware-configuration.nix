@@ -85,10 +85,12 @@ in {
         useDHCP = false;
         mtu = 9000;
         ipv4 = {
-          addresses = [{
-            address = static_ips.meshify_ip_10Gbit_0;
-            prefixLength = 24;
-          }];
+          addresses = [
+            {
+              address = static_ips.meshify_ip_10Gbit_0;
+              prefixLength = 24;
+            }
+          ];
         };
       };
     };
