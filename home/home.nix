@@ -259,7 +259,7 @@ in {
           editor = "hx";
           pager = "delta";
           paginate = "never";
-          diff.format = "git";
+          diff-formatter = "git";
         };
         snapshot.max-new-file-size = "10MB";
         git.write-change-id-header = true;
