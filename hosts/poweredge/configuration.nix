@@ -97,7 +97,6 @@ in {
 
   services = {
     nfs.server = let
-      genoa_addr = "genoa";
       meshify_addr = "meshify";
       razerblade_addr = "razerblade";
       common_dirs = [
@@ -109,10 +108,6 @@ in {
         "torrents_transmission"
         "pdfs"
       ];
-      exports_for_genoa =
-        lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${genoa_addr}(rw,sync,no_subtree_check)\n")
-        (common_dirs
-          ++ ["backup_genoa" "ilka"]);
       exports_for_meshify =
         lib.strings.concatMapStrings (dir: "/SATA_SSD_POOL/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")
         (common_dirs
@@ -123,7 +118,7 @@ in {
           ++ ["backup_razerblade"]);
     in {
       enable = true;
-      exports = lib.strings.concatStrings [exports_for_genoa exports_for_meshify exports_for_razerblade];
+      exports = lib.strings.concatStrings [exports_for_meshify exports_for_razerblade];
     };
     prometheus = let
       node_scrape_configs = map (host: {
