@@ -57,14 +57,22 @@ in {
   system.stateVersion = "23.05"; # Did you read the comment?
 
   boot.supportedFilesystems = ["zfs"];
+  boot.kernelParams = [ "zfs.zfs_arc_max=128000000000" ]; # 128 GB ARC size limit
   boot.zfs = {
     forceImportRoot = false;
     extraPools = ["SATA_SSD_POOL"];
   };
   services.zfs = {
-    autoScrub.enable = true;
+    autoScrub = {
+      enable = true;
+      interval = "weekly";
+      pools = ["SATA_SSD_POOL"];
+    };
     autoSnapshot.enable = true;
-    trim.enable = false;
+    trim = {
+      enable = false;
+      interval = "weekly";
+    };
   };
 
   networking = {
