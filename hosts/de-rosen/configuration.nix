@@ -10,7 +10,6 @@
   username = "magewe";
   nats_port = 4222;
   mongodb_port = 27017;
-  const = import ./constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -138,29 +137,4 @@ in {
       };
     };
   };
-
-  # Nexus Databases
-  virtualisation.oci-containers.containers."dragonfly" = {
-    image = "docker.dragonflydb.io/dragonflydb/dragonfly";
-    ports = [
-      "${builtins.toString const.dragonfly_port}:6379"
-    ];
-    extraOptions = ["--ulimit" "memlock=-1"];
-  };
-  services.mongodb = {
-    enable = true;
-    dbpath = "/var/mongodb";
-    user = "${username}";
-    bind_ip = "0.0.0.0";
-  };
-  # Raise open file limits for mongodb.
-  security.pam.services.mongodb.limits = [
-    {
-      domain = "*";
-      type = "soft";
-      item = "nofile";
-      value = "1000000";
-    }
-  ];
-
 }

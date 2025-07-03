@@ -547,4 +547,28 @@ in {
       };
     };
   };
+
+  # Nexus Databases
+  virtualisation.oci-containers.containers."dragonfly" = {
+    image = "docker.dragonflydb.io/dragonflydb/dragonfly";
+    ports = [
+      "${builtins.toString const.dragonfly_port}:6379"
+    ];
+    extraOptions = ["--ulimit" "memlock=-1"];
+  };
+  services.mongodb = {
+    enable = true;
+    dbpath = "/SATA_SSD_POOL/mongodb";
+    user = "${const.username}";
+    bind_ip = "0.0.0.0";
+  };
+  # Raise open file limits for mongodb.
+  security.pam.services.mongodb.limits = [
+    {
+      domain = "*";
+      type = "soft";
+      item = "nofile";
+      value = "1000000";
+    }
+  ];
 }
