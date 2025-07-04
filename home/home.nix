@@ -111,8 +111,7 @@ in {
       hwinfo
       dmidecode
       iperf
-      iperf2
-      iperf3
+      dig # DNS tool, e.g `dig @192.168.0.10 google.de`
       parallel
       du-dust
       ouch # Obvious unified compression helper
