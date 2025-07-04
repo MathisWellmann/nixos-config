@@ -307,19 +307,6 @@ in {
         PORT = "${builtins.toString const.uptime_kuma_port}";
       };
     };
-    nats = {
-      enable = true;
-      jetstream = true;
-      port = const.nats_port;
-      serverName = "nats-${const.hostname}";
-      settings = {
-        host = "0.0.0.0";
-        jetstream = {
-          max_mem = "1G";
-          max_file = "10G";
-        };
-      };
-    };
   };
 
   # Containers
