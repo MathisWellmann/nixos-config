@@ -6,8 +6,7 @@
   pkgs,
   ...
 }: let
-  username = "magewe";
-  hostname = "desg0";
+  const = import ./constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -24,7 +23,7 @@ in {
   ];
 
   networking = {
-    hostName = hostname;
+    hostName = const.hostname;
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "1840e132";
   };
@@ -53,9 +52,9 @@ in {
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.${username} = {
+  users.users.${const.username} = {
     isNormalUser = true;
-    description = username;
+    description = const.username;
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
     packages = with pkgs; [
@@ -68,7 +67,7 @@ in {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${username}" = import ./../../home/home.nix;
+      "${const.username}" = import ./../../home/home.nix;
     };
   };
 
@@ -100,5 +99,36 @@ in {
   };
   networking.firewall.allowedTCPPorts = [
     18142 # tari node
+    const.greptimedb_http_port
+    const.greptimedb_rpc_port
+    const.greptimedb_mysql_port
+    const.greptimedb_postgres_port
   ];
+
+  virtualisation.oci-containers.containers."greptimedb" = let
+    version = "v0.15.0";
+  in {
+    image = "greptime/greptimedb:${version}";
+    cmd = [
+      "standalone"
+      "start"
+      "--http-addr"
+      "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
+      "--rpc-addr"
+      "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
+      "--mysql-addr"
+      "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
+      "--postgres-addr"
+      "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
+    ];
+    ports = [
+      "${builtins.toString const.greptimedb_http_port}:4000"
+      "${builtins.toString const.greptimedb_rpc_port}:4001"
+      "${builtins.toString const.greptimedb_mysql_port}:4002"
+      "${builtins.toString const.greptimedb_postgres_port}:4003"
+    ];
+    volumes = [
+      "/nvme_pool/greptimedb:/greptimedb_data"
+    ];
+  };
 }
