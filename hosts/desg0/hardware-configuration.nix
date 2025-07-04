@@ -88,6 +88,18 @@ in {
           ];
         };
       };
+      enp134s0 = {
+        name = "enp134s0";
+        useDHCP = false;
+        ipv4 = {
+          addresses = [
+            {
+              address = static_ips.desg0_ip_2;
+              prefixLength = 24;
+            }
+          ];
+        };
+      };
     };
   };
 

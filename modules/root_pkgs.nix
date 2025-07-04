@@ -29,13 +29,16 @@
     docker-compose
     # Misc
     killall
-    iperf
-    lshw
-    nmap
     pciutils
     inputs.agenix.packages."${system}".default
     exfat
     uutils-coreutils
     dart
+
+    # Networking
+    iperf
+    lshw
+    nmap
+    traceroute
   ];
 }
