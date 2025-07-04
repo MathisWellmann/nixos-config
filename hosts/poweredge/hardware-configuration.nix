@@ -41,7 +41,7 @@ in {
     networkmanager.enable = false;
 
     defaultGateway = {
-      interface = "ens5f0";
+      interface = "eno1";
       address = "192.168.0.55";
     };
     nameservers = [
@@ -52,22 +52,9 @@ in {
     ];
 
     interfaces = {
-      # eno1 = {
-      #   name = "eno1";
-      #   useDHCP = false;
-      #   ipv4 = {
-      #     addresses = [
-      #       {
-      #         address = static_ips.poweredge_ip;
-      #         prefixLength = 24;
-      #       }
-      #     ];
-      #   };
-      # };
-      ens5f0 = {
-        name = "ens5f0";
+      eno1 = {
+        name = "eno1";
         useDHCP = false;
-        mtu = 9000;
         ipv4 = {
           addresses = [
             {
@@ -77,6 +64,19 @@ in {
           ];
         };
       };
+      # ens5f0 = {
+      #   name = "ens5f0";
+      #   useDHCP = false;
+      #   mtu = 9000;
+      #   ipv4 = {
+      #     addresses = [
+      #       {
+      #         address = static_ips.poweredge_ip;
+      #         prefixLength = 24;
+      #       }
+      #     ];
+      #   };
+      # };
       # enp65s0d1 = {
       #   name = "enp65s0d1";
       #   useDHCP = false;

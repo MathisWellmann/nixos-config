@@ -146,14 +146,14 @@ in {
       enable = true;
       openFirewall = true;
     };
-    tikr = {
-      enable = true;
-      database = "GreptimeDb";
-      database-addr = "poweredge:4001";
-      exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
-      data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
-      prometheus_exporter_base_port = const.tikr_base_port;
-    };
+    # tikr = {
+    #   enable = true;
+    #   database = "GreptimeDb";
+    #   database-addr = "poweredge:4001";
+    #   exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
+    #   data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
+    #   prometheus_exporter_base_port = const.tikr_base_port;
+    # };
     # Music server
     minidlna = {
       enable = true;
@@ -368,32 +368,32 @@ in {
         "/SATA_SSD_POOL/readeck:/readeck"
       ];
     };
-    "greptimedb" = let
-      version = "v0.9.3";
-    in {
-      image = "greptime/greptimedb:${version}";
-      cmd = [
-        "standalone"
-        "start"
-        "--http-addr"
-        "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
-        "--rpc-addr"
-        "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
-        "--mysql-addr"
-        "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
-        "--postgres-addr"
-        "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
-      ];
-      ports = [
-        "${builtins.toString const.greptimedb_http_port}:4000"
-        "${builtins.toString const.greptimedb_rpc_port}:4001"
-        "${builtins.toString const.greptimedb_mysql_port}:4002"
-        "${builtins.toString const.greptimedb_postgres_port}:4003"
-      ];
-      volumes = [
-        "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
-      ];
-    };
+    # "greptimedb" = let
+    #   version = "v0.9.3";
+    # in {
+    #   image = "greptime/greptimedb:${version}";
+    #   cmd = [
+    #     "standalone"
+    #     "start"
+    #     "--http-addr"
+    #     "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
+    #     "--rpc-addr"
+    #     "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
+    #     "--mysql-addr"
+    #     "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
+    #     "--postgres-addr"
+    #     "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
+    #   ];
+    #   ports = [
+    #     "${builtins.toString const.greptimedb_http_port}:4000"
+    #     "${builtins.toString const.greptimedb_rpc_port}:4001"
+    #     "${builtins.toString const.greptimedb_mysql_port}:4002"
+    #     "${builtins.toString const.greptimedb_postgres_port}:4003"
+    #   ];
+    #   volumes = [
+    #     "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
+    #   ];
+    # };
   };
 
   virtualisation.docker.enable = true;
@@ -515,6 +515,11 @@ in {
 
   fileSystems."/mnt/desg0_magewe" = {
     device = "${static_ips.desg0_ip}:/nvme_pool/magewe";
+    fsType = "nfs";
+    options = ["rw" "rsize=131072" "wsize=131072"];
+  };
+  fileSystems."/mnt/desg0_ilka" = {
+    device = "${static_ips.desg0_ip}:/nvme_pool/ilka";
     fsType = "nfs";
     options = ["rw" "rsize=131072" "wsize=131072"];
   };
