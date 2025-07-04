@@ -485,4 +485,10 @@ in {
       value = "1000000";
     }
   ];
+  
+  fileSystems."/mnt/desg0_magewe" = {
+    device = "${static_ips.desg0_ip}:/nvme_pool/magewe";
+    fsType = "nfs";
+    options = ["rw" "rsize=131072" "wsize=131072"];
+  };
 }
