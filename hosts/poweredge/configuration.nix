@@ -309,53 +309,54 @@ in {
     };
   };
 
-  # Containers
-  virtualisation.oci-containers.containers."homer" = {
-    image = "b4bz/homer";
-    ports = [
-      "${builtins.toString const.homer_port}:8080"
-    ];
-    volumes = [
-      "/SATA_SSD_POOL/homer:/www/assets"
-    ];
+  ##### Containers #####
+  virtualisation.oci-containers.containers = {
+    "homer" = {
+      image = "b4bz/homer";
+      ports = [
+        "${builtins.toString const.homer_port}:8080"
+      ];
+      volumes = [
+        "/SATA_SSD_POOL/homer:/www/assets"
+      ];
+    };
+    "readeck" = {
+      image = "codeberg.org/readeck/readeck:latest";
+      ports = [
+        "${builtins.toString const.readeck_port}:8000"
+      ];
+      volumes = [
+        "/SATA_SSD_POOL/readeck:/readeck"
+      ];
+    };
+    "greptimedb" = let
+      version = "v0.9.3";
+    in {
+      image = "greptime/greptimedb:${version}";
+      cmd = [
+        "standalone"
+        "start"
+        "--http-addr"
+        "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
+        "--rpc-addr"
+        "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
+        "--mysql-addr"
+        "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
+        "--postgres-addr"
+        "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
+      ];
+      ports = [
+        "${builtins.toString const.greptimedb_http_port}:4000"
+        "${builtins.toString const.greptimedb_rpc_port}:4001"
+        "${builtins.toString const.greptimedb_mysql_port}:4002"
+        "${builtins.toString const.greptimedb_postgres_port}:4003"
+      ];
+      volumes = [
+        "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
+      ];
+    };
   };
 
-  virtualisation.oci-containers.containers."readeck" = {
-    image = "codeberg.org/readeck/readeck:latest";
-    ports = [
-      "${builtins.toString const.readeck_port}:8000"
-    ];
-    volumes = [
-      "/SATA_SSD_POOL/readeck:/readeck"
-    ];
-  };
-
-  virtualisation.oci-containers.containers."greptimedb" = let
-    version = "v0.9.3";
-  in {
-    image = "greptime/greptimedb:${version}";
-    cmd = [
-      "standalone"
-      "start"
-      "--http-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
-      "--rpc-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
-      "--mysql-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
-      "--postgres-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
-    ];
-    ports = [
-      "${builtins.toString const.greptimedb_http_port}:4000"
-      "${builtins.toString const.greptimedb_rpc_port}:4001"
-      "${builtins.toString const.greptimedb_mysql_port}:4002"
-      "${builtins.toString const.greptimedb_postgres_port}:4003"
-    ];
-    volumes = [
-      "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
-    ];
-  };
   virtualisation.docker.enable = true;
 
   ### Backup Section ###
