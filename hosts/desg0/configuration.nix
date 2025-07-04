@@ -4,9 +4,11 @@
 {
   inputs,
   pkgs,
+  lib,
   ...
 }: let
   const = import ./constants.nix;
+  static_ips = import ./../../modules/static_ips.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -99,6 +101,7 @@ in {
   };
   networking.firewall.allowedTCPPorts = [
     18142 # tari node
+    const.nfs_port
     const.greptimedb_http_port
     const.greptimedb_rpc_port
     const.greptimedb_mysql_port
@@ -131,5 +134,30 @@ in {
     volumes = [
       "/nvme_pool/greptimedb:/greptimedb_data"
     ];
+  };
+  services = {
+    nfs.server = let
+      meshify_addr = "meshify";
+      razerblade_addr = "razerblade";
+      common_dirs = [
+        "magewe"
+      ];
+      exports_for_meshify =
+        lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")
+        (common_dirs);
+      exports_for_poweredge =
+        lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " ${static_ips.poweredge_ip}(rw,sync,no_subtree_check)\n")
+        (common_dirs);
+      exports_for_razerblade =
+        lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " ${razerblade_addr}(rw,sync,no_subtree_check)\n")
+        (common_dirs);
+    in {
+      enable = true;
+      exports = lib.strings.concatStrings [
+        exports_for_meshify
+        exports_for_razerblade
+        exports_for_poweredge
+      ];
+    };
   };
 }
