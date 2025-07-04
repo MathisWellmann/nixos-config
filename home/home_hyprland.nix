@@ -13,7 +13,7 @@
   home.packages = with pkgs; [
     # Desktop
     firefox
-    ladybird
+    # ladybird
     floorp
     keepassxc
     gthumb # Image viewer with support for ARW files
@@ -52,7 +52,7 @@
     # halloy # IRC GUI written in Rust
     # discord
     # slack
-    simplex-chat-desktop
+    # simplex-chat-desktop
 
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
@@ -61,7 +61,7 @@
     monero-gui
 
     # Photo Editing
-    darktable
+    # darktable
     digikam
     rawtherapee
     blender

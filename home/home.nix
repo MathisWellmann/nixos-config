@@ -197,7 +197,7 @@ in {
         ];
       };
       settings = {
-        theme = "snazzy"; # Dark
+        theme = "gruvbox"; # Dark
         # theme = "onelight";
         editor = {
           scroll-lines = 1;
