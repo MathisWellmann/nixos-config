@@ -8,7 +8,6 @@ in {
   elitedesk_ip = "192.168.0.11";
   superserver_ip = "192.168.0.12";
   desg0_ip = "192.168.0.13";
-  desg0_ip_2 = "192.168.0.14";
 
   # In shack.
   de-rosen_ip = "192.168.0.20";

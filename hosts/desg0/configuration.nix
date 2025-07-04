@@ -103,6 +103,7 @@ in {
     const.greptimedb_rpc_port
     const.greptimedb_mysql_port
     const.greptimedb_postgres_port
+    const.iperf_port
   ];
 
   virtualisation.oci-containers.containers."greptimedb" = let

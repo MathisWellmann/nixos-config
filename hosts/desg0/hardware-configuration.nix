@@ -41,7 +41,7 @@ in {
     networkmanager.enable = false;
 
     defaultGateway = {
-      interface = "eno2";
+      interface = "enp133s0f0";
       address = "192.168.0.55";
     };
     nameservers = [
@@ -52,49 +52,50 @@ in {
     ];
 
     interfaces = {
-      eno1 = {
-        name = "eno2";
+      # eno1 = {
+      #   name = "eno2";
+      #   useDHCP = false;
+      #   ipv4 = {
+      #     addresses = [
+      #       {
+      #         address = static_ips.desg0_ip;
+      #         prefixLength = 24;
+      #       }
+      #     ];
+      #   };
+      # };
+      # enp133s0 = {
+      #   name = "enp133s0";
+      #   useDHCP = false;
+      #   ipv4 = {
+      #     addresses = [
+      #       {
+      #         address = static_ips.desg0_mellanox_0;
+      #         prefixLength = 16;
+      #       }
+      #     ];
+      #   };
+      # };
+      # enp133s0d1 = {
+      #   name = "enp133s0d1";
+      #   useDHCP = false;
+      #   ipv4 = {
+      #     addresses = [
+      #       {
+      #         address = static_ips.desg0_mellanox_1;
+      #         prefixLength = 16;
+      #       }
+      #     ];
+      #   };
+      # };
+      enp133s0f0 = {
+        name = "enp133s0f0";
         useDHCP = false;
+        mtu = 9000;
         ipv4 = {
           addresses = [
             {
               address = static_ips.desg0_ip;
-              prefixLength = 24;
-            }
-          ];
-        };
-      };
-      enp133s0 = {
-        name = "enp133s0";
-        useDHCP = false;
-        ipv4 = {
-          addresses = [
-            {
-              address = static_ips.desg0_mellanox_0;
-              prefixLength = 16;
-            }
-          ];
-        };
-      };
-      enp133s0d1 = {
-        name = "enp133s0d1";
-        useDHCP = false;
-        ipv4 = {
-          addresses = [
-            {
-              address = static_ips.desg0_mellanox_1;
-              prefixLength = 16;
-            }
-          ];
-        };
-      };
-      enp134s0 = {
-        name = "enp134s0";
-        useDHCP = false;
-        ipv4 = {
-          addresses = [
-            {
-              address = static_ips.desg0_ip_2;
               prefixLength = 24;
             }
           ];
