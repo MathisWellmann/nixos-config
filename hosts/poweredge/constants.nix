@@ -22,6 +22,7 @@
   searx_port = 3013;
   freshrss_port = 3014;
   firefly_port = 3015;
+  adguardhome_port = 3016;
   ncps_port = 3501;
   greptimedb_http_port = 4000;
   greptimedb_rpc_port = 4001;

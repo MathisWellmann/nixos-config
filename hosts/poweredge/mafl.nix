@@ -100,6 +100,9 @@ in {
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.greptimedb_http_port}/dashboard;
           tags:
             - development
+        - title: AdguardHome
+          description: DNS with Ad blocking
+          link: http://${static_ips.poweredge_ip}:${builtins.toString const.adguardhome_port};
     '';
     config_file = pkgs.writeText "/SATA_SSD_POOL/mafl/config.yml" mafl_config;
   in {
