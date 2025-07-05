@@ -110,7 +110,7 @@ in {
   ];
 
   virtualisation.oci-containers.containers."greptimedb" = let
-    version = "v0.15.0";
+    version = "v0.15.1";
   in {
     image = "greptime/greptimedb:${version}";
     cmd = [
@@ -126,10 +126,10 @@ in {
       "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
     ];
     ports = [
-      "${builtins.toString const.greptimedb_http_port}:4000"
-      "${builtins.toString const.greptimedb_rpc_port}:4001"
-      "${builtins.toString const.greptimedb_mysql_port}:4002"
-      "${builtins.toString const.greptimedb_postgres_port}:4003"
+      "${builtins.toString const.greptimedb_http_port}:${builtins.toString const.greptimedb_http_port}"
+      "${builtins.toString const.greptimedb_rpc_port}:${builtins.toString const.greptimedb_rpc_port}"
+      "${builtins.toString const.greptimedb_mysql_port}:${builtins.toString const.greptimedb_mysql_port}"
+      "${builtins.toString const.greptimedb_postgres_port}:${builtins.toString const.greptimedb_postgres_port}"
     ];
     volumes = [
       "/nvme_pool/greptimedb:/greptimedb_data"
