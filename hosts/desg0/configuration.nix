@@ -8,6 +8,7 @@
   ...
 }: let
   const = import ./constants.nix;
+  global_const = import ../../global_constants.nix;
   static_ips = import ./../../modules/static_ips.nix;
 in {
   imports = [
@@ -54,22 +55,19 @@ in {
   };
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.${const.username} = {
+  users.users.${global_const.username} = {
     isNormalUser = true;
-    description = const.username;
+    description = global_const.username;
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
-    packages = with pkgs; [
-      git
-      helix
-    ];
+    packages = [];
   };
 
   home-manager = {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${const.username}" = import ./../../home/home.nix;
+      "${global_const.username}" = import ./../../home/home.nix;
     };
   };
 
@@ -141,6 +139,8 @@ in {
       razerblade_addr = "razerblade";
       common_dirs = [
         "magewe"
+        "ilka"
+        "pdfs"
       ];
       exports_for_meshify =
         lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")

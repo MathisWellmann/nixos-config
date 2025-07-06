@@ -1,6 +1,5 @@
 {
   hostname = "desg0";
-  username = "magewe";
 
   nfs_port = 2049;
   greptimedb_http_port = 4000;
