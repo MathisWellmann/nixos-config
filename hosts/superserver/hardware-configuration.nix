@@ -6,62 +6,55 @@
   lib,
   modulesPath,
   ...
-}: {
+}: let
+  static_ips = import ../../modules/static_ips.nix;
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid"];
+  boot.initrd.availableKernelModules = ["xhci_pci" "ahci" "nvme" "usbhid" "uas" "sd_mod"];
   boot.initrd.kernelModules = [];
   boot.kernelModules = ["kvm-amd"];
   boot.extraModulePackages = [];
 
   fileSystems."/" = {
-    device = "/dev/disk/by-uuid/ef448e38-ff9d-4e27-8109-c1bfcda544ca";
-    fsType = "ext4";
+    device = "/dev/disk/by-uuid/2464e526-28d4-43d3-b885-c3284a8a0d04";
+    fsType = "xfs";
   };
 
   fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/DDAD-03D2";
+    device = "/dev/disk/by-uuid/9F46-467D";
     fsType = "vfat";
-    options = ["fmask=0022" "dmask=0022"];
+    options = ["fmask=0077" "dmask=0077"];
   };
 
   swapDevices = [];
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.eno1.useDHCP = lib.mkDefault true;
-  # networking.interfaces.eno2.useDHCP = lib.mkDefault true;
-  networking.interfaces.enp6s0 = {
-    name = "mellanox-40G-0";
-    macAddress = "98:03:9b:d4:a0:e0";
-    useDHCP = false;
-    mtu = 9000;
-    ipv4 = {
-      addresses = [
-        {
-          address = "169.254.2.1";
-          prefixLength = 16;
-        }
-      ];
+  networking = {
+    useDHCP = lib.mkDefault true;
+    networkmanager.enable = true;
+
+    defaultGateway = {
+      interface = "enp65s0f0";
+      address = "192.168.0.55";
     };
-  };
-  networking.interfaces.enp6s0d1 = {
-    name = "mellanox-40G-1";
-    macAddress = "98:03:9b:d4:a0:e1";
-    useDHCP = false;
-    mtu = 9000;
-    ipv4 = {
-      addresses = [
-        {
-          address = "169.254.2.2";
-          prefixLength = 16;
-        }
-      ];
+    nameservers = [
+      "${static_ips.elitedesk_ip}"
+    ];
+
+    interfaces.enp65s0f0 = {
+      name = "enp65s0f0";
+      useDHCP = false;
+      mtu = 9000;
+      ipv4 = {
+        addresses = [
+          {
+            address = "${static_ips.superserver_ip}";
+            prefixLength = 24;
+          }
+        ];
+      };
     };
   };
 

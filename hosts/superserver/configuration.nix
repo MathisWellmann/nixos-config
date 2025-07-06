@@ -5,15 +5,18 @@
   pkgs,
   inputs,
   ...
-}: {
+}: let
+  global_const = import ../../global_constants.nix;
+in {
   imports = [
-    # Include the results of the hardware scan.
+    inputs.home-manager.nixosModules.default
     ./hardware-configuration.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
+    ./../../modules/prometheus_exporter.nix
   ];
 
   networking = {
@@ -26,40 +29,19 @@
   boot.kernel.sysctl."ipv6.conf.all.forwarding" = 1;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.magewe = {
+  users.users.${global_const.username} = {
     isNormalUser = true;
-    description = "magewe";
+    description = "${global_const.username}";
     extraGroups = ["networkmanager" "wheel"];
     packages = [];
     shell = pkgs.nushell;
   };
 
-  services = {
-    prometheus = {
-      exporters = {
-        node = {
-          enable = true;
-          enabledCollectors = ["systemd"];
-          port = 9002;
-        };
-      };
-    };
-    nfs.server = {
-      enable = true;
-      exports = ''
-        /home/magewe/temp_nfs_dir/  169.254.51.104(rw,sync,no_subtree_check)
-      '';
-    };
-  };
-  networking.firewall.allowedTCPPorts = [
-    2049 # nfs
-  ];
-
   home-manager = {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "magewe" = import ./../../home/home.nix;
+      "${global_const.username}" = import ./../../home/superserver.nix;
     };
   };
 

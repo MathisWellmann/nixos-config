@@ -49,10 +49,6 @@ in {
     };
     nameservers = [
       "${static_ips.elitedesk_ip}"
-      # "192.168.0.10"
-      # "1.1.1.1"
-      # "8.8.8.8"
-      # "9.9.9.9"
     ];
 
     interfaces = {

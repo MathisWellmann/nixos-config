@@ -14,7 +14,6 @@
   global_const = import ../../global_constants.nix;
 in {
   imports = [
-    # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
     ./../../modules/bash_aliases.nix

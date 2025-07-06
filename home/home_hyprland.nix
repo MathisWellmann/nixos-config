@@ -75,7 +75,7 @@
     tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
     tlaplusToolbox
-    redisinsight
+    # redisinsight
     mongodb-compass
   ];
 
