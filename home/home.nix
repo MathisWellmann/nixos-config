@@ -305,6 +305,7 @@ in {
 
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin) |
+          append ($env.HOME| path join .npm-global/bin) |
           append ($env.HOME| path join .pub-cache/bin));
       '';
     };
