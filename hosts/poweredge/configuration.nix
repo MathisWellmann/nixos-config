@@ -20,7 +20,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/harmonia_cache.nix
     ./../../modules/monero.nix
-    ./../../modules/monero_miner.nix
+    # ./../../modules/monero_miner.nix
     ./../../modules/searx.nix
     ./freshrss.nix
     ./firefly.nix
@@ -115,7 +115,7 @@ in {
         "music"
         "series"
         "movies"
-        "magewe"
+        # "magewe"
         "torrents_transmission"
         "pdfs"
       ];
@@ -520,6 +520,16 @@ in {
   };
   fileSystems."/mnt/desg0_ilka" = {
     device = "${static_ips.desg0_ip}:/nvme_pool/ilka";
+    fsType = "nfs";
+    options = ["rw" "rsize=131072" "wsize=131072"];
+  };
+  fileSystems."/mnt/elitedesk_movies" = {
+    device = "${static_ips.elitedesk_ip}:/mnt/external_hdd/movies";
+    fsType = "nfs";
+    options = ["rw" "rsize=131072" "wsize=131072"];
+  };
+  fileSystems."/mnt/elitedesk_series" = {
+    device = "${static_ips.elitedesk_ip}:/mnt/external_hdd/series";
     fsType = "nfs";
     options = ["rw" "rsize=131072" "wsize=131072"];
   };
