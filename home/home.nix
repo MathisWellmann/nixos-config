@@ -12,11 +12,12 @@
     };
     vendorHash = "sha256-FIaGChSMHufD+OE9ZP/fgI8TAtVdw/JCuhMAm4vMn/w=";
   };
+  const = import ../global_constants.nix;
 in {
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
-  home.username = "magewe";
-  home.homeDirectory = "/home/magewe";
+  home.username = "${const.username}";
+  home.homeDirectory = "/home/${const.username}";
   # This value determines the Home Manager release that your configuration is
   # compatible with. This helps avoid breakage when a new Home Manager release
   # introduces backwards incompatible changes.

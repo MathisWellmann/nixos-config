@@ -1,4 +1,7 @@
-{...}: {
+{...}:
+let
+  const = import ../global_constants.nix;
+  in {
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -27,7 +30,7 @@
   '';
 
   nix.settings.experimental-features = ["nix-command" "flakes"];
-  nix.settings.trusted-users = ["root" "magewe"];
+  nix.settings.trusted-users = ["root" "${const.username}"];
 
   system.switch = {
     enable = true;

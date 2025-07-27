@@ -144,13 +144,13 @@ in {
       ];
       exports_for_meshify =
         lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")
-        common_dirs;
+        (common_dirs);
       exports_for_poweredge =
         lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " ${static_ips.poweredge_ip}(rw,sync,no_subtree_check)\n")
-        common_dirs;
+        (common_dirs);
       exports_for_razerblade =
         lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " ${razerblade_addr}(rw,sync,no_subtree_check)\n")
-        common_dirs;
+        (common_dirs);
     in {
       enable = true;
       exports = lib.strings.concatStrings [

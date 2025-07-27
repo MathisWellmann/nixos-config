@@ -11,7 +11,6 @@
   username = "magewe";
   open-webui_port = 8080;
   metastable_port = 4000;
-  static_ips = import ../../modules/static_ips.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -124,6 +123,7 @@ in {
       };
     };
   };
+  programs.npm.enable = true;
 
   services.open-webui = {
     enable = true;
@@ -148,16 +148,5 @@ in {
   programs.nix-ld = {
     enable = true;
     libraries = [];
-  };
-
-  fileSystems."/mnt/elitedesk_series" = {
-    device = "${static_ips.elitedesk_ip}:/external_hdd/series";
-    fsType = "nfs";
-    options = ["rw" "rsize=131072" "wsize=131072"];
-  };
-  fileSystems."/mnt/elitedesk_movies" = {
-    device = "${static_ips.elitedesk_ip}:/external_hdd/movies";
-    fsType = "nfs";
-    options = ["rw" "rsize=131072" "wsize=131072"];
   };
 }
