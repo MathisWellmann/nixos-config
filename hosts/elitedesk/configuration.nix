@@ -108,9 +108,15 @@ in {
         };
       };
     };
+    jellyfin = {
+      # Runs on port 8096
+      enable = true;
+      openFirewall = true;
+    };
   };
   networking.firewall.allowedTCPPorts = [
     2049 # NFS
+    8096 # Jellyfin
     const.grafana_port
   ];
 }
