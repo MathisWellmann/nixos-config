@@ -1,26 +1,28 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ inputs, pkgs, lib, ... }:
-let
+{
+  inputs,
+  pkgs,
+  lib,
+  ...
+}: let
   global_const = import ../../global_constants.nix;
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
-in
-{
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      inputs.home-manager.nixosModules.default
-      ./../../modules/bash_aliases.nix
-      ./../../modules/german_locale.nix
-      ./../../modules/root_pkgs.nix
-      ./../../modules/base_system.nix
-      ./../../modules/monero.nix
-      ./../../modules/adguardhome.nix
-      ./prometheus.nix
-    ];
+in {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+    inputs.home-manager.nixosModules.default
+    ./../../modules/bash_aliases.nix
+    ./../../modules/german_locale.nix
+    ./../../modules/root_pkgs.nix
+    ./../../modules/base_system.nix
+    ./../../modules/monero.nix
+    ./../../modules/adguardhome.nix
+    ./prometheus.nix
+  ];
 
   networking.hostName = "elitedesk"; # Define your hostname.
 
@@ -28,7 +30,7 @@ in
   users.users.${global_const.username} = {
     isNormalUser = true;
     description = "${global_const.username}";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     packages = [];
     shell = pkgs.nushell;
   };
@@ -107,8 +109,8 @@ in
       };
     };
   };
-    networking.firewall.allowedTCPPorts = [
-      2049 # NFS
-      const.grafana_port
-    ];
+  networking.firewall.allowedTCPPorts = [
+    2049 # NFS
+    const.grafana_port
+  ];
 }

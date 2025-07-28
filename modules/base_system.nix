@@ -1,7 +1,6 @@
-{...}:
-let
+{...}: let
   const = import ../global_constants.nix;
-  in {
+in {
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
