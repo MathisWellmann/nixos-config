@@ -153,19 +153,19 @@ in {
           args = ["serve"];
         };
         language-server.lsp-ai = let
-          max_context = 4096;
+          max_context = 128000;
         in {
           command = "lsp-ai";
           environment = {LSP_AI_LOG = "debug";};
           timeout = 60;
           config = {
             memory.file_store = {};
-            models.gemma3 = {
+            models.qwen3coder= {
               type = "ollama";
-              model = "gemma3:12b";
+              model = "qwen3-coder:30b";
             };
             completion = {
-              model = "gemma3";
+              model = "qwen3-coder";
               parameters = {
                 max_context = max_context;
                 options.num_predict = 32;
@@ -174,8 +174,8 @@ in {
             chat = [
               {
                 trigger = "!C";
-                action_display_name = "chat_gemma3:12b";
-                model = "gemma3";
+                action_display_name = "qwen3-coder:30b";
+                model = "qwen3coder";
                 parameters = {
                   max_context = max_context;
                   max_tokens = 4096;
