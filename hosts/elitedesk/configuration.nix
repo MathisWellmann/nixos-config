@@ -22,6 +22,7 @@ in {
     ./../../modules/monero.nix
     ./../../modules/adguardhome.nix
     ./prometheus.nix
+    ./homer_dashboard.nix
   ];
 
   networking.hostName = "elitedesk"; # Define your hostname.
@@ -116,7 +117,7 @@ in {
   };
   networking.firewall.allowedTCPPorts = [
     2049 # NFS
-    8096 # Jellyfin
+    const.jellyfin_port
     const.grafana_port
   ];
 }
