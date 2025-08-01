@@ -16,8 +16,9 @@
     # ladybird
     floorp
     keepassxc
-    gthumb # Image viewer with support for ARW files
-    geeqie # Better image viewer
+    # Both are disablede because they require `libsoup` which was marked as insecure.
+    # gthumb # Image viewer with support for ARW files
+    # geeqie # Better image viewer
     zathura # PDF reader
     qbittorrent
     nemo
