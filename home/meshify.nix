@@ -1,4 +1,7 @@
-{...}: {
+{...}:
+let
+  global_const = import ../global_constants.nix;
+  in {
   imports = [
     ./home_hyprland.nix
     ./games.nix
@@ -31,17 +34,17 @@
       splash_offset = 2.0;
       preload = [
         # "/home/magewe/acapulco_wallpaper.jxl"
-        "/home/magewe/acapulco_wallpaper_0.jxl"
-        "/home/magewe/acapulco_wallpaper_1.jxl"
-        "/home/magewe/acapulco_wallpaper_2.jxl"
+        "/home/${global_const.username}/acapulco_wallpaper_0.jxl"
+        "/home/${global_const.username}/acapulco_wallpaper_1.jxl"
+        "/home/${global_const.username}/acapulco_wallpaper_2.jxl"
       ];
       # Convert single image into slices using `imagemagick`:
       # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
       wallpaper = [
-        "DP-5,/home/magewe/acapulco_wallpaper_0.jxl"
-        "DP-4,/home/magewe/acapulco_wallpaper_1.jxl"
-        "DP-3,/home/magewe/acapulco_wallpaper_2.jxl"
-        "HDMI-A-5,/home/magewe/acapulco_wallpaper.jxl"
+        "DP-5,/home/${global_const.username}/acapulco_wallpaper_0.jxl"
+        "DP-4,/home/${global_const.username}/acapulco_wallpaper_1.jxl"
+        "DP-3,/home/${global_const.username}/acapulco_wallpaper_2.jxl"
+        "HDMI-A-5,/home/${global_const.username}/acapulco_wallpaper.jxl"
       ];
     };
   };

@@ -4,13 +4,14 @@
 {
   pkgs,
   inputs,
-  config,
   ...
 }: let
   hostname = "meshify";
-  username = "magewe";
+  # TODO: move to `constants.nix`
   open-webui_port = 8080;
   metastable_port = 4000;
+  static_ips = import ../../modules/static_ips.nix;
+  global_const = import ../../global_constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -36,7 +37,7 @@ in {
 
   networking.nat.enable = true;
 
-  age.identityPaths = ["${config.users.users.magewe.home}/.ssh/magewe_meshify"];
+  age.identityPaths = ["/home/${global_const.username}/.ssh/magewe_meshify"];
 
   networking.hostName = "${hostname}";
 
@@ -48,9 +49,9 @@ in {
 
   # TODO: extract to own module and use on all hosts
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.magewe = {
+  users.users.${global_const.username} = {
     isNormalUser = true;
-    description = "${username}";
+    description = "${global_const.username}";
     extraGroups = [
       "networkmanager"
       "wheel"
@@ -63,17 +64,11 @@ in {
 
   virtualisation.docker.enable = true;
 
-  # Open ports in the firewall.
-  networking.firewall.allowedTCPPorts = [
-    8231 # Tikr
-  ];
-  networking.nameservers = ["192.168.0.75"];
-
   home-manager = {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${username}" = import ./../../home/${hostname}.nix;
+      "${global_const.username}" = import ./../../home/${hostname}.nix;
     };
   };
 
@@ -87,7 +82,7 @@ in {
 
   services.backup_home_to_remote = {
     enable = true;
-    local_username = "${username}";
+    local_username = "${global_const.username}";
     backup_host_addr = "poweredge";
     backup_host_name = "poweredge";
     backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
@@ -149,4 +144,17 @@ in {
     enable = true;
     libraries = [];
   };
+
+  fileSystems."/mnt/elitedesk_series" = {
+    device = "${static_ips.elitedesk_ip}:/external_hdd/series";
+    fsType = "nfs";
+    options = ["rw" "rsize=131072" "wsize=131072"];
+  };
+  fileSystems."/mnt/elitedesk_movies" = {
+    device = "${static_ips.elitedesk_ip}:/external_hdd/movies";
+    fsType = "nfs";
+    options = ["rw" "rsize=131072" "wsize=131072"];
+  };
+
+  services.freenet.enable = true;
 }

@@ -1,6 +1,8 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  global_const = import ../global_constants.nix;
+  in {
   programs.virt-manager.enable = true;
-  users.groups.libvirtd.members = ["magewe"];
+  users.groups.libvirtd.members = ["${global_const.username}"];
   virtualisation = {
     libvirtd = {
       enable = true;
@@ -22,5 +24,5 @@
     };
     spiceUSBRedirection.enable = true;
   };
-  users.users.magewe.extraGroups = ["libvirtd"];
+  users.users.${global_const.username}.extraGroups = ["libvirtd"];
 }
