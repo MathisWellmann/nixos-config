@@ -9,6 +9,7 @@
   ...
 }: let
   const = import ./constants.nix;
+  global_const = import ../../global_constants.nix;
   static_ips = import ./../../modules/static_ips.nix;
 in {
   imports = [
@@ -25,14 +26,13 @@ in {
     ./freshrss.nix
     ./firefly.nix
     ./mafl.nix
-    ./prometheus.nix
     # ./../../modules/nats_cluster.nix
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users."${const.username}" = {
+  users.users."${global_const.username}" = {
     isNormalUser = true;
-    description = "${const.username}";
+    description = "${global_const.username}";
     extraGroups = ["wheel" "docker"];
     shell = pkgs.nushell;
     packages = with pkgs; [
@@ -44,7 +44,7 @@ in {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${const.username}" = import ./../../home/home.nix;
+      "${global_const.username}" = import ./../../home/home.nix;
     };
   };
 
@@ -88,7 +88,6 @@ in {
       const.gitea_port
       const.grafana_port
       const.mafl_port
-      const.homer_port
       const.mealie_port
       const.mongodb_port
       const.uptime_kuma_port
@@ -138,11 +137,6 @@ in {
         };
       };
     };
-    jellyfin = {
-      # Runs on port 8096
-      enable = true;
-      openFirewall = true;
-    };
     # tikr = {
     #   enable = true;
     #   database = "GreptimeDb";
@@ -167,7 +161,7 @@ in {
       enable = true;
       appName = "MW-Trading-Systems";
       repositoryRoot = "/SATA_SSD_POOL/gitea";
-      user = "${const.username}";
+      user = "${global_const.username}";
       settings = {
         server = {
           HTTP_PORT = const.gitea_port;
@@ -307,59 +301,10 @@ in {
         PORT = "${builtins.toString const.uptime_kuma_port}";
       };
     };
-    adguardhome = {
-      enable = true;
-      openFirewall = true;
-      port = const.adguardhome_port;
-      settings = {
-        http = {
-          address = "${static_ips.poweredge_ip}:${const.adguardhome_port}";
-        };
-        dns = {
-          upstream_dns = [
-            "9.9.9.9#dns.quand9.net"
-            "1.1.1.1"
-            "8.8.8.8"
-          ];
-        };
-        filtering = {
-          protection_enabled = true;
-          filtering_enabled = true;
-          parental_enabled = false;
-        };
-        filters =
-          map (url: {
-            enabled = true;
-            url = url;
-          }) [
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_0.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_1.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_2.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_3.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_4.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_5.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_6.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_7.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_8.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_9.txt" # The Big List of Hacked Malware Web Sites
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_10.txt"
-            "https://adguardteam.github.io/HostlistsRegistry/assets/filter_11.txt" # malicious url blocklist
-          ];
-      };
-    };
   };
 
   ##### Containers #####
   virtualisation.oci-containers.containers = {
-    "homer" = {
-      image = "b4bz/homer";
-      ports = [
-        "${builtins.toString const.homer_port}:8080"
-      ];
-      volumes = [
-        "/SATA_SSD_POOL/homer:/www/assets"
-      ];
-    };
     "readeck" = {
       image = "codeberg.org/readeck/readeck:latest";
       ports = [
@@ -369,32 +314,6 @@ in {
         "/SATA_SSD_POOL/readeck:/readeck"
       ];
     };
-    # "greptimedb" = let
-    #   version = "v0.9.3";
-    # in {
-    #   image = "greptime/greptimedb:${version}";
-    #   cmd = [
-    #     "standalone"
-    #     "start"
-    #     "--http-addr"
-    #     "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
-    #     "--rpc-addr"
-    #     "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
-    #     "--mysql-addr"
-    #     "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
-    #     "--postgres-addr"
-    #     "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
-    #   ];
-    #   ports = [
-    #     "${builtins.toString const.greptimedb_http_port}:4000"
-    #     "${builtins.toString const.greptimedb_rpc_port}:4001"
-    #     "${builtins.toString const.greptimedb_mysql_port}:4002"
-    #     "${builtins.toString const.greptimedb_postgres_port}:4003"
-    #   ];
-    #   volumes = [
-    #     "/SATA_SSD_POOL/greptimedb:/tmp/greptimedb"
-    #   ];
-    # };
   };
 
   virtualisation.docker.enable = true;
@@ -415,7 +334,7 @@ in {
       passwordFile = "/etc/nixos/secrets/restic/password";
       repository = "/mnt/${const.backup_host}_backup/restic/SATA_SSD_POOL";
       pruneOpts = ["--keep-daily 14"];
-      user = "${const.username}";
+      user = "${global_const.username}";
     };
   };
   environment.systemPackages = with pkgs; [
@@ -470,12 +389,10 @@ in {
         gotosocial = "gotosocial";
         grafana = "grafana";
         immich = "immich-server";
-        jellyfin = "jellyfin";
         mealie = "mealie";
         monero = "monero";
         photoprism = "photoprism";
         greptimedb = "podman-greptimedb";
-        homer = "podman-homer";
         mafl = "podman-mafl";
         readeck = "podman-readeck";
         polaris = "polaris";
@@ -491,17 +408,10 @@ in {
   };
 
   # Nexus Databases
-  virtualisation.oci-containers.containers."dragonfly" = {
-    image = "docker.dragonflydb.io/dragonflydb/dragonfly";
-    ports = [
-      "${builtins.toString const.dragonfly_port}:6379"
-    ];
-    extraOptions = ["--ulimit" "memlock=-1"];
-  };
   services.mongodb = {
     enable = true;
     dbpath = "/SATA_SSD_POOL/mongodb";
-    user = "${const.username}";
+    user = "${global_const.username}";
     bind_ip = "0.0.0.0";
   };
   # Raise open file limits for mongodb.

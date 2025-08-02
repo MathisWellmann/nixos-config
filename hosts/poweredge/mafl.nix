@@ -27,13 +27,6 @@ in {
           link: http://${static_ips.meshify_ip}:${builtins.toString const_meshify.open_webui_port}
           tags:
             - ai
-        - title: Jellyfin
-          description: Movies and Series
-          link: http://${static_ips.poweredge_ip}:${builtins.toString const.jellyfin_port}
-          icon:
-            url: https://external-content.duckduckgo.com/iu/?u=https%3A%2F%2Fi.redd.it%2Fuybguvnj1p821.png&f=1&nofb=1&ipt=b317f7cc53b5d1b35a5e26f5cd58f7c8dbc72861b640c515e628bb3f41be1b25&ipo=images
-          tags:
-            - media
         - title: Polaris
           description: Music library
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.polaris_port}
@@ -100,9 +93,6 @@ in {
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.greptimedb_http_port}/dashboard;
           tags:
             - development
-        - title: AdguardHome
-          description: DNS with Ad blocking
-          link: http://${static_ips.poweredge_ip}:${builtins.toString const.adguardhome_port};
     '';
     config_file = pkgs.writeText "/SATA_SSD_POOL/mafl/config.yml" mafl_config;
   in {

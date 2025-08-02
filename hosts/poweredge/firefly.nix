@@ -1,5 +1,6 @@
 {...}: let
   const = import ./constants.nix;
+  global_const = import ../../global_constants.nix;
   virtHost = "firefly";
 in {
   services = {
@@ -20,7 +21,7 @@ in {
         # LOG_CHANNEL = "stack";
         # LOG_LEVEL = "info";
       };
-      user = const.username;
+      user = global_const.username;
     };
     nginx.virtualHosts.${virtHost} = {
       listen = [

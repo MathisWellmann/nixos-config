@@ -1,7 +1,6 @@
 {
   # Constants regarding the `poweredge` host.
   hostname = "poweredge";
-  username = "magewe";
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
   mafl_port = 80;
@@ -9,7 +8,6 @@
   gitea_port = 3000;
   gitea_state_dir = "/var/lib/gitea";
   grafana_port = 3001;
-  homer_port = 3003;
   readeck_port = 3004;
   mealie_port = 3005;
   gotosocial_port = 3006;
@@ -22,7 +20,6 @@
   searx_port = 3013;
   freshrss_port = 3014;
   firefly_port = 3015;
-  adguardhome_port = 3016;
   ncps_port = 3501;
   greptimedb_http_port = 4000;
   greptimedb_rpc_port = 4001;
@@ -31,9 +28,6 @@
   nats_port = 4222;
   harmonia_port = 5000;
   iperf_port = 5201;
-  jellyfin_port = 8096;
-  prometheus_port = 9001;
   tikr_base_port = 9184;
   mongodb_port = 27017;
-  dragonfly_port = 27018;
 }
