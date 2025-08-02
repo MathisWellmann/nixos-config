@@ -7,4 +7,5 @@
   greptimedb_mysql_port = 4002;
   greptimedb_postgres_port = 4003;
   iperf_port = 5201;
+  dragonfly_port = 27018;
 }
