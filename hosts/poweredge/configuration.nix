@@ -407,23 +407,6 @@ in {
     };
   };
 
-  # Nexus Databases
-  services.mongodb = {
-    enable = true;
-    dbpath = "/SATA_SSD_POOL/mongodb";
-    user = "${global_const.username}";
-    bind_ip = "0.0.0.0";
-  };
-  # Raise open file limits for mongodb.
-  security.pam.services.mongodb.limits = [
-    {
-      domain = "*";
-      type = "soft";
-      item = "nofile";
-      value = "1000000";
-    }
-  ];
-
   fileSystems."/mnt/desg0_magewe" = {
     device = "${static_ips.desg0_ip}:/nvme_pool/magewe";
     fsType = "nfs";

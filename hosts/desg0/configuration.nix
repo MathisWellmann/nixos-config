@@ -22,6 +22,7 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/local_ai.nix
+    ./nexus_dbs.nix
     inputs.home-manager.nixosModules.default
   ];
 
@@ -132,13 +133,6 @@ in {
     volumes = [
       "/nvme_pool/greptimedb:/greptimedb_data"
     ];
-  };
-  virtualisation.oci-containers.containers."dragonfly" = {
-    image = "docker.dragonflydb.io/dragonflydb/dragonfly";
-    ports = [
-      "${builtins.toString const.dragonfly_port}:6379"
-    ];
-    extraOptions = ["--ulimit" "memlock=-1"];
   };
 
   services = {
