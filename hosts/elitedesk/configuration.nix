@@ -64,7 +64,13 @@ in {
       };
       service_status = {
         tailscale = "tailscaled";
+        prometheus= "prometheus";
         prometheus-exporter = "prometheus-node-exporter";
+        grafana = "grafana";
+        adguardhome = "adguardhome";
+        jellyfin = "jellyfin";
+        nfs-server = "nfs-server";
+        monero = "monero";
       };
     };
   };
