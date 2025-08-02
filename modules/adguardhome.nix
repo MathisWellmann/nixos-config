@@ -8,7 +8,7 @@ in {
     port = const.adguardhome_port;
     settings = {
       http = {
-        address = "${static_ips.poweredge_ip}:${const.adguardhome_port}";
+        address = "${static_ips.elitedesk_ip}:${const.adguardhome_port}";
       };
       dns = {
         upstream_dns = [

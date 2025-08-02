@@ -1,4 +1,4 @@
-{...}: let
+{config, ...}: let
   static_ips = import ../../modules/static_ips.nix;
   const = import ./constants.nix;
   domain = "homer.homelab";
@@ -64,7 +64,7 @@ in {
                 subtitle = "DNS with ad blocking";
                 tag = "app";
                 keywords = "self hosted dns";
-                url = "http://${static_ips.elitedesk_ip}:${toString const.adguardhome_port}";
+                url = "http://${static_ips.elitedesk_ip}:${toString config.services.adguardhome.port}";
                 target = "_blank";
               }
             ];
