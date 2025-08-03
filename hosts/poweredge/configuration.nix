@@ -253,13 +253,14 @@ in {
       openFirewall = true;
       port = const.immich_port;
     };
-    photoprism = {
-      enable = true;
-      port = const.photoprism_port;
-      address = "0.0.0.0";
-      originalsPath = "/SATA_SSD_POOL/magewe/bilder";
-      passwordFile = "/etc/nixos/secrets/photoprism";
-    };
+    # Requires `libsoup` which is marked as insecure
+    # photoprism = {
+    #   enable = true;
+    #   port = const.photoprism_port;
+    #   address = "0.0.0.0";
+    #   originalsPath = "/SATA_SSD_POOL/magewe/bilder";
+    #   passwordFile = "/etc/nixos/secrets/photoprism";
+    # };
     cloudflared = {
       enable = true;
       tunnels."poweredge" = {
