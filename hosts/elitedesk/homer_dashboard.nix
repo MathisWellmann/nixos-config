@@ -50,6 +50,15 @@ in {
             items = [
               # Service in that group
               {
+                name = "Gitea";
+                logo = "assets/tools/gitea.png";
+                subtitle = "Git Server";
+                tag = "app";
+                keywords = "self hosted git";
+                url = "http://${static_ips.elitedesk_ip}:${toString const.gitea_port}";
+                target = "_blank";
+              }
+              {
                 name = "Grafana";
                 logo = "assets/tools/grafana.png";
                 subtitle = "Server observability";
