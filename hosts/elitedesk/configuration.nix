@@ -23,6 +23,7 @@ in {
     ./../../modules/adguardhome.nix
     ./prometheus.nix
     ./homer_dashboard.nix
+    ./gitea.nix
   ];
 
   networking.hostName = "elitedesk"; # Define your hostname.

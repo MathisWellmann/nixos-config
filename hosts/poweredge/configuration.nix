@@ -85,7 +85,6 @@ in {
       const.greptimedb_rpc_port
       const.greptimedb_mysql_port
       const.greptimedb_postgres_port
-      const.gitea_port
       const.grafana_port
       const.mafl_port
       const.mealie_port
@@ -155,48 +154,6 @@ in {
         inotify = "yes";
         port = 8200;
       };
-    };
-    # Self hosted Git
-    gitea = {
-      enable = true;
-      appName = "MW-Trading-Systems";
-      repositoryRoot = "/SATA_SSD_POOL/gitea";
-      user = "${global_const.username}";
-      settings = {
-        server = {
-          HTTP_PORT = const.gitea_port;
-          ROOT_URL = "http://${toString static_ips.poweredge_ip}:${toString const.gitea_port}";
-        };
-        mailer = {
-          ENABLED = true;
-          MAILER_TYPE = "sendmail";
-          FROM = "gitea@mwtradingsystems.com";
-          SENDMAIL_PATH = "${pkgs.system-sendmail}/bin/sendmail";
-        };
-      };
-      stateDir = "${const.gitea_state_dir}";
-    };
-    gitea-actions-runner.instances.${const.hostname} = {
-      enable = true;
-      name = "${const.hostname}";
-      labels = [
-        "nixos"
-        "poweredge"
-      ];
-      # put in `TOKEN= ...` with the token
-      tokenFile = /var/secrets/gitea-actions-runner;
-      url = config.services.gitea.settings.server.ROOT_URL;
-      hostPackages = with pkgs; [
-        bash
-        coreutils
-        curl
-        gawk
-        gitMinimal
-        gnused
-        nodejs
-        wget
-        nix
-      ];
     };
     calibre-web = {
       enable = true;

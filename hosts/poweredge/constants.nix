@@ -5,8 +5,6 @@
   backup_target_dir = "/mnt/backup_hdd";
   mafl_port = 80;
   nfs_port = 2049;
-  gitea_port = 3000;
-  gitea_state_dir = "/var/lib/gitea";
   grafana_port = 3001;
   readeck_port = 3004;
   mealie_port = 3005;
