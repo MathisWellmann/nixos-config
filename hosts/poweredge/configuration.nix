@@ -5,7 +5,6 @@
   lib,
   pkgs,
   inputs,
-  config,
   ...
 }: let
   const = import ./constants.nix;
@@ -35,9 +34,7 @@ in {
     description = "${global_const.username}";
     extraGroups = ["wheel" "docker"];
     shell = pkgs.nushell;
-    packages = with pkgs; [
-      gitea-actions-runner
-    ];
+    packages = [];
   };
 
   home-manager = {
@@ -287,7 +284,6 @@ in {
       initialize = true;
       paths = [
         "/SATA_SSD_POOL/*"
-        "${const.gitea_state_dir}"
       ];
       passwordFile = "/etc/nixos/secrets/restic/password";
       repository = "/mnt/${const.backup_host}_backup/restic/SATA_SSD_POOL";
@@ -297,7 +293,6 @@ in {
   };
   environment.systemPackages = with pkgs; [
     restic
-    gitea
     radicle-node
   ];
 
@@ -343,7 +338,6 @@ in {
         mnt-elitedesk_backup = "mnt-elitedesk_backup.mount";
         bitmagnet = "bitmagnet";
         calibre-web = "calibre-web";
-        gitea = "gitea";
         gotosocial = "gotosocial";
         grafana = "grafana";
         immich = "immich-server";

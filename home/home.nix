@@ -160,7 +160,7 @@ in {
           timeout = 60;
           config = {
             memory.file_store = {};
-            models.qwen3coder= {
+            models.qwen3coder = {
               type = "ollama";
               model = "qwen3-coder:30b";
             };

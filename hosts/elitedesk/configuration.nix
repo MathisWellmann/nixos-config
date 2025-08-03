@@ -65,7 +65,7 @@ in {
       };
       service_status = {
         tailscale = "tailscaled";
-        prometheus= "prometheus";
+        prometheus = "prometheus";
         prometheus-exporter = "prometheus-node-exporter";
         grafana = "grafana";
         adguardhome = "adguardhome";

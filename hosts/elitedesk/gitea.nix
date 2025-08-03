@@ -1,8 +1,12 @@
-{pkgs, config, ...}: let
+{
+  pkgs,
+  config,
+  ...
+}: let
   const = import ./constants.nix;
   global_const = import ../../global_constants.nix;
   static_ips = import ../../modules/static_ips.nix;
-  in {
+in {
   services = {
     gitea = {
       enable = true;

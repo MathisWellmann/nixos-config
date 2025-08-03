@@ -37,11 +37,6 @@ in {
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.bitmagnet_port}
           tags:
             - media
-        - title: Gitea
-          description: My Git Server
-          link: http://${static_ips.poweredge_ip}:${builtins.toString const.gitea_port}
-          tags:
-            - development
         - title: Grafana
           description: Server Monitoring Dashboard
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.grafana_port}

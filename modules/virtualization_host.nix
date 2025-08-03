@@ -1,6 +1,6 @@
 {pkgs, ...}: let
   global_const = import ../global_constants.nix;
-  in {
+in {
   programs.virt-manager.enable = true;
   users.groups.libvirtd.members = ["${global_const.username}"];
   virtualisation = {

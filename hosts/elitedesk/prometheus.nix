@@ -1,7 +1,4 @@
-{
-  config,
-  ...
-}: let
+{config, ...}: let
   const = import ./constants.nix;
 in {
   services. prometheus = let
