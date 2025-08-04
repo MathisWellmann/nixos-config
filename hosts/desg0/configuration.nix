@@ -108,33 +108,6 @@ in {
     const.iperf_port
   ];
 
-  virtualisation.oci-containers.containers."greptimedb" = let
-    version = "v0.15.1";
-  in {
-    image = "greptime/greptimedb:${version}";
-    cmd = [
-      "standalone"
-      "start"
-      "--http-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
-      "--rpc-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
-      "--mysql-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
-      "--postgres-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
-    ];
-    ports = [
-      "${builtins.toString const.greptimedb_http_port}:${builtins.toString const.greptimedb_http_port}"
-      "${builtins.toString const.greptimedb_rpc_port}:${builtins.toString const.greptimedb_rpc_port}"
-      "${builtins.toString const.greptimedb_mysql_port}:${builtins.toString const.greptimedb_mysql_port}"
-      "${builtins.toString const.greptimedb_postgres_port}:${builtins.toString const.greptimedb_postgres_port}"
-    ];
-    volumes = [
-      "/nvme_pool/greptimedb:/greptimedb_data"
-    ];
-  };
-
   services = {
     nfs.server = let
       meshify_addr = "meshify";
