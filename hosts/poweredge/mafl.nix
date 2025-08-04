@@ -73,11 +73,6 @@ in {
         - title: SearXNG
           description: Local meta search engine
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.searx_port};
-        - title: FreshRSS
-          description: RSS Feed reader
-          link: http://${static_ips.poweredge_ip}:${builtins.toString const.freshrss_port};
-          tags:
-            - media
         - title: Firefly-III
           description: Personal Finance Manager
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.firefly_port};
