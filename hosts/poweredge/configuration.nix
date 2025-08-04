@@ -78,10 +78,6 @@ in {
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
       2049 # nfs
-      const.greptimedb_http_port
-      const.greptimedb_rpc_port
-      const.greptimedb_mysql_port
-      const.greptimedb_postgres_port
       const.grafana_port
       const.mafl_port
       const.mealie_port

@@ -78,11 +78,6 @@ in {
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.firefly_port};
           tags:
             - finance
-        - title: GreptimeDB Dashboard
-          description: Database for Nexus Trading Systems
-          link: http://${static_ips.poweredge_ip}:${builtins.toString const.greptimedb_http_port}/dashboard;
-          tags:
-            - development
     '';
     config_file = pkgs.writeText "/SATA_SSD_POOL/mafl/config.yml" mafl_config;
   in {
