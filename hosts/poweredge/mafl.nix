@@ -65,11 +65,6 @@ in {
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.calibre_port}
           tags:
             - media
-        - title: UptimeKuma
-          description: Check uptime of my websites
-          link: http://${static_ips.poweredge_ip}:${builtins.toString const.uptime_kuma_port}
-          tags:
-            - observability
         - title: SearXNG
           description: Local meta search engine
           link: http://${static_ips.poweredge_ip}:${builtins.toString const.searx_port};

@@ -81,7 +81,6 @@ in {
       const.mafl_port
       const.mealie_port
       const.mongodb_port
-      const.uptime_kuma_port
       const.nats_port
       const.searx_port
     ];
