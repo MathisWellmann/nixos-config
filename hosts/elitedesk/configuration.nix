@@ -24,6 +24,7 @@ in {
     ./prometheus.nix
     ./homer_dashboard.nix
     ./gitea.nix
+    ./freshrss.nix
   ];
 
   networking.hostName = "elitedesk"; # Define your hostname.

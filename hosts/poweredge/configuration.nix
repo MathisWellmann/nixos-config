@@ -22,7 +22,6 @@ in {
     ./../../modules/monero.nix
     # ./../../modules/monero_miner.nix
     ./../../modules/searx.nix
-    ./freshrss.nix
     ./firefly.nix
     ./mafl.nix
     # ./../../modules/nats_cluster.nix

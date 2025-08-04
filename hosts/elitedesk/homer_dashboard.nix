@@ -92,6 +92,15 @@ in {
                 url = "http://${static_ips.elitedesk_ip}:${toString const.jellyfin_port}";
                 target = "_blank";
               }
+              {
+                name = "FreshRss";
+                logo = "assets/tools/freshrss.png";
+                subtitle = "RSS aggregator";
+                tag = "app";
+                keywords = "self hosted rss";
+                url = "http://${static_ips.elitedesk_ip}:${toString const.freshrss_port}";
+                target = "_blank";
+              }
             ];
           }
         ];

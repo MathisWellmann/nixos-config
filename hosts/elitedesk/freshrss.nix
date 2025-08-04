@@ -7,7 +7,7 @@ in {
       enable = true;
       authType = "none";
       baseUrl = "0.0.0.0";
-      dataDir = "/SATA_SSD_POOL/freshrss";
+      dataDir = "/var/lib/freshrss";
       virtualHost = virtHost;
     };
     nginx.virtualHosts.${virtHost} = {
@@ -19,4 +19,7 @@ in {
       ];
     };
   };
+  networking.firewall.allowedTCPPorts = [
+    const.freshrss_port
+  ];
 }
