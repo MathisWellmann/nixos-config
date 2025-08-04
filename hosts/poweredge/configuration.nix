@@ -78,7 +78,6 @@ in {
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
       2049 # nfs
-      const.grafana_port
       const.mafl_port
       const.mealie_port
       const.mongodb_port
@@ -118,16 +117,6 @@ in {
     in {
       enable = true;
       exports = lib.strings.concatStrings [exports_for_meshify exports_for_razerblade];
-    };
-    grafana = {
-      enable = true;
-      settings = {
-        server = {
-          # Listening Address
-          http_addr = "0.0.0.0";
-          http_port = const.grafana_port;
-        };
-      };
     };
     # tikr = {
     #   enable = true;
