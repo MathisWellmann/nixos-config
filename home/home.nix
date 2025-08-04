@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
+{pkgs, ...}: let
   # Tool for cloning all starred github repos
   solar = pkgs.buildGoModule {
     name = "solar";
@@ -14,6 +10,10 @@
   };
   const = import ../global_constants.nix;
 in {
+  imports = [
+    ./helix.nix
+  ];
+
   # Home Manager needs a bit of information about you and the paths it should
   # manage.
   home.username = "${const.username}";
@@ -144,95 +144,6 @@ in {
   in {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
-    helix = {
-      enable = true;
-      package = inputs.helix;
-      languages = {
-        language-server.codebook = {
-          command = "codebook-lsp";
-          args = ["serve"];
-        };
-        language-server.lsp-ai = let
-          max_context = 128000;
-        in {
-          command = "lsp-ai";
-          environment = {LSP_AI_LOG = "debug";};
-          timeout = 60;
-          config = {
-            memory.file_store = {};
-            models.qwen3coder = {
-              type = "ollama";
-              model = "qwen3-coder:30b";
-            };
-            completion = {
-              model = "qwen3-coder";
-              parameters = {
-                max_context = max_context;
-                options.num_predict = 32;
-              };
-            };
-            chat = [
-              {
-                trigger = "!C";
-                action_display_name = "qwen3-coder:30b";
-                model = "qwen3coder";
-                parameters = {
-                  max_context = max_context;
-                  max_tokens = 4096;
-                  messages = [
-                    {
-                      role = "system";
-                      content = "You are a rust code assistant chatbot. You will give expertly responses and follow best rust coding practices.";
-                    }
-                  ];
-                };
-              }
-            ];
-          };
-        };
-        language = [
-          {
-            name = "rust";
-            language-servers = ["rust-analyzer" "codebook" "lsp-ai"];
-          }
-        ];
-      };
-      settings = {
-        theme = "gruvbox"; # Dark
-        # theme = "onelight";
-        editor = {
-          scroll-lines = 1;
-          cursorline = true;
-          auto-save = false;
-          completion-trigger-len = 1;
-          true-color = true;
-          auto-pairs = true;
-          rulers = [120];
-          idle-timeout = 0;
-          bufferline = "always";
-          cursor-shape = {
-            insert = "bar";
-            normal = "block";
-            select = "underline";
-          };
-          lsp = {
-            display-messages = true;
-            display-inlay-hints = false;
-          };
-          statusline = {
-            left = ["mode" "spinner" "file-name" "file-type" "total-line-numbers" "file-encoding"];
-            center = [];
-            right = ["selections" "primary-selection-length" "position" "position-percentage" "spacer" "diagnostics" "workspace-diagnostics" "version-control"];
-          };
-          # Minimum severity to show a diagnostic after the end of a line.
-          end-of-line-diagnostics = "hint";
-          inline-diagnostics = {
-            cursor-line = "error";
-          };
-          file-picker.hidden = false; # Don't hide hidden files
-        };
-      };
-    };
     git = {
       enable = true;
       userName = "${me}";
@@ -274,9 +185,6 @@ in {
         bright = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -A 10";
         dim = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -U 10";
 
-        # Find all the TODO comments in my codebases
-        todos = "${pkgs.ripgrep} --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
-
         # Cargo
         udeps = "cargo +nightly udeps --all-targets";
         fmt = "cargo +nightly fmt --all";
@@ -303,6 +211,8 @@ in {
         # using the `fd` command to respect `.gitignore`
         def shx [] { fd --type f --strip-cwd-prefix | sk | xargs hx };
         def fhx [] { fd --type f --strip-cwd-prefix | fzf | xargs hx };
+        # Find all the TODO comments in my codebases
+        def todos [] { ${pkgs.ripgrep} --glob='*.{rs,nix,typst}' --line-number --color=always TODO | lines };
 
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin) |
