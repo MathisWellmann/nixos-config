@@ -14,7 +14,6 @@
   bitmagnet_port = 3009;
   polaris_port = 3010;
   calibre_port = 3011;
-  uptime_kuma_port = 3012;
   searx_port = 3013;
   firefly_port = 3015;
   ncps_port = 3501;

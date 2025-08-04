@@ -245,13 +245,6 @@ in {
         grpcURL = "http://127.0.0.1:${builtins.toString const.prometheus_port}";
       };
     };
-    uptime-kuma = {
-      enable = true;
-      settings = {
-        UPTIME_KUMA_HOST = "0.0.0.0";
-        PORT = "${builtins.toString const.uptime_kuma_port}";
-      };
-    };
   };
 
   ##### Containers #####

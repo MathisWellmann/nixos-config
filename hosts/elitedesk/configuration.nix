@@ -122,10 +122,18 @@ in {
       enable = true;
       openFirewall = true;
     };
+    uptime-kuma = {
+      enable = true;
+      settings = {
+        UPTIME_KUMA_HOST = "0.0.0.0";
+        PORT = "${builtins.toString const.uptime_kuma_port}";
+      };
+    };
   };
   networking.firewall.allowedTCPPorts = [
     2049 # NFS
     const.jellyfin_port
     const.grafana_port
+    const.uptime_kuma_port
   ];
 }

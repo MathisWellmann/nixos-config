@@ -1,6 +1,7 @@
 {config, ...}: let
   static_ips = import ../../modules/static_ips.nix;
   const = import ./constants.nix;
+  desg0_const = import ../desg0/constants.nix;
   domain = "homer.homelab";
 in {
   services = {
@@ -74,6 +75,24 @@ in {
                 tag = "app";
                 keywords = "self hosted dns";
                 url = "http://${static_ips.elitedesk_ip}:${toString config.services.adguardhome.port}";
+                target = "_blank";
+              }
+              {
+                name = "GreptimeDB Dashboard";
+                logo = "assets/tools/default.png";
+                subtitle = "Dashboard for GreptimeDB";
+                tag = "app";
+                keywords = "self hosted dns";
+                url = "http://${static_ips.desg0_ip}:${toString desg0_const.greptimedb_http_port}";
+                target = "_blank";
+              }
+              {
+                name = "Uptime Kuma";
+                logo = "assets/tools/default.png";
+                subtitle = "Uptime monitoring";
+                tag = "app";
+                keywords = "self hosted uptime";
+                url = "http://${static_ips.elitedesk_ip}:${toString const.uptime_kuma_port}";
                 target = "_blank";
               }
             ];
