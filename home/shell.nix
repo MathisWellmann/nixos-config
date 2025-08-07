@@ -37,8 +37,8 @@
         };
 
         # using the `fd` command to respect `.gitignore`
-        def shx [] { ${pkgs.fd} --type f --strip-cwd-prefix | sk | xargs hx };
-        def fhx [] { ${pkgs.fd} --type f --strip-cwd-prefix | fzf | xargs hx };
+        def shx [] { ${pkgs.fd}/bin/fd --type f --strip-cwd-prefix | ${pkgs.skim}/bin/sk | xargs ${pkgs.helix}/bin/hx };
+        def fhx [] { ${pkgs.fd}/bin/fd --type f --strip-cwd-prefix | ${pkgs.fzf}/bin/fzf | xargs ${pkgs.helix}/bin/hx };
 
         # Find all the TODO comments in my codebases
         def todo [] { ${pkgs.ripgrep}/bin/rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO | lines };
