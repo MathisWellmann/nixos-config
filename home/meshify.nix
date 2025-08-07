@@ -16,11 +16,9 @@ in {
       ];
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
-        # Triple Vertical
-        # "DP-5, preferred, 0x1080, 1, transform, 1"
-        "DP-4, 3840x2160@159, 2160x1080, 1, transform, 1"
-        "DP-3, 3840x2160@159, 4320x1080, 1, transform, 1"
         "HDMI-A-5, 3840x216060, 0x0, 1"
+        "DP-4, 3840x2160@159, 3840x0, 1, transform, 1"
+        "DP-3, 3840x2160@159, 6000x0, 1, transform, 1"
       ];
       cursor.no_hardware_cursors = true;
     };
