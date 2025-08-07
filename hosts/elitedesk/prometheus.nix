@@ -1,5 +1,7 @@
 {config, ...}: let
   const = import ./constants.nix;
+  static_ips = import ../../modules/static_ips.nix;
+  desg0_const = import ../desg0/constants.nix;
 in {
   services. prometheus = let
     node_scrape_configs = map (host: {
@@ -63,22 +65,10 @@ in {
       node_scrape_configs
       # ++ tikr_scrape_configs
       ++ [
-        {
-          job_name = "postgres-greptimedb";
-          static_configs = [
-            {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.postgres.port}"];}
-          ];
-        }
         # {
         #   job_name = "zfs";
         #   static_configs = [
         #     {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
-        #   ];
-        # }
-        # {
-        #   job_name = "mongodb";
-        #   static_configs = [
-        #     {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.mongodb.port}"];}
         #   ];
         # }
         # {
@@ -87,12 +77,24 @@ in {
         #     {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.restic.port}"];}
         #   ];
         # }
-        # {
-        #   job_name = "dragonflydb";
-        #   static_configs = [
-        #     {targets = ["${static_ips.poweredge_ip}:${toString const.dragonfly_port}"];}
-        #   ];
-        # }
+        {
+          job_name = "postgres-greptimedb";
+          static_configs = [
+            {targets = ["${static_ips.desg0_ip}:${toString desg0_const.greptimedb_postgres_port}"];}
+          ];
+        }
+        {
+          job_name = "mongodb";
+          static_configs = [
+            {targets = ["${static_ips.desg0_ip}:${toString desg0_const.mongodb_port}"];}
+          ];
+        }
+        {
+          job_name = "dragonflydb";
+          static_configs = [
+            {targets = ["${static_ips.desg0_ip}:${toString desg0_const.dragonfly_port}"];}
+          ];
+        }
       ];
   };
 }
