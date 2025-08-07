@@ -10,6 +10,8 @@
         bright = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -A 10";
         dim = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -U 10";
 
+        todos = "rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
+
         # Cargo
         udeps = "cargo +nightly udeps --all-targets";
         fmt = "cargo +nightly fmt --all";
@@ -33,11 +35,13 @@
         $env.config = {
           show_banner: false,
         };
+
         # using the `fd` command to respect `.gitignore`
-        def shx [] { fd --type f --strip-cwd-prefix | sk | xargs hx };
-        def fhx [] { fd --type f --strip-cwd-prefix | fzf | xargs hx };
+        def shx [] { ${pkgs.fd} --type f --strip-cwd-prefix | sk | xargs hx };
+        def fhx [] { ${pkgs.fd} --type f --strip-cwd-prefix | fzf | xargs hx };
+
         # Find all the TODO comments in my codebases
-        def todos [] { ${pkgs.ripgrep} --glob='*.{rs,nix,typst}' --line-number --color=always TODO | lines };
+        def todo [] { ${pkgs.ripgrep}/bin/rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO | lines };
 
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin) |

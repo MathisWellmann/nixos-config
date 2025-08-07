@@ -64,6 +64,7 @@ in {
 
   virtualisation.docker.enable = true;
 
+  # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
   home-manager = {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
