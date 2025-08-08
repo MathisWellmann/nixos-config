@@ -1,16 +1,15 @@
 {
   pkgs,
-  config,
   ...
 }: {
   imports = [
     ./desktop_common.nix
   ];
   hardware.nvidia = {
-    open = false;
+    open = true;
     modesetting.enable = true;
     nvidiaSettings = true;
-    package = config.boot.kernelPackages.nvidiaPackages.stable;
+    # package = config.boot.kernelPackages.nvidiaPackages.stable;
   };
 
   services.xserver.videoDrivers = ["nvidia"];

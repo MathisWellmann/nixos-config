@@ -52,7 +52,7 @@
       ];
     };
     settings = {
-      theme = "gruvbox"; # Dark
+      theme = "autumn"; # Dark
       # theme = "onelight";
       editor = {
         scroll-lines = 1;
