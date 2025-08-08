@@ -2,11 +2,12 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
-  pkgs,
   inputs,
+  pkgs,
   ...
 }: let
   global_const = import ../../global_constants.nix;
+  hostname = "superserver";
 in {
   imports = [
     inputs.home-manager.nixosModules.default
@@ -19,29 +20,31 @@ in {
     ./../../modules/prometheus_exporter.nix
   ];
 
-  networking = {
-    hostName = "superserver";
-    nat.enable = true;
-  };
+  # Bootloader.
+  boot.loader.systemd-boot.enable = true;
+  boot.loader.efi.canTouchEfiVariables = true;
 
-  # Enable ip forwarding for exposing tailscale subnet routes.
-  boot.kernel.sysctl."net.ipv4.ip_forward" = 1;
-  boot.kernel.sysctl."ipv6.conf.all.forwarding" = 1;
+  networking.hostName = hostname;
+  # Enable networking
+  networking.networkmanager.enable = true;
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.${global_const.username} = {
+  users.users."${global_const.username}" = {
     isNormalUser = true;
     description = "${global_const.username}";
     extraGroups = ["networkmanager" "wheel"];
-    packages = [];
     shell = pkgs.nushell;
+    packages = with pkgs; [
+      helix
+      git
+    ];
   };
-
+  # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
   home-manager = {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${global_const.username}" = import ./../../home/superserver.nix;
+      "${global_const.username}" = import ./../../home/${hostname}.nix;
     };
   };
 

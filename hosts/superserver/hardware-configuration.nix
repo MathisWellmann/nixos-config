@@ -8,6 +8,7 @@
   ...
 }: let
   static_ips = import ../../modules/static_ips.nix;
+  main_nic = "eno1";
 in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -20,16 +21,15 @@ in {
     extraModulePackages = [];
   };
 
-  fileSystems = {
-    "/" = {
-      device = "/dev/disk/by-uuid/2464e526-28d4-43d3-b885-c3284a8a0d04";
-      fsType = "xfs";
-    };
-    "/boot" = {
-      device = "/dev/disk/by-uuid/9F46-467D";
-      fsType = "vfat";
-      options = ["fmask=0077" "dmask=0077"];
-    };
+  fileSystems."/" = {
+    device = "/dev/disk/by-uuid/3abe28a7-bae2-44f0-bf15-07273a9c3431";
+    fsType = "ext4";
+  };
+
+  fileSystems."/boot" = {
+    device = "/dev/disk/by-uuid/C7D4-4A0B";
+    fsType = "vfat";
+    options = ["fmask=0077" "dmask=0077"];
   };
 
   swapDevices = [];
@@ -39,24 +39,27 @@ in {
     networkmanager.enable = true;
 
     defaultGateway = {
-      interface = "enp65s0f0";
+      interface = main_nic;
       address = "192.168.0.55";
     };
     nameservers = [
       "${static_ips.elitedesk_ip}"
     ];
-
-    interfaces.enp65s0f0 = {
-      name = "enp65s0f0";
-      useDHCP = false;
-      mtu = 9000;
-      ipv4 = {
-        addresses = [
-          {
-            address = "${static_ips.superserver_ip}";
-            prefixLength = 24;
-          }
-        ];
+    interfaces = {
+      "${main_nic}" = {
+        useDHCP = false;
+        ipv4 = {
+          addresses = [
+            {
+              address = static_ips.superserver_ip;
+              prefixLength = 24;
+            }
+          ];
+        };
+        # Can also manually set using `sudo ethtool -s eno1 wol g`
+        wakeOnLan.enable = true;
+        # Primarily set here to know where to send wakeOnLan packet using `wakeonlan $macAddress`
+        macAddress = "ac:1f:6b:e5:87:d4";
       };
     };
   };

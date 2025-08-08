@@ -8,6 +8,7 @@ in {
       inherit script;
       serviceConfig = {
         Type = "oneshot";
+        Restart = "no";
         User = "root";
         Group = "root";
         # Allow access to ZFS
