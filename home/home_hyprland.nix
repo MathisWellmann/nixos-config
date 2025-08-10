@@ -34,7 +34,13 @@
     veracrypt
     libreoffice
     affine
+
+    ##### Cursors #####
     banana-cursor
+    # fuchsia-cursor
+    # rose-pine-cursor
+    # lyra-cursors
+    # phinger-cursors
 
     # Video
     mpv
@@ -76,7 +82,7 @@
     tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
     tlaplusToolbox
-    # redisinsight
+    redisinsight
     mongodb-compass
   ];
 
