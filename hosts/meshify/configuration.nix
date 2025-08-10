@@ -151,4 +151,14 @@ in {
   };
 
   services.freenet.enable = true;
+  # Create wifi access point, sharing the primary ethernet connection
+  services.create_ap = {
+    enable = true;
+    settings = {
+      INTERNET_IFACE = "enp6s0f0";
+      WIFI_IFACE = "wlo1";
+      SSID = "meshify_ap";
+      PASSPHRASE = "12345678";
+    };
+  };
 }

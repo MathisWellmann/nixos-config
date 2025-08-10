@@ -52,7 +52,7 @@
       ];
     };
     settings = {
-      theme = "autumn"; # Dark
+      theme = "papercolor-dark"; # Dark
       # theme = "onelight";
       editor = {
         scroll-lines = 1;

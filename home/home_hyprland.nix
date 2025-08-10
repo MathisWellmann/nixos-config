@@ -123,10 +123,16 @@
         "$mainMod, S, togglesplit"
         "$mainMod, F, fullscreen"
 
+        # For rsthd layout on corne keyboard
         "$mainMod, m, movefocus, l"
         "$mainMod, i, movefocus, r"
         "$mainMod, a, movefocus, u"
-        "$mainMod, n, movefocus, d"
+        # "$mainMod, n, movefocus, d"
+
+        "$mainMod, n, movefocus, l"
+        "$mainMod, ), movefocus, r"
+        "$mainMod, l, movefocus, u"
+        "$mainMod, w, movefocus, d"
 
         # Switch workspaces with mainMod + [0-9]
         "$mainMod, 0, workspace, 10"
