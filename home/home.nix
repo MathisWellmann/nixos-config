@@ -74,6 +74,7 @@ in {
       jjui # terminal user interface for working with jujutsu VSC
       typespeed
       lazyjj
+      sops # Secrets for NixOs
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
