@@ -43,6 +43,7 @@
         # Find all the TODO comments in my codebases
         def todo [] { ${pkgs.ripgrep}/bin/rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO | lines };
 
+        $env.EDITOR = "${pkgs.helix}/bin/hx";
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin) |
           append ($env.HOME| path join .npm-global/bin) |
