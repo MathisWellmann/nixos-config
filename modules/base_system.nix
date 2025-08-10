@@ -43,5 +43,4 @@ in {
     enable = true;
     enableSSHSupport = true;
   };
-
 }

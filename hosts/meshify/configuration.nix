@@ -2,6 +2,7 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
+  config,
   pkgs,
   inputs,
   ...
@@ -16,6 +17,7 @@ in {
   imports = [
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
+    inputs.sops-nix.nixosModules.sops
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -151,6 +153,16 @@ in {
   };
 
   services.freenet.enable = true;
+
+  sops = {
+    defaultSopsFile = "./../../sops_secrets.yaml";
+    defaultSopsFormat = "yaml";
+
+    # This creates /run/secrets/create_ap_password
+    secrets.meshify_ap_password = {
+      sopsFile = ../../sops_secrets.yaml;
+    };
+  };
   # Create wifi access point, sharing the primary ethernet connection
   services.create_ap = {
     enable = true;

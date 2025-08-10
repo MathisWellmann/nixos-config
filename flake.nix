@@ -8,6 +8,10 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     agenix.url = "github:ryantm/agenix";
     # unsure.url = "github:MathisWellmann/unsure";
@@ -35,6 +39,7 @@
           ./hosts/meshify/configuration.nix
           home-manager.nixosModules.default
           inputs.agenix.nixosModules.default
+          inputs.sops-nix.nixosModules.sops
           {_module.args = inputs;}
         ];
       };
