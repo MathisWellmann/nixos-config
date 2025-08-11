@@ -40,12 +40,6 @@ in {
 
   networking.hostName = "${hostname}";
 
-  # TODO: Move to `home.nix`
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
-  };
-
   # TODO: extract to own module and use on all hosts
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${global_const.username} = {
