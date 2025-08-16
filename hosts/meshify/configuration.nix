@@ -2,7 +2,6 @@
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
-  config,
   pkgs,
   inputs,
   ...
@@ -29,6 +28,7 @@ in {
     ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
+    ./../../modules/yubi_key.nix
     ./../../modules/monero.nix
     # ./../../modules/monero_miner.nix
     ./../../modules/virtualization_host.nix
