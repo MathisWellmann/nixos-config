@@ -4,18 +4,22 @@
 {
   config,
   lib,
-  pkgs,
   modulesPath,
   ...
-}: {
+}:
+let
+  static_ips = import ../../modules/static_ips.nix;
+  in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
 
-  boot.initrd.availableKernelModules = ["xhci_pci" "nvme" "usbhid" "uas" "sd_mod"];
-  boot.initrd.kernelModules = [];
-  boot.kernelModules = ["kvm-amd"];
-  boot.extraModulePackages = [];
+  boot = {
+    initrd.availableKernelModules = ["xhci_pci" "nvme" "usbhid" "uas" "sd_mod"];
+    initrd.kernelModules = [];
+    kernelModules = ["kvm-amd"];
+    extraModulePackages = [];
+  };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/a88b3192-ea07-42f7-a842-44458cfc011e";
@@ -30,16 +34,33 @@
 
   swapDevices = [];
 
-  # Enables DHCP on each ethernet and wireless interface. In case of scripted networking
-  # (the default) this is the recommended approach. When using systemd-networkd it's
-  # still possible to use this option, but it's recommended to use it in conjunction
-  # with explicit per-interface declarations with `networking.interfaces.<interface>.useDHCP`.
-  networking.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp3s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp4s0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp5s0f0.useDHCP = lib.mkDefault true;
-  # networking.interfaces.enp5s0f1.useDHCP = lib.mkDefault true;
-  # networking.interfaces.wlp6s0.useDHCP = lib.mkDefault true;
+  networking = {
+    useDHCP = lib.mkDefault false;
+    networkmanager.enable = false;
+
+    defaultGateway = {
+      interface = "enp5s0f0np0";
+      address = "192.168.0.55";
+    };
+    nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+      "9.9.9.9"
+    ];
+    interfaces = {
+      enp5s0f0np0 = {
+        useDHCP = false;
+        ipv4 = {
+          addresses = [
+            {
+              address = static_ips.de_msa2_ip;
+              prefixLength = 24;
+            }
+          ];
+        };
+      };
+    };
+  };
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;

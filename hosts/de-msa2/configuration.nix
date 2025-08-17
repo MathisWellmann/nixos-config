@@ -21,9 +21,6 @@ in {
 
   networking.hostName = "de-msa2"; # Define your hostname.
 
-  # Enable networking
-  networking.networkmanager.enable = true;
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users."${global_const.username}" = {
     isNormalUser = true;
