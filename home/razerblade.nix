@@ -1,7 +1,6 @@
-{lib, ...}:
-let
+{lib, ...}: let
   global_const = import ../global_constants.nix;
-  in {
+in {
   imports = [
     ./home_hyprland.nix
   ];

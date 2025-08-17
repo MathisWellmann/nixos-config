@@ -1,4 +1,4 @@
-{...}:{
+{...}: {
   imports = [
     ./home_hyprland.nix
     ./games.nix

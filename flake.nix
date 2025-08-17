@@ -87,6 +87,13 @@
           {_module.args = inputs;}
         ];
       };
+      de-msa2 = nixpkgs-unstable.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/de-msa2/configuration.nix
+          {_module.args = inputs;}
+        ];
+      };
     };
   };
 }

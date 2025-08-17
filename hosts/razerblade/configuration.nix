@@ -140,5 +140,4 @@ in {
       uptime.prefix = "up";
     };
   };
-
 }
