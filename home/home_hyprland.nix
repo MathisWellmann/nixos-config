@@ -17,7 +17,7 @@
     floorp
     keepassxc
     # Both are disablede because they require `libsoup` which was marked as insecure.
-    # gthumb # Image viewer with support for ARW files
+    gthumb # Image viewer with support for ARW files
     # geeqie # Better image viewer
     zathura # PDF reader
     qbittorrent
@@ -60,7 +60,7 @@
     # halloy # IRC GUI written in Rust
     # discord
     # slack
-    # simplex-chat-desktop
+    simplex-chat-desktop
 
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
