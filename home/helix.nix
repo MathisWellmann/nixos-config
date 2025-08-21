@@ -54,6 +54,13 @@
     settings = {
       theme = "papercolor-dark"; # Dark
       # theme = "onelight";
+      keys.normal = {
+        "f" = "file_picker";
+        # "," = "move_visual_line_up";
+        # "." = "move_visual_line_down";
+        "a" = "move_char_left";
+        "}" = "move_char_right";
+      };
       editor = {
         scroll-lines = 1;
         cursorline = true;

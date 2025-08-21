@@ -44,7 +44,7 @@ in {
     networkmanager.enable = false;
 
     defaultGateway = {
-      interface = "enp6s0f0";
+      interface = "enp11s0";
       address = "192.168.0.55";
     };
     nameservers = [
@@ -77,14 +77,14 @@ in {
       #     ];
       #   };
       # };
-      enp6s0f0 = {
-        name = "enp6s0f0";
+      enp11s0 = {
+        name = "enp11s0";
         useDHCP = false;
         mtu = 9000;
         ipv4 = {
           addresses = [
             {
-              address = static_ips.meshify_ip_10Gbit_0;
+              address = static_ips.meshify_ip;
               prefixLength = 24;
             }
           ];

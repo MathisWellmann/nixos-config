@@ -13,7 +13,6 @@ in {
   # In shack.
   de-rosen_ip = "192.168.0.20";
   meshify_ip = "192.168.0.21";
-  meshify_ip_10Gbit_0 = "192.168.0.22";
 
   poweredge_mellanox_0 = "${prefix}1";
   poweredge_mellanox_1 = "${prefix}2";
