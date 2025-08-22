@@ -8,6 +8,8 @@
   ...
 }: let
   static_ips = import ../../modules/static_ips.nix;
+  # main_nic = "enp133s0f0";
+  main_nic = "eno1";
 in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -41,7 +43,7 @@ in {
     networkmanager.enable = false;
 
     defaultGateway = {
-      interface = "enp133s0f0";
+      interface = main_nic;
       address = "192.168.0.55";
     };
     nameservers = [
@@ -52,44 +54,8 @@ in {
     ];
 
     interfaces = {
-      # eno1 = {
-      #   name = "eno2";
-      #   useDHCP = false;
-      #   ipv4 = {
-      #     addresses = [
-      #       {
-      #         address = static_ips.desg0_ip;
-      #         prefixLength = 24;
-      #       }
-      #     ];
-      #   };
-      # };
-      # enp133s0 = {
-      #   name = "enp133s0";
-      #   useDHCP = false;
-      #   ipv4 = {
-      #     addresses = [
-      #       {
-      #         address = static_ips.desg0_mellanox_0;
-      #         prefixLength = 16;
-      #       }
-      #     ];
-      #   };
-      # };
-      # enp133s0d1 = {
-      #   name = "enp133s0d1";
-      #   useDHCP = false;
-      #   ipv4 = {
-      #     addresses = [
-      #       {
-      #         address = static_ips.desg0_mellanox_1;
-      #         prefixLength = 16;
-      #       }
-      #     ];
-      #   };
-      # };
-      enp133s0f0 = {
-        name = "enp133s0f0";
+      "${main_nic}" = {
+        name = "${main_nic}";
         useDHCP = false;
         mtu = 9000;
         ipv4 = {

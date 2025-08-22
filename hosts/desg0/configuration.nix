@@ -20,7 +20,6 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/local_ai.nix
-    ./nexus_dbs.nix
     inputs.home-manager.nixosModules.default
   ];
 
