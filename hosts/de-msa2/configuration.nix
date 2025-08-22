@@ -108,10 +108,6 @@ in {
   };
   networking.firewall.allowedTCPPorts = [
     const.nfs_port
-    const.greptimedb_http_port
-    const.greptimedb_rpc_port
-    const.greptimedb_mysql_port
-    const.greptimedb_postgres_port
     const.iperf_port
   ];
 

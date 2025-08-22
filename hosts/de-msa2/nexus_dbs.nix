@@ -51,4 +51,12 @@ in {
       value = "1000000";
     }
   ];
+  networking.firewall.allowedTCPPorts = [
+    const.greptimedb_http_port
+    const.greptimedb_rpc_port
+    const.greptimedb_mysql_port
+    const.greptimedb_postgres_port
+    const.mongodb_port
+    const.dragonfly_port
+  ];
 }
