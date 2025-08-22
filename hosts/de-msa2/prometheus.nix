@@ -1,7 +1,6 @@
 {config, ...}: let
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
-  desg0_const = import ../desg0/constants.nix;
 in {
   services. prometheus = let
     node_scrape_configs = map (host: {
@@ -80,19 +79,19 @@ in {
         {
           job_name = "postgres-greptimedb";
           static_configs = [
-            {targets = ["${static_ips.desg0_ip}:${toString desg0_const.greptimedb_postgres_port}"];}
+            {targets = ["${static_ips.desg0_ip}:${toString const.greptimedb_postgres_port}"];}
           ];
         }
         {
           job_name = "mongodb";
           static_configs = [
-            {targets = ["${static_ips.desg0_ip}:${toString desg0_const.mongodb_port}"];}
+            {targets = ["${static_ips.desg0_ip}:${toString const.mongodb_port}"];}
           ];
         }
         {
           job_name = "dragonflydb";
           static_configs = [
-            {targets = ["${static_ips.desg0_ip}:${toString desg0_const.dragonfly_port}"];}
+            {targets = ["${static_ips.desg0_ip}:${toString const.dragonfly_port}"];}
           ];
         }
       ];

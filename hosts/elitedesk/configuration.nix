@@ -21,7 +21,6 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/monero.nix
     ./../../modules/adguardhome.nix
-    ./prometheus.nix
     ./homer_dashboard.nix
     ./freshrss.nix
   ];

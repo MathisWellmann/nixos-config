@@ -26,6 +26,7 @@ in {
     ./freshrss.nix
     ./nexus_dbs.nix
     ./gitea.nix
+    ./prometheus.nix
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.
