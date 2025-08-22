@@ -72,4 +72,27 @@ in {
       };
     };
   };
+
+  boot.supportedFilesystems = ["zfs"];
+  boot.kernelParams = ["zfs.zfs_arc_max=64000000000"]; # 64GB ARC size limit
+  boot.zfs = {
+    forceImportRoot = false;
+    extraPools = [
+      "nvme_pool"
+    ];
+  };
+  services.zfs = {
+    autoScrub = {
+      enable = true;
+      interval = "weekly";
+      pools = [
+        "nvme_pool"
+      ];
+    };
+    autoSnapshot.enable = true;
+    trim = {
+      enable = false;
+      interval = "weekly";
+    };
+  };
 }

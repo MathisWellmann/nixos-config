@@ -35,6 +35,9 @@ let
   swapDevices = [];
 
   networking = {
+    # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
+    hostId = "efc00418";
+    
     useDHCP = lib.mkDefault false;
     networkmanager.enable = false;
 
