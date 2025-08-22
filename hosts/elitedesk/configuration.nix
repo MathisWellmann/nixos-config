@@ -23,7 +23,6 @@ in {
     ./../../modules/adguardhome.nix
     ./prometheus.nix
     ./homer_dashboard.nix
-    ./gitea.nix
     ./freshrss.nix
   ];
 

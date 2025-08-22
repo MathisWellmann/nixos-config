@@ -25,6 +25,7 @@ in {
     ./../../modules/adguardhome.nix
     ./freshrss.nix
     ./nexus_dbs.nix
+    ./gitea.nix
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.
