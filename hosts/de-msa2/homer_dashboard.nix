@@ -1,7 +1,7 @@
 {config, ...}: let
   static_ips = import ../../modules/static_ips.nix;
   const = import ./constants.nix;
-  desg0_const = import ../desg0/constants.nix;
+  const_elitedesk = import ../elitedesk/constants.nix;
   domain = "homer.homelab";
 in {
   services = {
@@ -83,7 +83,7 @@ in {
                 subtitle = "Dashboard for GreptimeDB";
                 tag = "app";
                 keywords = "self hosted dns";
-                url = "http://${static_ips.desg0_ip}:${toString desg0_const.greptimedb_http_port}";
+                url = "http://${static_ips.desg0_ip}:${toString const.greptimedb_http_port}";
                 target = "_blank";
               }
               {
@@ -108,7 +108,7 @@ in {
                 subtitle = "Media Streaming";
                 tag = "app";
                 keywords = "self hosted jellyfin movies series video";
-                url = "http://${static_ips.elitedesk_ip}:${toString const.jellyfin_port}";
+                url = "http://${static_ips.elitedesk_ip}:${toString const_elitedesk.jellyfin_port}";
                 target = "_blank";
               }
               {

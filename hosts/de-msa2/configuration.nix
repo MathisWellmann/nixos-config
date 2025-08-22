@@ -27,6 +27,7 @@ in {
     ./nexus_dbs.nix
     ./gitea.nix
     ./prometheus.nix
+    ./homer_dashboard.nix
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.
