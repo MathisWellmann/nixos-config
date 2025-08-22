@@ -21,8 +21,6 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/monero.nix
     ./../../modules/adguardhome.nix
-    ./homer_dashboard.nix
-    ./freshrss.nix
   ];
 
   networking.hostName = "elitedesk"; # Define your hostname.
@@ -64,13 +62,10 @@ in {
       };
       service_status = {
         tailscale = "tailscaled";
-        prometheus = "prometheus";
         prometheus-exporter = "prometheus-node-exporter";
-        grafana = "grafana";
         adguardhome = "adguardhome";
         jellyfin = "jellyfin";
         nfs-server = "nfs-server";
-        monero = "monero";
       };
     };
   };
@@ -105,33 +100,14 @@ in {
       enable = true;
       exports = lib.strings.concatStrings [exports_for_meshify exports_for_razerblade exports_for_poweredge];
     };
-    grafana = {
-      enable = true;
-      settings = {
-        server = {
-          # Listening Address
-          http_addr = "0.0.0.0";
-          http_port = const.grafana_port;
-        };
-      };
-    };
     jellyfin = {
       # Runs on port 8096
       enable = true;
       openFirewall = true;
     };
-    uptime-kuma = {
-      enable = true;
-      settings = {
-        UPTIME_KUMA_HOST = "0.0.0.0";
-        PORT = "${builtins.toString const.uptime_kuma_port}";
-      };
-    };
   };
   networking.firewall.allowedTCPPorts = [
     2049 # NFS
     const.jellyfin_port
-    const.grafana_port
-    const.uptime_kuma_port
   ];
 }
