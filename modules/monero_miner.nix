@@ -5,7 +5,7 @@
       autosave = true;
       cpu = {
         enable = true;
-        max-threads-hint = 10;
+        max-threads-hint = 20;
       };
       opencl = false;
       cuda = false;

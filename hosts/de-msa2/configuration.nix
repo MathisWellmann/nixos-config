@@ -20,6 +20,8 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
+    ./../../modules/monero.nix
+    ./../../modules/monero_miner.nix
     ./nexus_dbs.nix
   ];
 
