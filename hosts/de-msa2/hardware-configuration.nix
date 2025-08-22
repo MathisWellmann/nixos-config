@@ -6,10 +6,9 @@
   lib,
   modulesPath,
   ...
-}:
-let
+}: let
   static_ips = import ../../modules/static_ips.nix;
-  in {
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -37,7 +36,7 @@ let
   networking = {
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "efc00418";
-    
+
     useDHCP = lib.mkDefault false;
     networkmanager.enable = false;
 

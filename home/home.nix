@@ -68,7 +68,7 @@ in {
       natscli
       # For setting fan speed on supermicro BMC: `ipmitool -I lan -U ADMIN -H 192.168.0.31 sensor thresh FAN1 lcr 300`
       # Or `ipmitool -I lan -U ADMIN -H 192.168.0.31 sensor`
-      ipmitool 
+      ipmitool
       nvme-cli
       cloudflared
       jjui # terminal user interface for working with jujutsu VSC
