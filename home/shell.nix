@@ -90,9 +90,9 @@
         };
       };
     };
-    carapace = {
-      enable = true;
-      enableNushellIntegration = true;
-    };
+    # carapace = {
+    #   enable = true;
+    #   enableNushellIntegration = true;
+    # };
   };
 }
