@@ -4,9 +4,6 @@
   # Ports
   homer_port = 80;
   gitea_port = 3000;
-  grafana_port = 3001;
-  freshrss_port = 3002;
-  uptime_kuma_port = 3003;
   jellyfin_port = 8096;
   prometheus_port = 9001;
 }

@@ -22,6 +22,8 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
     ./../../modules/monero_miner.nix
+    ./../../modules/adguardhome.nix
+    ./freshrss.nix
     ./nexus_dbs.nix
   ];
 
@@ -135,6 +137,23 @@ in {
         exports_for_razerblade
         exports_for_poweredge
       ];
+    };
+    grafana = {
+      enable = true;
+      settings = {
+        server = {
+          # Listening Address
+          http_addr = "0.0.0.0";
+          http_port = const.grafana_port;
+        };
+      };
+    };
+    uptime-kuma = {
+      enable = true;
+      settings = {
+        UPTIME_KUMA_HOST = "0.0.0.0";
+        PORT = "${builtins.toString const.uptime_kuma_port}";
+      };
     };
   };
 }

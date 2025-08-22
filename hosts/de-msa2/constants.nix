@@ -1,5 +1,8 @@
 {
   nfs_port = 2049;
+  grafana_port = 3001;
+  freshrss_port = 3002;
+  uptime_kuma_port = 3003;
   greptimedb_http_port = 4000;
   greptimedb_rpc_port = 4001;
   greptimedb_mysql_port = 4002;
