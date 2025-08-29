@@ -38,10 +38,10 @@ in {
       # Convert single image into slices using `imagemagick`:
       # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
       wallpaper = [
-        "DP-5,/home/${global_const.username}/acapulco_wallpaper_0.jxl"
-        "DP-4,/home/${global_const.username}/acapulco_wallpaper_1.jxl"
-        "DP-3,/home/${global_const.username}/acapulco_wallpaper_2.jxl"
-        "HDMI-A-5,/home/${global_const.username}/acapulco_wallpaper.jxl"
+        "HDMI-A-5,/home/${global_const.username}/acapulco_wallpaper_0.jxl"
+        "DP-5,/home/${global_const.username}/acapulco_wallpaper_1.jxl"
+        "DP-4,/home/${global_const.username}/acapulco_wallpaper_2.jxl"
+        # "HDMI-A-5,/home/${global_const.username}/acapulco_wallpaper.jxl"
       ];
     };
   };

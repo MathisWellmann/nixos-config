@@ -167,8 +167,8 @@ in {
   services.create_ap = {
     enable = true;
     settings = {
-      INTERNET_IFACE = "enp6s0f0";
-      WIFI_IFACE = "wlo1";
+      INTERNET_IFACE = "enp11s0";
+      WIFI_IFACE = "wlp12s0";
       SSID = "meshify_ap";
       PASSPHRASE = "12345678";
     };
