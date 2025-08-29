@@ -8,8 +8,6 @@
 }: let
   # TODO: move to `constants.nix`
   hostname = "meshify";
-  open-webui_port = 8080;
-  metastable_port = 4000;
   static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
 in {
@@ -23,16 +21,11 @@ in {
     ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
-    # ./../../modules/backup.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
-    ./../../modules/monero.nix
-    # ./../../modules/monero_miner.nix
-    ./../../modules/virtualization_host.nix
-    # ./../../modules/tari_docker.nix
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
@@ -56,8 +49,6 @@ in {
     packages = [];
     shell = pkgs.nushell;
   };
-
-  virtualisation.docker.enable = true;
 
   # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
   home-manager = {
@@ -115,21 +106,6 @@ in {
     };
   };
   programs.npm.enable = true;
-
-  services.open-webui = {
-    enable = true;
-    host = "0.0.0.0";
-    port = open-webui_port;
-    openFirewall = true;
-  };
-
-  virtualisation.oci-containers.containers."metastable" = {
-    image = "ghcr.io/mat-sz/metastable:cuda";
-    ports = [
-      "${builtins.toString metastable_port}:5001"
-    ];
-    volumes = [];
-  };
 
   # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
   services.mullvad-vpn.enable = true;

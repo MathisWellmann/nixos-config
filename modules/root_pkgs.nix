@@ -26,7 +26,6 @@
     lsof
     # Dev
     git
-    docker-compose
     # Misc
     killall
     pciutils

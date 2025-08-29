@@ -52,7 +52,7 @@
       ];
     };
     settings = {
-      theme = "papercolor-dark"; # Dark
+      theme = "ayu_mirage"; # Dark
       # theme = "onelight";
       keys.normal = {
         "f" = "file_picker";

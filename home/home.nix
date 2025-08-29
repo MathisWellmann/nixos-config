@@ -111,7 +111,7 @@ in {
       mprocs # TUI tool to run multiple commands in parallel
       cloak # CLI OTP Authentication
       unzip
-      (python3.withPackages my-python-packages)
+      (python311.withPackages my-python-packages)
       systeroid # More powerful alternative to `sysctl` with a tui
       hwinfo
       dmidecode

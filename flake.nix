@@ -18,7 +18,7 @@
 
     # Local paths
     tikr = {
-      url = "path:/home/magewe/MathisWellmann/tikr";
+      url = "path:/home/m/MathisWellmann/tikr";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };

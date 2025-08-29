@@ -34,6 +34,7 @@
     veracrypt
     libreoffice
     affine
+    labplot
 
     ##### Cursors #####
     banana-cursor
@@ -54,7 +55,6 @@
     wl-clipboard
     wlr-randr
     wdisplays
-    nwg-displays
 
     # Communication
     # halloy # IRC GUI written in Rust
@@ -251,6 +251,13 @@
         vim_mode = false;
         ui_font_size = 18;
         buffer_font_size = 18;
+        lsp = {
+          rust-analyzer = {
+            binary = {
+              path = "/run/current-system/sw/bin/rust-analyzer";
+            };
+          };
+        };
       };
     };
     # looking-glass-client = {
