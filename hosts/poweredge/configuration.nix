@@ -67,7 +67,7 @@ in {
     };
     autoSnapshot.enable = true;
     trim = {
-      enable = false;
+      enable = true;
       interval = "weekly";
     };
   };
