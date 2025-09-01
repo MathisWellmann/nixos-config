@@ -57,7 +57,7 @@ in {
         ipv4 = {
           addresses = [
             {
-              address = static_ips.de_msa2_ip;
+              address = static_ips.de-msa2_ip;
               prefixLength = 24;
             }
           ];

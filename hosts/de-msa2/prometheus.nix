@@ -38,21 +38,21 @@ in {
         port = 9002;
         enabledCollectors = ["systemd"];
       };
-      # zfs = {
-      #   enable = true;
-      #   port = 9134;
-      # };
+      zfs = {
+        enable = true;
+        port = 9134;
+      };
       # postgres = {
       #   enable = true;
       #   dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
       #   port = 9215;
       # };
-      # mongodb = {
-      #   enable = true;
-      #   collectAll = true;
-      #   uri = "mongodb://localhost:${toString const.mongodb_port}";
-      #   port = 9216;
-      # };
+      mongodb = {
+        enable = true;
+        collectAll = true;
+        uri = "mongodb://localhost:${toString const.mongodb_port}";
+        port = 9216;
+      };
       # restic = {
       #   enable = true;
       #   port = 9753;
@@ -64,12 +64,12 @@ in {
       node_scrape_configs
       # ++ tikr_scrape_configs
       ++ [
-        # {
-        #   job_name = "zfs";
-        #   static_configs = [
-        #     {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
-        #   ];
-        # }
+        {
+          job_name = "zfs";
+          static_configs = [
+            {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
+          ];
+        }
         # {
         #   job_name = "restic";
         #   static_configs = [
@@ -79,19 +79,19 @@ in {
         {
           job_name = "postgres-greptimedb";
           static_configs = [
-            {targets = ["${static_ips.desg0_ip}:${toString const.greptimedb_postgres_port}"];}
+            {targets = ["${static_ips.de-msa2_ip}:${toString const.greptimedb_postgres_port}"];}
           ];
         }
         {
           job_name = "mongodb";
           static_configs = [
-            {targets = ["${static_ips.desg0_ip}:${toString const.mongodb_port}"];}
+            {targets = ["${static_ips.de-msa2_ip}:${toString const.mongodb_port}"];}
           ];
         }
         {
           job_name = "dragonflydb";
           static_configs = [
-            {targets = ["${static_ips.desg0_ip}:${toString const.dragonfly_port}"];}
+            {targets = ["${static_ips.de-msa2_ip}:${toString const.dragonfly_port}"];}
           ];
         }
       ];
