@@ -19,13 +19,10 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/harmonia_cache.nix
-    ./../../modules/monero.nix
-    # ./../../modules/monero_miner.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/searx.nix
     ./firefly.nix
     ./mafl.nix
-    # ./../../modules/nats_cluster.nix
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -165,10 +162,10 @@ in {
       };
     };
     # Marked as broken. TODO: re-enable
-    mealie = {
-      enable = true;
-      port = const.mealie_port;
-    };
+    # mealie = {
+    #   enable = true;
+    #   port = const.mealie_port;
+    # };
 
     # gotosocial = {
     #   enable = true;
@@ -325,12 +322,12 @@ in {
         mafl = "podman-mafl";
         readeck = "podman-readeck";
         polaris = "polaris";
-        tikr_BinanceCoinMargin_L2OrderBookDelta = "tikr@BinanceCoinMargin_L2OrderBookDelta";
-        tikr_BinanceCoinMargin_Quotes = "tikr@BinanceCoinMargin_Quotes";
-        tikr_BinanceCoinMargin_Trades = "tikr@BinanceCoinMargin_Trades";
-        tikr_BinanceUsdMargin_L2OrderBookDelta = "tikr@BinanceUsdMargin_L2OrderBookDelta";
-        tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
-        tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
+        # tikr_BinanceCoinMargin_L2OrderBookDelta = "tikr@BinanceCoinMargin_L2OrderBookDelta";
+        # tikr_BinanceCoinMargin_Quotes = "tikr@BinanceCoinMargin_Quotes";
+        # tikr_BinanceCoinMargin_Trades = "tikr@BinanceCoinMargin_Trades";
+        # tikr_BinanceUsdMargin_L2OrderBookDelta = "tikr@BinanceUsdMargin_L2OrderBookDelta";
+        # tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
+        # tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
       };
     };
