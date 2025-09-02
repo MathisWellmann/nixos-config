@@ -9,6 +9,8 @@
 }: let
   static_ips = import ../../modules/static_ips.nix;
   const = import ./constants.nix;
+  # main_nic = "ens5f0";
+  main_nic = "eno1";
 in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
@@ -41,7 +43,7 @@ in {
     networkmanager.enable = true;
 
     defaultGateway = {
-      interface = "ens5f0";
+      interface = main_nic;
       address = "192.168.0.55";
     };
     nameservers = [
@@ -64,8 +66,8 @@ in {
       #     ];
       #   };
       # };
-      ens5f0 = {
-        name = "ens5f0";
+      "${main_nic}" = {
+        name = "${main_nic}";
         useDHCP = false;
         mtu = 9000;
         ipv4 = {
