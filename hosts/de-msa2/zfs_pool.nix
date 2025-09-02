@@ -39,6 +39,8 @@ in {
         "magewe"
         "ilka"
         "pdfs"
+        "music"
+        "video"
       ];
       exports_for_meshify =
         lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " ${meshify_addr}(rw,sync,no_subtree_check)\n")

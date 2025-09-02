@@ -112,6 +112,15 @@ in {
                 target = "_blank";
               }
               {
+                name = "Bitmagnet";
+                logo = "assets/tools/jellyfin.png";
+                subtitle = "Torrent Discovery on DHT";
+                tag = "app";
+                keywords = "self hosted bitmagnes movies series video";
+                url = "http://${static_ips.de-msa2_ip}:${toString const.bitmagnet_port}";
+                target = "_blank";
+              }
+              {
                 name = "FreshRss";
                 logo = "assets/tools/freshrss.png";
                 subtitle = "RSS aggregator";

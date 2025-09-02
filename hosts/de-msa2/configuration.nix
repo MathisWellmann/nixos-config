@@ -105,5 +105,16 @@ in {
         PORT = "${builtins.toString const.uptime_kuma_port}";
       };
     };
+    bitmagnet = {
+      enable = true;
+      openFirewall = true;
+      settings = {
+        http_server.port = "${builtins.toString const.bitmagnet_port}";
+      };
+    };
+    # mealie = {
+    #   enable = true;
+    #   port = const.mealie_port;
+    # };
   };
 }
