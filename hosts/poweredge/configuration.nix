@@ -112,7 +112,11 @@ in {
           ++ ["backup_razerblade"]);
     in {
       enable = true;
-      exports = lib.strings.concatStrings [exports_for_meshify exports_for_razerblade];
+      exports = lib.strings.concatStrings [
+        exports_for_meshify
+        exports_for_razerblade
+        "/SATA_SSD_POOL/video ${static_ips.de_msa2_ip}(rw,sync,no_subtree_check)\n"
+      ];
     };
     # tikr = {
     #   enable = true;
