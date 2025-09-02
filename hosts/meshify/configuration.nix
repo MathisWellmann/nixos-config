@@ -77,8 +77,8 @@ in {
 
   services.mount_remote_nfs_exports = {
     enable = true;
-    nfs_host_name = "poweredge";
-    nfs_host_addr = "poweredge";
+    nfs_host_name = "de-msa2";
+    nfs_host_addr = "de-msa2";
     nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
   };
 
@@ -95,12 +95,12 @@ in {
       service_status = {
         tailscale = "tailscaled";
         prometheus-exporter = "prometheus-node-exporter";
-        mnt-poweredge-magewe = "mnt-poweredge_SATA_SSD_POOL_magewe.mount";
-        mnt-poweredge-movies = "mnt-poweredge_SATA_SSD_POOL_movies.mount";
-        mnt-poweredge-music = "mnt-poweredge_SATA_SSD_POOL_music.mount";
-        mnt-poweredge-pdfs = "mnt-poweredge_SATA_SSD_POOL_pdfs.mount";
-        mnt-poweredge-series = "mnt-poweredge_SATA_SSD_POOL_series.mount";
-        mnt-poweredge-video = "mnt-poweredge_SATA_SSD_POOL_video.mount";
+        mnt-poweredge-magewe = "mnt-de-msa2_SATA_SSD_POOL_magewe.mount";
+        mnt-poweredge-movies = "mnt-de-msa2_SATA_SSD_POOL_movies.mount";
+        mnt-poweredge-music = "mnt-de-msa2_SATA_SSD_POOL_music.mount";
+        mnt-poweredge-pdfs = "mnt-de-msa2_SATA_SSD_POOL_pdfs.mount";
+        mnt-poweredge-series = "mnt-de-msa2_SATA_SSD_POOL_series.mount";
+        mnt-poweredge-video = "mnt-de-msa2_SATA_SSD_POOL_video.mount";
         restic-backups-home = "restic-backups-home";
       };
     };
@@ -127,8 +127,6 @@ in {
     fsType = "nfs";
     options = ["rw" "rsize=131072" "wsize=131072"];
   };
-
-  services.freenet.enable = true;
 
   sops = {
     defaultSopsFile = "./../../sops_secrets.yaml";
