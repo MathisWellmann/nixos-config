@@ -29,29 +29,6 @@ in {
     hostId = "1840e132";
   };
 
-  boot.supportedFilesystems = ["zfs"];
-  boot.kernelParams = ["zfs.zfs_arc_max=128000000000"]; # 128 GB ARC size limit
-  boot.zfs = {
-    forceImportRoot = false;
-    extraPools = [
-      "nvme_pool"
-    ];
-  };
-  services.zfs = {
-    autoScrub = {
-      enable = true;
-      interval = "weekly";
-      pools = [
-        "nvme_pool"
-      ];
-    };
-    autoSnapshot.enable = true;
-    trim = {
-      enable = false;
-      interval = "weekly";
-    };
-  };
-
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${global_const.username} = {
     isNormalUser = true;
