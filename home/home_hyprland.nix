@@ -86,10 +86,7 @@
     mongodb-compass
   ];
 
-  wayland.windowManager.hyprland = let
-    system = pkgs.system;
-    stable = import inputs.nixpkgs-stable {inherit system;};
-  in {
+  wayland.windowManager.hyprland = {
     enable = true;
     # xwayland.enable = true;
     # package = stable.hyprland;
@@ -107,11 +104,12 @@
         # "XDG_SESSION_TYPE,wayland"
         # "GBM_BACKEND,nvidia-drm"
         # "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-        "HYPRLAND_LOG_WLR=1"
+        # "__GL_GSYNC_ALLOWED,1"
+        # 
+        # "__GL_VRR_ALLOWED,0"
+        # "HYPRLAND_LOG_WLR=1"
         "XDG_CURRENT_DESKTOP,Hyprland"
         "XDG_SESSION_DESKTOP,Hyprland"
-        "__GL_GSYNC_ALLOWED,1"
-        "__GL_VRR_ALLOWED,0"
       ];
       bind = [
         "$mainMod, RETURN, exec, $terminal"
