@@ -3,7 +3,6 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   inputs,
-  config,
   pkgs,
   ...
 }: let
@@ -16,6 +15,8 @@ in {
     ../../modules/base_system.nix
     ../../modules/root_pkgs.nix
     ../../modules/base_system.nix
+    ../../modules/mount_external_drives.nix
+    ../../modules/local_ai.nix
   ];
 
   networking.hostName = "thinkpad"; # Define your hostname.
