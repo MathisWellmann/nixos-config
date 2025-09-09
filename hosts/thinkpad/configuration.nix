@@ -79,4 +79,13 @@ in {
   environment.systemPackages = with pkgs; [
     slack
   ];
+  hardware.brillo.enable = true; # Brightness adjustment, e.g.: `brillo -u 150000 -S 100`
+
+  # Required for being able to download inside `nix build` environment, e.g rust dependencies pulling in data.
+  nix.settings.sandbox = false;
+  # Required for `envoy-gateway` for example.
+  programs.nix-ld = {
+    enable = true;
+    libraries = [];
+  };
 }

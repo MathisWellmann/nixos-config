@@ -125,10 +125,12 @@ in {
 
       # Development
       gitui
+      lazygit
       cargo-expand # Expands rust macros
       cargo-info
       cargo-wizard
       cargo-nextest
+      devenv
 
       # Cryptography
       # sequoia-sq
