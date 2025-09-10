@@ -76,9 +76,6 @@ in {
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.11"; # Did you read the comment?
 
-  environment.systemPackages = with pkgs; [
-    slack
-  ];
   hardware.brillo.enable = true; # Brightness adjustment, e.g.: `brillo -u 150000 -S 100`
 
   # Required for being able to download inside `nix build` environment, e.g rust dependencies pulling in data.

@@ -62,8 +62,8 @@
     # Communication
     # halloy # IRC GUI written in Rust
     # discord
-    # slack
     simplex-chat-desktop
+    slack
 
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
@@ -221,6 +221,7 @@
       settings = {
         confirm_os_window_close = -1;
         shell = "nu";
+        font_size = 13;
       };
     };
     alacritty = {
