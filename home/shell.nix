@@ -48,6 +48,12 @@
           append ($env.HOME| path join .cargo/bin) |
           append ($env.HOME| path join .npm-global/bin) |
           append ($env.HOME| path join .pub-cache/bin));
+
+        # Open `~/.env` and load the contained environment variables if it exists.
+        let env_file = ($env.HOME | path join `.env`)
+        if ($env_file | path exists) {
+          open $env_file | from toml | load-env
+        }
       '';
     };
     # Terminal multiplexing
