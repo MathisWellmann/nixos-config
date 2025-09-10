@@ -42,11 +42,11 @@ in {
   # Don't ask for user password for main user.
   security.sudo.extraRules = [
     {
-      users = [ "${const.username}" ];
+      users = ["${const.username}"];
       commands = [
         {
           command = "ALL";
-          options = [ "NOPASSWD" ];
+          options = ["NOPASSWD"];
         }
       ];
     }
