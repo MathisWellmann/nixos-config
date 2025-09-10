@@ -33,6 +33,7 @@
     exfat
     uutils-coreutils
     dart
+    xdg-utils
 
     # Networking
     iperf
