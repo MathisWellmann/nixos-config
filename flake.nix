@@ -14,7 +14,6 @@
     };
 
     agenix.url = "github:ryantm/agenix";
-    # unsure.url = "github:MathisWellmann/unsure";
 
     # Local paths
     # tikr = {

@@ -46,6 +46,8 @@ in {
     with pkgs; [
       # Misc
       viu # View images in the terminal, best with `kitty`
+      unsure # Calculate with numbers you are unsure about.
+      jq # Json toolkit
       terminus_font
       rdfind # Find duplicate files: e.g.: `rdfind .`
       fend # Unit aware calculator
@@ -75,6 +77,7 @@ in {
       cloudflared
       jjui # terminal user interface for working with jujutsu VSC
       typespeed
+      # lazyjj # Broken
       sops # Secrets for NixOs
       sequoia # `sq` re-implementation of gpg
 
