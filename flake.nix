@@ -100,6 +100,13 @@
           {_module.args = inputs;}
         ];
       };
+      tensorbook = nixpkgs-unstable.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/tensorbook/configuration.nix
+          {_module.args = inputs;}
+        ];
+      };
     };
   };
 }
