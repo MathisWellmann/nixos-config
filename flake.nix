@@ -17,10 +17,10 @@
     # unsure.url = "github:MathisWellmann/unsure";
 
     # Local paths
-    tikr = {
-      url = "path:/home/m/MathisWellmann/tikr";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # tikr = {
+    #   url = "path:/home/m/MathisWellmann/tikr";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # };
   };
 
   outputs = {

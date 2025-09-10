@@ -16,7 +16,6 @@ in {
     ../../modules/root_pkgs.nix
     ../../modules/base_system.nix
     ../../modules/mount_external_drives.nix
-    ../../modules/local_ai.nix
   ];
 
   networking.hostName = "thinkpad"; # Define your hostname.
@@ -87,5 +86,15 @@ in {
   programs.nix-ld = {
     enable = true;
     libraries = [];
+  };
+  fonts.fontconfig.enable = true;
+  fonts.packages = with pkgs; [
+    noto-fonts
+    noto-fonts-emoji
+    nerd-fonts.departure-mono
+  ];
+  virtualisation = {
+    docker.enable = true;
+    podman.enable = true;
   };
 }
