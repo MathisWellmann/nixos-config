@@ -50,8 +50,9 @@ in {
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${global_const.username} = {
     isNormalUser = true;
-    description = "m";
-    extraGroups = ["networkmanager" "wheel"];
+    description = "${global_const.username}";
+    extraGroups = ["networkmanager" "wheel" "docker"];
+    shell = pkgs.nushell;
     packages = with pkgs; [
       git
       helix

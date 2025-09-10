@@ -218,6 +218,10 @@
     };
     kitty = {
       enable = true;
+      settings = {
+        confirm_os_window_close = -1;
+        shell = "nu";
+      };
     };
     alacritty = {
       enable = true;
