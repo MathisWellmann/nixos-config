@@ -129,6 +129,7 @@ in {
 
       # Development
       gitui
+      gh # Github TUI
       lazygit
       cargo-expand # Expands rust macros
       cargo-info
