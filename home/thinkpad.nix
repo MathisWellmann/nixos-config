@@ -36,22 +36,28 @@ in {
   #     ];
   #   };
   # };
-  services.hyprpaper = {
-    enable = true;
-    settings = {
-      ipc = "on";
-      splash = true;
-      splash_offset = 2.0;
-      preload = [
-        # "/home/magewe/acapulco_wallpaper.jxl"
-        "/home/${global_const.username}/Wallpaper.jpg"
-      ];
-      # Convert single image into slices using `imagemagick`:
-      # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
-      wallpaper = [
-        "eDP-1,/home/${global_const.username}/Wallpaper.jpg"
-        "DP-3,/home/${global_const.username}/Wallpaper.jpg"
-      ];
+  services = {
+    hyprpaper = {
+      enable = true;
+      settings = {
+        ipc = "on";
+        splash = true;
+        splash_offset = 2.0;
+        preload = [
+          # "/home/magewe/acapulco_wallpaper.jxl"
+          "/home/${global_const.username}/Wallpaper.jpg"
+        ];
+        # Convert single image into slices using `imagemagick`:
+        # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
+        wallpaper = [
+          "eDP-1,/home/${global_const.username}/Wallpaper.jpg"
+          "DP-3,/home/${global_const.username}/Wallpaper.jpg"
+        ];
+      };
+    };
+    # Efficient animated wallpaper daemon.
+    swww = {
+      enable = true;
     };
   };
 }

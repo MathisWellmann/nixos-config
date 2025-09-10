@@ -19,7 +19,8 @@
     ripgrep
     tmux
     htop
-    bottom
+    bottom # `btm`: similar to `htop`, written in rust
+    btop # Similar to `htop`
     tree
     nvtopPackages.full
     bat
