@@ -82,34 +82,38 @@ in {
     nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
   };
 
-  programs.rust-motd = {
-    enable = true;
-    settings = {
-      banner = {
-        color = "black";
-        command = "${pkgs.neofetch}/bin/neofetch";
-      };
-      filesystems = {
-        root = "/";
-      };
-      service_status = {
-        tailscale = "tailscaled";
-        prometheus-exporter = "prometheus-node-exporter";
-        mnt-poweredge-magewe = "mnt-de-msa2_SATA_SSD_POOL_magewe.mount";
-        mnt-poweredge-movies = "mnt-de-msa2_SATA_SSD_POOL_movies.mount";
-        mnt-poweredge-music = "mnt-de-msa2_SATA_SSD_POOL_music.mount";
-        mnt-poweredge-pdfs = "mnt-de-msa2_SATA_SSD_POOL_pdfs.mount";
-        mnt-poweredge-series = "mnt-de-msa2_SATA_SSD_POOL_series.mount";
-        mnt-poweredge-video = "mnt-de-msa2_SATA_SSD_POOL_video.mount";
-        restic-backups-home = "restic-backups-home";
+  programs = {
+    rust-motd = {
+      enable = true;
+      settings = {
+        banner = {
+          color = "black";
+          command = "${pkgs.neofetch}/bin/neofetch";
+        };
+        filesystems = {
+          root = "/";
+        };
+        service_status = {
+          tailscale = "tailscaled";
+          prometheus-exporter = "prometheus-node-exporter";
+          mnt-poweredge-magewe = "mnt-de-msa2_SATA_SSD_POOL_magewe.mount";
+          mnt-poweredge-movies = "mnt-de-msa2_SATA_SSD_POOL_movies.mount";
+          mnt-poweredge-music = "mnt-de-msa2_SATA_SSD_POOL_music.mount";
+          mnt-poweredge-pdfs = "mnt-de-msa2_SATA_SSD_POOL_pdfs.mount";
+          mnt-poweredge-series = "mnt-de-msa2_SATA_SSD_POOL_series.mount";
+          mnt-poweredge-video = "mnt-de-msa2_SATA_SSD_POOL_video.mount";
+          restic-backups-home = "restic-backups-home";
+        };
       };
     };
+    npm.enable = true;
   };
-  programs.npm.enable = true;
 
   # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
-  services.mullvad-vpn.enable = true;
-  services.resolved.enable = true;
+  services = {
+    mullvad-vpn.enable = true;
+    resolved.enable = true;
+  };
 
   # E.g `kani` requires this if installed with `cargo install --locked kani`
   programs.nix-ld = {

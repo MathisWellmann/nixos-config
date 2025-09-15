@@ -74,7 +74,6 @@ in {
       cloudflared
       jjui # terminal user interface for working with jujutsu VSC
       typespeed
-      lazyjj
       sops # Secrets for NixOs
       sequoia # `sq` re-implementation of gpg
 
