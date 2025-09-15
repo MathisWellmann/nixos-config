@@ -1,4 +1,4 @@
-{...}: {
+_: {
   services.xmrig = {
     enable = true;
     settings = {

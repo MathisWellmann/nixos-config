@@ -1,4 +1,4 @@
-{...}: let
+_: let
   const = import ../global_constants.nix;
 in {
   # Bootloader.

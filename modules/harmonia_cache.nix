@@ -1,4 +1,4 @@
-{...}: let
+_: let
   const = import ../hosts/poweredge/constants.nix;
 in {
   services.harmonia = {

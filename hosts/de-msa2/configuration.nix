@@ -79,6 +79,7 @@ in {
         jellyfin = "jellyfin";
         nfs-server = "nfs-server";
         monero = "monero";
+        bitmagnet = "bitmagnet";
       };
     };
   };

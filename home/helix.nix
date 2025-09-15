@@ -1,4 +1,4 @@
-{...}: {
+_: {
   programs.helix = {
     enable = true;
     languages = {
@@ -21,7 +21,7 @@
           completion = {
             model = "qwen3-coder";
             parameters = {
-              max_context = max_context;
+              inherit max_context;
               options.num_predict = 32;
             };
           };
@@ -31,7 +31,7 @@
               action_display_name = "qwen3-coder:30b";
               model = "qwen3coder";
               parameters = {
-                max_context = max_context;
+                inherit max_context;
                 max_tokens = 4096;
                 messages = [
                   {

@@ -1,4 +1,4 @@
-{...}: let
+_: let
   survivor_mount = "/mnt/survivor";
   survivor_uuid = "9DD2-3C7B";
   kingston_mount = "/mnt/kingston";

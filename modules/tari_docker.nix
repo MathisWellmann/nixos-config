@@ -1,4 +1,4 @@
-{...}: let
+_: let
   port = 18142;
 in {
   virtualisation.oci-containers.containers."minotari_node" = {

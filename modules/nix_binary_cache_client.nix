@@ -1,4 +1,4 @@
-{...}: let
+_: let
   poweredge_const = import ../hosts/poweredge/constants.nix;
 in {
   nix.settings.trusted-substituters = [

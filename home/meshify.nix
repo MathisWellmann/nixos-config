@@ -1,4 +1,4 @@
-{...}: let
+_: let
   global_const = import ../global_constants.nix;
 in {
   imports = [

@@ -1,4 +1,4 @@
-{...}: {
+_: {
   users.users.namecoin = {
     isSystemUser = true;
     group = "namecoin";

@@ -1,4 +1,4 @@
-{...}: let
+_: let
   port = 9002;
 in {
   ### Monitoring ###
@@ -6,7 +6,7 @@ in {
     exporters = {
       node = {
         enable = true;
-        port = port;
+        inherit port;
       };
     };
   };

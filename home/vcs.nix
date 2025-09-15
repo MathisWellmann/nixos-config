@@ -1,4 +1,4 @@
-{...}: let
+_: let
   me = "MathisWellmann";
   email = "wellmannmathis@gmail.com";
 in {

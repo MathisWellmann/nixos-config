@@ -1,4 +1,4 @@
-{...}: let
+_: let
   disk_uuid = "/dev/disk/by-uuid/3fa8f257-dcdf-4235-a3c1-ac9100381689";
   backup_hdd = "/mnt/backup_hdd";
 in {
