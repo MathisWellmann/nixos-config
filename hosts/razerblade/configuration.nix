@@ -75,17 +75,22 @@ in {
   #   backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
   # };
 
-  # services.mount_remote_nfs_exports = {
-  #   enable = true;
-  #   nfs_host_name = "poweredge";
-  #   nfs_host_addr = "poweredge";
-  #   nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "pdfs"];
-  # };
-  # fileSystems."/mnt/elitedesk_backup_hdd" = {
-  #   device = "elitedesk:/mnt/backup_hdd";
-  #   fsType = "nfs";
-  #   options = ["rw" "nofail"];
-  # };
+  services.mount_remote_nfs_exports = {
+    enable = true;
+    nfs_host_name = "de-msa2";
+    nfs_host_addr = "de-msa2";
+    nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe" "pdfs"];
+  };
+  fileSystems."/mnt/elitedesk_movies" = {
+    device = "elitedesk:/mnt/external_hdd/movies";
+    fsType = "nfs";
+    options = ["rw" "nofail"];
+  };
+  fileSystems."/mnt/elitedesk_series" = {
+    device = "elitedesk:/mnt/external_hdd/series";
+    fsType = "nfs";
+    options = ["rw" "nofail"];
+  };
   # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
   services.mullvad-vpn.enable = true;
   services.resolved.enable = true;
@@ -119,5 +124,9 @@ in {
       };
       uptime.prefix = "up";
     };
+  };
+  programs.nix-ld = {
+    enable = true;
+    libraries = [];
   };
 }

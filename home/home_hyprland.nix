@@ -247,14 +247,12 @@
           metrics = false;
         };
         vim_mode = false;
-        ui_font_size = 18;
-        buffer_font_size = 18;
+        helix_mode = true;
+        ui_font_size = 14;
+        buffer_font_size = 14;
         lsp = {
-          rust-analyzer = {
-            binary = {
-              path = "/run/current-system/sw/bin/rust-analyzer";
-            };
-          };
+          rust-analyzer.binary.path = "rust-analyzer";
+          pylsp.binary.path = "pylsp";
         };
       };
     };
