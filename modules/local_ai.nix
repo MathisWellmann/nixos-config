@@ -1,4 +1,4 @@
-{pkgs, ...}: let
+{...}: let
   # open-webui_port = 8080;
   # new_ollama = pkgs.ollama.overrideAttrs rec {
   #   version = "0.9.0";
