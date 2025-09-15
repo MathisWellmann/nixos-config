@@ -23,7 +23,6 @@
     qbittorrent
     nemo
     amfora
-    clementine
     bitmagnet
     hyprshot
     pavucontrol
@@ -42,6 +41,10 @@
     # rose-pine-cursor
     # lyra-cursors
     # phinger-cursors
+
+    # Music
+    clementine
+    musikcube
 
     # Video
     mpv

@@ -14,6 +14,7 @@ in {
     ./helix.nix
     ./vcs.nix
     ./shell.nix
+    ./yazi.nix
   ];
 
   # Home Manager needs a bit of information about you and the paths it should
@@ -149,70 +150,6 @@ in {
   programs = {
     # Let Home Manager install and manage itself.
     home-manager.enable = true;
-    yazi = {
-      enable = true;
-      settings = {
-        log.enable = true;
-        opener = {
-          edit = [
-            {
-              run = "hx $0";
-              block = true;
-            }
-          ];
-          image = [
-            {
-              run = "gthumb $@";
-              block = true;
-            }
-          ];
-          play = [
-            {
-              run = "mpv \"$@\"";
-              block = true;
-            }
-          ];
-          document = [
-            {
-              run = "zathura $@";
-              block = true;
-            }
-          ];
-        };
-        open = {
-          rules = [
-            {
-              name = "*.ARW";
-              use = "image";
-            }
-            {
-              name = "*.jpg";
-              use = "image";
-            }
-            {
-              name = "*.png";
-              use = "image";
-            }
-            {
-              name = "*.webm";
-              use = "play";
-            }
-            {
-              name = "*.mp4";
-              use = "play";
-            }
-            {
-              name = "*.pdf";
-              use = "document";
-            }
-            {
-              name = "*.flac";
-              use = "musikcube";
-            }
-          ];
-        };
-      };
-    };
     # to cleanup old nix generations manually: nh clean all --keep 3
     # Its got `nh search`, `nh os switch`
     nh = {
