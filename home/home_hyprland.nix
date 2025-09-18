@@ -123,10 +123,7 @@
         # For rsthd layout on corne keyboard
         "$mainMod, m, movefocus, l"
         "$mainMod, i, movefocus, r"
-        "$mainMod, a, movefocus, u"
-        # "$mainMod, n, movefocus, d"
 
-        "$mainMod, n, movefocus, l"
         "$mainMod, ), movefocus, r"
         "$mainMod, l, movefocus, u"
         "$mainMod, w, movefocus, d"
