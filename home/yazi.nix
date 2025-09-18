@@ -12,7 +12,7 @@
         ];
         image = [
           {
-            run = "gthumb $@";
+            run = "viu $@ && sleep 10";
             block = true;
           }
         ];

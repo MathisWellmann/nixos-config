@@ -45,6 +45,7 @@ in {
   in
     with pkgs; [
       # Misc
+      viu # View images in the terminal, best with `kitty`
       terminus_font
       rdfind # Find duplicate files: e.g.: `rdfind .`
       fend # Unit aware calculator
