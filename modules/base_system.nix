@@ -38,4 +38,17 @@ in {
     enable = true;
     enableSSHSupport = true;
   };
+
+  # Don't ask for user password for main user.
+  security.sudo.extraRules = [
+    {
+      users = [ "${const.username}" ];
+      commands = [
+        {
+          command = "ALL";
+          options = [ "NOPASSWD" ];
+        }
+      ];
+    }
+  ];
 }
