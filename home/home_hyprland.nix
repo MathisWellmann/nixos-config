@@ -93,7 +93,7 @@
       # monitors should be configured in host specific file
       "exec-once" = "waybar & hyprpaper & hyprctl setcursor 'Banana' 48";
 
-      "$terminal" = "alacritty";
+      "$terminal" = "kitty";
       "$menu" = "fuzzel";
       "$mainMod" = "SUPER";
       env = [
