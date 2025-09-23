@@ -50,3 +50,8 @@ When getting something like this:
   error: cached failure of attribute 'nixosConfigurations.poweredge.config.system.build.toplevel'
 ```
 Then you can disable the eval-cache temporarily by running with `--option eval-cache false`.
+
+Check out which package depends on another (for example an insecure one):
+```shell
+nix why-depends /run/current-system $(nix-build '<nixpkgs>' -A electron_35 --no-out-link)
+```

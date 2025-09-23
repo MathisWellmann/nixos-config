@@ -1,13 +1,4 @@
 {pkgs, ...}: let
-  # Tool for cloning all starred github repos
-  solar = pkgs.buildGoModule {
-    name = "solar";
-    src = builtins.fetchGit {
-      url = "https://github.com/gleich/solar";
-      rev = "6b271d88f3b85cec06b3894ea775376e733c3fe5";
-    };
-    vendorHash = "sha256-FIaGChSMHufD+OE9ZP/fgI8TAtVdw/JCuhMAm4vMn/w=";
-  };
   const = import ../global_constants.nix;
 in {
   imports = [
@@ -64,7 +55,6 @@ in {
       ueberzugpp # Required to display images in alacritty with yazi
       compose2nix
       cfspeedtest # CLI for speed.cloudflare.com
-      solar
       ethtool
       mistral-rs # LLM inference written in Rust
       llama-cpp # LLM inference written in C++

@@ -32,7 +32,7 @@
     yt-dlp # youtube downloader
     veracrypt
     libreoffice
-    affine
+    # affine
     labplot
 
     ##### Cursors #####

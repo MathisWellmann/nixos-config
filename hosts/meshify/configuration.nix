@@ -29,7 +29,7 @@ in {
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  networking.nat.enable = true;
+  networking.networkmanager.enable = true;
 
   age.identityPaths = ["/home/${global_const.username}/.ssh/magewe_meshify"];
 
