@@ -129,4 +129,7 @@ in {
     enable = true;
     libraries = [];
   };
+
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 }
