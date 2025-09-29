@@ -1,20 +1,20 @@
-{...}: let
+{pkgs, ...}: let
   # open-webui_port = 8080;
-  # new_ollama = pkgs.ollama.overrideAttrs rec {
-  #   version = "0.9.0";
-  #   src = pkgs.fetchFromGitHub {
-  #     owner = "ollama";
-  #     repo = "ollama";
-  #     tag = "v${version}";
-  #     hash = "sha256-+8UHE9M2JWUARuuIRdKwNkn1hoxtuitVH7do5V5uEg0=";
-  #     fetchSubmodules = true;
-  #   };
-  #   vendorHash = "sha256-t7+GLNC6mRcXq9ErxN6gGki5WWWoEcMfzRVjta4fddA=";
-  # };
+  new_ollama = pkgs.ollama.overrideAttrs rec {
+    version = "0.12.3";
+    src = pkgs.fetchFromGitHub {
+      owner = "ollama";
+      repo = "ollama";
+      tag = "v${version}";
+      hash = "sha256-+8UHE9M2JWUARuuIRdKwNkn1hoxtuitVH7do5V5uEg0=";
+      fetchSubmodules = true;
+    };
+    vendorHash = "sha256-t7+GLNC6mRcXq9ErxN6gGki5WWWoEcMfzRVjta4fddA=";
+  };
 in {
   services.ollama = {
     enable = true;
-    # package = new_ollama;
+    package = new_ollama;
     acceleration = "cuda";
     environmentVariables = {
       OLLAMA_NUM_PARALLEL = "1";

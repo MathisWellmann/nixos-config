@@ -17,7 +17,7 @@ in {
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
-    # ./../../modules/local_ai.nix
+    ./../../modules/local_ai.nix
     ./../../modules/desktop_nvidia.nix
   ];
 

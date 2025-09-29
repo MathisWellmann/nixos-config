@@ -1,4 +1,4 @@
-{...}: let
+_: let
   const = import ./constants.nix;
   static_ips = import ./static_ips.nix;
 in {

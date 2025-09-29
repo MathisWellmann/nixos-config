@@ -25,7 +25,7 @@ in {
       enable = true;
       virtualHost = {
         nginx.enable = true;
-        domain = domain;
+        inherit domain;
       };
       settings = {
         title = "Dashboard of MGW";
