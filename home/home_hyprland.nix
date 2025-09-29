@@ -14,7 +14,7 @@
     # Desktop
     firefox
     # ladybird
-    floorp
+    # floorp-bin
     keepassxc
     # Both are disablede because they require `libsoup` which was marked as insecure.
     gthumb # Image viewer with support for ARW files

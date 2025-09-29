@@ -46,13 +46,14 @@ in {
         splash_offset = 2.0;
         preload = [
           # "/home/magewe/acapulco_wallpaper.jxl"
-          "/home/${global_const.username}/Wallpaper.jpg"
+          "/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
         ];
         # Convert single image into slices using `imagemagick`:
-        # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
+        # magick convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
         wallpaper = [
+          "HDMI-A-1,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
+          "DP-6,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
           "eDP-1,/home/${global_const.username}/Wallpaper.jpg"
-          "DP-3,/home/${global_const.username}/Wallpaper.jpg"
         ];
       };
     };
