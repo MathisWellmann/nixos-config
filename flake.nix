@@ -93,13 +93,6 @@
           {_module.args = inputs;}
         ];
       };
-      thinkpad = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/thinkpad/configuration.nix
-          {_module.args = inputs;}
-        ];
-      };
       tensorbook = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
