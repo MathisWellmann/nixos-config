@@ -1,4 +1,4 @@
-{...}: let
+{pkgs, ...}: let
   global_const = import ../global_constants.nix;
 in {
   imports = [
@@ -62,4 +62,7 @@ in {
       enable = true;
     };
   };
+  home.packages = with pkgs; [
+    stripe-cli
+  ];
 }
