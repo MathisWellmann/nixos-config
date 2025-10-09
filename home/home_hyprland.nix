@@ -34,6 +34,7 @@
     libreoffice
     # affine
     labplot
+    mpvpaper # Animated wallpapers `mpvpaper DP-1 wallpaper_vertical_1080_1920.mp4  -o "loop"`
 
     ##### Cursors #####
     banana-cursor
@@ -80,7 +81,7 @@
     imagemagick
 
     # Development
-    linuxKernel.packages.linux_6_6.perf
+    perf
     hotspot # GUI for Linux perf
     tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
@@ -222,6 +223,7 @@
         confirm_os_window_close = -1;
         shell = "nu";
         font_size = 13;
+        background_opacity = 0.7;
       };
     };
     alacritty = {
