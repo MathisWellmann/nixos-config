@@ -52,7 +52,7 @@
       ];
     };
     settings = {
-      theme = "ayu_mirage"; # Dark
+      theme = "gruvbox-material"; # Dark
       # theme = "onelight";
       keys.normal = {
         "f" = "file_picker";

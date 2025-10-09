@@ -153,16 +153,16 @@
         "$mainMod, mouse:273, resizewindow" # NOTE: mouse:273 = right click
       ];
       general = {
-        "col.active_border" = "rgba(f1c232ee) rgba(00ff99ee) 45deg";
+        "col.active_border" = "rgb(1ECBE1) rgb(E1341E) 45deg";
         "col.inactive_border" = "rgba(595959aa)";
         layout = "dwindle";
         resize_on_border = true;
-        border_size = 3;
-        gaps_in = 0;
-        gaps_out = 0;
+        border_size = 2;
+        gaps_in = 5;
+        gaps_out = 5;
       };
       decoration = {
-        rounding = 0;
+        rounding = 10;
       };
       dwindle = {
         smart_split = true;
@@ -222,8 +222,15 @@
       settings = {
         confirm_os_window_close = -1;
         shell = "nu";
-        font_size = 13;
         background_opacity = 0.7;
+        wheel_scroll_multiplier = 1;
+        repaint_delay = 7; # 7ms is 144hz
+        # Essentially vsync
+        sync_to_monitor = "no";
+      };
+      font = {
+        name = "Terminus";
+        size = 13;
       };
     };
     alacritty = {
