@@ -128,10 +128,13 @@
         # For rsthd layout on corne keyboard
         "$mainMod, m, movefocus, l"
         "$mainMod, i, movefocus, r"
-
-        "$mainMod, ), movefocus, r"
         "$mainMod, l, movefocus, u"
         "$mainMod, w, movefocus, d"
+
+        "$mainMod, left, movefocus, l"
+        "$mainMod, right, movefocus, r"
+        "$mainMod, up, movefocus, u"
+        "$mainMod, down, movefocus, d"
 
         # Switch workspaces with mainMod + [0-9]
         "$mainMod, 0, workspace, 10"

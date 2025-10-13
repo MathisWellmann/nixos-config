@@ -45,6 +45,7 @@ in {
       "wheel"
       "docker"
       "dialout" # Allow access to serial device (for Arduino dev)
+      "tty"
     ];
     packages = [];
     shell = pkgs.nushell;

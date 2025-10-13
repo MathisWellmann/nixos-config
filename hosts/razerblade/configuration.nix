@@ -36,7 +36,13 @@ in {
   users.users."${global_const.username}" = {
     isNormalUser = true;
     description = "${global_const.username}";
-    extraGroups = ["networkmanager" "wheel" "audio"];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+      "audio"
+      "dialout" # Allow access to serial device (for Arduino dev)
+      "tty"
+    ];
     packages = [];
     shell = pkgs.nushell;
   };
