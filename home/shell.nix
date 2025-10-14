@@ -9,7 +9,6 @@
         night = "redshift -P -O 5000";
         bright = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -A 10";
         dim = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -U 10";
-
         todos = "rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
 
         # Cargo
@@ -42,6 +41,7 @@
 
         # Find all the TODO comments in my codebases
         def todo [] { ${pkgs.ripgrep}/bin/rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO | lines };
+        def datecompact [] { date now | format date "%Y%m%d%H%M%S" };
 
         $env.EDITOR = "${pkgs.helix}/bin/hx";
         $env.PATH = ($env.PATH | split row (char esep) |
