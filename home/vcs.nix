@@ -28,7 +28,7 @@ in {
           editor = "hx";
           pager = "delta";
           paginate = "never";
-          diff-formatter = "git";
+          diff-formatter = ["difft" "--color=always" "$left" "$right"];
         };
         snapshot.max-new-file-size = "10MB";
         git.write-change-id-header = true;

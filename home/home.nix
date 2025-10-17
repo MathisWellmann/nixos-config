@@ -119,8 +119,9 @@ in {
 
       # Development
       gitui
-      gh # Github TUI
       lazygit
+      gh # Github TUI
+      difftastic # `difft` executable
       cargo-expand # Expands rust macros
       cargo-info
       cargo-wizard
