@@ -44,6 +44,9 @@ in {
             diff.git(),
           )
         '';
+        revset-aliases."closest_pushable(to)" = ''heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'';
+        # Moves the closest bookmark to the change that can actually be pushed.
+        aliases.tug = ["bookmark" "move" "--from" "heads(::@ & bookmarks())" "--to" "closest_pushable(@)"];
       };
     };
   };
