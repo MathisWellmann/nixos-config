@@ -13,7 +13,7 @@
     beekeeper-studio # Database explorer
     # Desktop
     firefox
-    # ladybird
+    ladybird
     # floorp-bin
     keepassxc
     # Both are disablede because they require `libsoup` which was marked as insecure.
