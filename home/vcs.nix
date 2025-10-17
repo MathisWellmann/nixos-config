@@ -29,6 +29,7 @@ in {
           pager = "delta";
           paginate = "never";
           diff-formatter = ["difft" "--color=always" "$left" "$right"];
+          merge-editor = "mergiraf";
         };
         snapshot.max-new-file-size = "10MB";
         git.write-change-id-header = true;

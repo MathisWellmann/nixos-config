@@ -122,6 +122,7 @@ in {
       lazygit
       gh # Github TUI
       difftastic # `difft` executable
+      mergiraf # Syntax-aware git merge driver.
       cargo-expand # Expands rust macros
       cargo-info
       cargo-wizard
