@@ -23,8 +23,11 @@ in {
   services.openssh.enable = true;
   services.tailscale.enable = true;
 
-  nix.settings.experimental-features = ["nix-command" "flakes"];
-  nix.settings.trusted-users = ["root" "${const.username}"];
+  nix.settings = {
+    experimental-features = ["nix-command" "flakes"];
+    trusted-users = ["root" "${const.username}"];
+    download-buffer-size = 500000000; # 500 MiB
+  };
 
   system.switch = {
     enable = true;
