@@ -31,7 +31,9 @@ in {
     isNormalUser = true;
     description = "${global_const.username}";
     extraGroups = ["networkmanager" "wheel" "audio"];
-    packages = [];
+    packages = with pkgs; [
+      flyctl
+    ];
     shell = pkgs.nushell;
   };
 
