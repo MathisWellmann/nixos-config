@@ -19,6 +19,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/local_ai.nix
     ./../../modules/desktop_nvidia.nix
+    ./../../modules/mount_external_drives.nix
   ];
 
   networking = {
