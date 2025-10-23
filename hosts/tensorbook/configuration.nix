@@ -34,6 +34,7 @@ in {
     extraGroups = ["networkmanager" "wheel" "audio"];
     packages = with pkgs; [
       flyctl
+      bc # GNU calculator
     ];
     shell = pkgs.nushell;
   };
