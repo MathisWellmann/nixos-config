@@ -45,6 +45,9 @@
         # Find all the TODO comments in my codebases
         def todo [] { ${pkgs.ripgrep}/bin/rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO | lines };
         def datecompact [] { date now | format date "%Y%m%d%H%M%S" };
+        def hist [] {
+          history | get command | uniq | str join (char newline) | fzf --height 50% --reverse | history import
+        }
 
         $env.EDITOR = "${pkgs.helix}/bin/hx";
         $env.PATH = ($env.PATH | split row (char esep) |
