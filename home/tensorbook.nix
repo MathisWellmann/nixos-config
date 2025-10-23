@@ -47,6 +47,7 @@ in {
         preload = [
           # "/home/magewe/acapulco_wallpaper.jxl"
           "/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
+          "/home/${global_const.username}/Wallpaper.jpg"
         ];
         # Convert single image into slices using `imagemagick`:
         # magick convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
