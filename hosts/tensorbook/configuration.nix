@@ -35,6 +35,7 @@ in {
     packages = with pkgs; [
       flyctl
       bc # GNU calculator
+      bun
     ];
     shell = pkgs.nushell;
   };
