@@ -36,6 +36,7 @@ in {
       flyctl
       bc # GNU calculator
       bun
+      supabase-cli
     ];
     shell = pkgs.nushell;
   };
