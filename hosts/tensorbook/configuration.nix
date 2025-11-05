@@ -4,6 +4,7 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
 }: let
   hostname = "tensorbook";
@@ -21,6 +22,7 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
   ];
+  time.timeZone = lib.mkForce "America/Los_Angeles";
 
   networking = {
     hostName = "${hostname}";
