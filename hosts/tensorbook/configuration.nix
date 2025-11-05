@@ -37,6 +37,7 @@ in {
       bc # GNU calculator
       bun
       supabase-cli
+      nixpacks
     ];
     shell = pkgs.nushell;
   };
