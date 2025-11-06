@@ -100,6 +100,7 @@ in {
       neofetch
       onefetch
       # oxker     # Docker tui
+      dive # Tool for exploring each layer in a docker image
       alejandra # Nix formatter
       openvpn
       kmon # Linux kernel manager and activity monitor
