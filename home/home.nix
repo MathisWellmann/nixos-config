@@ -39,6 +39,7 @@ in {
       viu # View images in the terminal, best with `kitty`
       unsure # Calculate with numbers you are unsure about.
       jq # Json toolkit
+      yq # YAML, JSON, INI and XML processor, like an extended jq
       terminus_font
       rdfind # Find duplicate files: e.g.: `rdfind .`
       fend # Unit aware calculator
