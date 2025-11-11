@@ -100,4 +100,8 @@ in {
     docker.enable = true;
     podman.enable = true;
   };
+  # Link /bin/bash to bash
+  systemd.tmpfiles.rules = [
+    "L /bin/bash - - - - ${pkgs.bash}/bin/bash"
+  ];
 }
