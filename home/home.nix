@@ -70,7 +70,7 @@ in {
       typespeed
       # lazyjj # Broken
       sops # Secrets for NixOs
-      sequoia # `sq` re-implementation of gpg
+      sequoia-sq # `sq` re-implementation of gpg
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
@@ -113,7 +113,7 @@ in {
       dmidecode
       iperf
       parallel
-      du-dust
+      dust # Check disk usage of directories.
       broot # Navigate directory trees.
       ouch # Obvious unified compression helper
       rage # Modern encryption implemented in rust. Go reference is `age`
