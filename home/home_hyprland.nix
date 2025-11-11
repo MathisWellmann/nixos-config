@@ -35,6 +35,7 @@
     # affine
     labplot
     mpvpaper # Animated wallpapers `mpvpaper DP-1 wallpaper_vertical_1080_1920.mp4  -o "loop"`
+    obs-studio
 
     ##### Cursors #####
     banana-cursor
