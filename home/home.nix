@@ -114,6 +114,7 @@ in {
       iperf
       parallel
       du-dust
+      broot # Navigate directory trees.
       ouch # Obvious unified compression helper
       rage # Modern encryption implemented in rust. Go reference is `age`
       bend # A massively parallel, high-level programming language
