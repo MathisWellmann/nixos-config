@@ -4,6 +4,7 @@
 {
   pkgs,
   inputs,
+  lib,
   ...
 }: let
   hostname = "razerblade";
@@ -24,6 +25,7 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
   ];
+  time.timeZone = lib.mkForce "Europe/London";
 
   networking = {
     hostName = "${hostname}";
