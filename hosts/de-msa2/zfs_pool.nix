@@ -2,36 +2,38 @@
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
 in {
-  boot.supportedFilesystems = ["zfs"];
-  boot.kernelParams = ["zfs.zfs_arc_max=64000000000"]; # 64GB ARC size limit
-  boot.zfs = {
-    forceImportRoot = false;
-    extraPools = [
-      "nvme_pool"
-    ];
-  };
-
-  services.zfs = {
-    autoScrub = {
-      enable = true;
-      interval = "weekly";
-      pools = [
+  boot = {
+    supportedFilesystems = ["zfs"];
+    kernelParams = ["zfs.zfs_arc_max=64000000000"]; # 64GB ARC size limit
+    zfs = {
+      forceImportRoot = false;
+      extraPools = [
         "nvme_pool"
       ];
     };
-    autoSnapshot = {
-      enable = true;
-      daily = 7; # Keep 7 daily snapshots
-    };
-    trim = {
-      enable = true;
-      interval = "weekly";
-    };
   };
+
   networking.firewall.allowedTCPPorts = [
     const.nfs_port
   ];
   services = {
+    zfs = {
+      autoScrub = {
+        enable = true;
+        interval = "weekly";
+        pools = [
+          "nvme_pool"
+        ];
+      };
+      autoSnapshot = {
+        enable = true;
+        daily = 7; # Keep 7 daily snapshots
+      };
+      trim = {
+        enable = true;
+        interval = "weekly";
+      };
+    };
     nfs.server = let
       meshify_addr = "meshify";
       razerblade_addr = "razerblade";

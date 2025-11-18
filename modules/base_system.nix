@@ -2,9 +2,11 @@ _: let
   const = import ../global_constants.nix;
 in {
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-  boot.initrd.systemd.enable = true;
+  boot = {
+    loader.systemd-boot.enable = true;
+    loader.efi.canTouchEfiVariables = true;
+    initrd.systemd.enable = true;
+  };
 
   nixpkgs.config.allowUnfree = true;
 
@@ -20,8 +22,10 @@ in {
     ];
   };
 
-  services.openssh.enable = true;
-  services.tailscale.enable = true;
+  services = {
+    openssh.enable = true;
+    tailscale.enable = true;
+  };
 
   nix.settings = {
     experimental-features = ["nix-command" "flakes"];
@@ -35,11 +39,12 @@ in {
 
   hardware.keyboard.qmk.enable = true;
 
-  programs.dconf.enable = true;
-
-  programs.gnupg.agent = {
-    enable = true;
-    enableSSHSupport = true;
+  programs = {
+    dconf.enable = true;
+    gnupg.agent = {
+      enable = true;
+      enableSSHSupport = true;
+    };
   };
 
   # Don't ask for user password for main user.

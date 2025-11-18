@@ -23,6 +23,7 @@ in {
     ./../../modules/searx.nix
     ./firefly.nix
     ./mafl.nix
+    ./zfs.nix
   ];
 
   # Define a user account. Don't forget to set a password with ‘passwd’.
@@ -49,25 +50,6 @@ in {
   # Before changing this value read the documentation for this option
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
-
-  boot.supportedFilesystems = ["zfs"];
-  boot.kernelParams = ["zfs.zfs_arc_max=128000000000"]; # 128 GB ARC size limit
-  boot.zfs = {
-    forceImportRoot = false;
-    extraPools = ["SATA_SSD_POOL"];
-  };
-  services.zfs = {
-    autoScrub = {
-      enable = true;
-      interval = "weekly";
-      pools = ["SATA_SSD_POOL"];
-    };
-    autoSnapshot.enable = true;
-    trim = {
-      enable = true;
-      interval = "weekly";
-    };
-  };
 
   networking = {
     hostName = const.hostname;
@@ -252,11 +234,6 @@ in {
   virtualisation.docker.enable = true;
 
   ### Backup Section ###
-  fileSystems."/mnt/${const.backup_host}_backup" = {
-    device = "${const.backup_host}:${const.backup_target_dir}";
-    fsType = "nfs";
-    options = ["rw" "rsize=131072" "wsize=131072"];
-  };
   services.restic.backups = {
     zfs_sata_ssd_pool = {
       initialize = true;
@@ -337,24 +314,29 @@ in {
     };
   };
 
-  fileSystems."/mnt/desg0_magewe" = {
-    device = "${static_ips.desg0_ip}:/nvme_pool/magewe";
-    fsType = "nfs";
+  fileSystems = let
     options = ["rw" "rsize=131072" "wsize=131072"];
-  };
-  fileSystems."/mnt/desg0_ilka" = {
-    device = "${static_ips.desg0_ip}:/nvme_pool/ilka";
     fsType = "nfs";
-    options = ["rw" "rsize=131072" "wsize=131072"];
-  };
-  fileSystems."/mnt/elitedesk_movies" = {
-    device = "${static_ips.elitedesk_ip}:/mnt/external_hdd/movies";
-    fsType = "nfs";
-    options = ["rw" "rsize=131072" "wsize=131072"];
-  };
-  fileSystems."/mnt/elitedesk_series" = {
-    device = "${static_ips.elitedesk_ip}:/mnt/external_hdd/series";
-    fsType = "nfs";
-    options = ["rw" "rsize=131072" "wsize=131072"];
+  in {
+    "/mnt/${const.backup_host}_backup" = {
+      device = "${const.backup_host}:${const.backup_target_dir}";
+      inherit fsType options;
+    };
+    "/mnt/desg0_magewe" = {
+      device = "${static_ips.desg0_ip}:/nvme_pool/magewe";
+      inherit fsType options;
+    };
+    "/mnt/desg0_ilka" = {
+      device = "${static_ips.desg0_ip}:/nvme_pool/ilka";
+      inherit fsType options;
+    };
+    "/mnt/elitedesk_movies" = {
+      device = "${static_ips.elitedesk_ip}:/mnt/external_hdd/movies";
+      inherit fsType options;
+    };
+    "/mnt/elitedesk_series" = {
+      device = "${static_ips.elitedesk_ip}:/mnt/external_hdd/series";
+      inherit fsType options;
+    };
   };
 }

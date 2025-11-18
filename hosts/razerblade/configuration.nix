@@ -71,7 +71,10 @@ in {
     NIXOS_OZONE_WL = 1;
   };
 
-  hardware.brillo.enable = true; # Brightness adjustment, e.g.: `brillo -u 150000 -S 100`
+  hardware = {
+    brillo.enable = true; # Brightness adjustment, e.g.: `brillo -u 150000 -S 100`
+    ledger.enable = true;
+  };
 
   # services.backup_home_to_remote = {
   #   enable = true;
@@ -81,27 +84,31 @@ in {
   #   backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
   # };
 
-  services.mount_remote_nfs_exports = {
-    enable = true;
-    nfs_host_name = "de-msa2";
-    nfs_host_addr = "de-msa2";
-    nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe" "pdfs"];
+  services = {
+    mount_remote_nfs_exports = {
+      enable = true;
+      nfs_host_name = "de-msa2";
+      nfs_host_addr = "de-msa2";
+      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe" "pdfs"];
+    };
+    # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
+    mullvad-vpn.enable = true;
+    resolved.enable = true;
+    blueman.enable = true;
   };
-  fileSystems."/mnt/elitedesk_movies" = {
-    device = "elitedesk:/mnt/external_hdd/movies";
-    fsType = "nfs";
-    options = ["rw" "nofail"];
+  fileSystems = {
+    "/mnt/elitedesk_movies" = {
+      device = "elitedesk:/mnt/external_hdd/movies";
+      fsType = "nfs";
+      options = ["rw" "nofail"];
+    };
+    "/mnt/elitedesk_series" = {
+      device = "elitedesk:/mnt/external_hdd/series";
+      fsType = "nfs";
+      options = ["rw" "nofail"];
+    };
   };
-  fileSystems."/mnt/elitedesk_series" = {
-    device = "elitedesk:/mnt/external_hdd/series";
-    fsType = "nfs";
-    options = ["rw" "nofail"];
-  };
-  # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
-  services.mullvad-vpn.enable = true;
-  services.resolved.enable = true;
 
-  hardware.ledger.enable = true;
   services.trezord.enable = true;
 
   virtualisation.virtualbox.host.enable = true;
@@ -113,29 +120,30 @@ in {
   #   };
   # };
 
-  programs.rust-motd = {
-    enable = true;
-    settings = {
-      banner = {
-        color = "black";
-        command = "${pkgs.neofetch}/bin/neofetch";
+  programs = {
+    rust-motd = {
+      enable = true;
+      settings = {
+        banner = {
+          color = "black";
+          command = "${pkgs.neofetch}/bin/neofetch";
+        };
+        filesystems = {
+          root = "/";
+        };
+        service_status = {
+          tailscale = "tailscaled";
+          prometheus-exporter = "prometheus-node-exporter";
+          restic-backups-home = "restic-backups-home";
+        };
+        uptime.prefix = "up";
       };
-      filesystems = {
-        root = "/";
-      };
-      service_status = {
-        tailscale = "tailscaled";
-        prometheus-exporter = "prometheus-node-exporter";
-        restic-backups-home = "restic-backups-home";
-      };
-      uptime.prefix = "up";
     };
-  };
-  programs.nix-ld = {
-    enable = true;
-    libraries = [];
+    nix-ld = {
+      enable = true;
+      libraries = [];
+    };
   };
 
   hardware.bluetooth.enable = true;
-  services.blueman.enable = true;
 }

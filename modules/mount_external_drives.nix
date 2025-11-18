@@ -8,43 +8,42 @@ _: let
   fiio_card = "/mnt/fiio_card";
   fiio_uuid = "C402-82E0";
 in {
-  fileSystems."${survivor_mount}" = {
-    device = "/dev/disk/by-uuid/${survivor_uuid}";
-    fsType = "vfat";
-    options = [
-      # If you don't have this options attribute, it'll default to "defaults"
-      "users" # Allows any user to mount and unmount
-      "nofail" # Prevent system from failing if this drive doesn't mount
-    ];
-  };
-
-  fileSystems.${kingston_mount} = {
-    device = "/dev/disk/by-uuid/${kingston_uuid}";
-    fsType = "ext4";
-    options = [
-      # If you don't have this options attribute, it'll default to "defaults"
-      "users" # Allows any user to mount and unmount
-      "nofail" # Prevent system from failing if this drive doesn't mount
-    ];
-  };
-
-  fileSystems.${san_disk_mount} = {
-    device = "/dev/disk/by-uuid/${san_disk_uuid}";
-    fsType = "ext4";
-    options = [
-      # If you don't have this options attribute, it'll default to "defaults"
-      "users" # Allows any user to mount and unmount
-      "nofail" # Prevent system from failing if this drive doesn't mount
-    ];
-  };
-
-  fileSystems.${fiio_card} = {
-    device = "/dev/disk/by-uuid/${fiio_uuid}";
-    fsType = "exfat";
-    options = [
-      # If you don't have this options attribute, it'll default to "defaults"
-      "users" # Allows any user to mount and unmount
-      "nofail" # Prevent system from failing if this drive doesn't mount
-    ];
+  fileSystems = {
+    "${survivor_mount}" = {
+      device = "/dev/disk/by-uuid/${survivor_uuid}";
+      fsType = "vfat";
+      options = [
+        # If you don't have this options attribute, it'll default to "defaults"
+        "users" # Allows any user to mount and unmount
+        "nofail" # Prevent system from failing if this drive doesn't mount
+      ];
+    };
+    ${kingston_mount} = {
+      device = "/dev/disk/by-uuid/${kingston_uuid}";
+      fsType = "ext4";
+      options = [
+        # If you don't have this options attribute, it'll default to "defaults"
+        "users" # Allows any user to mount and unmount
+        "nofail" # Prevent system from failing if this drive doesn't mount
+      ];
+    };
+    ${san_disk_mount} = {
+      device = "/dev/disk/by-uuid/${san_disk_uuid}";
+      fsType = "ext4";
+      options = [
+        # If you don't have this options attribute, it'll default to "defaults"
+        "users" # Allows any user to mount and unmount
+        "nofail" # Prevent system from failing if this drive doesn't mount
+      ];
+    };
+    ${fiio_card} = {
+      device = "/dev/disk/by-uuid/${fiio_uuid}";
+      fsType = "exfat";
+      options = [
+        # If you don't have this options attribute, it'll default to "defaults"
+        "users" # Allows any user to mount and unmount
+        "nofail" # Prevent system from failing if this drive doesn't mount
+      ];
+    };
   };
 }

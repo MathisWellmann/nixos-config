@@ -68,21 +68,6 @@ in {
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.11"; # Did you read the comment?
 
-  services.backup_home_to_remote = {
-    enable = true;
-    local_username = "${global_const.username}";
-    backup_host_addr = "poweredge";
-    backup_host_name = "poweredge";
-    backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
-  };
-
-  services.mount_remote_nfs_exports = {
-    enable = true;
-    nfs_host_name = "de-msa2";
-    nfs_host_addr = "de-msa2";
-    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
-  };
-
   programs = {
     rust-motd = {
       enable = true;
@@ -108,29 +93,43 @@ in {
       };
     };
     npm.enable = true;
+    # E.g `kani` requires this if installed with `cargo install --locked kani`
+    nix-ld = {
+      enable = true;
+      libraries = [];
+    };
   };
 
   # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
   services = {
     mullvad-vpn.enable = true;
     resolved.enable = true;
+    backup_home_to_remote = {
+      enable = true;
+      local_username = "${global_const.username}";
+      backup_host_addr = "poweredge";
+      backup_host_name = "poweredge";
+      backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
+    };
+    mount_remote_nfs_exports = {
+      enable = true;
+      nfs_host_name = "de-msa2";
+      nfs_host_addr = "de-msa2";
+      nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
+    };
   };
 
-  # E.g `kani` requires this if installed with `cargo install --locked kani`
-  programs.nix-ld = {
-    enable = true;
-    libraries = [];
-  };
-
-  fileSystems."/mnt/elitedesk_series" = {
-    device = "${static_ips.elitedesk_ip}:/external_hdd/series";
-    fsType = "nfs";
-    options = ["rw" "rsize=131072" "wsize=131072"];
-  };
-  fileSystems."/mnt/elitedesk_movies" = {
-    device = "${static_ips.elitedesk_ip}:/external_hdd/movies";
-    fsType = "nfs";
-    options = ["rw" "rsize=131072" "wsize=131072"];
+  fileSystems = {
+    "/mnt/elitedesk_series" = {
+      device = "${static_ips.elitedesk_ip}:/external_hdd/series";
+      fsType = "nfs";
+      options = ["rw" "rsize=131072" "wsize=131072"];
+    };
+    "/mnt/elitedesk_movies" = {
+      device = "${static_ips.elitedesk_ip}:/external_hdd/movies";
+      fsType = "nfs";
+      options = ["rw" "rsize=131072" "wsize=131072"];
+    };
   };
 
   sops = {

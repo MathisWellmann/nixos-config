@@ -22,7 +22,7 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
   ];
-  time.timeZone = lib.mkForce "America/Los_Angeles";
+  time.timeZone = lib.mkForce "Europe/London";
 
   networking = {
     hostName = "${hostname}";
@@ -60,8 +60,28 @@ in {
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "24.05"; # Did you read the comment?
 
-  programs.hyprland = {
-    enable = true;
+  programs = {
+    hyprland = {
+      enable = true;
+    };
+    rust-motd = {
+      enable = true;
+      settings = {
+        banner = {
+          color = "black";
+          command = "${pkgs.neofetch}/bin/neofetch";
+        };
+        filesystems = {
+          root = "/";
+        };
+        service_status = {};
+        uptime.prefix = "up";
+      };
+    };
+    nix-ld = {
+      enable = true;
+      libraries = [];
+    };
   };
 
   environment.sessionVariables = {
@@ -70,26 +90,8 @@ in {
 
   hardware.brillo.enable = true; # Brightness adjustment, e.g.: `brillo -u 150000 -S 100`
 
-  programs.rust-motd = {
-    enable = true;
-    settings = {
-      banner = {
-        color = "black";
-        command = "${pkgs.neofetch}/bin/neofetch";
-      };
-      filesystems = {
-        root = "/";
-      };
-      service_status = {};
-      uptime.prefix = "up";
-    };
-  };
   # Required for being able to download inside `nix build` environment, e.g rust dependencies pulling in data.
   nix.settings.sandbox = false;
-  programs.nix-ld = {
-    enable = true;
-    libraries = [];
-  };
   fonts.fontconfig.enable = true;
   fonts.packages = with pkgs; [
     noto-fonts

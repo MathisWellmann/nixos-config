@@ -75,28 +75,28 @@ in {
     NIXOS_OZONE_WL = 1;
   };
 
-  services.backup_home_to_remote = {
-    enable = true;
-    local_username = "${username}";
-    backup_host_addr = "169.254.90.239";
-    backup_host_name = "poweredge";
-    backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
+  services = {
+    backup_home_to_remote = {
+      enable = true;
+      local_username = "${username}";
+      backup_host_addr = "169.254.90.239";
+      backup_host_name = "poweredge";
+      backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
+    };
+    mount_remote_nfs_exports = {
+      enable = true;
+      nfs_host_name = "poweredge";
+      # nfs_host_addr = "169.254.80.160";
+      nfs_host_addr = "poweredge";
+      nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "ilka" "pdfs"];
+    };
+    # Care must be taken when usin luks, see:
+    # https://kokada.capivaras.dev/blog/an-unordered-list-of-hidden-gems-inside-nixos/
+    fstrim.enable = true;
+
+    trezord.enable = true;
   };
-
-  services.mount_remote_nfs_exports = {
-    enable = true;
-    nfs_host_name = "poweredge";
-    # nfs_host_addr = "169.254.80.160";
-    nfs_host_addr = "poweredge";
-    nfs_dirs = map (dir: "/SATA_SSD_POOL/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission" "ilka" "pdfs"];
-  };
-
-  # Care must be taken when usin luks, see:
-  # https://kokada.capivaras.dev/blog/an-unordered-list-of-hidden-gems-inside-nixos/
-  services.fstrim.enable = true;
-
   hardware.ledger.enable = true;
-  services.trezord.enable = true;
 
   programs.rust-motd = {
     enable = true;
@@ -122,19 +122,6 @@ in {
         restic-backups-home = "restic-backups-home";
       };
       uptime.prefix = "up";
-    };
-  };
-
-  services.nats = {
-    enable = true;
-    jetstream = true;
-    port = nats_port;
-    serverName = "nats-${hostname}";
-    settings = {
-      jetstream = {
-        max_mem = "1G";
-        max_file = "10G";
-      };
     };
   };
 }
