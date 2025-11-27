@@ -8,7 +8,6 @@
 }: let
   hostname = "de-rosen";
   username = "magewe";
-  nats_port = 4222;
   mongodb_port = 27017;
 in {
   imports = [
