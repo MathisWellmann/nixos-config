@@ -1,13 +1,14 @@
 _: let
-  me = "MathisWellmann";
+  name = "MathisWellmann";
   email = "wellmannmathis@gmail.com";
 in {
   programs = {
     git = {
       enable = true;
-      userName = "${me}";
-      userEmail = "${email}";
-      extraConfig = {
+      settings = {
+        user = {
+          inherit name email;
+        };
         push = {autoSetupRemote = true;};
         init = {
           defaultBranch = "main";
@@ -21,7 +22,7 @@ in {
       enable = true;
       settings = {
         user = {
-          name = "${me}";
+          name = "${name}";
           email = "${email}";
         };
         ui = {

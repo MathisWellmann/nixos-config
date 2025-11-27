@@ -86,9 +86,9 @@
     hotspot # GUI for Linux perf
     tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
-    tlaplusToolbox
-    redisinsight
-    mongodb-compass
+    # tlaplusToolbox
+    # redisinsight
+    # mongodb-compass
   ];
 
   wayland.windowManager.hyprland = {
@@ -189,7 +189,7 @@
         "jnmbobjmhlngoefaiojfljckilhhlhcj" # OneKey Wallet
       ];
     };
-    librewolf.enable = true;
+    # librewolf.enable = true; # Takes way to long to compile (2h)
     fuzzel = {
       enable = true;
       settings = {
