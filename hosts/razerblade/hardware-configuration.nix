@@ -2,6 +2,7 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
+  pkgs,
   config,
   lib,
   modulesPath,
@@ -12,10 +13,14 @@
   ];
 
   boot = {
-    initrd.availableKernelModules = ["xhci_pci" "nvme" "thunderbolt" "usbhid" "uas" "sd_mod" "sdhci_pci"];
-    initrd.kernelModules = [];
+    initrd = {
+      availableKernelModules = ["xhci_pci" "nvme" "thunderbolt" "usbhid" "uas" "sd_mod" "sdhci_pci"];
+      kernelModules = [];
+      luks.devices."luks-dd6d150a-5093-4f8c-855f-7ff690e88ed6".device = "/dev/disk/by-uuid/dd6d150a-5093-4f8c-855f-7ff690e88ed6";
+    };
     kernelModules = ["kvm-intel"];
     extraModulePackages = [];
+    kernelPackages = pkgs.linuxPackages_latest;
   };
 
   fileSystems = {
@@ -29,8 +34,6 @@
       options = ["fmask=0077" "dmask=0077"];
     };
   };
-
-  boot.initrd.luks.devices."luks-dd6d150a-5093-4f8c-855f-7ff690e88ed6".device = "/dev/disk/by-uuid/dd6d150a-5093-4f8c-855f-7ff690e88ed6";
 
   swapDevices = [];
 
