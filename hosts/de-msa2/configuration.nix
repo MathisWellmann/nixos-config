@@ -69,6 +69,13 @@ in {
       };
       filesystems = {
         root = "/";
+        nvme_pool_magewe = "/nvme_pool/magewe";
+        nvme_pool_ilka = "/nvme_pool/ilka";
+        nvme_pool_gitea = "/nvme_pool/gitea";
+        nvme_pool_mongodb = "/nvme_pool/mongodb";
+        nvme_pool_music = "/nvme_pool/music";
+        nvme_pool_pdfs = "/nvme_pool/pdfs";
+        nvme_pool_video = "/nvme_pool/video";
       };
       service_status = {
         tailscale = "tailscaled";

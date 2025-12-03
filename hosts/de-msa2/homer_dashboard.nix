@@ -5,22 +5,22 @@
   domain = "homer.homelab";
 in {
   services = {
-    caddy = {
-      enable = true;
-      virtualHosts."${domain}" = {
-        listenAddresses = [
-          "${static_ips.elitedesk_ip}:80"
-        ];
-        extraConfig = ''
-          tls internal
-          handle {
-                  reverse_proxy 127.0.0.1:8080 {
-                      flush_interval -1
-              }
-            }
-        '';
-      };
-    };
+    # caddy = {
+    #   enable = true;
+    #   virtualHosts."${domain}" = {
+    #     listenAddresses = [
+    #       "${static_ips.elitedesk_ip}:80"
+    #     ];
+    #     extraConfig = ''
+    #       tls internal
+    #       handle {
+    #               reverse_proxy 127.0.0.1:8080 {
+    #                   flush_interval -1
+    #           }
+    #         }
+    #     '';
+    #   };
+    # };
     homer = {
       enable = true;
       virtualHost = {
