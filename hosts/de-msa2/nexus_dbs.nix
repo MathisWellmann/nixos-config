@@ -10,19 +10,19 @@ in {
       "standalone"
       "start"
       "--http-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_http_port}"
+      "0.0.0.0:${toString const.greptimedb_http_port}"
       "--rpc-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_rpc_port}"
+      "0.0.0.0:${toString const.greptimedb_rpc_port}"
       "--mysql-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_mysql_port}"
+      "0.0.0.0:${toString const.greptimedb_mysql_port}"
       "--postgres-addr"
-      "0.0.0.0:${builtins.toString const.greptimedb_postgres_port}"
+      "0.0.0.0:${toString const.greptimedb_postgres_port}"
     ];
     ports = [
-      "${builtins.toString const.greptimedb_http_port}:${builtins.toString const.greptimedb_http_port}"
-      "${builtins.toString const.greptimedb_rpc_port}:${builtins.toString const.greptimedb_rpc_port}"
-      "${builtins.toString const.greptimedb_mysql_port}:${builtins.toString const.greptimedb_mysql_port}"
-      "${builtins.toString const.greptimedb_postgres_port}:${builtins.toString const.greptimedb_postgres_port}"
+      "${toString const.greptimedb_http_port}:${toString const.greptimedb_http_port}"
+      "${toString const.greptimedb_rpc_port}:${toString const.greptimedb_rpc_port}"
+      "${toString const.greptimedb_mysql_port}:${toString const.greptimedb_mysql_port}"
+      "${toString const.greptimedb_postgres_port}:${toString const.greptimedb_postgres_port}"
     ];
     volumes = [
       "/nvme_pool/greptimedb:/greptimedb_data"
@@ -31,7 +31,7 @@ in {
   virtualisation.oci-containers.containers."dragonfly" = {
     image = "docker.dragonflydb.io/dragonflydb/dragonfly";
     ports = [
-      "${builtins.toString const.dragonfly_port}:6379"
+      "${toString const.dragonfly_port}:6379"
     ];
     extraOptions = ["--ulimit" "memlock=-1"];
   };
@@ -41,15 +41,15 @@ in {
   #   user = "${global_const.username}";
   #   bind_ip = "0.0.0.0";
   # };
-  # Raise open file limits for mongodb.
-  security.pam.services.mongodb.limits = [
-    {
-      domain = "*";
-      type = "soft";
-      item = "nofile";
-      value = "1000000";
-    }
-  ];
+  # # Raise open file limits for mongodb.
+  # security.pam.services.mongodb.limits = [
+  #   {
+  #     domain = "*";
+  #     type = "soft";
+  #     item = "nofile";
+  #     value = "1000000";
+  #   }
+  # ];
   networking.firewall.allowedTCPPorts = [
     const.greptimedb_http_port
     const.greptimedb_rpc_port
