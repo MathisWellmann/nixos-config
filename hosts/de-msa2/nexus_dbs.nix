@@ -3,7 +3,7 @@ _: let
 in {
   # Nexus Database
   virtualisation.oci-containers.containers."greptimedb" = let
-    version = "v0.15.1";
+    version = "v1.0.0-beta.2";
   in {
     image = "greptime/greptimedb:${version}";
     cmd = [
