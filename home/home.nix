@@ -1,4 +1,4 @@
-{pkgs, ...}: let
+{pkgs, inputs, ...}: let
   const = import ../global_constants.nix;
 in {
   imports = [
@@ -87,6 +87,7 @@ in {
       nix-inspect
       deadnix # Dead code detection for nix
       statix # Lints and suggestions for nix code
+      inputs.nox.packages.${system}.default # Nix options search
 
       # LSPs
       marksman # Markdown LSP

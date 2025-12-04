@@ -12,8 +12,14 @@
       url = "github:Mic92/sops-nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-
-    agenix.url = "github:ryantm/agenix";
+    agenix = {
+      url = "github:ryantm/agenix";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
+    nox = {
+      url = "github:madsbv/nix-options-search";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # Local paths
     # tikr = {

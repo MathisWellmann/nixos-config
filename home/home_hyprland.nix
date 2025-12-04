@@ -88,7 +88,7 @@
     heaptrack # Heap memory profiler for linux
     # tlaplusToolbox
     # redisinsight
-    # mongodb-compass
+    mongodb-compass
   ];
 
   wayland.windowManager.hyprland = {
