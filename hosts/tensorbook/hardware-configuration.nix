@@ -2,6 +2,7 @@
 # and may be overwritten by future invocations.  Please make changes
 # to /etc/nixos/configuration.nix instead.
 {
+  pkgs,
   config,
   lib,
   modulesPath,
@@ -18,6 +19,7 @@
     };
     kernelModules = ["kvm-intel"];
     extraModulePackages = [];
+    kernelPackages = pkgs.linuxPackages_latest;
   };
 
   fileSystems."/" = {
