@@ -115,7 +115,7 @@ in {
       enable = true;
       nfs_host_name = "de-msa2";
       nfs_host_addr = "de-msa2";
-      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe" "torrents_transmission"];
+      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
     };
   };
 

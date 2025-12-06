@@ -1,4 +1,8 @@
-{pkgs, inputs, ...}: let
+{
+  pkgs,
+  inputs,
+  ...
+}: let
   const = import ../global_constants.nix;
 in {
   imports = [
