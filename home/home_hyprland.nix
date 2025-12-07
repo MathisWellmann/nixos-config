@@ -38,8 +38,7 @@
     obs-studio
 
     ##### Cursors #####
-    banana-cursor
-    # fuchsia-cursor
+    # banana-cursor
     # rose-pine-cursor
     # lyra-cursors
     # phinger-cursors
@@ -248,6 +247,17 @@
           # normal.family = "DepartureMonoNerdFont";
         };
         terminal.shell.program = "nu";
+      };
+    };
+    ghostty = {
+      enable = true;
+      settings = {
+        theme = "catppuccin-mocha";
+        font-size = 16;
+        keybind = [
+          "ctrl+h=goto_split:left"
+          "ctrl+l=goto_split:right"
+        ];
       };
     };
     zed-editor = {
