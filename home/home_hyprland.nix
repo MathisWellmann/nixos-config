@@ -98,7 +98,7 @@
       # monitors should be configured in host specific file
       "exec-once" = "waybar & hyprpaper & hyprctl setcursor 'Banana' 48";
 
-      "$terminal" = "kitty";
+      "$terminal" = "ghostty";
       "$menu" = "fuzzel";
       "$mainMod" = "SUPER";
       env = [
@@ -252,7 +252,6 @@
     ghostty = {
       enable = true;
       settings = {
-        theme = "catppuccin-mocha";
         font-size = 16;
         keybind = [
           "ctrl+h=goto_split:left"
