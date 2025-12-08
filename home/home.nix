@@ -97,6 +97,7 @@ in {
       tinymist # Typst markup language with `.typ` file extension
       lsp-ai # language server that serves as a backend for AI-powered functionality
       codebook
+      zls # Zig LSP
 
       # Terminal
       tokei
