@@ -20,6 +20,7 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/local_ai.nix
+    ./../../modules/monero_miner.nix
     inputs.home-manager.nixosModules.default
   ];
 
