@@ -104,6 +104,7 @@ in {
     # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
     mullvad-vpn.enable = true;
     resolved.enable = true;
+    blueman.enable = true;
     backup_home_to_remote = {
       enable = true;
       local_username = "${global_const.username}";
