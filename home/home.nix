@@ -132,6 +132,7 @@ in {
       rage # Modern encryption implemented in rust. Go reference is `age`
       # bend # A massively parallel, high-level programming language
       # futhark # A data-parallel functional programming language
+      kew # music player for shell
 
       # Development
       gitui
