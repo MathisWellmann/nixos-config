@@ -20,6 +20,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/monero.nix
+    ./../../modules/monero_miner.nix
     ./../../modules/adguardhome.nix
   ];
 
