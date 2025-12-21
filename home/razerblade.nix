@@ -8,6 +8,7 @@ in {
   programs.alacritty.settings.font.size = lib.mkForce 10;
   wayland.windowManager.hyprland = {
     settings = {
+      "exec-once" = ''waybar & hyprctl setcursor 'Banana' 48 & mpvpaper -vs -o "no-audio loop" eDP-1 ~/orange-train-at-sunset.3840x2160.mp4'';
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
         "XDG_SESSION_TYPE,wayland"

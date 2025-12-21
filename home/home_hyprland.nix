@@ -95,9 +95,6 @@
     # xwayland.enable = true;
     # package = stable.hyprland;
     settings = {
-      # monitors should be configured in host specific file
-      "exec-once" = "waybar & hyprpaper & hyprctl setcursor 'Banana' 48";
-
       "$terminal" = "ghostty";
       "$menu" = "fuzzel";
       "$mainMod" = "SUPER";
@@ -196,7 +193,7 @@
           font = "JetBrains Mono:size=20";
           dpi-aware = false;
           prompt = "'> '";
-          terminal = "alacritty";
+          terminal = "ghostty";
 
           lines = 20;
           width = 60;
@@ -254,8 +251,8 @@
       settings = {
         font-size = 16;
         mouse-scroll-multiplier = "1.0";
-        # background-opacity = 0.8;
-        # background-blur = true;
+        background-opacity = 0.7;
+        background-blur = true;
         keybind = [
           "ctrl+h=goto_split:left"
           "ctrl+l=goto_split:right"
