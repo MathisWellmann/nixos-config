@@ -83,27 +83,45 @@ in {
   # };
 
   services = {
-    mount_remote_nfs_exports = {
-      enable = true;
-      nfs_host_name = "de-msa2";
-      nfs_host_addr = "de-msa2";
-      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe" "pdfs"];
-    };
+    # mount_remote_nfs_exports = {
+    #   enable = true;
+    #   nfs_host_name = "de-msa2";
+    #   nfs_host_addr = "de-msa2";
+    #   nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe" "pdfs"];
+    # };
     # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
     mullvad-vpn.enable = true;
     resolved.enable = true;
     blueman.enable = true;
   };
-  fileSystems = {
+  fileSystems = let
+    fsType = "nfs";
+    options = ["rw" "nofail"];
+    in
+    {
     "/mnt/elitedesk_movies" = {
       device = "elitedesk:/mnt/external_hdd/movies";
-      fsType = "nfs";
-      options = ["rw" "nofail"];
+      inherit fsType options;
     };
     "/mnt/elitedesk_series" = {
       device = "elitedesk:/mnt/external_hdd/series";
-      fsType = "nfs";
-      options = ["rw" "nofail"];
+      inherit fsType options;
+    };
+    "/mnt/de-msa2_nvme_pool_magewe" = {
+      device = "de-msa2:/nvme_pool/magewe";
+      inherit fsType options;
+    };
+    "/mnt/de-msa2_nvme_pool_music" = {
+      device = "de-msa2:/nvme_pool/music";
+      inherit fsType options;
+    };
+    "/mnt/de-msa2_nvme_pool_video" = {
+      device = "de-msa2:/nvme_pool/video";
+      inherit fsType options;
+    };
+    "/mnt/de-msa2_nvme_pool_pdfs" = {
+      device = "de-msa2:/nvme_pool/pdfs";
+      inherit fsType options;
     };
   };
 

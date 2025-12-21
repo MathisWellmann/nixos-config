@@ -325,7 +325,7 @@
       longitude = 10.0;
       temperature = {
         day = 5000;
-        night = 3000;
+        night = 2500;
       };
     };
     hyprsunset = {
