@@ -60,6 +60,7 @@ in {
       };
       filesystems = {
         root = "/";
+        external_hdd = "/mnt/external_hdd";
       };
       service_status = {
         tailscale = "tailscaled";
