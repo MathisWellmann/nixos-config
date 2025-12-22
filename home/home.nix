@@ -78,6 +78,7 @@ in {
       sops # Secrets for NixOs
       sequoia-sq # `sq` re-implementation of gpg
       dig # DNS resolution
+      moc # Music on console
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:

@@ -16,9 +16,15 @@ _: {
             block = true;
           }
         ];
-        play = [
+        mpv = [
           {
             run = "mpv \"$@\"";
+            block = true;
+          }
+        ];
+        music = [
+          {
+            run = ''mocp "$@"'';
             block = true;
           }
         ];
@@ -31,6 +37,7 @@ _: {
       };
       open = {
         rules = [
+          ##### Images #####
           {
             name = "*.ARW";
             use = "image";
@@ -43,21 +50,27 @@ _: {
             name = "*.png";
             use = "image";
           }
+          ##### Video #####
           {
             name = "*.webm";
-            use = "play";
+            use = "mpv";
           }
           {
             name = "*.mp4";
-            use = "play";
+            use = "mpv";
           }
           {
             name = "*.pdf";
             use = "document";
           }
+          ##### Music #####
           {
             name = "*.flac";
-            use = "musikcube";
+            use = "music";
+          }
+          {
+            name = "*.mp3";
+            use = "music";
           }
         ];
       };
