@@ -315,21 +315,11 @@
   };
 
   services = {
-    gammastep = {
-      enable = true;
-      provider = "manual";
-      latitude = 50.0;
-      longitude = 10.0;
-      temperature = {
-        day = 5000;
-        night = 2500;
-      };
-    };
+    # Blue light filter at night.
     hyprsunset = {
       enable = true;
       settings = {
         max-gamma = 150;
-
         profile = [
           {
             time = "7:30";
@@ -337,7 +327,7 @@
           }
           {
             time = "20:00";
-            temperature = 5000;
+            temperature = 2500;
             gamma = 0.8;
           }
         ];
