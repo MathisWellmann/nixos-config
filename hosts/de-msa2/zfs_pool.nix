@@ -1,6 +1,5 @@
 {lib, ...}: let
   const = import ./constants.nix;
-  static_ips = import ../../modules/static_ips.nix;
 in {
   boot = {
     supportedFilesystems = ["zfs"];
@@ -25,9 +24,13 @@ in {
           "nvme_pool"
         ];
       };
+      # Must run `sudo zfs set com.sun:auto-snapshot=true $POOL` to set the pool which to snapshot.
       autoSnapshot = {
         enable = true;
+        hourly = 24;
         daily = 7; # Keep 7 daily snapshots
+        weekly = 4;
+        monthly = 12;
       };
       trim = {
         enable = true;
