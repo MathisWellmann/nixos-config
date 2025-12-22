@@ -20,6 +20,8 @@
       url = "github:madsbv/nix-options-search";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    # Animated wallpaper daemon written in rust, because `mpvpaper` leaks memory.
+    awww.url = "git+https://codeberg.org/LGFae/awww";
 
     # Local paths
     # tikr = {

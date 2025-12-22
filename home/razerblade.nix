@@ -1,6 +1,9 @@
-{lib, ...}: let
-  global_const = import ../global_constants.nix;
-in {
+{
+  lib,
+  inputs,
+  pkgs,
+  ...
+}: {
   imports = [
     ./home_hyprland.nix
   ];
@@ -8,7 +11,7 @@ in {
   programs.alacritty.settings.font.size = lib.mkForce 10;
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''waybar & hyprctl setcursor 'Banana' 48 & mpvpaper -vs -o "no-audio loop" eDP-1 ~/orange-train-at-sunset.3840x2160.mp4'';
+      "exec-once" = ''waybar & hyprctl setcursor 'Banana' 48 && awww img ~/orange-train-at-sunset.3840x2160.mp4'';
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
         "XDG_SESSION_TYPE,wayland"
@@ -26,16 +29,20 @@ in {
       cursor.no_hardware_cursors = true;
     };
   };
-  services.hyprpaper = {
-    enable = true;
-    settings = {
-      ipc = "on";
-      splash = false;
-      splash_offset = 2.0;
-      preload = ["/home/${global_const.username}/wallpaper.jpg"];
-      wallpaper = [
-        "eDP-1,/home/${global_const.username}/wallpaper.jpg"
-      ];
-    };
-  };
+  home.packages = [
+    inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
+  ];
+  # services.hyprpaper = {
+  #   enable = true;
+  #   settings = {
+  #     ipc = "on";
+  #     splash = false;
+  #     splash_offset = 2.0;
+  #     preload = ["/home/${global_const.username}/wallpaper.jpg"];
+  #     wallpaper = [
+  #       "eDP-1,/home/${global_const.username}/wallpaper.jpg"
+  #     ];
+  #   };
+  # };
+  #
 }
