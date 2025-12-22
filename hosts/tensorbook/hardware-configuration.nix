@@ -22,15 +22,16 @@
     kernelPackages = pkgs.linuxPackages_latest;
   };
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/f9da323d-3d71-403a-be88-bb831da87b2c";
-    fsType = "ext4";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/1973-9011";
-    fsType = "vfat";
-    options = ["fmask=0077" "dmask=0077"];
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/f9da323d-3d71-403a-be88-bb831da87b2c";
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/1973-9011";
+      fsType = "vfat";
+      options = ["fmask=0077" "dmask=0077"];
+    };
   };
 
   swapDevices = [];

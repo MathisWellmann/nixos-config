@@ -20,15 +20,16 @@ in {
     extraModulePackages = [];
   };
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/2464e526-28d4-43d3-b885-c3284a8a0d04";
-    fsType = "xfs";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/9F46-467D";
-    fsType = "vfat";
-    options = ["fmask=0077" "dmask=0077"];
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/2464e526-28d4-43d3-b885-c3284a8a0d04";
+      fsType = "xfs";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/9F46-467D";
+      fsType = "vfat";
+      options = ["fmask=0077" "dmask=0077"];
+    };
   };
 
   swapDevices = [];

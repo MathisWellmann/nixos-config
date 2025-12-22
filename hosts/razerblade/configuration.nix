@@ -97,8 +97,7 @@ in {
   fileSystems = let
     fsType = "nfs";
     options = ["rw" "nofail"];
-    in
-    {
+  in {
     "/mnt/elitedesk_movies" = {
       device = "elitedesk:/mnt/external_hdd/movies";
       inherit fsType options;
