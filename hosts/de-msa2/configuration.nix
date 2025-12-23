@@ -123,6 +123,16 @@ in {
         http_server.port = "${builtins.toString const.bitmagnet_port}";
       };
     };
+    minidlna = {
+      enable = true;
+      openFirewall = true;
+      settings = {
+        friendly_name = "mathis_music";
+        media_dir = ["/nvme_pool/music"];
+        inotify = "yes";
+        port = const.minidlna_port;
+      };
+    };
     # mealie = {
     #   enable = true;
     #   port = const.mealie_port;
