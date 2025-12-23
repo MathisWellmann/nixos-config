@@ -133,6 +133,12 @@ in {
         port = const.minidlna_port;
       };
     };
+    vikunja = {
+      enable = true;
+      port = const.vikunja_port;
+      frontendScheme = "http";
+      frontendHostname = "0.0.0.0";
+    };
     # mealie = {
     #   enable = true;
     #   port = const.mealie_port;
