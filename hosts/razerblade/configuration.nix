@@ -83,16 +83,14 @@ in {
   # };
 
   services = {
-    # mount_remote_nfs_exports = {
-    #   enable = true;
-    #   nfs_host_name = "de-msa2";
-    #   nfs_host_addr = "de-msa2";
-    #   nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe" "pdfs"];
-    # };
     # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
     mullvad-vpn.enable = true;
     resolved.enable = true;
     blueman.enable = true;
+    btrfs.autoScrub = {
+      enable = true;
+      interval = "weekly";
+    };
   };
   fileSystems = let
     fsType = "nfs";
