@@ -7,38 +7,31 @@ _: let
   san_disk_uuid = "be397ee5-a15c-4801-9723-97104ee3e991";
   fiio_card = "/mnt/fiio_card";
   fiio_uuid = "C402-82E0";
+  options = [
+    "users" # Allows any user to mount and unmount
+    "nofail" # Prevent system from failing if this drive doesn't mount
+  ];
 in {
   fileSystems = {
     "${survivor_mount}" = {
       device = "/dev/disk/by-uuid/${survivor_uuid}";
       fsType = "btrfs";
+      inherit options;
     };
     ${kingston_mount} = {
       device = "/dev/disk/by-uuid/${kingston_uuid}";
       fsType = "ext4";
-      options = [
-        # If you don't have this options attribute, it'll default to "defaults"
-        "users" # Allows any user to mount and unmount
-        "nofail" # Prevent system from failing if this drive doesn't mount
-      ];
+      inherit options;
     };
     ${san_disk_mount} = {
       device = "/dev/disk/by-uuid/${san_disk_uuid}";
       fsType = "ext4";
-      options = [
-        # If you don't have this options attribute, it'll default to "defaults"
-        "users" # Allows any user to mount and unmount
-        "nofail" # Prevent system from failing if this drive doesn't mount
-      ];
+      inherit options;
     };
     ${fiio_card} = {
       device = "/dev/disk/by-uuid/${fiio_uuid}";
       fsType = "exfat";
-      options = [
-        # If you don't have this options attribute, it'll default to "defaults"
-        "users" # Allows any user to mount and unmount
-        "nofail" # Prevent system from failing if this drive doesn't mount
-      ];
+      inherit options;
     };
   };
 }
