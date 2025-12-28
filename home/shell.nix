@@ -79,7 +79,11 @@
         def datecompact [] { date now | format date "%Y%m%d%H%M%S" };
         def hist [] {
           history | get command | uniq | str join (char newline) | fzf --height 50% --reverse | history import
-        }
+        };
+        # Blake 3 Hash sum of the current directory
+        def dirsum [] {
+          fd . -t file --exec b3sum | b3sum;
+        };
 
         $env.EDITOR = "${pkgs.helix}/bin/hx";
         $env.PATH = ($env.PATH | split row (char esep) |
