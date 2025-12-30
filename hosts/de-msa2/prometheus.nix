@@ -10,7 +10,7 @@ in {
           targets = ["${host}:${toString config.services.prometheus.exporters.node.port}"];
         }
       ];
-    }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0"];
+    }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5"];
     # n_tikr_services =
     #   builtins.length config.services.tikr.exchanges
     #   + builtins.length config.services.tikr.data-types;
