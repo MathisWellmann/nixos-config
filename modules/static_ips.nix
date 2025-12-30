@@ -9,6 +9,7 @@ in {
   superserver_ip = "192.168.0.12";
   desg0_ip = "192.168.0.13";
   de-msa2_ip = "192.168.0.14";
+  de-n5_ip = "192.168.0.15";
 
   # In shack.
   de-rosen_ip = "192.168.0.20";

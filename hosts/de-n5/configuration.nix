@@ -22,9 +22,6 @@ in {
 
   networking.hostName = "de-n5"; # Define your hostname.
 
-  # Enable networking
-  networking.networkmanager.enable = true;
-
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
 

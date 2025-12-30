@@ -6,7 +6,10 @@
   lib,
   modulesPath,
   ...
-}: {
+}: let
+  static_ips = import ../../modules/static_ips.nix;
+  main_nic = "enp3s0";
+in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
   ];
@@ -40,4 +43,35 @@
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
+  networking = {
+    # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
+    hostId = "6bfb96a2";
+
+    useDHCP = lib.mkDefault false;
+    networkmanager.enable = false;
+
+    defaultGateway = {
+      interface = main_nic;
+      address = "192.168.0.55";
+    };
+    nameservers = [
+      "1.1.1.1"
+      "8.8.8.8"
+      "9.9.9.9"
+    ];
+    interfaces = {
+      "${main_nic}" = {
+        useDHCP = false;
+        ipv4 = {
+          addresses = [
+            {
+              address = static_ips.de-n5_ip;
+              prefixLength = 24;
+            }
+          ];
+        };
+      };
+    };
+  };
 }
