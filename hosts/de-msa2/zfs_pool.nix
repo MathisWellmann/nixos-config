@@ -3,7 +3,7 @@
 in {
   boot = {
     supportedFilesystems = ["zfs"];
-    kernelParams = ["zfs.zfs_arc_max=32000000000"]; # 64GB ARC size limit
+    kernelParams = ["zfs.zfs_arc_max=32000000000"]; # 32GB ARC size limit
     zfs = {
       forceImportRoot = false;
       extraPools = [

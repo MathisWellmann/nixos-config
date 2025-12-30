@@ -18,6 +18,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
     # ./../../modules/monero_miner.nix
+    ./zfs_pool.nix
   ];
 
   networking.hostName = "de-n5"; # Define your hostname.
