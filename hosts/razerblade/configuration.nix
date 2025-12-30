@@ -91,6 +91,7 @@ in {
       enable = true;
       interval = "weekly";
     };
+    trezord.enable = true;
   };
   fileSystems = let
     fsType = "nfs";
@@ -122,16 +123,8 @@ in {
     };
   };
 
-  services.trezord.enable = true;
-
   virtualisation.virtualbox.host.enable = true;
   users.extraGroups.vboxusers.members = ["${global_const.username}"];
-  # services.openvpn.servers = {
-  #   mullvad = {
-  #     config = ''config /home/${global_const.username}/mullvad_config_linux_se_got/mullvad_se_got.conf '';
-  #     updateResolvConf = true;
-  #   };
-  # };
 
   programs = {
     hyprland = {
