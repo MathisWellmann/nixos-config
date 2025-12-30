@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -34,6 +35,7 @@
     # self,
     nixpkgs-unstable,
     home-manager,
+    flake-utils,
     ...
   } @ inputs: {
     nixosConfigurations = {
@@ -114,6 +116,16 @@
           ./hosts/tensorbook/configuration.nix
           {_module.args = inputs;}
         ];
+      };
+    };
+    apps = let
+      system = "x86_64-linux";
+      pkgs = import inputs.nixpkgs-unstable {
+        inherit system;
+      };
+    in {
+      "${system}".zfs_replication = inputs.flake-utils.lib.mkApp {
+        drv = import modules/zfs_replication.nix {inherit pkgs;};
       };
     };
   };
