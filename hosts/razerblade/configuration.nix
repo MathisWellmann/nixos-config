@@ -21,7 +21,6 @@ in {
     ./../../modules/local_ai.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
-    ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
   ];
@@ -87,10 +86,6 @@ in {
     mullvad-vpn.enable = true;
     resolved.enable = true;
     blueman.enable = true;
-    btrfs.autoScrub = {
-      enable = true;
-      interval = "weekly";
-    };
     trezord.enable = true;
   };
   fileSystems = let
