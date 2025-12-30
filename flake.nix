@@ -101,6 +101,13 @@
           {_module.args = inputs;}
         ];
       };
+      de-n5 = nixpkgs-unstable.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          ./hosts/de-n5/configuration.nix
+          {_module.args = inputs;}
+        ];
+      };
       tensorbook = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
