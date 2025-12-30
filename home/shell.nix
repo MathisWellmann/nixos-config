@@ -80,9 +80,9 @@
         def hist [] {
           history | get command | uniq | str join (char newline) | fzf --height 50% --reverse | history import
         };
-        # Blake 3 Hash sum of the current directory
+        # Blake 3 Hash sum of the files in the current directory. Sorted to ensure consistency between systems.
         def dirsum [] {
-          fd . -t file --exec b3sum | b3sum;
+          fd . -t file --exec b3sum | lines | sort | b3sum
         };
 
         $env.EDITOR = "${pkgs.helix}/bin/hx";
