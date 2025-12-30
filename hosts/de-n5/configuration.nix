@@ -20,10 +20,6 @@ in {
     # ./../../modules/monero_miner.nix
   ];
 
-  # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
-
   networking.hostName = "de-n5"; # Define your hostname.
 
   # Enable networking
