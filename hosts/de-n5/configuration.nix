@@ -17,7 +17,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
-    # ./../../modules/monero_miner.nix
+    ./../../modules/monero_miner.nix
     ./zfs_pool.nix
   ];
 
@@ -69,4 +69,7 @@ in {
       };
     };
   };
+
+  # Required for zfs replication.
+  services.openssh.settings.PermitRootLogin = "yes";
 }
