@@ -81,6 +81,7 @@ in {
       moc # Music on console
       b3sum # blake 3 hash sum
       btrfs-progs # Btrfs programs
+      wakeonlan
 
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
