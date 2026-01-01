@@ -35,7 +35,6 @@
     # self,
     nixpkgs-unstable,
     home-manager,
-    flake-utils,
     ...
   } @ inputs: {
     nixosConfigurations = {
