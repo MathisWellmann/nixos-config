@@ -60,7 +60,6 @@ in {
       fuse # Required for onekey wallet appimage to recognize the device
       fio # Flexible IO tester: fio --name=seqwrite --ioengine=libaio --direct=1 --bs=1M --numjobs=1 --size=1G --rw=write --filename=/mnt/nfs/testfile
       ueberzugpp # Required to display images in alacritty with yazi
-      compose2nix
       cfspeedtest # CLI for speed.cloudflare.com
       ethtool
       mistral-rs # LLM inference written in Rust
@@ -74,8 +73,6 @@ in {
       cloudflared
       jjui # terminal user interface for working with jujutsu VSC
       typespeed
-      # lazyjj # Broken
-      sops # Secrets for NixOs
       sequoia-sq # `sq` re-implementation of gpg
       dig # DNS resolution
       moc # Music on console
@@ -96,6 +93,8 @@ in {
       deadnix # Dead code detection for nix
       statix # Lints and suggestions for nix code
       inputs.nox.packages.${system}.default # Nix options search
+      compose2nix
+      sops # Secrets for NixOs
 
       # LSPs
       marksman # Markdown LSP

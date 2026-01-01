@@ -2,17 +2,35 @@
   self,
   pkgs,
   ...
-}: with builtins; let
+}:
+with builtins; let
   systems = attrNames self.nixosConfigurations;
-  systems_string = concatStringsSep " " systems;
-  # Lookup the mac address of each systems primary NIC.
-  macs = map (host: "test-${host}") systems;
-  macs_string = concatStringsSep " " macs;
+
+  # Get the primary interface of a host as specified by the `defaultGateway`, if any.
+  getPrimaryInterface = host: self
+    .nixosConfigurations
+    .${host}
+    .config
+    .networking
+    .defaultGateway
+    .interface or "unknown";
+  # Get the MAC address of a host interface, if any.
+  getMacAddress = host:
+    self
+      .nixosConfigurations
+      .${host}
+      .config
+      .networking
+      .interfaces
+      .${getPrimaryInterface host}
+      .macAddress or "fallback";
+  # Get the mac address of each systems primary NIC.
+  macs = map (host: "${host}@${toString (getMacAddress host)}") systems;
+  systems_string = concatStringsSep " " macs;
 in
   pkgs.writeShellScriptBin "wake_on_lan" ''
     IFS=' ' read -a arr_systems <<< "${systems_string}"
-    IFS=' ' read -a arr_macs <<< "${macs_string}"
-    echo "macs: ''${arr_macs[@]}"
+    echo "systems: ''${arr_systems[@]}"
 
     echo "Checking host reachability."
     items=()
