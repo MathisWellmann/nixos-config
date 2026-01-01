@@ -21,6 +21,7 @@ in {
     ./../../modules/harmonia_cache.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/searx.nix
+    ./../../modules/monero_miner.nix
     ./firefly.nix
     ./mafl.nix
     ./zfs.nix
