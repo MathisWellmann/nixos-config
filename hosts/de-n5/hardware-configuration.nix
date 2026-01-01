@@ -71,6 +71,7 @@ in {
             }
           ];
         };
+        wakeOnLan.enable = true;
       };
     };
   };
