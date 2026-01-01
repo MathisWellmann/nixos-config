@@ -8,6 +8,7 @@
   uptime_kuma_port = 3003;
   bitmagnet_port = 3004;
   vikunja_port = 3005;
+  home-assistant_port = 3006;
   greptimedb_http_port = 4000;
   greptimedb_rpc_port = 4001;
   greptimedb_mysql_port = 4002;

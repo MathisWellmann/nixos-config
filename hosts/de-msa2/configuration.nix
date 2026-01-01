@@ -135,11 +135,20 @@ in {
         port = const.minidlna_port;
       };
     };
+    # its a todo list app.
     vikunja = {
       enable = true;
       port = const.vikunja_port;
       frontendScheme = "http";
       frontendHostname = "0.0.0.0";
+    };
+    home-assistant = {
+      enable = true;
+      openFirewall = true;
+      config.http = {
+        server_host = "0.0.0.0";
+        server_port = const.home-assistant_port;
+      };
     };
     # mealie = {
     #   enable = true;
