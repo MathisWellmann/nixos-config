@@ -1,7 +1,10 @@
 {pkgs, ...}:
 pkgs.writeShellScriptBin "zfs_replication" ''
+  set -euo pipefail
+
   SOURCE_DATASET="nvme_pool"
   TARGET_DATASET="hdd_pool/replication"
+  TARGET="$TARGET_DATASET/$SOURCE_DATASET"
   SSH_USER="root"
   DEST_HOST="192.168.0.15"
 
@@ -9,11 +12,10 @@ pkgs.writeShellScriptBin "zfs_replication" ''
   echo "latest snapshot: $LATEST_SNAP"
   
   # Get latest snapshot on destination (if exists)
-  DEST_LATEST_SNAP=$(sudo ssh "$SSH_USER@$DEST_HOST" "sudo zfs list -t snapshot -H -o name -s creation -d1 $DEST_DATASET 2>/dev/null | tail -1 | cut -d'@' -f2")
+  DEST_LATEST_SNAP=$(sudo ssh "$SSH_USER@$DEST_HOST" "sudo zfs list -t snapshot -H -o name -s creation -d1 $TARGET 2>/dev/null | tail -1 | cut -d'@' -f2")
   echo "DEST_LATEST_SNAP=$DEST_LATEST_SNAP"
 
   SOURCE="$SOURCE_DATASET@$LATEST_SNAP"
-  TARGET="$TARGET_DATASET/$SOURCE_DATASET"
   if [ -z "$DEST_LATEST_SNAP" ]; then
     # Full send
     echo "Performing full replication from $SOURCE to $TARGET"
