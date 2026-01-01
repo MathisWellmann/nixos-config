@@ -1,5 +1,5 @@
 {pkgs, ...}: let
-  script = import ./zfs_replication.nix { inherit pkgs; };
+  script = import ../scripts/zfs_replication.nix { inherit pkgs; };
 in {
   systemd = {
     services.zfs-replication = {
