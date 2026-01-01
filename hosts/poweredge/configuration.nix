@@ -97,7 +97,7 @@ in {
       exports = lib.strings.concatStrings [
         exports_for_meshify
         exports_for_razerblade
-        "/SATA_SSD_POOL/video ${static_ips.de_msa2_ip}(rw,sync,no_subtree_check)\n"
+        "/SATA_SSD_POOL/video ${static_ips.de-msa2_ip}(rw,sync,no_subtree_check)\n"
       ];
     };
     # tikr = {
@@ -108,17 +108,6 @@ in {
     #   data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
     #   prometheus_exporter_base_port = const.tikr_base_port;
     # };
-    # Music server
-    minidlna = {
-      enable = true;
-      openFirewall = true;
-      settings = {
-        friendly_name = "poweredge_minidlna";
-        media_dir = ["/SATA_SSD_POOL/music"];
-        inotify = "yes";
-        port = 8200;
-      };
-    };
     calibre-web = {
       enable = true;
       listen = {

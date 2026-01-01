@@ -72,7 +72,7 @@
         modules = [
           ./hosts/poweredge/configuration.nix
           inputs.home-manager.nixosModules.default
-          inputs.tikr.nixosModules."x86_64-linux".default
+          # inputs.tikr.nixosModules."x86_64-linux".default
         ];
       };
       de-rosen = nixpkgs-unstable.lib.nixosSystem {
