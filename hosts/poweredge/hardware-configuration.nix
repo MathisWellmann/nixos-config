@@ -60,18 +60,6 @@ in {
     ];
 
     interfaces = {
-      # eno1 = {
-      #   name = "eno1";
-      #   useDHCP = false;
-      #   ipv4 = {
-      #     addresses = [
-      #       {
-      #         address = static_ips.poweredge_ip;
-      #         prefixLength = 24;
-      #       }
-      #     ];
-      #   };
-      # };
       "${main_nic}" = {
         name = "${main_nic}";
         useDHCP = false;
@@ -84,20 +72,11 @@ in {
             }
           ];
         };
+        # Can also manually set using `sudo ethtool -s enp3s0 wol g`
+        wakeOnLan.enable = true;
+        # Primarily set here to know where to send wakeOnLan packet using `wakeonlan $macAddress`
+        macAddress = "70:b5:e8:d0:ac:24";
       };
-      # enp65s0d1 = {
-      #   name = "enp65s0d1";
-      #   useDHCP = false;
-      #   mtu = 9000;
-      #   ipv4 = {
-      #     addresses = [
-      #       {
-      #         address = static_ips.poweredge_mellanox_1;
-      #         prefixLength = 16;
-      #       }
-      #     ];
-      #   };
-      # };
     };
     firewall.allowedTCPPorts = [
       const.iperf_port # iperf server
