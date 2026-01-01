@@ -124,7 +124,7 @@
       };
     in {
       "${system}".zfs_replication = inputs.flake-utils.lib.mkApp {
-        drv = import modules/zfs_replication.nix {inherit pkgs;};
+        drv = pkgs.writeShellScriptBin "zfs_replication" (import modules/zfs_replication.nix {inherit pkgs; });
       };
     };
   };

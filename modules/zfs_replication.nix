@@ -1,5 +1,5 @@
 {pkgs, ...}:
-pkgs.writeShellScriptBin "zfs_replication" ''
+''
   set -euo pipefail
 
   SOURCE_DATASET="nvme_pool"
@@ -8,11 +8,15 @@ pkgs.writeShellScriptBin "zfs_replication" ''
   SSH_USER="root"
   DEST_HOST="192.168.0.15"
 
-  LATEST_SNAP=$(zfs list -t snapshot -H -o name -d1 "$SOURCE_DATASET" | tail -1 | cut -d'@' -f2)
+  LATEST_SNAP=$(
+    zfs list -t snapshot -H -o name -d1 "$SOURCE_DATASET" | tail -1 | cut -d'@' -f2
+  )
   echo "latest snapshot: $LATEST_SNAP"
-  
+
   # Get latest snapshot on destination (if exists)
-  DEST_LATEST_SNAP=$(sudo ssh "$SSH_USER@$DEST_HOST" "sudo zfs list -t snapshot -H -o name -s creation -d1 $TARGET 2>/dev/null | tail -1 | cut -d'@' -f2")
+  DEST_LATEST_SNAP=$(
+    sudo ssh "$SSH_USER@$DEST_HOST" "zfs list -t snapshot -H -o name -s creation -d1 $TARGET | tail -1 | cut -d'@' -f2"
+  )
   echo "DEST_LATEST_SNAP=$DEST_LATEST_SNAP"
 
   SOURCE="$SOURCE_DATASET@$LATEST_SNAP"
@@ -23,6 +27,6 @@ pkgs.writeShellScriptBin "zfs_replication" ''
   else
     # Incremental send
     echo "Performing incremental replication from @$DEST_LATEST_SNAP to @$LATEST_SNAP..."
-    sudo zfs send -R -I "@$DEST_LATEST_SNAP" $SOURCE | sudo ssh "$SSH_USER@$DEST_HOST" sudo zfs receive -F $TARGET
+    sudo zfs send -R -I "$SOURCE_DATASET@$DEST_LATEST_SNAP" $SOURCE | sudo ssh "$SSH_USER@$DEST_HOST" zfs receive -F $TARGET
   fi
 ''

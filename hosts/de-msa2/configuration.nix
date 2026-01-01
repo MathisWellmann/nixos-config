@@ -21,6 +21,7 @@ in {
     ./../../modules/monero.nix
     ./../../modules/monero_miner.nix
     ./../../modules/adguardhome.nix
+    ./../../modules/zfs_replication_service.nix
     ./freshrss.nix
     ./nexus_dbs.nix
     ./gitea.nix
@@ -87,6 +88,7 @@ in {
         jellyfin = "jellyfin";
         nfs-server = "nfs-server";
         monero = "monero";
+        monero_miner = "xmrig";
         bitmagnet = "bitmagnet";
         greptime_db = "podman-greptimedb";
         dragonfly_db = "podman-dragonfly";
