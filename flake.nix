@@ -32,7 +32,7 @@
   };
 
   outputs = {
-    # self,
+    self,
     nixpkgs-unstable,
     home-manager,
     ...
@@ -123,8 +123,13 @@
         inherit system;
       };
     in {
-      "${system}".zfs_replication = inputs.flake-utils.lib.mkApp {
-        drv = pkgs.writeShellScriptBin "zfs_replication" (import scripts/zfs_replication.nix {inherit pkgs; });
+      "${system}" = {
+        zfs_replication = inputs.flake-utils.lib.mkApp {
+          drv = pkgs.writeShellScriptBin "zfs_replication" (import scripts/zfs_replication.nix {inherit pkgs;});
+        };
+        wake_on_lan = inputs.flake-utils.lib.mkApp {
+          drv = import scripts/wake_on_lan.nix {inherit self pkgs;};
+        };
       };
     };
   };

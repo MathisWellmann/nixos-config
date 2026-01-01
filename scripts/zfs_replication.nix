@@ -1,5 +1,4 @@
-{pkgs, ...}:
-''
+{pkgs, ...}: ''
   set -euo pipefail
 
   SOURCE_DATASET="nvme_pool"
