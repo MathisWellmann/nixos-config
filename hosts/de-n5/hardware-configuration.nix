@@ -71,7 +71,10 @@ in {
             }
           ];
         };
+        # Can also manually set using `sudo ethtool -s enp3s0 wol g`
         wakeOnLan.enable = true;
+        # Primarily set here to know where to send wakeOnLan packet using `wakeonlan $macAddress`
+        macAddress = "38:05:25:32:a7:21";
       };
     };
   };
