@@ -17,8 +17,7 @@ with builtins; let
     .interface or "unknown";
 
   # Get the MAC address of a host interface, if any.
-  getMacAddress = host:
-  let
+  getMacAddress = host: let
     ifs = self
       .nixosConfigurations
       .${host}
@@ -26,14 +25,16 @@ with builtins; let
       .networking
       .interfaces;
     prim = getPrimaryInterface host;
-    macAddress = if hasAttr prim ifs
-      then (
-        if (ifs.${prim}.macAddress != null)
-        then ifs.${prim}.macAddress
-        else "no-mac"
-      )
+    macAddress =
+      if hasAttr prim ifs
+      then
+        (
+          if (ifs.${prim}.macAddress != null)
+          then ifs.${prim}.macAddress
+          else "no-mac"
+        )
       else "invalid-interface";
-  in 
+  in
     macAddress;
 
   # Get the mac address of each systems primary NIC.
@@ -86,7 +87,7 @@ in
 
       while ! ping -c 1 -W 1 "$host" &>/dev/null; do
         count=$((count + 1))
-  
+
         if [ $count -ge $timeout ]; then
           echo "❌ Timeout! Host $host did not respond within $timeout seconds."
           exit 1
