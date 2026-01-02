@@ -18,4 +18,5 @@
   prometheus_port = 9001;
   mongodb_port = 27017;
   dragonfly_port = 27018;
+  prometheus_exporter_nut_port = 9199;
 }

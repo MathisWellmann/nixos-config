@@ -93,7 +93,7 @@ in {
     options = [
       "rw"
       "nofail"
-      "noatime"  # Don't update last file access times when files are read.
+      "noatime" # Don't update last file access times when files are read.
       "retry=10" # Retry mounting for up to 10 seconds.
       "vers=4.2" # Force a new version
       "nconnect=4" # Number of connections

@@ -28,6 +28,7 @@ in {
     ./prometheus.nix
     ./homer_dashboard.nix
     ./zfs_pool.nix
+    ./ups.nix
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.

@@ -85,6 +85,12 @@ in {
             {targets = ["${static_ips.de-msa2_ip}:${toString const.dragonfly_port}"];}
           ];
         }
+        {
+          job_name = "ups";
+          static_configs = [
+            {targets = ["localhost:${toString const.prometheus_exporter_nut_port}"];}
+          ];
+        }
       ];
   };
 }
