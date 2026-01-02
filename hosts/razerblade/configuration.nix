@@ -90,7 +90,18 @@ in {
   };
   fileSystems = let
     fsType = "nfs";
-    options = ["rw" "nofail"];
+    options = [
+      "rw"
+      "nofail"
+      "noatime"  # Don't update last file access times when files are read.
+      "retry=10" # Retry mounting for up to 10 seconds.
+      "vers=4.2" # Force a new version
+      "nconnect=4" # Number of connections
+      "_netdev" # tells systemd it’s a network filesystem
+      "x-systemd.requires=tailscaled.service"
+      "x-systemd.after=tailscaled.service"
+      "x-systemd.automount" # Only mount when directory is accessed.
+    ];
   in {
     "/mnt/elitedesk_movies" = {
       device = "elitedesk:/mnt/external_hdd/movies";
