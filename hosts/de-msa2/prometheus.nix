@@ -33,26 +33,17 @@ in {
     port = const.prometheus_port;
     # TODO: clean up exporter ports.
     exporters = {
-      node = {
-        enable = true;
-        port = 9002;
-        enabledCollectors = ["systemd"];
-      };
-      zfs = {
-        enable = true;
-        port = 9134;
-      };
-      # postgres = {
-      #   enable = true;
-      #   dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
-      #   port = 9215;
-      # };
       mongodb = {
         enable = true;
         collectAll = true;
         uri = "mongodb://localhost:${toString const.mongodb_port}";
         port = 9216;
       };
+      # postgres = {
+      #   enable = true;
+      #   dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
+      #   port = 9215;
+      # };
       # restic = {
       #   enable = true;
       #   port = 9753;

@@ -9,6 +9,10 @@ in {
         inherit port;
         openFirewall = true;
       };
+      zfs = {
+        enable = true;
+        port = 9134;
+      };
     };
   };
 }
