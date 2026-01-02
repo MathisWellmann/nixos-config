@@ -72,13 +72,35 @@ in
       exit 1
     fi
 
-    selected_host=''${arr_systems[$CHOICE]}
+    host=''${arr_systems[$CHOICE]}
     mac=''${arr_macs[$CHOICE]}
 
-    echo "Sending magic WakeOnLan packet to $selected_host @ $mac"
+    ${pkgs.gum}/bin/gum confirm "Do you want to send magic WakeOnLan packet to $host @ $mac ?" && {
+      ${pkgs.wakeonlan}/bin/wakeonlan $mac
 
-    # TODO: send magic packet
-    # exec ${pkgs.wakeonlan}/bin/wakeonlan $host_mac
+      # wait until the host is reachable
+      timeout="''${2:-300}"  # Default: 5 minutes
+      count=0
 
-    # TODO: wait until the host is reachable
+      echo "Waiting for $host to respond to ping (timeout: $timeout seconds)..."
+
+      while ! ping -c 1 -W 1 "$host" &>/dev/null; do
+        count=$((count + 1))
+  
+        if [ $count -ge $timeout ]; then
+          echo "❌ Timeout! Host $host did not respond within $timeout seconds."
+          exit 1
+        fi
+
+        # Optional: show progress every 10 seconds
+        if [ $((count % 10)) -eq 0 ]; then
+          echo "Still waiting... ($count seconds elapsed)"
+        fi
+
+        sleep 1
+      done
+
+      echo "✅ Host $host is reachable!"
+    }
+
   ''
