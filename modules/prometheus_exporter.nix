@@ -7,10 +7,8 @@ in {
       node = {
         enable = true;
         inherit port;
+        openFirewall = true;
       };
     };
   };
-  networking.firewall.allowedTCPPorts = [
-    port
-  ];
 }
