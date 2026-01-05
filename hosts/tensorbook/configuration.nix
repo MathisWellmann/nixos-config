@@ -106,4 +106,20 @@ in {
   systemd.tmpfiles.rules = [
     "L /bin/bash - - - - ${pkgs.bash}/bin/bash"
   ];
+  fileSystems."/mnt/de-msa2_nvme_pool_magewe" = {
+    device = "de-msa2:/nvme_pool/magewe";
+    fsType = "nfs";
+    options = [
+      "rw"
+      "nofail"
+      "noatime" # Don't update last file access times when files are read.
+      "retry=10" # Retry mounting for up to 10 seconds.
+      "vers=4.2" # Force a new version
+      "nconnect=4" # Number of connections
+      "_netdev" # tells systemd it’s a network filesystem
+      "x-systemd.requires=tailscaled.service"
+      "x-systemd.after=tailscaled.service"
+      "x-systemd.automount" # Only mount when directory is accessed.
+    ];
+  };
 }
