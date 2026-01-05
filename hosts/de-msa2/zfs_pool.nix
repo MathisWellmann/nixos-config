@@ -60,6 +60,7 @@ in {
         exports_for_meshify
         exports_for_razerblade
         # exports_for_poweredge
+        "/nvme_pool/magewe tensorbook(rw,sync,no_subtree_check)\n"
       ];
     };
   };
