@@ -26,6 +26,7 @@ in {
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
+    ./../../modules/monero_miner.nix
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
