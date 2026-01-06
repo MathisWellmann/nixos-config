@@ -16,9 +16,9 @@ in {
       ];
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
-        "HDMI-A-2, 1920x1080@60, 6480x1679, 1"
-        "DP-5, 1920x1080, 6480x2759, 1"
-        "DP-4, 3840x2160@159, 4320x0, 1, transform, 1"
+        "HDMI-A-1, 1920x1080@60, 6480x1679, 1"
+        "DP-2, 1920x1080, 6480x2759, 1"
+        "DP-1, 3840x2160@159, 4320x0, 1, transform, 1"
       ];
       cursor.no_hardware_cursors = true;
     };
