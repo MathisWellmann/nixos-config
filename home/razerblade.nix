@@ -1,7 +1,5 @@
 {
   lib,
-  inputs,
-  pkgs,
   ...
 }: {
   imports = [
@@ -29,9 +27,6 @@
       cursor.no_hardware_cursors = true;
     };
   };
-  home.packages = [
-    inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
-  ];
   # services.hyprpaper = {
   #   enable = true;
   #   settings = {

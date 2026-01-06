@@ -41,6 +41,10 @@ in {
       ];
   in
     with pkgs; [
+      # From inputs
+      inputs.nox.packages.${system}.default # Nix options search
+      inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
+
       # Misc
       viu # View images in the terminal, best with `kitty`
       unsure # Calculate with numbers you are unsure about.
@@ -93,7 +97,6 @@ in {
       nix-inspect
       deadnix # Dead code detection for nix
       statix # Lints and suggestions for nix code
-      inputs.nox.packages.${system}.default # Nix options search
       compose2nix
       sops # Secrets for NixOs
 
