@@ -45,4 +45,28 @@ in {
   home.packages = with pkgs; [
     stripe-cli
   ];
+  programs.ashell = {
+    enable = true;
+    settings = {
+      modules = {
+        center = [
+          "Window Title"
+        ];
+        left = [
+          "Workspaces"
+        ];
+        right = [
+          "SystemInfo"
+          [
+            "Clock"
+            "Privacy"
+            "Settings"
+          ]
+        ];
+      };
+      workspaces = {
+        visibilityMode = "MonitorSpecific";
+      };
+    };
+  };
 }

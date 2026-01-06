@@ -32,7 +32,7 @@
     else
       SOURCE_SNAP=$DEST_LATEST_SNAP
     fi
-    
+
     # Incremental send
     echo "Performing incremental replication from @$SOURCE_SNAP to @$LATEST_SNAP..."
     sudo zfs send -R -I "$SOURCE_DATASET@$SOURCE_SNAP" $SOURCE | sudo ssh "$SSH_USER@$DEST_HOST" zfs receive -F $TARGET

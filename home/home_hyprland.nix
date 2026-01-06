@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   imports = [
     ./home.nix
-    ./waybar
+    # ./waybar
   ];
 
   nixpkgs.config.permittedInsecurePackages = [
