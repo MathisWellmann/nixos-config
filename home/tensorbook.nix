@@ -6,6 +6,7 @@ in {
   ];
   wayland.windowManager.hyprland = {
     settings = {
+      "exec-once" = ''waybar & hyprctl setcursor 'Banana' 48 && awww-daemon && awww img ~/MathisWellmann/nixos-config/wallpapers/wallpaper_vertical_animated_1080_1920_25fps_blurry_plants.mp4'';
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         # London
@@ -19,28 +20,6 @@ in {
       cursor.no_hardware_cursors = true;
     };
   };
-  # services.hyprpaper = {
-  #   enable = true;
-  #   settings = {
-  #     ipc = "on";
-  #     splash = true;
-  #     splash_offset = 2.0;
-  #     preload = [
-  #       # "/home/magewe/acapulco_wallpaper.jxl"
-  #       "/home/${global_const.username}/acapulco_wallpaper_0.jxl"
-  #       "/home/${global_const.username}/acapulco_wallpaper_1.jxl"
-  #       "/home/${global_const.username}/acapulco_wallpaper_2.jxl"
-  #     ];
-  #     # Convert single image into slices using `imagemagick`:
-  #     # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
-  #     wallpaper = [
-  #       "HDMI-A-5,/home/${global_const.username}/acapulco_wallpaper_0.jxl"
-  #       "DP-5,/home/${global_const.username}/acapulco_wallpaper_1.jxl"
-  #       "DP-4,/home/${global_const.username}/acapulco_wallpaper_2.jxl"
-  #       # "HDMI-A-5,/home/${global_const.username}/acapulco_wallpaper.jxl"
-  #     ];
-  #   };
-  # };
   services = {
     hyprpaper = {
       enable = true;
@@ -61,10 +40,6 @@ in {
           "eDP-1,/home/${global_const.username}/Wallpaper.jpg"
         ];
       };
-    };
-    # Efficient animated wallpaper daemon.
-    swww = {
-      enable = true;
     };
   };
   home.packages = with pkgs; [
