@@ -6,7 +6,7 @@ in {
   ];
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''waybar & hyprctl setcursor 'Banana' 48 && awww-daemon && awww img ~/MathisWellmann/nixos-config/wallpapers/wallpaper_vertical_animated_1080_1920_25fps_blurry_plants.mp4'';
+      "exec-once" = ''ashell & hyprctl setcursor 'Banana' 48 && awww-daemon && awww img ~/MathisWellmann/nixos-config/wallpapers/wallpaper_vertical_animated_1080_1920_25fps_blurry_plants.mp4'';
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         # London
