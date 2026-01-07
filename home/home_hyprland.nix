@@ -125,8 +125,8 @@
         # For rsthd layout on corne keyboard
         "$mainMod, m, movefocus, l"
         "$mainMod, i, movefocus, r"
-        "$mainMod, l, movefocus, u"
-        "$mainMod, w, movefocus, d"
+        "$mainMod, n, movefocus, u"
+        "$mainMod, a, movefocus, d"
 
         "$mainMod, left, movefocus, l"
         "$mainMod, right, movefocus, r"
@@ -144,8 +144,6 @@
         "$mainMod, 7, workspace, 7"
         "$mainMod, 8, workspace, 8"
         "$mainMod, 9, workspace, 9"
-
-        "$mainMod, w, exec, busctl --user -- set-property rs.wl-gammarelay / rs.wl.gammarelay Temperature q 4500"
       ];
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging
