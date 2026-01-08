@@ -44,6 +44,7 @@ in {
   };
   home.packages = with pkgs; [
     stripe-cli
+    devbox
   ];
   programs.ashell = {
     enable = true;
