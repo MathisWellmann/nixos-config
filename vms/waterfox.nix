@@ -1,6 +1,6 @@
 # Build and run with `nix-build vms/waterfox.nix; result/bin/run-nixos-vm`
 let
-  pkgs = import <nixpkgs> { };
+  pkgs = import <nixpkgs> {};
 
   waterfox_vm = {...}: {
     users.extraUsers.root.password = "test";
@@ -15,8 +15,8 @@ let
       firefox
     ];
   };
-  vms = pkgs.nixos[
+  vms = pkgs.nixos [
     waterfox_vm
   ];
-in 
+in
   vms.config.system.build.vm

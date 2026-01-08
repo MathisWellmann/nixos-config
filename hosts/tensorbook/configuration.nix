@@ -122,4 +122,8 @@ in {
       "x-systemd.automount" # Only mount when directory is accessed.
     ];
   };
+  services.grafana = {
+    enable = true;
+    settings.server.http_port = 80;
+  };
 }
