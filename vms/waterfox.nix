@@ -2,7 +2,7 @@
 let
   pkgs = import <nixpkgs> {};
 
-  waterfox_vm = {...}: {
+  waterfox_vm = {
     users.extraUsers.root.password = "test";
 
     services.xserver = {

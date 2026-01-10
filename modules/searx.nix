@@ -1,8 +1,4 @@
-{port ? 8080}: {
-  config,
-  lib,
-  ...
-}: let
+{port ? 8080}: {lib, ...}: let
   global_const = import ../global_constants.nix;
 in {
   # Define a new option

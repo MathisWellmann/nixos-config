@@ -1,5 +1,5 @@
 # TODO: Not entirely working end-to-end yet.
-{...}: let
+_: let
   nut_user = "nut-admin";
   passwordFile = "/etc/ups-passwd.txt";
   const = import ./constants.nix;

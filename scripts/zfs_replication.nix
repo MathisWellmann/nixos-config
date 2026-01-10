@@ -1,4 +1,4 @@
-{pkgs, ...}: ''
+_: ''
   SOURCE_DATASET="nvme_pool"
   TARGET_DATASET="hdd_pool/replication"
   TARGET="$TARGET_DATASET/$SOURCE_DATASET"
