@@ -1,15 +1,20 @@
-{lib, ...}: let
-  searx_port = 3013;
+{port ? 8080}: {
+  config,
+  lib,
+  ...
+}: let
+  global_const = import ../global_constants.nix;
 in {
+  # Define a new option
   services.searx = {
     enable = true;
-    environmentFile = "/home/magewe/.searxng.env";
+    environmentFile = "/home/${global_const.username}/.searxng.env";
     redisCreateLocally = true;
 
     settings = {
       server = {
         bind_address = "0.0.0.0";
-        port = searx_port;
+        inherit port;
         limiter = true;
         public_instance = false;
         image_proxy = true;
@@ -118,4 +123,7 @@ in {
       };
     };
   };
+  networking.firewall.allowedTCPPorts = [
+    port
+  ];
 }

@@ -8,6 +8,7 @@
 }: let
   global_const = import ../../global_constants.nix;
   const = import ./constants.nix;
+  searx = import ./../../modules/searx.nix {port = const.searx_port;};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -29,6 +30,7 @@ in {
     ./homer_dashboard.nix
     ./zfs_pool.nix
     ./ups.nix
+    searx
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.

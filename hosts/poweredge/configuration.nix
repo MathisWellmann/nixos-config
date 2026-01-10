@@ -20,7 +20,6 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/harmonia_cache.nix
     ./../../modules/prometheus_exporter.nix
-    ./../../modules/searx.nix
     ./../../modules/monero_miner.nix
     ./firefly.nix
     ./mafl.nix
@@ -62,7 +61,6 @@ in {
       const.mealie_port
       const.mongodb_port
       const.nats_port
-      const.searx_port
     ];
     # For containers to access the internet.
     nat = {
