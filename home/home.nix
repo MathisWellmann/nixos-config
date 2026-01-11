@@ -99,6 +99,7 @@ in {
       statix # Lints and suggestions for nix code
       compose2nix
       sops # Secrets for NixOs
+      rage # Modern encryption tool
 
       # LSPs
       marksman # Markdown LSP
