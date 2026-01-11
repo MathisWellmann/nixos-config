@@ -123,7 +123,11 @@
         inherit system;
       };
     in {
-      "${system}" = {
+      "${system}" = rec {
+        default = list_apps;
+        list_apps = inputs.flake-utils.lib.mkApp {
+          drv = (import ./scripts/list_apps.nix {inherit self pkgs system;}).script;
+        };
         zfs_replication = inputs.flake-utils.lib.mkApp {
           drv = pkgs.writeShellScriptBin "zfs_replication" (import scripts/zfs_replication.nix {inherit pkgs;});
         };
