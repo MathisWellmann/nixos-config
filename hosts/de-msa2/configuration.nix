@@ -124,6 +124,7 @@ in {
 
   networking.firewall.allowedTCPPorts = [
     const.iperf_port
+    const.habit_trove_port
   ];
 
   services = {
@@ -132,7 +133,7 @@ in {
       database = "GreptimeDb";
       database-addr = "localhost:4001";
       exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
-      data-types = ["AggTrades" "Quotes"];
+      data-types = ["AggTrades"];
       prometheus_exporter_base_port = const.tikr_base_port;
     };
     grafana = {
@@ -180,5 +181,28 @@ in {
     #   enable = true;
     #   port = const.mealie_port;
     # };
+  };
+
+  # sops = {
+  #   defaultSopsFile = "./../../sops_secrets.yaml";
+  #   defaultSopsFormat = "yaml";
+
+    # # This creates /run/secrets/create_ap_password
+    # secrets.meshify_ap_password = {
+    #   sopsFile = ../../sops_secrets.yaml;
+    # };
+  # };
+  # 
+  virtualisation.oci-containers.containers."HabitTrove" = {
+    image = "dohsimpson/habittrove:latest";
+    ports = [
+      "${builtins.toString const.habit_trove_port}:3000"
+    ];
+    volumes = [
+      "/nvme_pool/habit_trove:/app/data"
+    ];
+    environmentFiles = [
+      /etc/secrets/habit_trove
+    ];
   };
 }
