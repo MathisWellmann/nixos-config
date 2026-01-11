@@ -1,12 +1,12 @@
 _: let
-  port = 9002;
+  global_const = import ./../global_constants.nix;
 in {
   ### Monitoring ###
   services.prometheus = {
     exporters = {
       node = {
         enable = true;
-        inherit port;
+        port = global_const.prometheus_exporter_port;
         openFirewall = true;
       };
       zfs = {

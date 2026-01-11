@@ -86,6 +86,7 @@ in {
         tailscale = "tailscaled";
         prometheus = "prometheus";
         prometheus-exporter = "prometheus-node-exporter";
+        victoriametrics = "victoriametrics";
         grafana = "grafana";
         adguardhome = "adguardhome";
         jellyfin = "jellyfin";
