@@ -14,6 +14,7 @@ in {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
+    inputs.tikr.nixosModules.default
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -96,6 +97,12 @@ in {
         bitmagnet = "bitmagnet";
         greptime_db = "podman-greptimedb";
         dragonfly_db = "podman-dragonfly";
+        # tikr_BinanceCoinMargin_L2OrderBookDelta = "tikr@BinanceCoinMargin_L2OrderBookDelta";
+        tikr_BinanceCoinMargin_Quotes = "tikr@BinanceCoinMargin_Quotes";
+        tikr_BinanceCoinMargin_Trades = "tikr@BinanceCoinMargin_Trades";
+        # tikr_BinanceUsdMargin_L2OrderBookDelta = "tikr@BinanceUsdMargin_L2OrderBookDelta";
+        tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
+        tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
       };
     };
   };
@@ -105,6 +112,14 @@ in {
   ];
 
   services = {
+    tikr = {
+      enable = true;
+      database = "GreptimeDb";
+      database-addr = "localhost:4001";
+      exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
+      data-types = ["Trades" "Quotes"];
+      prometheus_exporter_base_port = const.tikr_base_port;
+    };
     grafana = {
       enable = true;
       settings = {

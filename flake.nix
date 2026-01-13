@@ -26,10 +26,10 @@
     hongdown.url = "github:dahlia/hongdown";
 
     # Local paths
-    # tikr = {
-    #   url = "path:/home/m/MathisWellmann/tikr";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
+    tikr = {
+      url = "path:/home/m/MathisWellmann/nexus";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
 
   outputs = {
@@ -72,7 +72,6 @@
         modules = [
           ./hosts/poweredge/configuration.nix
           inputs.home-manager.nixosModules.default
-          # inputs.tikr.nixosModules."x86_64-linux".default
         ];
       };
       de-rosen = nixpkgs-unstable.lib.nixosSystem {
@@ -97,6 +96,7 @@
         ];
       };
       de-msa2 = nixpkgs-unstable.lib.nixosSystem {
+        system = "x86_64-linux";
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/de-msa2/configuration.nix

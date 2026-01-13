@@ -36,7 +36,6 @@ in {
   networking = {
     hostName = "${hostname}";
     firewall.allowedTCPPorts = [
-      8231 # Tikr
       mongodb_port # Mongodb
     ];
   };

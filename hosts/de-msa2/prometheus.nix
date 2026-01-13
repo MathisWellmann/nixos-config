@@ -1,4 +1,4 @@
-{config, ...}: let
+{config, lib, ...}: let
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
   node_scrape_configs = map (host: {
@@ -9,24 +9,26 @@
       }
     ];
   }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "elitedesk"];
-  # n_tikr_services =
-  #   builtins.length config.services.tikr.exchanges
-  #   + builtins.length config.services.tikr.data-types;
-  # tikr_max_port = const.tikr_base_port + n_tikr_services;
-  # tikr_ports = lib.range const.tikr_base_port tikr_max_port;
-  # tikr_scrape_configs =
-  #   map (local_tikr_port: {
-  #     job_name = "tikr-${toString local_tikr_port}";
-  #     static_configs = [
-  #       {
-  #         targets = ["127.0.0.1:${toString local_tikr_port}"];
-  #       }
-  #     ];
-  #   })
-  #   tikr_ports;
+  n_tikr_services =
+    builtins.length config.services.tikr.exchanges
+    + builtins.length config.services.tikr.data-types;
+  tikr_max_port = const.tikr_base_port + n_tikr_services;
+  tikr_ports = lib.range const.tikr_base_port tikr_max_port;
+  tikr_scrape_configs =
+    map (local_tikr_port: {
+      job_name = "tikr-${toString local_tikr_port}";
+      scrape_interval = "5s";
+      scrape_timeout = "2s";
+      static_configs = [
+        {
+          targets = ["127.0.0.1:${toString local_tikr_port}"];
+        }
+      ];
+    })
+    tikr_ports;
   scrapeConfigs =
     node_scrape_configs
-    # ++ tikr_scrape_configs
+    ++ tikr_scrape_configs
     ++ [
       {
         job_name = "zfs";

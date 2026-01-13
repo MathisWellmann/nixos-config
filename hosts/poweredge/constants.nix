@@ -19,6 +19,5 @@
   nats_port = 4222;
   harmonia_port = 5000;
   iperf_port = 5201;
-  tikr_base_port = 9184;
   mongodb_port = 27017;
 }

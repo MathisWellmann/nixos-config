@@ -21,5 +21,6 @@
   victoriametrics_port = 9003;
   mongodb_port = 27017;
   dragonfly_port = 27018;
+  tikr_base_port = 9184;
   prometheus_exporter_nut_port = 9199;
 }

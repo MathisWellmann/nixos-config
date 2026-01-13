@@ -99,14 +99,6 @@ in {
         "/SATA_SSD_POOL/video ${static_ips.de-msa2_ip}(rw,sync,no_subtree_check)\n"
       ];
     };
-    # tikr = {
-    #   enable = true;
-    #   database = "GreptimeDb";
-    #   database-addr = "poweredge:4001";
-    #   exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
-    #   data-types = ["Trades" "Quotes" "L2OrderBookDelta"];
-    #   prometheus_exporter_base_port = const.tikr_base_port;
-    # };
     calibre-web = {
       enable = true;
       listen = {
@@ -291,12 +283,6 @@ in {
         mafl = "podman-mafl";
         readeck = "podman-readeck";
         polaris = "polaris";
-        # tikr_BinanceCoinMargin_L2OrderBookDelta = "tikr@BinanceCoinMargin_L2OrderBookDelta";
-        # tikr_BinanceCoinMargin_Quotes = "tikr@BinanceCoinMargin_Quotes";
-        # tikr_BinanceCoinMargin_Trades = "tikr@BinanceCoinMargin_Trades";
-        # tikr_BinanceUsdMargin_L2OrderBookDelta = "tikr@BinanceUsdMargin_L2OrderBookDelta";
-        # tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
-        # tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
       };
     };
