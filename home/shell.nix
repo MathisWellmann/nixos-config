@@ -76,6 +76,15 @@
 
         # Find all the TODO comments in my codebases
         def todo [] { ${pkgs.ripgrep}/bin/rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO | lines };
+        # Find all the TODO comments, select one and open helix there to start work.
+        def todo_work [] {
+          ${pkgs.ripgrep}/bin/rg --glob=*.{rs,nix,typst} --line-number TODO
+          | ${pkgs.fzf}/bin/fzf
+          | split column " "
+          | first
+          | get column1
+          | xargs ${pkgs.helix}/bin/hx
+        }
         def datecompact [] { date now | format date "%Y%m%d%H%M%S" };
         def hist [] {
           history | get command | uniq | str join (char newline) | fzf --height 50% --reverse | history import
