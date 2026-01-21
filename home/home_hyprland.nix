@@ -249,7 +249,7 @@
       settings = {
         font-size = 16;
         mouse-scroll-multiplier = "1.0";
-        background-opacity = 0.7;
+        background-opacity = 0.8;
         background-blur = true;
         keybind = [
           "ctrl+h=goto_split:left"
@@ -324,7 +324,7 @@
             identity = true;
           }
           {
-            time = "16:00";
+            time = "17:00";
             temperature = 2500;
             gamma = 0.8;
           }
