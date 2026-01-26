@@ -32,7 +32,6 @@ in {
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-
   age.identityPaths = ["/home/${global_const.username}/.ssh/magewe_meshify"];
 
   networking = {

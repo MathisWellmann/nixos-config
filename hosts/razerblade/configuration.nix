@@ -9,7 +9,7 @@
 }: let
   hostname = "razerblade";
   global_const = import ../../global_constants.nix;
-  local_ai = import ./../../modules/local_ai.nix {open-webui_port = 3000;};
+  local_ai = import ./../../modules/local_ai.nix {};
 in {
   imports = [
     # Include the results of the hardware scan.
