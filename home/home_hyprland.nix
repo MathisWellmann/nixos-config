@@ -4,13 +4,9 @@
     # ./waybar
   ];
 
-  nixpkgs.config.permittedInsecurePackages = [
-    "beekeeper-studio-5.3.4"
-  ];
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    beekeeper-studio # Database explorer
     # Desktop
     firefox
     ladybird
