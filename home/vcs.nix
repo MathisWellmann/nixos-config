@@ -1,6 +1,7 @@
 _: let
   name = "MathisWellmann";
   email = "wellmannmathis@gmail.com";
+  global_const = import ../global_constants.nix;
 in {
   programs = {
     git = {
@@ -47,6 +48,11 @@ in {
         revset-aliases."closest_pushable(to)" = ''heads(::to & mutable() & ~description(exact:"") & (~empty() | merges()))'';
         # Moves the closest bookmark to the change that can actually be pushed.
         aliases.tug = ["bookmark" "move" "--from" "heads(::@ & bookmarks())" "--to" "closest_pushable(@)"];
+        signing = {
+          behaviour = "own";
+          backend = "ssh";
+          key = "/home/${global_const.username}/.ssh/id_ed25519.pub";
+        };
       };
     };
   };
