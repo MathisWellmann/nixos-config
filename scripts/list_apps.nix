@@ -20,4 +20,3 @@ in {
       eval "nix run .#$CHOICE"
   '';
 }
-

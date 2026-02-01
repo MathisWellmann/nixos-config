@@ -2,6 +2,9 @@ _: {
   programs.helix = {
     enable = true;
     languages = {
+      language-server.rust-analyzer = {
+        config = {cargo = {features = "all";};};
+      };
       language-server.codebook = {
         command = "codebook-lsp";
         args = ["serve"];
@@ -52,7 +55,8 @@ _: {
       ];
     };
     settings = {
-      theme = "gruvbox-material"; # Dark
+      # theme = "gruvbox-material"; # Dark
+      theme = "curzon"; # Dark
       # theme = "onelight";
       keys.normal = {
         "f" = "file_picker";
