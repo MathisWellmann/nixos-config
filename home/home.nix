@@ -44,6 +44,7 @@ in {
       # From inputs
       inputs.nox.packages.${system}.default # Nix options search
       inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
+      inputs.hongdown.packages.${pkgs.stdenv.hostPlatform.system}.hongdown
 
       # Misc
       viu # View images in the terminal, best with `kitty`

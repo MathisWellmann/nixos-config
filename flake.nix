@@ -23,6 +23,7 @@
     };
     # Animated wallpaper daemon written in rust, because `mpvpaper` leaks memory.
     awww.url = "git+https://codeberg.org/LGFae/awww";
+    hongdown.url = "github:dahlia/hongdown";
 
     # Local paths
     # tikr = {
