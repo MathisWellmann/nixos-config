@@ -106,6 +106,7 @@ in {
     mullvad-vpn.enable = true;
     resolved.enable = true;
     blueman.enable = true;
+    grafana.enable = true;
     backup_home_to_remote = {
       enable = true;
       local_username = "${global_const.username}";

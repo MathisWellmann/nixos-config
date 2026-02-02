@@ -24,6 +24,7 @@
 
         # Jujutsu `jj` aliases
         jjl = "jj log";
+        jjp = ''jj log -r parents(@, 10)::@'';
         jjs = "jj status";
         jjlo = ''jj log --template="builtin_log_oneline"'';
         jjn = "jj new";
