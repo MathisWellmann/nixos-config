@@ -34,10 +34,10 @@
     obs-studio
 
     ##### Cursors #####
-    banana-cursor
-    # rose-pine-cursor
-    # lyra-cursors
-    # phinger-cursors
+    # banana-cursor
+    rose-pine-cursor
+    lyra-cursors
+    phinger-cursors
 
     # Music
     clementine

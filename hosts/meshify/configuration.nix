@@ -106,7 +106,16 @@ in {
     mullvad-vpn.enable = true;
     resolved.enable = true;
     blueman.enable = true;
-    grafana.enable = true;
+    grafana = {
+      enable = true;
+      settings = {
+        server = {
+          # Listening Address
+          http_addr = "127.0.0.1";
+          http_port = 3001;
+        };
+      };
+    };
     backup_home_to_remote = {
       enable = true;
       local_username = "${global_const.username}";
