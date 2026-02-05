@@ -6,7 +6,7 @@
   ...
 }: let
   hostname = config.networking.hostName;
-  repos = ["lfest-rs" "trade_aggregation-rs"];
+  repos = ["lfest-rs" "trade_aggregation-rs" "openresponses-rs"];
 in {
   users.users.github-runner = {
     isSystemUser = true;
