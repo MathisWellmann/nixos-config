@@ -251,6 +251,7 @@
           "ctrl+h=goto_split:left"
           "ctrl+l=goto_split:right"
         ];
+        font-family = "Maple Mono NF";
       };
     };
     zed-editor = {

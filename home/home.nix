@@ -46,12 +46,15 @@ in {
       inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
       inputs.hongdown.packages.${pkgs.stdenv.hostPlatform.system}.hongdown
 
+      # Fonts
+      terminus_font
+      maple-mono.NF
+
       # Misc
       viu # View images in the terminal, best with `kitty`
       unsure # Calculate with numbers you are unsure about.
       jq # Json toolkit
       yq # YAML, JSON, INI and XML processor, like an extended jq
-      terminus_font
       rdfind # Find duplicate files: e.g.: `rdfind .`
       fend # Unit aware calculator
       cmatrix
