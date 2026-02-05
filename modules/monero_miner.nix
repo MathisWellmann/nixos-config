@@ -19,5 +19,11 @@ _: {
       ];
     };
   };
-  # TODO: pin miner threads so they don't affect other cores and get re-scheduled.
+  systemd.services.xmrig = {
+    serviceConfig = {
+      Nice = 15; # Reduce `xmrig` scheduler priority. Higher means lower priority, up to 19.
+      CPUWeight = 10; # Default is 100, minimum is 1
+      IOSchedulingClass = "idle";
+    };
+  };
 }
