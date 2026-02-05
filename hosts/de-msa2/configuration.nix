@@ -24,6 +24,7 @@ in {
     ./../../modules/monero_miner.nix
     ./../../modules/adguardhome.nix
     ./../../modules/zfs_replication_service.nix
+    ./../../modules/github_runner.nix
     ./freshrss.nix
     ./nexus_dbs.nix
     ./gitea.nix
@@ -117,7 +118,7 @@ in {
       database = "GreptimeDb";
       database-addr = "localhost:4001";
       exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
-      data-types = ["Trades" "Quotes"];
+      data-types = ["AggTrades" "Quotes"];
       prometheus_exporter_base_port = const.tikr_base_port;
     };
     grafana = {

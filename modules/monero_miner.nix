@@ -19,4 +19,5 @@ _: {
       ];
     };
   };
+  # TODO: pin miner threads so they don't affect other cores and get re-scheduled.
 }
