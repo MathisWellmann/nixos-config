@@ -107,6 +107,7 @@ in {
         github-runner-lfest-rs = "github-runner-de-msa2-lfest-rs";
         github-runner-trade_aggregation-rs = "github-runner-de-msa2-trade_aggregation-rs";
         github-runner-openresponses-rs = "github-runner-de-msa2-openresponses-rs";
+        github-runner-sliding_features-rs = "github-runner-de-msa2-sliding_features-rs";
       };
     };
   };
