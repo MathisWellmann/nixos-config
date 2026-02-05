@@ -1,4 +1,8 @@
-{config, lib, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
   node_scrape_configs = map (host: {

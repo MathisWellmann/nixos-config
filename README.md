@@ -1,6 +1,9 @@
 NixOs Configuration files
 =========================
 
+## Highlights:
+- `modules/github_runner.nix`: Create a dedicated Github runner service for each of my repositoies, defined in `repos`.
+
 To apply a configuration for a particular host, e.g `meshify`:
 
 ~~~~ shell
