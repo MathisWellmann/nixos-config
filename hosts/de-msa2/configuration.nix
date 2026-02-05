@@ -104,6 +104,8 @@ in {
         # tikr_BinanceUsdMargin_L2OrderBookDelta = "tikr@BinanceUsdMargin_L2OrderBookDelta";
         tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
         tikr_BinanceUsdMargin_Trades = "tikr@BinanceUsdMargin_Trades";
+        github-runner-lfest-rs = "github-runner-de-msa2-lfest-rs";
+        github-runner-trade_aggregation-rs = "github-runner-de-msa2-trade_aggregation-rs";
       };
     };
   };
