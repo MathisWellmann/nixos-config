@@ -28,6 +28,7 @@ in {
     ./freshrss.nix
     ./nexus_dbs.nix
     ./gitea.nix
+    ./forgejo.nix
     ./prometheus.nix
     ./homer_dashboard.nix
     ./zfs_pool.nix

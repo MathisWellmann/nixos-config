@@ -18,29 +18,32 @@ in {
 
   # For each repo, construct a github runner.
   services.github-runners = builtins.listToAttrs (map (repo: {
-    name = "${hostname}-${repo}";
-    value = {
-      enable = true;
+      name = "${hostname}-${repo}";
+      value = {
+        enable = true;
 
-      url = "https://github.com/MathisWellmann/${repo}";
+        url = "https://github.com/MathisWellmann/${repo}";
 
-      tokenFile = "/run/secrets/gh_runner_token_${repo}";
+        tokenFile = "/run/secrets/gh_runner_token_${repo}";
 
-      user = "github-runner";
-      group = "github-runner";
+        user = "github-runner";
+        group = "github-runner";
 
-      extraLabels = ["nixos" "${pkgs.stdenv.hostPlatform.system}"];
+        extraLabels = ["nixos" "${pkgs.stdenv.hostPlatform.system}"];
 
-      # Optional: runner group (enterprise/org feature)
-      runnerGroup = "default";
+        # Optional: runner group (enterprise/org feature)
+        runnerGroup = "default";
 
-      # Work directory (isolated from system)
-      workDir = "/var/lib/github-runner/${repo}";
-    };
-  }) repos);
+        # Work directory (isolated from system)
+        workDir = "/var/lib/github-runner/${repo}";
+      };
+    })
+    repos);
 
   # Ensure runner directories have strict permissions
-  systemd.tmpfiles.rules = map (repo: 
-    "d /var/lib/github-runner/${repo} 0700 github-runner github-runner -"
-  ) repos;
+  systemd.tmpfiles.rules =
+    map (
+      repo: "d /var/lib/github-runner/${repo} 0700 github-runner github-runner -"
+    )
+    repos;
 }
