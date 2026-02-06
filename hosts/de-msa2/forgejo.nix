@@ -17,6 +17,7 @@ in {
           # ROOT_URL = "https://${srv.DOMAIN}";
           HTTP_PORT = const.forgejo_port;
         };
+        service.DISABLE_REGISTRATION = true; # Only my user for now
         actions = {
           ENABLED = true;
           DEFAULT_ACTIONS_URL = "github";

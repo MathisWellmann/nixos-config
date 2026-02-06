@@ -87,6 +87,8 @@ in {
       };
       service_status = {
         tailscale = "tailscaled";
+        gitea = "gitea";
+        forgejo = "forgejo";
         prometheus = "prometheus";
         prometheus-exporter = "prometheus-node-exporter";
         victoriametrics = "victoriametrics";
