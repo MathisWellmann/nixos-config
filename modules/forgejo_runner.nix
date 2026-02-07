@@ -42,4 +42,13 @@
     systemd.services.gitea-runner-default.serviceConfig.ReadWritePaths = [
       state_dir
     ];
+    # Raise open file limits.
+    security.pam.services.gitea-actions-runner.limits = [
+      {
+        domain = "*";
+        type = "soft";
+        item = "nofile";
+        value = "1000000";
+      }
+    ];
   }
