@@ -135,6 +135,9 @@
         wake_on_lan = inputs.flake-utils.lib.mkApp {
           drv = import scripts/wake_on_lan.nix {inherit self pkgs;};
         };
+        sync_starred_github_to_forgejo = inputs.flake-utils.lib.mkApp {
+          drv = import scripts/sync_starred_github_to_forgejo.nix {inherit pkgs;};
+        };
       };
     };
   };
