@@ -7,7 +7,13 @@
   ...
 }: let
   const = import ./constants.nix;
+  de-msa2_const = import ../../hosts/de-msa2/constants.nix;
   global_const = import ../../global_constants.nix;
+  forgejo_runner = import ./../../modules/forgejo_runner.nix {
+    forgejo_url = "http://de-msa2:${toString de-msa2_const.forgejo_port}";
+    state_dir = "/run/forgejo_runner";
+    runner_capacity = 4;
+  };
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -21,6 +27,7 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/local_ai.nix
     ./../../modules/monero_miner.nix
+    forgejo_runner
     inputs.home-manager.nixosModules.default
   ];
 
