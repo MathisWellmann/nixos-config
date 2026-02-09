@@ -10,6 +10,7 @@
   hostname = "meshify";
   static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
+  monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 25;};
 in {
   imports = [
     ./hardware-configuration.nix
@@ -26,7 +27,7 @@ in {
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
-    ./../../modules/monero_miner.nix
+    monero_miner
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 

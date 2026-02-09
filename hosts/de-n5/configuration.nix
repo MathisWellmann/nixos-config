@@ -7,6 +7,7 @@
   ...
 }: let
   global_const = import ../../global_constants.nix;
+  monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 50;};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -17,8 +18,8 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
-    ./../../modules/monero_miner.nix
     ./zfs_pool.nix
+    monero_miner
   ];
 
   networking.hostName = "de-n5"; # Define your hostname.

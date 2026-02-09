@@ -14,6 +14,7 @@
     state_dir = "/run/forgejo_runner";
     runner_capacity = 4;
   };
+  monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 12;};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -26,8 +27,8 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/local_ai.nix
-    ./../../modules/monero_miner.nix
     forgejo_runner
+    monero_miner
     inputs.home-manager.nixosModules.default
   ];
 

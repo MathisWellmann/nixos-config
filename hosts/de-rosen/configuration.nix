@@ -29,7 +29,6 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/virtualization_host.nix
     ./../../modules/monero.nix
-    # ./../../modules/monero_miner.nix
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 

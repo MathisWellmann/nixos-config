@@ -1,11 +1,13 @@
-_: {
+{
+  max-threads-hint ? 25
+}: {...}: {
   services.xmrig = {
     enable = true;
     settings = {
       autosave = true;
       cpu = {
         enable = true;
-        max-threads-hint = 12;
+        inherit max-threads-hint;
       };
       opencl = false;
       cuda = false;

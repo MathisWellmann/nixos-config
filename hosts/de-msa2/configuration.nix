@@ -9,6 +9,7 @@
   global_const = import ../../global_constants.nix;
   const = import ./constants.nix;
   searx = import ./../../modules/searx.nix {port = const.searx_port;};
+  monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 25;};
   forgejo_runner = import ./../../modules/forgejo_runner.nix {
     forgejo_url = "http://localhost:${toString const.forgejo_port}";
     state_dir = "/nvme_pool/forgejo-runner";
@@ -25,7 +26,6 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
-    ./../../modules/monero_miner.nix
     ./../../modules/adguardhome.nix
     ./../../modules/zfs_replication_service.nix
     ./../../modules/github_runner.nix
@@ -39,6 +39,7 @@ in {
     ./zfs_pool.nix
     ./ups.nix
     searx
+    monero_miner
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.

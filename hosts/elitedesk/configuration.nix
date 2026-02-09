@@ -10,6 +10,7 @@
   global_const = import ../../global_constants.nix;
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
+  monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 50;};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -20,9 +21,9 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/monero.nix
-    ./../../modules/monero_miner.nix
     ./../../modules/adguardhome.nix
     ./../../modules/prometheus_exporter.nix
+    monero_miner
   ];
 
   networking.hostName = "elitedesk"; # Define your hostname.
