@@ -28,6 +28,7 @@ in {
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
+    ./../../modules/nix_binary_cache_client.nix
     monero_miner
     local_ai
   ];

@@ -30,7 +30,7 @@ _: {
         ];
         document = [
           {
-            run = "zathura $@";
+            run = ''zathura "$@"'';
             block = true;
           }
         ];

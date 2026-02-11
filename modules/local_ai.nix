@@ -3,6 +3,7 @@
     mistral-rs
     # vllm # Fails to build
     llama-cpp
+    claude-code
   ];
   services.ollama = {
     enable = true;
@@ -15,10 +16,10 @@
       OLLAMA_LOAD_TIMEOUT = "15m";
     };
   };
-  services.open-webui = {
-    enable = true;
-    host = "0.0.0.0";
-    port = open-webui_port;
-    openFirewall = true;
-  };
+  # services.open-webui = {
+  #   enable = true;
+  #   host = "0.0.0.0";
+  #   port = open-webui_port;
+  #   openFirewall = true;
+  # };
 }
