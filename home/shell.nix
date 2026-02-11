@@ -94,6 +94,11 @@
           fd . -t file --exec b3sum | lines | sort | b3sum
         };
 
+        # Git pickaxe search for some line
+        def gitsearch [text: string] {
+          git log -p -S $text
+        }
+
         $env.EDITOR = "${pkgs.helix}/bin/hx";
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin) |
