@@ -21,6 +21,7 @@ in {
     ./../../modules/local_ai.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
+    ./../../modules/prometheus_exporter.nix
   ];
   time.timeZone = lib.mkForce "Europe/London";
 
