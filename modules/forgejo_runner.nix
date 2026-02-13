@@ -14,7 +14,7 @@
       name = "${config.networking.hostName}";
       url = forgejo_url;
       # tokenFile should be in format TOKEN=<secret>, since it's EnvironmentFile for systemd
-      tokenFile = "/run/secrets/forgejo_runner";
+      tokenFile = "/etc/secrets/forgejo_runner";
       labels = [
         # Provide native execution on the host.
         "native:host"

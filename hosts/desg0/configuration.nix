@@ -11,7 +11,7 @@
   global_const = import ../../global_constants.nix;
   forgejo_runner = import ./../../modules/forgejo_runner.nix {
     forgejo_url = "http://de-msa2:${toString de-msa2_const.forgejo_port}";
-    state_dir = "/run/forgejo_runner";
+    state_dir = "/etc/forgejo_runner";
     runner_capacity = 4;
   };
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 12;};
