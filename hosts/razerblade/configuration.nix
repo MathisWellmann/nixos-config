@@ -9,6 +9,7 @@
 }: let
   hostname = "razerblade";
   global_const = import ../../global_constants.nix;
+  local_ai = import ./../../modules/local_ai.nix {open-webui_port = 3000;};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -18,11 +19,11 @@ in {
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
-    ./../../modules/local_ai.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
+    local_ai
   ];
   time.timeZone = lib.mkForce "Europe/London";
 

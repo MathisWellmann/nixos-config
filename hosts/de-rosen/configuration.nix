@@ -17,9 +17,7 @@ in {
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
-    ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
-    # ./../../modules/desktop_amd.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/local_ai.nix
     ./../../modules/mount_external_drives.nix
@@ -28,7 +26,6 @@ in {
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/virtualization_host.nix
-    ./../../modules/monero.nix
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 

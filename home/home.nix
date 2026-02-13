@@ -90,9 +90,6 @@ in {
       usbutils # For `lsusb`
       cacert
 
-      # AI
-      mistral-rs
-
       # Nix
       # Package version diff tool. E.g Compare system revision 405 with 420:
       # `nvd diff /nix/var/nix/profiles/system-405-link/ /nix/var/nix/profiles/system-420-link/`

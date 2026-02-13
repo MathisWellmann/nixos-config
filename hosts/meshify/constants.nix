@@ -1,3 +1,3 @@
 {
-  open_webui_port = 8080;
+  open-webui_port = 8080;
 }

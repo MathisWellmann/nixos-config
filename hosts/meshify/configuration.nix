@@ -8,9 +8,11 @@
 }: let
   # TODO: move to `constants.nix`
   hostname = "meshify";
+  const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 25;};
+  local_ai = import ./../../modules/local_ai.nix {open-webui_port = const.open-webui_port;};
 in {
   imports = [
     ./hardware-configuration.nix
@@ -19,7 +21,6 @@ in {
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
-    ./../../modules/local_ai.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
@@ -28,6 +29,7 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
     monero_miner
+    local_ai
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 

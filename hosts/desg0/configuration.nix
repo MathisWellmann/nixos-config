@@ -15,6 +15,7 @@
     runner_capacity = 4;
   };
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 12;};
+  local_ai = import ./../../modules/local_ai.nix {open-webui_port = const.open-webui_port;};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -26,7 +27,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
-    ./../../modules/local_ai.nix
+    local_ai
     forgejo_runner
     monero_miner
     inputs.home-manager.nixosModules.default

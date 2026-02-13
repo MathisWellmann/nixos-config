@@ -1,4 +1,8 @@
-_: {
+{open-webui_port}: {pkgs, ...}: {
+  environment.systemPackages = with pkgs; [
+    mistral-rs
+    vllm
+  ];
   services.ollama = {
     enable = true;
     # package = new_ollama;
@@ -10,10 +14,10 @@ _: {
       OLLAMA_LOAD_TIMEOUT = "15m";
     };
   };
-  # services.open-webui = {
-  #   enable = true;
-  #   host = "0.0.0.0";
-  #   port = open-webui_port;
-  #   openFirewall = true;
-  # };
+  services.open-webui = {
+    enable = true;
+    host = "0.0.0.0";
+    port = open-webui_port;
+    openFirewall = true;
+  };
 }
