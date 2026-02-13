@@ -13,11 +13,11 @@ in
 
     # GitHub
     GITHUB_API="https://api.github.com"
-    GITHUB_TOKEN="$(< /run/secrets/github_token)"
+    GITHUB_TOKEN="$(< /etc/secrets/github_token)"
 
     # Forgejo
     FORGEJO_API="${forgejo_url}/api/v1"
-    FORGEJO_TOKEN="$(< /run/secrets/forgejo_mirrors)"
+    FORGEJO_TOKEN="$(< /etc/secrets/forgejo_mirrors)"
     FORGEJO_OWNER="mirrors"
 
     # Mirror settings

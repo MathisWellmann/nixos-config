@@ -24,7 +24,7 @@ in {
 
         url = "https://github.com/MathisWellmann/${repo}";
 
-        tokenFile = "/run/secrets/gh_runner_token_${repo}";
+        tokenFile = "/etc/secrets/gh_runner_token_${repo}";
 
         user = "github-runner";
         group = "github-runner";
