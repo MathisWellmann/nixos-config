@@ -77,6 +77,7 @@ in {
         tailscale = "tailscaled";
         prometheus-exporter = "prometheus-node-exporter";
         restic-backups-home = "restic-backups-home";
+        forgejo_runner = "gitea-runner-default";
       };
       uptime.prefix = "up";
     };
