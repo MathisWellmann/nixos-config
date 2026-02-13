@@ -39,16 +39,11 @@
     };
   };
   # Ensure systemd allows writing to that ZFS directory.
-  systemd.services.gitea-runner-default.serviceConfig.ReadWritePaths = [
-    state_dir
-  ];
-  # Raise open file limits.
-  security.pam.services.gitea-actions-runner.limits = [
-    {
-      domain = "*";
-      type = "soft";
-      item = "nofile";
-      value = "1000000";
-    }
-  ];
+  systemd.services.gitea-runner-default.serviceConfig = {
+    ReadWritePaths = [
+      state_dir
+    ];
+    # Raise open file limits.
+    LimitNOFILE = 1048576;
+  };
 }

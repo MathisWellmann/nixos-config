@@ -1,6 +1,4 @@
-{
-  max-threads-hint ? 25
-}: {...}: {
+{max-threads-hint ? 25}: {...}: {
   services.xmrig = {
     enable = true;
     settings = {
