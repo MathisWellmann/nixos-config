@@ -14,7 +14,6 @@
     helix
     lsd
     fd # Alternative to `find` written in Rust
-    skim # Fuzzy finder written in Rust
     fzf # Fuzzy finder written in Go
     ripgrep
     tmux
