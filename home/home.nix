@@ -70,9 +70,6 @@ in {
       ueberzugpp # Required to display images in alacritty with yazi
       cfspeedtest # CLI for speed.cloudflare.com
       ethtool
-      mistral-rs # LLM inference written in Rust
-      llama-cpp # LLM inference written in C++
-      code2prompt
       natscli
       # For setting fan speed on supermicro BMC: `ipmitool -I lan -U ADMIN -H 192.168.0.31 sensor thresh FAN1 lcr 300`
       # Or `ipmitool -I lan -U ADMIN -H 192.168.0.31 sensor`

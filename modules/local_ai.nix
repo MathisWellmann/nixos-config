@@ -1,7 +1,8 @@
 {open-webui_port}: {pkgs, ...}: {
   environment.systemPackages = with pkgs; [
     mistral-rs
-    vllm
+    # vllm # Fails to build
+    llama-cpp
   ];
   services.ollama = {
     enable = true;
