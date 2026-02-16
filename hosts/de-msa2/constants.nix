@@ -11,6 +11,7 @@
   vikunja_port = 3005;
   searx_port = 3006;
   habit_trove_port = 3007;
+  bencher_ui_port = 3008;
   greptimedb_http_port = 4000;
   greptimedb_rpc_port = 4001;
   greptimedb_mysql_port = 4002;
@@ -24,4 +25,5 @@
   dragonfly_port = 27018;
   tikr_base_port = 9184;
   prometheus_exporter_nut_port = 9199;
+  bencher_api_port = 61016;
 }

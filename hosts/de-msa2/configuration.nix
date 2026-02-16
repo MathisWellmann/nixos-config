@@ -118,6 +118,8 @@ in {
         github-runner-trade_aggregation-rs = "github-runner-de-msa2-trade_aggregation-rs";
         github-runner-openresponses-rs = "github-runner-de-msa2-openresponses-rs";
         github-runner-sliding_features-rs = "github-runner-de-msa2-sliding_features-rs";
+        bencher-ui = "podman-bencher-ui";
+        bencher-api = "podman-bencher-api";
       };
     };
   };
@@ -125,6 +127,8 @@ in {
   networking.firewall.allowedTCPPorts = [
     const.iperf_port
     const.habit_trove_port
+    const.bencher_ui_port
+    const.bencher_api_port
   ];
 
   services = {
@@ -193,16 +197,37 @@ in {
     # };
   # };
   # 
-  virtualisation.oci-containers.containers."HabitTrove" = {
-    image = "dohsimpson/habittrove:latest";
-    ports = [
-      "${builtins.toString const.habit_trove_port}:3000"
-    ];
-    volumes = [
-      "/nvme_pool/habit_trove:/app/data"
-    ];
-    environmentFiles = [
-      /etc/secrets/habit_trove
-    ];
+  virtualisation.oci-containers.containers = {
+    "HabitTrove" = {
+      image = "dohsimpson/habittrove:latest";
+      ports = [
+        "${builtins.toString const.habit_trove_port}:3000"
+      ];
+      volumes = [
+        "/nvme_pool/habit_trove:/app/data"
+      ];
+      environmentFiles = [
+        /etc/secrets/habit_trove
+      ];
+    };
+    "bencher-api" = {
+      image = "ghcr.io/bencherdev/bencher-api:latest";
+      ports = [
+        "${toString const.bencher_api_port}:3000"
+      ];
+      volumes = [
+        "/nvme_pool/bencher/config:/etc/bencher" # Config dir
+        "/nvme_pool/bencher/data:/var/lib/bencher/data" # Data dir
+      ];
+    };
+    "bencher-ui" = {
+      image = "ghcr.io/bencherdev/bencher-console:latest";
+      ports = [
+        "${toString const.bencher_ui_port}:3000"
+      ];
+      environment = {
+        BENCHER_API_URL="http://127.0.0.1:${toString const.bencher_api_port}";
+      };
+    };
   };
 }
