@@ -128,14 +128,14 @@ in {
   ];
 
   services = {
-    tikr = {
-      enable = true;
-      database = "GreptimeDb";
-      database-addr = "localhost:4001";
-      exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
-      data-types = ["AggTrades"];
-      prometheus_exporter_base_port = const.tikr_base_port;
-    };
+    # tikr = {
+    #   enable = true;
+    #   database = "GreptimeDb";
+    #   database-addr = "localhost:4001";
+    #   exchanges = ["BinanceUsdMargin" "BinanceCoinMargin"];
+    #   data-types = ["AggTrades"];
+    #   prometheus_exporter_base_port = const.tikr_base_port;
+    # };
     grafana = {
       enable = true;
       settings = {
