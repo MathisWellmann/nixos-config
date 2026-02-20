@@ -16,6 +16,7 @@
     fd # Alternative to `find` written in Rust
     fzf # Fuzzy finder written in Go
     ripgrep
+    repgrep # Interactive replacer for ripgrep.
     tmux
     htop
     bottom # `btm`: similar to `htop`, written in rust
