@@ -42,6 +42,7 @@
   systemd.services.gitea-runner-default.serviceConfig = {
     ReadWritePaths = [
       state_dir
+      "/var/sccache"
     ];
     # Raise open file limits.
     LimitNOFILE = 1048576;
