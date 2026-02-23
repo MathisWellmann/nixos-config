@@ -26,10 +26,10 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
-    ./../../modules/adguardhome.nix
+    # ./../../modules/adguardhome.nix
     ./../../modules/zfs_replication_service.nix
     ./../../modules/github_runner.nix
-    ./freshrss.nix
+    # ./freshrss.nix
     ./nexus_dbs.nix
     ./gitea.nix
     ./forgejo.nix
@@ -37,7 +37,7 @@ in {
     ./prometheus.nix
     ./homer_dashboard.nix
     ./zfs_pool.nix
-    ./ups.nix
+    # ./ups.nix
     searx
     monero_miner
   ];
@@ -157,13 +157,13 @@ in {
         PORT = "${builtins.toString const.uptime_kuma_port}";
       };
     };
-    bitmagnet = {
-      enable = true;
-      openFirewall = true;
-      settings = {
-        http_server.port = "${builtins.toString const.bitmagnet_port}";
-      };
-    };
+    # bitmagnet = {
+    #   enable = true;
+    #   openFirewall = true;
+    #   settings = {
+    #     http_server.port = "${builtins.toString const.bitmagnet_port}";
+    #   };
+    # };
     minidlna = {
       enable = true;
       openFirewall = true;
@@ -227,6 +227,7 @@ in {
       ];
       environment = {
         BENCHER_API_URL="http://127.0.0.1:${toString const.bencher_api_port}";
+        INTERNAL_API_URL = "http://host.podman.internal:${toString const.bencher_api_port}";
       };
     };
   };
