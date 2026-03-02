@@ -192,12 +192,12 @@ in {
   #   defaultSopsFile = "./../../sops_secrets.yaml";
   #   defaultSopsFormat = "yaml";
 
-    # # This creates /run/secrets/create_ap_password
-    # secrets.meshify_ap_password = {
-    #   sopsFile = ../../sops_secrets.yaml;
-    # };
+  # # This creates /run/secrets/create_ap_password
+  # secrets.meshify_ap_password = {
+  #   sopsFile = ../../sops_secrets.yaml;
   # };
-  # 
+  # };
+  #
   virtualisation.oci-containers.containers = {
     "HabitTrove" = {
       image = "dohsimpson/habittrove:latest";
@@ -227,7 +227,7 @@ in {
         "${toString const.bencher_ui_port}:3000"
       ];
       environment = {
-        BENCHER_API_URL="http://127.0.0.1:${toString const.bencher_api_port}";
+        BENCHER_API_URL = "http://127.0.0.1:${toString const.bencher_api_port}";
         INTERNAL_API_URL = "http://host.podman.internal:${toString const.bencher_api_port}";
       };
     };
