@@ -37,6 +37,7 @@ in {
     ./prometheus.nix
     ./homer_dashboard.nix
     ./zfs_pool.nix
+    ./harmonia.nix
     # ./ups.nix
     searx
     monero_miner
