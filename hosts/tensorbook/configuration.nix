@@ -19,8 +19,8 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
-    ./../../modules/mount_external_drives.nix
-    ./../../modules/prometheus_exporter.nix
+    # ./../../modules/mount_external_drives.nix
+    # ./../../modules/prometheus_exporter.nix
   ];
   time.timeZone = lib.mkForce "Europe/London";
 
@@ -92,12 +92,8 @@ in {
 
   # Required for being able to download inside `nix build` environment, e.g rust dependencies pulling in data.
   nix.settings.sandbox = false;
+
   fonts.fontconfig.enable = true;
-  fonts.packages = with pkgs; [
-    noto-fonts
-    noto-fonts-color-emoji
-    nerd-fonts.departure-mono
-  ];
   virtualisation = {
     docker.enable = true;
     podman.enable = true;
@@ -122,8 +118,11 @@ in {
       "x-systemd.automount" # Only mount when directory is accessed.
     ];
   };
-  services.grafana = {
-    enable = true;
-    settings.server.http_port = 80;
-  };
+  # services = {
+  #   grafana = {
+  #     enable = true;
+  #     settings.server.http_port = 80;
+  #   };
+  #   resolved.enable = true;
+  # };
 }

@@ -20,6 +20,12 @@
     kernelModules = ["kvm-intel"];
     extraModulePackages = [];
     kernelPackages = pkgs.linuxPackages_latest;
+    # Black‑list the integrated Intel GPU driver (i915) and Nouveau (just in case)
+    blacklistedKernelModules = [ "i915" "nouveau" ];
+    # power‑gate the iGPU after boot (saves a few watts)
+    extraModprobeConfig = ''
+      options i915 enable_fbc=0 enable_psr=0
+    '';
   };
 
   fileSystems = {
