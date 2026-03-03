@@ -6,12 +6,18 @@ in {
     exporters = {
       node = {
         enable = true;
-        port = global_const.prometheus_exporter_port;
+        port = global_const.prometheus_exporter_ports.node;
         openFirewall = true;
       };
       zfs = {
         enable = true;
-        port = 9134;
+        port = global_const.prometheus_exporter_ports.zfs;
+        openFirewall = true;
+      };
+      nvidia-gpu = {
+        enable = true;
+        port = global_const.prometheus_exporter_ports.nvidia-gpu;
+        openFirewall = true;
       };
     };
   };
