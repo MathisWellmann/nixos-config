@@ -8,6 +8,7 @@ in {
 
   wayland.windowManager.hyprland = {
     settings = {
+      "exec-once" = ''waybar & hyprctl setcursor 'Banana' 48 && awww-daemon && awww img ~/orange-train-at-sunset.3840x2160.mp4'';
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
         "XDG_SESSION_TYPE,wayland"

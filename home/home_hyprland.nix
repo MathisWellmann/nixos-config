@@ -34,7 +34,7 @@
     obs-studio
 
     ##### Cursors #####
-    # banana-cursor
+    banana-cursor
     rose-pine-cursor
     lyra-cursors
     phinger-cursors
