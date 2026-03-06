@@ -116,7 +116,7 @@ in {
       # Terminal
       tokei
       ttyper
-      neofetch
+      fastfetch
       onefetch
       # oxker     # Docker tui
       dive # Tool for exploring each layer in a docker image

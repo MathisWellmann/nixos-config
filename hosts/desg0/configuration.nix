@@ -69,7 +69,7 @@ in {
     settings = {
       banner = {
         color = "black";
-        command = "${pkgs.neofetch}/bin/neofetch";
+        command = "${pkgs.fastfetch}/bin/fastfetch";
       };
       filesystems = {
         root = "/";

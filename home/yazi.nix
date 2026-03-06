@@ -1,6 +1,7 @@
 _: {
   programs.yazi = {
     enable = true;
+    shellWrapperName = "y"; # New behaviour
     settings = {
       log.enable = true;
       opener = {

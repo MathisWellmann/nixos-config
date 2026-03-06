@@ -24,7 +24,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
-    ./../../modules/mount_remote_nfs_exports.nix
+    # ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
@@ -79,7 +79,7 @@ in {
       settings = {
         banner = {
           color = "black";
-          command = "${pkgs.neofetch}/bin/neofetch";
+          command = "${pkgs.fastfetch}/bin/fastfetch";
         };
         filesystems = {
           root = "/";
@@ -110,16 +110,6 @@ in {
     mullvad-vpn.enable = true;
     resolved.enable = true;
     blueman.enable = true;
-    grafana = {
-      enable = true;
-      settings = {
-        server = {
-          # Listening Address
-          http_addr = "127.0.0.1";
-          http_port = 3001;
-        };
-      };
-    };
     backup_home_to_remote = {
       enable = true;
       local_username = "${global_const.username}";
@@ -127,12 +117,12 @@ in {
       backup_host_name = "poweredge";
       backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
     };
-    mount_remote_nfs_exports = {
-      enable = true;
-      nfs_host_name = "de-msa2";
-      nfs_host_addr = "de-msa2";
-      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
-    };
+    # mount_remote_nfs_exports = {
+    #   enable = true;
+    #   nfs_host_name = "de-msa2";
+    #   nfs_host_addr = "de-msa2";
+    #   nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
+    # };
   };
 
   fileSystems = {
