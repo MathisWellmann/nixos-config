@@ -144,6 +144,7 @@ in {
     grafana = {
       enable = true;
       settings = {
+        security.secret_key = "/etc/secrets/grafana";
         server = {
           # Listening Address
           http_addr = "0.0.0.0";
