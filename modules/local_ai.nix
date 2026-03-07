@@ -1,4 +1,14 @@
-{open-webui_port}: {pkgs, ...}: {
+{open-webui_port}: {pkgs, ...}: let
+  new_ollama = pkgs.ollama.overrideAttrs (oldAttrs: rec {
+    version = "0.17.7";
+    src = pkgs.fetchFromGitHub {
+      owner = "ollama";
+      repo = "ollama";
+      rev = "v${version}";
+      hash = "sha256-cAqc38NHvUo5gphq1csTyosTcpUjFcs0dzB0wreEGjs=";
+    };
+  });
+  in {
   environment.systemPackages = with pkgs; [
     mistral-rs
     # vllm # Fails to build
@@ -7,7 +17,7 @@
   ];
   services.ollama = {
     enable = true;
-    # package = new_ollama;
+    package = new_ollama;
     environmentVariables = {
       OLLAMA_NUM_PARALLEL = "1";
       OLLAMA_KEEP_ALIVE = "1";
