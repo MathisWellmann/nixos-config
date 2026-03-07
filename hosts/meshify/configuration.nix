@@ -24,7 +24,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
-    # ./../../modules/mount_remote_nfs_exports.nix
+    ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
@@ -117,12 +117,12 @@ in {
       backup_host_name = "poweredge";
       backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
     };
-    # mount_remote_nfs_exports = {
-    #   enable = true;
-    #   nfs_host_name = "de-msa2";
-    #   nfs_host_addr = "de-msa2";
-    #   nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
-    # };
+    mount_remote_nfs_exports = {
+      enable = true;
+      nfs_host_name = "de-msa2";
+      nfs_host_addr = "de-msa2";
+      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
+    };
   };
 
   fileSystems = {
