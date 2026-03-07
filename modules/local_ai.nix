@@ -1,4 +1,4 @@
-{open-webui_port}: {pkgs, ...}: let
+{llama-cpp_port ? 3100}: {pkgs, ...}: let
   new_ollama = pkgs.ollama.overrideAttrs (oldAttrs: rec {
     version = "0.17.7";
     src = pkgs.fetchFromGitHub {
@@ -16,21 +16,23 @@ in {
     claude-code
     lmstudio
   ];
-  services.ollama = {
-    enable = true;
-    package = new_ollama;
-    environmentVariables = {
-      OLLAMA_NUM_PARALLEL = "1";
-      OLLAMA_KEEP_ALIVE = "1";
-      OLLAMA_SCHED_SPREAD = "1";
-      OLLAMA_GPU_OVERHEAD = "22000000";
-      OLLAMA_LOAD_TIMEOUT = "15m";
+  services = {
+    ollama = {
+      enable = true;
+      package = new_ollama;
+      environmentVariables = {
+        OLLAMA_NUM_PARALLEL = "1";
+        OLLAMA_KEEP_ALIVE = "1";
+        OLLAMA_SCHED_SPREAD = "1";
+        OLLAMA_GPU_OVERHEAD = "22000000";
+        OLLAMA_LOAD_TIMEOUT = "15m";
+      };
+    };
+    llama-cpp.port = {
+      enable = true;
+      host = "0.0.0.0";
+      port = llama-cpp_port;
+      openFirewall = true;
     };
   };
-  # services.open-webui = {
-  #   enable = true;
-  #   host = "0.0.0.0";
-  #   port = open-webui_port;
-  #   openFirewall = true;
-  # };
 }

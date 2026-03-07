@@ -15,7 +15,7 @@
     runner_capacity = 6;
   };
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 12;};
-  local_ai = import ./../../modules/local_ai.nix {open-webui_port = const.open-webui_port;};
+  local_ai = import ./../../modules/local_ai.nix {};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -82,5 +82,11 @@ in {
       };
       uptime.prefix = "up";
     };
+  };
+  services.open-webui = {
+    enable = true;
+    host = "0.0.0.0";
+    port = const.open-webui_port;
+    openFirewall = true;
   };
 }
