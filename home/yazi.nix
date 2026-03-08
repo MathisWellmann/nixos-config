@@ -29,10 +29,10 @@ _: {
             block = true;
           }
         ];
-        document = [
+        pdf = [
           {
-            run = ''zathura "$@"'';
-            block = true;
+            run = "zathura \"$@\"";
+            desc = "Open PDF";
           }
         ];
       };
@@ -61,8 +61,8 @@ _: {
             use = "mpv";
           }
           {
-            name = "*.pdf";
-            use = "document";
+            mime = "application/pdf";
+            use = ["pdf"];
           }
           ##### Music #####
           {

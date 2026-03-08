@@ -48,5 +48,5 @@
     LimitNOFILE = 1048576;
   };
   # For CI to accept flake nix config like binary cache substituters, the CI user must be trusted.
-  nix.settings.trusted-users = [ "gitea-runner" ];
+  nix.settings.trusted-users = ["gitea-runner"];
 }

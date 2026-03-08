@@ -8,7 +8,7 @@
       hash = "sha256-cAqc38NHvUo5gphq1csTyosTcpUjFcs0dzB0wreEGjs=";
     };
   });
-  in {
+in {
   environment.systemPackages = with pkgs; [
     mistral-rs
     # vllm # Fails to build
