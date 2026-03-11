@@ -29,7 +29,7 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
     ./../../modules/nix_binary_cache_client.nix
-    monero_miner
+    # monero_miner
     local_ai
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
@@ -157,4 +157,12 @@ in {
   #     PASSPHRASE = "12345678";
   #   };
   # };
+  # Make RTX Pro 6000 work.
+  environment.sessionVariables = {
+    WLR_DRM_DEVICES = "/dev/dri/by-path/pci-0000:01:00.0-card";
+    WLR_NO_HARDWARE_CURSORS = "1";
+    GBM_BACKEND = "nvidia-drm";
+    __GLX_VENDOR_LIBRARY_NAME = "nvidia";
+    WLR_DRM_NO_ATOMIC = "1";
+  };
 }

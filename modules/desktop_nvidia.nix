@@ -1,12 +1,13 @@
-{pkgs, ...}: {
+{config, pkgs, ...}: {
   imports = [
     ./desktop_common.nix
   ];
+  boot.kernelParams = ["nvidia-drm.modeset=1"];
   hardware.nvidia = {
-    open = false;
+    open = true;
     modesetting.enable = true;
     nvidiaSettings = true;
-    # package = config.boot.kernelPackages.nvidiaPackages.stable;
+    package = config.boot.kernelPackages.nvidiaPackages.latest;
   };
   nixpkgs.config.cudaSupport = true;
 
