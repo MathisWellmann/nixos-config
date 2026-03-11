@@ -14,6 +14,7 @@ in {
     # vllm # Fails to build
     llama-cpp
     claude-code
+    lmstudio
   ];
   services.ollama = {
     enable = true;
