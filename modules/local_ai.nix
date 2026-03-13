@@ -15,6 +15,7 @@ in {
     llama-cpp
     claude-code
     lmstudio
+    stable-diffusion-cpp-cuda
   ];
   services = {
     ollama = {
