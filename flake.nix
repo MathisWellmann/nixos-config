@@ -138,6 +138,9 @@
         sync_starred_github_to_forgejo = inputs.flake-utils.lib.mkApp {
           drv = import scripts/sync_starred_github_to_forgejo.nix {inherit pkgs;};
         };
+        claude-local = inputs.flake-utils.lib.mkApp {
+          drv = import scripts/claude-local.nix {inherit pkgs;};
+        };
       };
     };
   };
