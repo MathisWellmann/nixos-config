@@ -104,6 +104,11 @@ in {
       libraries = [];
     };
   };
+  virtualisation = {
+    docker.enable = true;
+    podman.enable = true;
+  };
+  hardware.nvidia-container-toolkit.enable = true;
 
   services = {
     # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
