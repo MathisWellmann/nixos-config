@@ -35,7 +35,6 @@ in {
     ./forgejo.nix
     forgejo_runner
     ./prometheus.nix
-    ./homer_dashboard.nix
     ./zfs_pool.nix
     ./harmonia.nix
     # ./ups.nix
