@@ -37,6 +37,7 @@ in {
     ./prometheus.nix
     ./zfs_pool.nix
     ./harmonia.nix
+    ./homepage.nix
     # ./ups.nix
     searx
     monero_miner
@@ -53,6 +54,7 @@ in {
     packages = with pkgs; [
       git
       helix
+      claude-code
     ];
   };
 
