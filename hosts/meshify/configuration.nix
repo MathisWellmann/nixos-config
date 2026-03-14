@@ -34,11 +34,14 @@ in {
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
-  networking.networkmanager.enable = true;
 
   age.identityPaths = ["/home/${global_const.username}/.ssh/magewe_meshify"];
 
-  networking.hostName = "${hostname}";
+  networking = {
+    hostName = "${hostname}";
+    networkmanager.enable = true;
+    firewall.allowedTCPPorts = [1234]; # LM studio
+  };
 
   # TODO: extract to own module and use on all hosts
   # Define a user account. Don't forget to set a password with ‘passwd’.
