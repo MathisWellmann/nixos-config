@@ -63,6 +63,11 @@ in {
     const.dragonfly_port
   ];
 
+  # Check your journal for the generated password:
+  # journalctl -u iggy-server | grep "Generated root user password"
+  # Or set these environment variables for the systemd service
+  # IGGY_ROOT_USERNAME = "iggy";
+  # IGGY_ROOT_PASSWORD = "your-password-here";
   services.iggy-server = {
     enable = true;
     dataDir = "/nvme_pool/iggy";
