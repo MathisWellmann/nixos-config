@@ -1,6 +1,10 @@
-_: let
+{inputs, ...}: let
   const = import ./constants.nix;
 in {
+  imports = [
+    inputs.iggy.nixosModules.default
+  ];
+
   # Nexus Database
   virtualisation.oci-containers.containers."greptimedb" = let
     version = "v1.0.0-rc.2";
@@ -58,4 +62,32 @@ in {
     const.mongodb_port
     const.dragonfly_port
   ];
+
+  services.iggy-server = {
+    enable = true;
+    dataDir = "/nvme_pool/iggy";
+    openFirewall = true;
+    settings = {
+      http = {
+        enabled = true;
+        address = "0.0.0.0:${toString const.iggy_ui_port}";
+        web_ui = true;
+      };
+      tcp = {
+        enabled = true;
+        address = "0.0.0.0:${toString const.iggy_tcp_port}";
+      };
+      quic = {
+        enable = true;
+        address = "0.0.0.0:${toString const.iggy_quic_port}";
+      };
+      websocket = {
+        enable = true;
+        address = "0.0.0.0:${toString const.iggy_websocket_port}";
+      };
+      telemetry = {
+        enable = true;
+      };
+    };
+  };
 }

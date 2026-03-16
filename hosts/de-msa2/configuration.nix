@@ -122,6 +122,7 @@ in {
         github-runner-sliding_features-rs = "github-runner-de-msa2-sliding_features-rs";
         bencher-ui = "podman-bencher-ui";
         bencher-api = "podman-bencher-api";
+        iggy-server = "iggy-server";
       };
     };
   };
