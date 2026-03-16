@@ -13,7 +13,7 @@
   habit_trove_port = 3007;
   bencher_ui_port = 3008;
   homepage_port = 3010;
-  iggy_ui_port = 3011;
+  iggy_http_port = 3011;
   iggy_tcp_port = 3012;
   iggy_quic_port = 3013;
   iggy_websocket_port = 3014;

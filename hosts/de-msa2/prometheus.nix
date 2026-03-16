@@ -43,6 +43,12 @@
           {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
         ];
       }
+      {
+        job_name = "iggy-server";
+        static_configs = [
+          {targets = ["127.0.0.1:${toString const.iggy_http_port}"];}
+        ];
+      }
       # {
       #   job_name = "restic";
       #   static_configs = [

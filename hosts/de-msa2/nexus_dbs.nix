@@ -70,7 +70,7 @@ in {
     settings = {
       http = {
         enabled = true;
-        address = "0.0.0.0:${toString const.iggy_ui_port}";
+        address = "0.0.0.0:${toString const.iggy_http_port}";
         web_ui = true;
       };
       tcp = {
