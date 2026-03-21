@@ -18,7 +18,7 @@
   }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "elitedesk" "tensorbook"];
   n_tikr_services =
     builtins.length config.services.tikr-iggy.exchanges
-    + builtins.length config.services.tikr-iggy.data-types;
+    * builtins.length config.services.tikr-iggy.data-types;
   tikr_max_port = const.tikr_base_port + n_tikr_services;
   tikr_ports = lib.range const.tikr_base_port tikr_max_port;
   tikr_scrape_configs =

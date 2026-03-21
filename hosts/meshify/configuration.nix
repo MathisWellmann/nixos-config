@@ -8,10 +8,8 @@
 }: let
   # TODO: move to `constants.nix`
   hostname = "meshify";
-  const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
-  monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 25;};
   local_ai = import ./../../modules/local_ai.nix {};
 in {
   imports = [
@@ -132,6 +130,7 @@ in {
       nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
     };
   };
+  programs.steam.enable = true;
 
   fileSystems = {
     "/mnt/elitedesk_series" = {

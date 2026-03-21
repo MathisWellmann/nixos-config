@@ -1,4 +1,4 @@
-# Build and run with `nix-build vms/waterfox.nix; result/bin/run-nixos-vm`
+# Build and run with `nix-build vms/tor.nix; result/bin/run-nixos-vm`
 let
   pkgs = import <nixpkgs> {};
 

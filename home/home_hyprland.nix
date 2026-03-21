@@ -10,6 +10,7 @@
     # Desktop
     firefox
     ladybird
+    brave
     # floorp-bin
     keepassxc
     # Both are disablede because they require `libsoup` which was marked as insecure.
@@ -60,7 +61,7 @@
     # halloy # IRC GUI written in Rust
     # discord
     simplex-chat-desktop
-    slack
+    # slack
 
     # Cryptocurrency
     # electron-cash # BCH wallet with CashFusion privacy tech.
