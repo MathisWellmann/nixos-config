@@ -268,7 +268,7 @@
     },
     "hongdown_2": {
       "inputs": {
-        "flake-utils": "flake-utils_5",
+        "flake-utils": "flake-utils_4",
         "nixpkgs": "nixpkgs_5",
         "rust-overlay": "rust-overlay_4"
       },
@@ -306,6 +306,27 @@
         "owner": "MathisWellmann",
         "repo": "iggy",
         "type": "github"
+      }
+    },
+    "nexus": {
+      "inputs": {
+        "flake-utils": "flake-utils_3",
+        "hongdown": "hongdown_2",
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ],
+        "nixpks": "nixpks",
+        "rust-overlay": "rust-overlay_5"
+      },
+      "locked": {
+        "lastModified": 1774212980,
+        "narHash": "sha256-U6rZyFyK5Cd1FrML5f4zu9F7qstHYsTf+D7WtV3v6G4=",
+        "path": "/home/m/MathisWellmann/nexus",
+        "type": "path"
+      },
+      "original": {
+        "path": "/home/m/MathisWellmann/nexus",
+        "type": "path"
       }
     },
     "nixpkgs": {
@@ -454,7 +475,7 @@
     },
     "nox": {
       "inputs": {
-        "flake-utils": "flake-utils_3",
+        "flake-utils": "flake-utils_5",
         "gitignore": "gitignore",
         "nixpkgs": [
           "nixpkgs-unstable"
@@ -482,10 +503,10 @@
         "home-manager": "home-manager_2",
         "hongdown": "hongdown",
         "iggy": "iggy",
+        "nexus": "nexus",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nox": "nox",
-        "sops-nix": "sops-nix",
-        "tikr": "tikr"
+        "sops-nix": "sops-nix"
       }
     },
     "rust-overlay": {
@@ -704,27 +725,6 @@
         "owner": "nix-systems",
         "repo": "default",
         "type": "github"
-      }
-    },
-    "tikr": {
-      "inputs": {
-        "flake-utils": "flake-utils_4",
-        "hongdown": "hongdown_2",
-        "nixpkgs": [
-          "nixpkgs-unstable"
-        ],
-        "nixpks": "nixpks",
-        "rust-overlay": "rust-overlay_5"
-      },
-      "locked": {
-        "lastModified": 1773502327,
-        "narHash": "sha256-Y5gKEjEbZx7xP48ndY2X9G2EacgAZnCf8DExlPkpM70=",
-        "path": "/home/m/MathisWellmann/nexus",
-        "type": "path"
-      },
-      "original": {
-        "path": "/home/m/MathisWellmann/nexus",
-        "type": "path"
       }
     }
   },

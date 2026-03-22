@@ -30,10 +30,20 @@
     };
 
     # Local paths
-    tikr = {
+    nexus = {
       url = "path:/home/m/MathisWellmann/nexus";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+  };
+  # some CUDA packages require like 250GB of RAM to compile from scratch, so use binary caches.
+  # Run with `--accept-flake-config`
+  nixConfig = {
+    extra-substituters = [
+      "https://cache.nixos-cuda.org"
+    ];
+    extra-trusted-public-keys = [
+      "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+    ];
   };
 
   outputs = {

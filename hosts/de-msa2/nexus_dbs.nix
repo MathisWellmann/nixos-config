@@ -1,8 +1,10 @@
+# Rename to `nexus_infra.nix`
 {inputs, ...}: let
   const = import ./constants.nix;
 in {
   imports = [
     inputs.iggy.nixosModules.default
+    inputs.nexus.nixosModules.default
   ];
 
   # Nexus Database
@@ -63,35 +65,51 @@ in {
     const.dragonfly_port
   ];
 
-  # Check your journal for the generated password:
-  # journalctl -u iggy-server | grep "Generated root user password"
-  # Or set these environment variables for the systemd service
-  # IGGY_ROOT_USERNAME = "iggy";
-  # IGGY_ROOT_PASSWORD = "your-password-here";
-  services.iggy-server = {
-    enable = true;
-    dataDir = "/nvme_pool/iggy";
-    openFirewall = true;
-    settings = {
-      http = {
-        enabled = true;
-        address = "0.0.0.0:${toString const.iggy_http_port}";
-        web_ui = true;
-      };
-      tcp = {
-        enabled = true;
-        address = "0.0.0.0:${toString const.iggy_tcp_port}";
-      };
-      quic = {
-        enable = true;
-        address = "0.0.0.0:${toString const.iggy_quic_port}";
-      };
-      websocket = {
-        enable = true;
-        address = "0.0.0.0:${toString const.iggy_websocket_port}";
-      };
-      telemetry = {
-        enable = true;
+  services = {
+    tikr-iggy = {
+      enable = true;
+      iggy-addr = "localhost:${toString const.iggy_tcp_port}";
+      exchanges = [
+        "BinanceUsdMargin"
+        "BinanceCoinMargin"
+        "BinanceSpot"
+      ];
+      data-types = [
+        "Trade"
+        "Quote"
+      ];
+      prometheus_exporter_base_port = const.tikr_base_port;
+    };
+    # Check your journal for the generated password:
+    # journalctl -u iggy-server | grep "Generated root user password"
+    # Or set these environment variables for the systemd service
+    # IGGY_ROOT_USERNAME = "iggy";
+    # IGGY_ROOT_PASSWORD = "your-password-here";
+    iggy-server = {
+      enable = true;
+      dataDir = "/nvme_pool/iggy";
+      openFirewall = true;
+      settings = {
+        http = {
+          enabled = true;
+          address = "0.0.0.0:${toString const.iggy_http_port}";
+          web_ui = true;
+        };
+        tcp = {
+          enabled = true;
+          address = "0.0.0.0:${toString const.iggy_tcp_port}";
+        };
+        quic = {
+          enable = true;
+          address = "0.0.0.0:${toString const.iggy_quic_port}";
+        };
+        websocket = {
+          enable = true;
+          address = "0.0.0.0:${toString const.iggy_websocket_port}";
+        };
+        telemetry = {
+          enable = true;
+        };
       };
     };
   };
