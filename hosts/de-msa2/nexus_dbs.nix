@@ -68,7 +68,7 @@ in {
   services = {
     tikr-iggy = {
       enable = true;
-      iggy-addr = "localhost:${toString const.iggy_tcp_port}";
+      iggy-addr = "127.0.0.1:${toString const.iggy_tcp_port}";
       exchanges = [
         "BinanceUsdMargin"
         "BinanceCoinMargin"
@@ -76,9 +76,10 @@ in {
       ];
       data-types = [
         "Trade"
-        "Quote"
+        "Quotes"
       ];
       prometheus_exporter_base_port = const.tikr_base_port;
+      environment-file = "/etc/secrets/tikr-iggy";
     };
     # Check your journal for the generated password:
     # journalctl -u iggy-server | grep "Generated root user password"
