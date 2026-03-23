@@ -182,16 +182,6 @@ in {
     # };
   };
 
-  # sops = {
-  #   defaultSopsFile = "./../../sops_secrets.yaml";
-  #   defaultSopsFormat = "yaml";
-
-  # # This creates /run/secrets/create_ap_password
-  # secrets.meshify_ap_password = {
-  #   sopsFile = ../../sops_secrets.yaml;
-  # };
-  # };
-  #
   virtualisation.oci-containers.containers = {
     "HabitTrove" = {
       image = "dohsimpson/habittrove:latest";
