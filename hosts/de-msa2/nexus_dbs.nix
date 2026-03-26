@@ -91,6 +91,21 @@ in {
       dataDir = "/nvme_pool/iggy";
       openFirewall = true;
       settings = {
+        system.memory_pool = {
+          enabled = true;
+          size = "16 GiB";
+          # bucket_capacity = 8192; # optional, freeform attrs are passed through
+        };
+        system.partition = {
+          enforce_fsync = false;
+          messages_required_to_save = 4096; # batch more before flushing
+          size_of_messages_required_to_save = "4 MiB";
+        };
+        message_saver = {
+          enabled = true;
+          enforce_fsync = true;             # default.
+          interval = "30 s";
+        };
         http = {
           enabled = true;
           address = "0.0.0.0:${toString const.iggy_http_port}";
