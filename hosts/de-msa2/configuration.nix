@@ -10,10 +10,6 @@
   const = import ./constants.nix;
   searx = import ./../../modules/searx.nix {port = const.searx_port;};
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 25;};
-  forgejo_runner = import ./../../modules/forgejo_runner.nix {
-    forgejo_url = "http://localhost:${toString const.forgejo_port}";
-    state_dir = "/nvme_pool/forgejo-runner";
-  };
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -27,12 +23,11 @@ in {
     ./../../modules/monero.nix
     # ./../../modules/adguardhome.nix
     ./../../modules/zfs_replication_service.nix
-    ./../../modules/github_runner.nix
+    ./../../modules/github_runner.nix # Don't run much load on this host. TODO: move to desg0
     # ./freshrss.nix
     ./nexus_dbs.nix
     ./gitea.nix
     ./forgejo.nix
-    forgejo_runner
     ./prometheus.nix
     ./zfs_pool.nix
     ./harmonia.nix
