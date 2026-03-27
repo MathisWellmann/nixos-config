@@ -33,15 +33,15 @@
     address = "0.0.0.0:${toString const.iggy_tcp_port}"
 
     [quic]
-    enabled = true
+    enabled = false
     address = "0.0.0.0:${toString const.iggy_quic_port}"
 
     [websocket]
-    enabled = true
+    enabled = false
     address = "0.0.0.0:${toString const.iggy_websocket_port}"
 
     [telemetry]
-    enabled = true
+    enabled = false
   '';
 in {
   imports = [
@@ -126,6 +126,8 @@ in {
     iggy-server = {
       enable = true;
       openFirewall = true;
+      dataDir = "/nvme_pool/iggy";
+      envFile = "/etc/secrets/iggy_server";
       configFile = iggyConfigFile;
     };
   };

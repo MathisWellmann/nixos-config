@@ -25,7 +25,7 @@
     awww.url = "git+https://codeberg.org/LGFae/awww";
     hongdown.url = "github:dahlia/hongdown";
     iggy = {
-      url = "github:MathisWellmann/iggy";
+      url = "github:MathisWellmann/iggy/nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
