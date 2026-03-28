@@ -1,6 +1,48 @@
 # Rename to `nexus_infra.nix`
-{inputs, ...}: let
+{
+  inputs,
+  pkgs,
+  ...
+}: let
   const = import ./constants.nix;
+  iggyConfigFile = pkgs.writeText "iggy-server.toml" ''
+    [system]
+    path = "/nvme_pool/iggy"
+
+    [system.memory_pool]
+    enabled = true
+    size = "16 GiB"
+
+    [system.partition]
+    enforce_fsync = false
+    messages_required_to_save = 4096
+    size_of_messages_required_to_save = "4 MiB"
+
+    [message_saver]
+    enabled = true
+    enforce_fsync = true
+    interval = "30 s"
+
+    [http]
+    enabled = true
+    address = "0.0.0.0:${toString const.iggy_http_port}"
+    web_ui = true
+
+    [tcp]
+    enabled = true
+    address = "0.0.0.0:${toString const.iggy_tcp_port}"
+
+    [quic]
+    enabled = true
+    address = "0.0.0.0:${toString const.iggy_quic_port}"
+
+    [websocket]
+    enabled = true
+    address = "0.0.0.0:${toString const.iggy_websocket_port}"
+
+    [telemetry]
+    enabled = true
+  '';
 in {
   imports = [
     inputs.iggy.nixosModules.default
@@ -81,52 +123,10 @@ in {
       prometheus_exporter_base_port = const.tikr_base_port;
       environment-file = "/etc/secrets/tikr-iggy";
     };
-    # Check your journal for the generated password:
-    # journalctl -u iggy-server | grep "Generated root user password"
-    # Or set these environment variables for the systemd service
-    # IGGY_ROOT_USERNAME = "iggy";
-    # IGGY_ROOT_PASSWORD = "your-password-here";
     iggy-server = {
       enable = true;
-      dataDir = "/nvme_pool/iggy";
       openFirewall = true;
-      settings = {
-        system.memory_pool = {
-          enabled = true;
-          size = "16 GiB";
-          # bucket_capacity = 8192; # optional, freeform attrs are passed through
-        };
-        system.partition = {
-          enforce_fsync = false;
-          messages_required_to_save = 4096; # batch more before flushing
-          size_of_messages_required_to_save = "4 MiB";
-        };
-        message_saver = {
-          enabled = true;
-          enforce_fsync = true;             # default.
-          interval = "30 s";
-        };
-        http = {
-          enabled = true;
-          address = "0.0.0.0:${toString const.iggy_http_port}";
-          web_ui = true;
-        };
-        tcp = {
-          enabled = true;
-          address = "0.0.0.0:${toString const.iggy_tcp_port}";
-        };
-        quic = {
-          enable = true;
-          address = "0.0.0.0:${toString const.iggy_quic_port}";
-        };
-        websocket = {
-          enable = true;
-          address = "0.0.0.0:${toString const.iggy_websocket_port}";
-        };
-        telemetry = {
-          enable = true;
-        };
-      };
+      configFile = iggyConfigFile;
     };
   };
 }
