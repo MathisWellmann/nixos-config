@@ -147,22 +147,7 @@ in {
   sops = {
     defaultSopsFile = "./../../sops_secrets.yaml";
     defaultSopsFormat = "yaml";
-
-    # This creates /run/secrets/create_ap_password
-    # secrets.meshify_ap_password = {
-    #   sopsFile = ../../sops_secrets.yaml;
-    # };
   };
-  # Create wifi access point, sharing the primary ethernet connection
-  # services.create_ap = {
-  #   enable = true;
-  #   settings = {
-  #     INTERNET_IFACE = "enp11s0";
-  #     WIFI_IFACE = "wlp12s0";
-  #     SSID = "meshify_ap";
-  #     PASSPHRASE = "12345678";
-  #   };
-  # };
   # Make RTX Pro 6000 work.
   environment.sessionVariables = {
     WLR_DRM_DEVICES = "/dev/dri/by-path/pci-0000:01:00.0-card";
