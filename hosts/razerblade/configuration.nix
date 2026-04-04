@@ -130,8 +130,8 @@ in {
     };
   };
 
-  virtualisation.virtualbox.host.enable = true;
-  users.extraGroups.vboxusers.members = ["${global_const.username}"];
+  # virtualisation.virtualbox.host.enable = true;
+  # users.extraGroups.vboxusers.members = ["${global_const.username}"];
 
   programs = {
     hyprland = {
