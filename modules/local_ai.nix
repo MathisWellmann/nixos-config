@@ -1,13 +1,13 @@
 {llama-cpp_port ? 3100}: {pkgs, ...}: let
   new_ollama = pkgs.ollama.overrideAttrs (oldAttrs: rec {
-    version = "0.20.0";
+    version = "0.20.2";
     doCheck = false;
     doTest = false;
     src = pkgs.fetchFromGitHub {
       owner = "ollama";
       repo = "ollama";
       rev = "v${version}";
-      hash = "sha256-QQKPXdXlsT+uMGGIyqkVZqk6OTa7VHrwDVmgDdgdKOY=";
+      hash = "sha256-Ic3eLOohLR7MQGkLvDJBNOCiBBKxh6l8X9MgK0b4w+Y=";
     };
   });
 in {
