@@ -44,7 +44,6 @@ in {
       # From inputs
       # inputs.nox.packages.${pkgs.stdenv.hostPlatform.system}.default # Nix options search
       inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
-      inputs.hongdown.packages.${pkgs.stdenv.hostPlatform.system}.hongdown
 
       # Fonts
       terminus_font
