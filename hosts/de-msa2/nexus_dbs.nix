@@ -6,17 +6,27 @@
 }: let
   const = import ./constants.nix;
   iggyConfigFile = pkgs.writeText "iggy-server.toml" ''
+
     [system]
     path = "/nvme_pool/iggy"
 
     [system.memory_pool]
     enabled = true
-    size = "8 GiB"
+    size = "1 GiB"          # default is 4 GiB — reduce this first
+    bucket_capacity = 1024  # default 8192 — lower = fewer pre-allocated buffers
 
     [system.partition]
-    enforce_fsync = false
-    messages_required_to_save = 4096
-    size_of_messages_required_to_save = "4 MiB"
+    # Flush to disk sooner — reduces in-memory message buffer
+    messages_required_to_save = 256        # default 1024
+    size_of_messages_required_to_save = "256 KiB"  # default 1 MiB
+
+    [system.segment]
+    cache_indexes = "none"  # options: "all", "open_segment", "none"
+
+    [system.topic]
+    # Add a size cap and/or message expiry if you don't need unbounded retention
+    max_size = "10 GiB"             # default "unlimited"
+    message_expiry = "2 days"       # default "none"
 
     [message_saver]
     enabled = true
