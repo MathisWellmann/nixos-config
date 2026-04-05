@@ -49,12 +49,6 @@
           {targets = ["127.0.0.1:${toString const.iggy_http_port}"];}
         ];
       }
-      # {
-      #   job_name = "restic";
-      #   static_configs = [
-      #     {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.restic.port}"];}
-      #   ];
-      # }
       {
         job_name = "postgres-greptimedb";
         static_configs = [
@@ -95,26 +89,6 @@ in {
     listenAddress = "0.0.0.0";
     retentionTime = "5y";
     port = const.prometheus_port;
-    # TODO: clean up exporter ports.
-    exporters = {
-      mongodb = {
-        enable = true;
-        collectAll = true;
-        uri = "mongodb://localhost:${toString const.mongodb_port}";
-        port = 9216;
-      };
-      # postgres = {
-      #   enable = true;
-      #   dataSourceName = "username=postgres dbname=public host=localhost port=4003 sslmode=disable";
-      #   port = 9215;
-      # };
-      # restic = {
-      #   enable = true;
-      #   port = 9753;
-      #   repository = config.services.restic.backups.zfs_sata_ssd_pool.repository;
-      #   passwordFile = "/etc/nixos/secrets/restic/password";
-      # };
-    };
     inherit scrapeConfigs;
   };
 }

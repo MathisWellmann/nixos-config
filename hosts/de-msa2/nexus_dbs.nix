@@ -11,7 +11,7 @@
 
     [system.memory_pool]
     enabled = true
-    size = "16 GiB"
+    size = "8 GiB"
 
     [system.partition]
     enforce_fsync = false
