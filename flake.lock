@@ -342,8 +342,8 @@
         "rust-overlay": "rust-overlay_5"
       },
       "locked": {
-        "lastModified": 1775070810,
-        "narHash": "sha256-36ZkCGKaozBRYc8IRX2J+IB4EvG7txha7FPiK94i6rw=",
+        "lastModified": 1775478306,
+        "narHash": "sha256-ob5weo/cnST+hrcwcW9vlBziWPF1G/a6VdIGLGoz4QQ=",
         "path": "/home/m/MathisWellmann/nexus",
         "type": "path"
       },
