@@ -23,6 +23,7 @@ in {
     ./../../modules/mount_external_drives.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
+    ./../../modules/virtualization_host.nix
     local_ai
   ];
   time.timeZone = lib.mkForce "Europe/London";
