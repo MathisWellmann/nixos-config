@@ -89,4 +89,6 @@ in {
     port = const.open-webui_port;
     openFirewall = true;
   };
+
+  nix.settings.system-features = ["nixos-test" "benchmark" "big-parallel" "kvm"];
 }
