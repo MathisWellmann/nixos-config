@@ -156,4 +156,25 @@ in {
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     WLR_DRM_NO_ATOMIC = "1";
   };
+
+  # Use remote builder machine
+  nix = {
+    distributedBuilds = true;
+    buildMachines = [
+      {
+        hostName = "desg0";
+        sshUser = "m";
+        system = "x86_64-linux";
+        protocol = "ssh-ng";
+        maxJobs = 4;
+        speedFactor = 2;
+        systems = ["x86_64-linux"];
+        # supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
+        # mandatoryFeatures = [];
+      }
+    ];
+    extraOptions = ''
+  	  builders-use-substitutes = true
+  	'';
+  };
 }
