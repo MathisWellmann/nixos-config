@@ -1,9 +1,6 @@
 {
-  gitea_state_dir = "/nvme_pool/gitea";
-
   nfs_port = 2049;
   forgejo_port = 2999;
-  gitea_port = 3000;
   grafana_port = 3001;
   freshrss_port = 3002;
   uptime_kuma_port = 3003;

@@ -26,7 +26,6 @@ in {
     ./../../modules/github_runner.nix # Don't run much load on this host. TODO: move to desg0
     # ./freshrss.nix
     ./nexus_dbs.nix
-    ./gitea.nix
     ./forgejo.nix
     ./prometheus.nix
     ./zfs_pool.nix
@@ -80,7 +79,7 @@ in {
         root = "/";
         nvme_pool_magewe = "/nvme_pool/magewe";
         nvme_pool_ilka = "/nvme_pool/ilka";
-        nvme_pool_gitea = "/nvme_pool/gitea";
+        nvme_pool_forgejo = "/nvme_pool/forgejo";
         nvme_pool_mongodb = "/nvme_pool/mongodb";
         nvme_pool_greptimedb = "/nvme_pool/greptimedb";
         nvme_pool_music = "/nvme_pool/music";
@@ -89,7 +88,6 @@ in {
       };
       service_status = {
         tailscale = "tailscaled";
-        gitea = "gitea";
         forgejo = "forgejo";
         forgejo_runner = "gitea-runner-default";
         prometheus = "prometheus";

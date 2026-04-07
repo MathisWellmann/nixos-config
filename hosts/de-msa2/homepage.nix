@@ -23,12 +23,6 @@ in {
       {
         DevOps = [
           {
-            Gitea = {
-              href = "http://localhost:${toString const.gitea_port}";
-              icon = "fa-brands:fa-git-alt";
-            };
-          }
-          {
             Forgejo = {
               href = "http://localhost:${toString const.forgejo_port}";
               icon = "fa-brands:fa-code-branch";
