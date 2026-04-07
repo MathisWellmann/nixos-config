@@ -8,8 +8,8 @@
   ...
 }: let
   static_ips = import ../../modules/static_ips.nix;
-  # main_nic = "enp5s0f0np0";
-  main_nic = "enp3s0";
+  main_nic = "enp5s0f0np0";
+  # main_nic = "enp3s0";
 in {
   imports = [
     (modulesPath + "/installer/scan/not-detected.nix")
