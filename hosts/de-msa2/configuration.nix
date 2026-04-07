@@ -21,7 +21,6 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
-    # ./../../modules/adguardhome.nix
     ./../../modules/zfs_replication_service.nix
     ./../../modules/github_runner.nix # Don't run much load on this host. TODO: move to desg0
     # ./freshrss.nix
@@ -94,8 +93,6 @@ in {
         prometheus-exporter = "prometheus-node-exporter";
         victoriametrics = "victoriametrics";
         grafana = "grafana";
-        adguardhome = "adguardhome";
-        jellyfin = "jellyfin";
         nfs-server = "nfs-server";
         monero = "monero";
         monero_miner = "xmrig";

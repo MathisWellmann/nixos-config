@@ -1,6 +1,7 @@
 {
   nfs_port = 2049;
   forgejo_port = 2999;
+  homepage_port = 3000;
   grafana_port = 3001;
   freshrss_port = 3002;
   uptime_kuma_port = 3003;
@@ -9,7 +10,6 @@
   searx_port = 3006;
   habit_trove_port = 3007;
   bencher_ui_port = 3008;
-  homepage_port = 3010;
   iggy_http_port = 3011;
   iggy_tcp_port = 3012;
   iggy_quic_port = 3013;
