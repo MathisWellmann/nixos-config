@@ -12,7 +12,6 @@ in {
   de-n5_ip = "192.168.0.15";
 
   # In shack.
-  de-rosen_ip = "192.168.0.20";
   meshify_ip = "192.168.0.21";
 
   poweredge_mellanox_0 = "${prefix}1";
@@ -21,6 +20,4 @@ in {
   desg0_mellanox_1 = "${prefix}4";
   meshify_mellanox_0 = "${prefix}5";
   meshify_mellanox_1 = "${prefix}6";
-  de-rosen_mellanox_0 = "${prefix}7";
-  de-rosen_mellanox_1 = "${prefix}8";
 }

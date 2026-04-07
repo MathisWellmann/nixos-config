@@ -87,13 +87,6 @@
           inputs.home-manager.nixosModules.default
         ];
       };
-      de-rosen = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/de-rosen/configuration.nix
-          {_module.args = inputs;}
-        ];
-      };
       razerblade = nixpkgs-unstable.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
