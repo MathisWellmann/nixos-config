@@ -54,7 +54,6 @@ in {
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
       2049 # nfs
-      const.mafl_port
       const.mealie_port
       const.mongodb_port
       const.nats_port
@@ -195,21 +194,6 @@ in {
     };
   };
 
-  ##### Containers #####
-  virtualisation.oci-containers.containers = {
-    "readeck" = {
-      image = "codeberg.org/readeck/readeck:latest";
-      ports = [
-        "${builtins.toString const.readeck_port}:8000"
-      ];
-      volumes = [
-        "/SATA_SSD_POOL/readeck:/readeck"
-      ];
-    };
-  };
-
-  virtualisation.docker.enable = true;
-
   ### Backup Section ###
   services.restic.backups = {
     zfs_sata_ssd_pool = {
@@ -277,8 +261,6 @@ in {
         monero = "monero";
         photoprism = "photoprism";
         greptimedb = "podman-greptimedb";
-        mafl = "podman-mafl";
-        readeck = "podman-readeck";
         polaris = "polaris";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
       };

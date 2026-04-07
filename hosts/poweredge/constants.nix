@@ -3,10 +3,8 @@
   hostname = "poweredge";
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
-  mafl_port = 80;
   nfs_port = 2049;
   grafana_port = 3001;
-  readeck_port = 3004;
   mealie_port = 3005;
   gotosocial_port = 3006;
   immich_port = 3007;
