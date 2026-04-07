@@ -89,8 +89,7 @@ in {
         tailscale = "tailscaled";
         forgejo = "forgejo";
         forgejo_runner = "gitea-runner-default";
-        prometheus = "prometheus";
-        prometheus-exporter = "prometheus-node-exporter";
+        prometheus-node-exporter = "prometheus-node-exporter";
         victoriametrics = "victoriametrics";
         grafana = "grafana";
         nfs-server = "nfs-server";

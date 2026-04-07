@@ -83,13 +83,6 @@ in {
       {
         Monitoring = [
           {
-            Prometheus = {
-              href = "http://localhost:${toString const.prometheus_port}";
-              icon = "fa-solid:fa-chart-line";
-              description = "Metrics & Monitoring";
-            };
-          }
-          {
             VictoriaMetrics = {
               href = "http://localhost:${toString const.victoriametrics_port}";
               icon = "fa-solid:fa-server";

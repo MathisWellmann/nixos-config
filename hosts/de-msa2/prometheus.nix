@@ -75,7 +75,7 @@
       }
     ];
 in {
-  # TODO: slowly transition to this as storage over prometheus.
+  # Drop in replacement for `prometheus`, but more efficient.
   services.victoriametrics = {
     enable = true;
     listenAddress = "0.0.0.0:${toString const.victoriametrics_port}";
@@ -83,12 +83,5 @@ in {
     prometheusConfig = {
       scrape_configs = scrapeConfigs;
     };
-  };
-  services.prometheus = {
-    enable = true;
-    listenAddress = "0.0.0.0";
-    retentionTime = "5y";
-    port = const.prometheus_port;
-    inherit scrapeConfigs;
   };
 }

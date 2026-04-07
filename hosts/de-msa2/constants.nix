@@ -20,8 +20,6 @@
   greptimedb_postgres_port = 4003;
   iperf_port = 5201;
   minidlna_port = 8200;
-  prometheus_port = 9001;
-  # prometheus_exporter_port = 9002; # Defined in global_const
   victoriametrics_port = 9003;
   mongodb_port = 27017;
   dragonfly_port = 27018;
