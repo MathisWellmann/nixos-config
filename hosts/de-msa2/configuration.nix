@@ -10,6 +10,10 @@
   const = import ./constants.nix;
   searx = import ./../../modules/searx.nix {port = const.searx_port;};
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 25;};
+  readeck = import ./readeck.nix {
+    dir = "/nvme_pool/readeck";
+    port = const.readeck_port;
+  };
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -33,6 +37,7 @@ in {
     # ./ups.nix
     searx
     monero_miner
+    readeck
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.
@@ -111,6 +116,7 @@ in {
         bencher-ui = "podman-bencher-ui";
         bencher-api = "podman-bencher-api";
         iggy-server = "iggy-server";
+        readeck = "podman-readeck";
       };
     };
   };

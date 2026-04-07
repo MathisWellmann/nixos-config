@@ -10,6 +10,7 @@
   searx_port = 3006;
   habit_trove_port = 3007;
   bencher_ui_port = 3008;
+  readeck_port = 3009;
   iggy_http_port = 3011;
   iggy_tcp_port = 3012;
   iggy_quic_port = 3013;
