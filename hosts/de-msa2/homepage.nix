@@ -23,58 +23,72 @@ in {
       {
         DevOps = [
           {
-            Forgejo = {
-              href = "http://localhost:${toString const.forgejo_port}";
-              icon = "fa-brands:fa-code-branch";
-            };
+            Forgejo = [
+              {
+                href = "http://localhost:${toString const.forgejo_port}";
+                icon = "fa-brands:fa-code-branch";
+              }
+            ];
           }
         ];
       }
       {
         Monitoring = [
           {
-            Grafana = {
-              href = "http://localhost:${toString const.grafana_port}";
-              icon = "fa-solid:fa-chart-line";
-            };
+            Grafana = [
+              {
+                href = "http://localhost:${toString const.grafana_port}";
+                icon = "fa-solid:fa-chart-line";
+              }
+            ];
           }
           {
-            "Uptime Kuma" = {
-              href = "http://localhost:${toString const.uptime_kuma_port}";
-              icon = "fa-solid:fa-heart-pulse";
-            };
+            "Uptime Kuma" = [
+              {
+                href = "http://localhost:${toString const.uptime_kuma_port}";
+                icon = "fa-solid:fa-heart-pulse";
+              }
+            ];
           }
         ];
       }
       {
         Productivity = [
           {
-            Vikunja = {
-              href = "http://localhost:${toString const.vikunja_port}";
-              icon = "fa-solid:fa-list-check";
-            };
+            Vikunja = [
+              {
+                href = "http://localhost:${toString const.vikunja_port}";
+                icon = "fa-solid:fa-list-check";
+              }
+            ];
           }
           {
-            HabitTrove = {
-              href = "http://localhost:${toString const.habit_trove_port}";
-              icon = "fa-solid:fa-heart-circle-plus";
-            };
+            HabitTrove = [
+              {
+                href = "http://localhost:${toString const.habit_trove_port}";
+                icon = "fa-solid:fa-heart-circle-plus";
+              }
+            ];
           }
         ];
       }
       {
         Utilities = [
           {
-            SearXNG = {
-              href = "http://localhost:${toString const.searx_port}";
-              icon = "fa-solid:fa-magnifying-glass";
-            };
+            SearXNG = [
+              {
+                href = "http://localhost:${toString const.searx_port}";
+                icon = "fa-solid:fa-magnifying-glass";
+              }
+            ];
           }
           {
-            Bencher = {
-              href = "http://localhost:${toString const.bencher_ui_port}";
-              icon = "fa-solid:fa-trophy";
-            };
+            Bencher = [
+              {
+                href = "http://localhost:${toString const.bencher_ui_port}";
+                icon = "fa-solid:fa-trophy";
+              }
+            ];
           }
         ];
       }
@@ -83,29 +97,35 @@ in {
       {
         Monitoring = [
           {
-            VictoriaMetrics = {
-              href = "http://localhost:${toString const.victoriametrics_port}";
-              icon = "fa-solid:fa-server";
-              description = "Time Series Database";
-            };
+            VictoriaMetrics = [
+              {
+                href = "http://localhost:${toString const.victoriametrics_port}";
+                icon = "fa-solid:fa-server";
+                description = "Time Series Database";
+              }
+            ];
           }
         ];
       }
       {
         Databases = [
           {
-            Dragonfly = {
-              href = "http://localhost:${toString const.dragonfly_port}";
-              icon = "fa-solid:fa-database";
-              description = "In-memory Datastore";
-            };
+            Dragonfly = [
+              {
+                href = "http://localhost:${toString const.dragonfly_port}";
+                icon = "fa-solid:fa-database";
+                description = "In-memory Datastore";
+              }
+            ];
           }
           {
-            GreptimeDB = {
-              href = "http://localhost:${toString const.greptimedb_http_port}";
-              icon = "fa-solid:fa-database";
-              description = "Time Series DB";
-            };
+            GreptimeDB = [
+              {
+                href = "http://localhost:${toString const.greptimedb_http_port}";
+                icon = "fa-solid:fa-database";
+                description = "Time Series DB";
+              }
+            ];
           }
         ];
       }
