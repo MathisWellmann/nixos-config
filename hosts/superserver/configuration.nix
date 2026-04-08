@@ -8,6 +8,7 @@
 }: let
   global_const = import ../../global_constants.nix;
   hostname = "superserver";
+  local_ai = import ./../../modules/local_ai.nix {};
 in {
   imports = [
     inputs.home-manager.nixosModules.default
@@ -18,6 +19,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/prometheus_exporter.nix
+    local_ai
   ];
 
   # Bootloader.
