@@ -14,7 +14,6 @@
     state_dir = "/etc/forgejo_runner";
     runner_capacity = 6;
   };
-  monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 12;};
   local_ai = import ./../../modules/local_ai.nix {};
 in {
   imports = [
@@ -29,7 +28,6 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     local_ai
     forgejo_runner
-    monero_miner
     inputs.home-manager.nixosModules.default
   ];
 
@@ -93,4 +91,10 @@ in {
   };
 
   nix.settings.system-features = ["nixos-test" "benchmark" "big-parallel" "kvm"];
+
+  virtualisation = {
+    docker.enable = true;
+    podman.enable = true;
+  };
+  hardware.nvidia-container-toolkit.enable = true;
 }
