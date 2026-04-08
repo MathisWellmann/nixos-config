@@ -77,4 +77,5 @@ in {
       uptime.prefix = "up";
     };
   };
+  programs.steam.enable = true;
 }
