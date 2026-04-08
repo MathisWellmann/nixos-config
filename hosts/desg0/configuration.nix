@@ -45,7 +45,9 @@ in {
     description = global_const.username;
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
-    packages = [];
+    packages = with pkgs; [
+      vllm
+    ];
   };
 
   home-manager = {
