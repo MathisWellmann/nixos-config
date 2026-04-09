@@ -14,6 +14,15 @@
     dir = "/nvme_pool/readeck";
     port = const.readeck_port;
   };
+  polaris = import ./../../modules/music_polaris.nix {
+    port = const.polaris_port;
+    mount_dirs = [
+      {
+        name = "music";
+        source = "/nvme_pool/music";
+      }
+    ];
+  };
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -38,6 +47,7 @@ in {
     searx
     monero_miner
     readeck
+    polaris
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.

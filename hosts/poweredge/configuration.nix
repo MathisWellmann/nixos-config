@@ -103,19 +103,6 @@ in {
       };
       openFirewall = true;
     };
-    polaris = {
-      enable = true;
-      openFirewall = true;
-      port = const.polaris_port;
-      settings = {
-        mount_dirs = [
-          {
-            name = "SATA_SSD_POOL";
-            source = "/SATA_SSD_POOL/music";
-          }
-        ];
-      };
-    };
     bitmagnet = {
       enable = true;
       openFirewall = true;
@@ -261,7 +248,6 @@ in {
         monero = "monero";
         photoprism = "photoprism";
         greptimedb = "podman-greptimedb";
-        polaris = "polaris";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
       };
     };
