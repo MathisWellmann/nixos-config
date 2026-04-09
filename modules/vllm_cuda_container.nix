@@ -1,8 +1,11 @@
 {
   port ? 8000,
   username ? "m",
-  model ? "unsloth/Qwen3.5-27B-GGUF-IQ4_XS", # Fits in 16GB VRAM.
+  model ? "Qwen/Qwen3.5-9B",
 }: {
+  networking.firewall.allowedTCPPorts = [
+    port
+  ];
   hardware.nvidia-container-toolkit.enable = true;
   virtualisation.oci-containers = {
     backend = "podman";

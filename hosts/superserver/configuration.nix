@@ -9,9 +9,9 @@
   global_const = import ../../global_constants.nix;
   hostname = "superserver";
   local_ai = import ./../../modules/local_ai.nix {};
-  # vllm = import ./../../modules/vllm_cuda_container.nix {
-  #   port = 8000;
-  # };
+  vllm = import ./../../modules/vllm_cuda_container.nix {
+    port = 8000;
+  };
 in {
   imports = [
     inputs.home-manager.nixosModules.default
@@ -23,7 +23,7 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/prometheus_exporter.nix
     local_ai
-    # vllm
+    vllm
   ];
 
   # Bootloader.
