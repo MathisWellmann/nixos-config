@@ -31,8 +31,15 @@
       ];
 
       cmd = [
-        "--model"
+        "python3"
+        "-m"
+        "vllm"
+        "serve"
         model
+        "--port"
+        "8000"
+        "--host"
+        "0.0.0.0"
       ];
     };
   };
