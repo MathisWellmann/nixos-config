@@ -23,6 +23,7 @@
       }
     ];
   };
+  calibre-web = import ./../../modules/calibre_web.nix {port = const.calibre-web_port;};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -48,6 +49,7 @@ in {
     monero_miner
     readeck
     polaris
+    calibre-web
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.
@@ -127,6 +129,8 @@ in {
         bencher-api = "podman-bencher-api";
         iggy-server = "iggy-server";
         readeck = "podman-readeck";
+        polaris = "polaris";
+        calibre-web = "calibre-web";
       };
     };
   };

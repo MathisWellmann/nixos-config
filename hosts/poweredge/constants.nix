@@ -7,7 +7,6 @@
   mealie_port = 3005;
   immich_port = 3007;
   photoprism_port = 3008;
-  calibre_port = 3011;
   firefly_port = 3015;
   ncps_port = 3501;
   nats_port = 4222;

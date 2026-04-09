@@ -16,6 +16,7 @@
   iggy_quic_port = 3013;
   iggy_websocket_port = 3014;
   polaris_port = 3015;
+  calibre-web_port = 3016;
   greptimedb_http_port = 4000;
   greptimedb_rpc_port = 4001;
   greptimedb_mysql_port = 4002;

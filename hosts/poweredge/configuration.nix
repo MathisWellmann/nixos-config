@@ -95,14 +95,6 @@ in {
         "/SATA_SSD_POOL/video ${static_ips.de-msa2_ip}(rw,sync,no_subtree_check)\n"
       ];
     };
-    calibre-web = {
-      enable = true;
-      listen = {
-        ip = "0.0.0.0";
-        port = const.calibre_port;
-      };
-      openFirewall = true;
-    };
     # Marked as broken. TODO: re-enable
     # mealie = {
     #   enable = true;
@@ -218,7 +210,6 @@ in {
         tailscale = "tailscaled";
         prometheus-exporter = "prometheus-node-exporter";
         mnt-elitedesk_backup = "mnt-elitedesk_backup.mount";
-        calibre-web = "calibre-web";
         immich = "immich-server";
         mealie = "mealie";
         photoprism = "photoprism";
