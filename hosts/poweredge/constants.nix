@@ -4,12 +4,10 @@
   backup_host = "elitedesk";
   backup_target_dir = "/mnt/backup_hdd";
   nfs_port = 2049;
-  grafana_port = 3001;
   mealie_port = 3005;
   gotosocial_port = 3006;
   immich_port = 3007;
   photoprism_port = 3008;
-  bitmagnet_port = 3009;
   polaris_port = 3010;
   calibre_port = 3011;
   firefly_port = 3015;

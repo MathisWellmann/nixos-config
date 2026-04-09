@@ -103,13 +103,6 @@ in {
       };
       openFirewall = true;
     };
-    bitmagnet = {
-      enable = true;
-      openFirewall = true;
-      settings = {
-        http_server.port = "${builtins.toString const.bitmagnet_port}";
-      };
-    };
     # Marked as broken. TODO: re-enable
     # mealie = {
     #   enable = true;
@@ -239,13 +232,10 @@ in {
         tailscale = "tailscaled";
         prometheus-exporter = "prometheus-node-exporter";
         mnt-elitedesk_backup = "mnt-elitedesk_backup.mount";
-        bitmagnet = "bitmagnet";
         calibre-web = "calibre-web";
         gotosocial = "gotosocial";
-        grafana = "grafana";
         immich = "immich-server";
         mealie = "mealie";
-        monero = "monero";
         photoprism = "photoprism";
         greptimedb = "podman-greptimedb";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
