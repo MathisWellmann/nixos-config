@@ -136,6 +136,7 @@ in {
         polaris = "polaris";
         calibre-web = "calibre-web";
         mealie = "mealie";
+        immich = "immich-server";
       };
     };
   };
@@ -189,6 +190,13 @@ in {
       port = const.vikunja_port;
       frontendScheme = "http";
       frontendHostname = "0.0.0.0";
+    };
+    immich = {
+      enable = true;
+      host = "0.0.0.0";
+      mediaLocation = "/nvme_pool/immich";
+      openFirewall = true;
+      port = const.immich_port;
     };
   };
 

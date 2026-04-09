@@ -18,6 +18,7 @@
   polaris_port = 3015;
   calibre-web_port = 3016;
   mealie_port = 3017;
+  immich_port = 3018;
   greptimedb_http_port = 4000;
   greptimedb_rpc_port = 4001;
   greptimedb_mysql_port = 4002;

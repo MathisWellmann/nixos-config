@@ -94,13 +94,6 @@ in {
         "/SATA_SSD_POOL/video ${static_ips.de-msa2_ip}(rw,sync,no_subtree_check)\n"
       ];
     };
-    immich = {
-      enable = true;
-      host = "0.0.0.0";
-      mediaLocation = "/SATA_SSD_POOL/immich";
-      openFirewall = true;
-      port = const.immich_port;
-    };
     # Requires `libsoup` which is marked as insecure
     # photoprism = {
     #   enable = true;
@@ -203,7 +196,6 @@ in {
         tailscale = "tailscaled";
         prometheus-exporter = "prometheus-node-exporter";
         mnt-elitedesk_backup = "mnt-elitedesk_backup.mount";
-        immich = "immich-server";
         photoprism = "photoprism";
         greptimedb = "podman-greptimedb";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
