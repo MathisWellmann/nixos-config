@@ -1,8 +1,4 @@
-{
-  pkgs,
-  inputs,
-  ...
-}: let
+{pkgs, ...}: let
   const = import ../global_constants.nix;
 in {
   imports = [
@@ -107,9 +103,6 @@ in {
       markdown-oxide # Personal knowledge management system LSP
       nil # Nix LSP
       yaml-language-server
-      tinymist # Typst markup language with `.typ` file extension
-      lsp-ai # language server that serves as a backend for AI-powered functionality
-      codebook
       zls # Zig LSP
 
       # Terminal

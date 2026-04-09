@@ -1,4 +1,9 @@
-_: {
+{pkgs, ...}: {
+  home.packages = with pkgs; [
+    tinymist # Typst markup language with `.typ` file extension
+    codebook
+    lsp-ai # language server that serves as a backend for AI-powered functionality
+  ];
   programs.helix = {
     enable = true;
     languages = {
@@ -8,6 +13,18 @@ _: {
       language-server.codebook = {
         command = "codebook-lsp";
         args = ["serve"];
+      };
+      # tinymist for Typst documents, enabling live preview along the way.
+      language-server.tinymist = {
+        command = "tinymist";
+        config = {
+          preview.background.enabled = true;
+          preview.background.args = [
+            "--data-plane-host=127.0.0.1:23635"
+            "--invert-colors=never"
+            "--open"
+          ];
+        };
       };
       language-server.lsp-ai = let
         max_context = 128000;
@@ -51,6 +68,10 @@ _: {
         {
           name = "rust";
           language-servers = ["rust-analyzer" "codebook" "lsp-ai"];
+        }
+        {
+          name = "typst";
+          language-servers = ["tinymist"];
         }
       ];
     };
