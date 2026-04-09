@@ -24,6 +24,9 @@
     ];
   };
   calibre-web = import ./../../modules/calibre_web.nix {port = const.calibre-web_port;};
+  mealie = import ./../../modules/mealie.nix {
+    port = const.mealie_port;
+  };
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -50,6 +53,7 @@ in {
     readeck
     polaris
     calibre-web
+    mealie
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.
@@ -131,6 +135,7 @@ in {
         readeck = "podman-readeck";
         polaris = "polaris";
         calibre-web = "calibre-web";
+        mealie = "mealie";
       };
     };
   };
@@ -185,10 +190,6 @@ in {
       frontendScheme = "http";
       frontendHostname = "0.0.0.0";
     };
-    # mealie = {
-    #   enable = true;
-    #   port = const.mealie_port;
-    # };
   };
 
   virtualisation.oci-containers.containers = {

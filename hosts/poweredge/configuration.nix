@@ -54,7 +54,6 @@ in {
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
       2049 # nfs
-      const.mealie_port
       const.mongodb_port
       const.nats_port
     ];
@@ -95,12 +94,6 @@ in {
         "/SATA_SSD_POOL/video ${static_ips.de-msa2_ip}(rw,sync,no_subtree_check)\n"
       ];
     };
-    # Marked as broken. TODO: re-enable
-    # mealie = {
-    #   enable = true;
-    #   port = const.mealie_port;
-    # };
-
     immich = {
       enable = true;
       host = "0.0.0.0";
@@ -211,7 +204,6 @@ in {
         prometheus-exporter = "prometheus-node-exporter";
         mnt-elitedesk_backup = "mnt-elitedesk_backup.mount";
         immich = "immich-server";
-        mealie = "mealie";
         photoprism = "photoprism";
         greptimedb = "podman-greptimedb";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
