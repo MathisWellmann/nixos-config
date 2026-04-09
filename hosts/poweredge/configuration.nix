@@ -109,20 +109,6 @@ in {
     #   port = const.mealie_port;
     # };
 
-    # gotosocial = {
-    #   enable = true;
-    #   openFirewall = true;
-    #   settings = {
-    #     application-name = "gotosocial-magewe";
-    #     bind-address = "0.0.0.0";
-    #     host = "localhost";
-    #     db-address = "/var/lib/gotosocial/database.sqlite";
-    #     db-type = "sqlite";
-    #     port = const.gotosocial_port;
-    #     protocol = "https";
-    #     storage-local-base-path = "/var/lib/gotosocial/storage";
-    #   };
-    # };
     immich = {
       enable = true;
       host = "0.0.0.0";
@@ -233,7 +219,6 @@ in {
         prometheus-exporter = "prometheus-node-exporter";
         mnt-elitedesk_backup = "mnt-elitedesk_backup.mount";
         calibre-web = "calibre-web";
-        gotosocial = "gotosocial";
         immich = "immich-server";
         mealie = "mealie";
         photoprism = "photoprism";

@@ -5,15 +5,12 @@
   backup_target_dir = "/mnt/backup_hdd";
   nfs_port = 2049;
   mealie_port = 3005;
-  gotosocial_port = 3006;
   immich_port = 3007;
   photoprism_port = 3008;
-  polaris_port = 3010;
   calibre_port = 3011;
   firefly_port = 3015;
   ncps_port = 3501;
   nats_port = 4222;
-  harmonia_port = 5000;
   iperf_port = 5201;
   mongodb_port = 27017;
 }
