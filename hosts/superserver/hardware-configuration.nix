@@ -8,6 +8,7 @@
   ...
 }: let
   static_ips = import ../../modules/static_ips.nix;
+  # main_nic = "enp6s0f0";
   main_nic = "eno1";
 in {
   imports = [

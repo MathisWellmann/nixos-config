@@ -6,10 +6,10 @@ in {
   # In server rack
   poweredge_ip = "192.168.0.10";
   elitedesk_ip = "192.168.0.11";
-  superserver_ip = "192.168.0.12";
   desg0_ip = "192.168.0.13";
   de-msa2_ip = "192.168.0.14";
   de-n5_ip = "192.168.0.15";
+  superserver_ip = "192.168.0.16";
 
   # In shack.
   meshify_ip = "192.168.0.21";

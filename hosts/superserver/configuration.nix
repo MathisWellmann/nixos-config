@@ -8,9 +8,6 @@
 }: let
   global_const = import ../../global_constants.nix;
   hostname = "superserver";
-  vllm = import ./../../modules/ai/vllm_cuda_container.nix {
-    port = 8000;
-  };
 in {
   imports = [
     ./hardware-configuration.nix
@@ -19,15 +16,12 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
-    ./../../modules/prometheus_exporter.nix
-    ./../../modules/ai/qwen_code.nix
-    ./../../modules/ai/local_ai.nix
-    vllm
+    # ./../../modules/prometheus_exporter.nix
   ];
 
   # Bootloader.
-  boot.loader.systemd-boot.enable = true;
-  boot.loader.efi.canTouchEfiVariables = true;
+  # boot.loader.systemd-boot.enable = true;
+  # boot.loader.efi.canTouchEfiVariables = true;
 
   networking.hostName = hostname;
   # Enable networking
@@ -39,10 +33,7 @@ in {
     description = "${global_const.username}";
     extraGroups = ["networkmanager" "wheel"];
     shell = pkgs.nushell;
-    packages = with pkgs; [
-      helix
-      git
-    ];
+    packages = [];
   };
   # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
   home-manager = {
@@ -61,20 +52,20 @@ in {
   # (e.g. man configuration.nix or on https://nixos.org/nixos/options.html).
   system.stateVersion = "23.05"; # Did you read the comment?
 
-  programs.rust-motd = {
-    enable = true;
-    settings = {
-      banner = {
-        color = "black";
-        command = "${pkgs.fastfetch}/bin/fastfetch";
-      };
-      filesystems.root = "/";
-      service_status = {
-        tailscale = "tailscaled";
-        prometheus-exporter = "prometheus-node-exporter";
-      };
-      uptime.prefix = "up";
-    };
-  };
-  programs.steam.enable = true;
+  # programs.rust-motd = {
+  #   enable = true;
+  #   settings = {
+  #     banner = {
+  #       color = "black";
+  #       command = "${pkgs.fastfetch}/bin/fastfetch";
+  #     };
+  #     filesystems.root = "/";
+  #     service_status = {
+  #       tailscale = "tailscaled";
+  #       prometheus-exporter = "prometheus-node-exporter";
+  #     };
+  #     uptime.prefix = "up";
+  #   };
+  # };
+  # programs.steam.enable = true;
 }
