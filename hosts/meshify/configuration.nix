@@ -8,9 +8,16 @@
 }: let
   # TODO: move to `constants.nix`
   hostname = "meshify";
+  const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
   local_ai = import ./../../modules/local_ai.nix {};
+  # vllm = import ./../../modules/vllm_cuda_container.nix {
+  #   port = const.vllm_port;
+  #   # model = "Qwen/Qwen3.5-27B";
+  #   # model = "google/gemma-4-31B-it";
+  #   model = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4";
+  # };
 in {
   imports = [
     ./hardware-configuration.nix
@@ -29,6 +36,7 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     # monero_miner
     local_ai
+    # vllm
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
