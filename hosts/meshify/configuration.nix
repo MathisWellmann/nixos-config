@@ -18,6 +18,9 @@
   #   # model = "google/gemma-4-31B-it";
   #   model = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4";
   # };
+  tensorrt = import ./../../modules/tensorrt_llm_container.nix {
+    port = const.tensorrt_port;
+  };
 in {
   imports = [
     ./hardware-configuration.nix
@@ -37,6 +40,7 @@ in {
     # monero_miner
     local_ai
     # vllm
+    tensorrt
   ];
   boot.kernelPackages = pkgs.linuxPackages_latest;
 
