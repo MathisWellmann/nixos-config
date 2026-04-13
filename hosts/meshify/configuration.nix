@@ -170,6 +170,10 @@ in {
   };
 
   # Use remote builder machine
+  # Make sure the `root` user can `ssh` into the host:
+  # sudo mkdir -p /root/.ssh
+  # sudo cp ~/.ssh/* /root/.ssh/
+  # sudo chmod 600 /root/.ssh/*
   nix = {
     distributedBuilds = true;
     buildMachines = [
