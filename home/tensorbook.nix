@@ -6,7 +6,7 @@ in {
   ];
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''ashell & hyprctl setcursor 'Banana' 48 && awww-daemon && awww img ~/MathisWellmann/nixos-config/wallpapers/wallpaper_vertical_animated_1080_1920_25fps_blurry_plants.mp4'';
+      "exec-once" = ''hyprctl setcursor 'Banana' 48'';
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         # London
@@ -20,55 +20,55 @@ in {
       cursor.no_hardware_cursors = true;
     };
   };
-  services = {
-    hyprpaper = {
-      enable = true;
-      settings = {
-        ipc = "on";
-        splash = true;
-        splash_offset = 2.0;
-        preload = [
-          # "/home/magewe/acapulco_wallpaper.jxl"
-          "/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
-          "/home/${global_const.username}/Wallpaper.jpg"
-        ];
-        # Convert single image into slices using `imagemagick`:
-        # magick convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
-        wallpaper = [
-          "HDMI-A-1,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
-          "DP-6,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
-          "eDP-1,/home/${global_const.username}/Wallpaper.jpg"
-        ];
-      };
-    };
-  };
+  # services = {
+  # hyprpaper = {
+  #   enable = true;
+  #   settings = {
+  #     ipc = "on";
+  #     splash = true;
+  #     splash_offset = 2.0;
+  #     preload = [
+  #       # "/home/magewe/acapulco_wallpaper.jxl"
+  #       "/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
+  #       "/home/${global_const.username}/Wallpaper.jpg"
+  #     ];
+  #     # Convert single image into slices using `imagemagick`:
+  #     # magick convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
+  #     wallpaper = [
+  #       "HDMI-A-1,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
+  #       "DP-6,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
+  #       "eDP-1,/home/${global_const.username}/Wallpaper.jpg"
+  #     ];
+  #   };
+  # };
+  # };
   home.packages = with pkgs; [
     stripe-cli
     devbox
     claude-code
   ];
-  programs.ashell = {
-    enable = true;
-    settings = {
-      modules = {
-        center = [
-          "Window Title"
-        ];
-        left = [
-          "Workspaces"
-        ];
-        right = [
-          "SystemInfo"
-          [
-            "Clock"
-            "Privacy"
-            "Settings"
-          ]
-        ];
-      };
-      workspaces = {
-        visibilityMode = "MonitorSpecific";
-      };
-    };
-  };
+  # programs.ashell = {
+  #   enable = true;
+  #   settings = {
+  #     modules = {
+  #       center = [
+  #         "Window Title"
+  #       ];
+  #       left = [
+  #         "Workspaces"
+  #       ];
+  #       right = [
+  #         "SystemInfo"
+  #         [
+  #           "Clock"
+  #           "Privacy"
+  #           "Settings"
+  #         ]
+  #       ];
+  #     };
+  #     workspaces = {
+  #       visibilityMode = "MonitorSpecific";
+  #     };
+  #   };
+  # };
 }
