@@ -7,6 +7,14 @@
     port
   ];
   hardware.nvidia-container-toolkit.enable = true;
+
+  # Ensure the container starts after the CDI spec has been generated,
+  # otherwise podman cannot resolve `nvidia.com/gpu=all`.
+  systemd.services.podman-tensorrt-llm = {
+    after = ["nvidia-container-toolkit-cdi-generator.service"];
+    requires = ["nvidia-container-toolkit-cdi-generator.service"];
+  };
+
   virtualisation.oci-containers = {
     backend = "podman";
 
