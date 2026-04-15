@@ -26,6 +26,7 @@ in {
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
     inputs.sops-nix.nixosModules.sops
+    inputs.agentica-framework.nixosModules.agentica-chat
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -139,6 +140,13 @@ in {
       nfs_host_name = "de-msa2";
       nfs_host_addr = "de-msa2";
       nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
+    };
+    agentica-chat = {
+      enable = true;
+      sourceDir = "/home/m/symbolica/agentica-framework";
+      environmentFile = "/etc/secrets/agentica-framework";
+      frontendPort = 5173;
+      openFirewall = true;
     };
   };
   programs.steam.enable = true;
