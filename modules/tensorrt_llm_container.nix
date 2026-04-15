@@ -11,7 +11,13 @@
     backend = "podman";
 
     containers.tensorrt-llm = {
-      image = "nvcr.io/nvidia/trtllm/inference-server:25.02-py3";
+      image = "nvcr.io/nvidia/tensorrt-llm/release:1.3.0rc11";
+
+      login = {
+        registry = "nvcr.io";
+        username = "$oauthtoken";
+        passwordFile = "/etc/secrets/ngc_api_key";
+      };
 
       ports = [
         "${toString port}:8000"
@@ -21,9 +27,9 @@
         "/home/${username}/.cache/huggingface:/root/.cache/huggingface"
       ];
 
-      environmentFiles = [
-        "/etc/secrets/tensorrt_llm.env"
-      ];
+      # environmentFiles = [
+      #   "/etc/secrets/tensorrt_llm.env"
+      # ];
 
       extraOptions = [
         "--device=nvidia.com/gpu=all"
