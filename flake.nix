@@ -27,16 +27,17 @@
       url = "github:MathisWellmann/iggy/nix";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    hermes-agent.url = "github:NousResearch/hermes-agent";
 
     # Local paths
     nexus = {
       url = "path:/home/m/MathisWellmann/nexus";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    agentica-framework = {
-      url = "path:/home/m/symbolica/agentica-framework";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    # agentica-framework = {
+    #   url = "path:/home/m/symbolica/agentica-framework";
+    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
+    # };
   };
   # some CUDA packages require like 250GB of RAM to compile from scratch, so use binary caches.
   # Run with `--accept-flake-config`
