@@ -54,6 +54,7 @@
     self,
     nixpkgs-unstable,
     home-manager,
+    hermes-agent,
     ...
   } @ inputs: {
     nixosConfigurations = {
@@ -67,6 +68,7 @@
           home-manager.nixosModules.default
           inputs.agenix.nixosModules.default
           inputs.sops-nix.nixosModules.sops
+          hermes-agent.nixosModules.default
           {_module.args = inputs;}
         ];
       };
