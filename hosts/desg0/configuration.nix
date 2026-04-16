@@ -14,8 +14,6 @@
     state_dir = "/etc/forgejo_runner";
     runner_capacity = 6;
   };
-  local_ai = import ./../../modules/ai/local_ai.nix;
-  ollama = import ./../../modules/ai/ollama.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -27,8 +25,9 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
-    local_ai
-    ollama
+    ./../../modules/ai/qwen_code.nix
+    ./../../modules/ai/local_ai.nix
+    ./../../modules/ai/ollama.nix
     forgejo_runner
     inputs.home-manager.nixosModules.default
   ];

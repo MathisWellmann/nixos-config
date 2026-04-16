@@ -11,8 +11,6 @@
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
-  local_ai = import ./../../modules/ai/local_ai.nix;
-  ollama = import ./../../modules/ai/ollama.nix;
   # vllm = import ./../../modules/ai/vllm_cuda_container.nix {
   #   port = const.vllm_port;
   #   # model = "Qwen/Qwen3.5-27B";
@@ -39,9 +37,10 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
     ./../../modules/nix_binary_cache_client.nix
+    ./../../modules/ai/qwen_code.nix
+    ./../../modules/ai/local_ai.nix
+    ./../../modules/ai/ollama.nix
     # monero_miner
-    local_ai
-    ollama
     # vllm
     tensorrt
   ];

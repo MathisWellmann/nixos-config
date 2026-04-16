@@ -9,8 +9,6 @@
 }: let
   hostname = "razerblade";
   global_const = import ../../global_constants.nix;
-  local_ai = import ./../../modules/ai/local_ai.nix;
-  ollama = import ./../../modules/ai/ollama.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -25,8 +23,9 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/virtualization_host.nix
-    local_ai
-    ollama
+    ./../../modules/ai/qwen_code.nix
+    ./../../modules/ai/local_ai.nix
+    ./../../modules/ai/ollama.nix
   ];
   time.timeZone = lib.mkForce "Europe/London";
 
