@@ -6,6 +6,7 @@ in {
   programs = {
     git = {
       enable = true;
+      signing.format = "openpgp";
       settings = {
         user = {
           inherit name email;
