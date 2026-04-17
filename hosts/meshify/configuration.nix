@@ -12,6 +12,7 @@
   static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
   local_ai = import ./../../modules/local_ai.nix {};
+  ollama = import ./../../modules/ollama.nix;
   # vllm = import ./../../modules/vllm_cuda_container.nix {
   #   port = const.vllm_port;
   #   # model = "Qwen/Qwen3.5-27B";
@@ -40,6 +41,7 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     # monero_miner
     local_ai
+    ollama
     # vllm
     tensorrt
   ];

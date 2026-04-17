@@ -9,6 +9,7 @@
   global_const = import ../../global_constants.nix;
   hostname = "superserver";
   local_ai = import ./../../modules/local_ai.nix {};
+  ollama = import ./../../modules/ollama.nix;
   vllm = import ./../../modules/vllm_cuda_container.nix {
     port = 8000;
   };
@@ -23,6 +24,7 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/prometheus_exporter.nix
     local_ai
+    ollama
     vllm
   ];
 

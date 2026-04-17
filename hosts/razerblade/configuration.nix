@@ -10,6 +10,7 @@
   hostname = "razerblade";
   global_const = import ../../global_constants.nix;
   local_ai = import ./../../modules/local_ai.nix {};
+  ollama = import ./../../modules/ollama.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -25,6 +26,7 @@ in {
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/virtualization_host.nix
     local_ai
+    ollama
   ];
   time.timeZone = lib.mkForce "Europe/London";
 
