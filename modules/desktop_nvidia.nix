@@ -36,10 +36,9 @@
     nerd-fonts.departure-mono
   ];
   environment.sessionVariables = {
-    WLR_DRM_DEVICES = "/dev/dri/by-path/pci-0000:01:00.0-card";
-    WLR_NO_HARDWARE_CURSORS = "1";
+    AQ_DRM_DEVICES = "/dev/dri/card1";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    WLR_DRM_NO_ATOMIC = "1";
+    AQ_NO_ATOMIC = "1";
   };
 }
