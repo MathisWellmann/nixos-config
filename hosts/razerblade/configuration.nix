@@ -9,8 +9,8 @@
 }: let
   hostname = "razerblade";
   global_const = import ../../global_constants.nix;
-  local_ai = import ./../../modules/local_ai.nix {};
-  ollama = import ./../../modules/ollama.nix;
+  local_ai = import ./../../modules/ai/local_ai.nix;
+  ollama = import ./../../modules/ai/ollama.nix;
 in {
   imports = [
     # Include the results of the hardware scan.

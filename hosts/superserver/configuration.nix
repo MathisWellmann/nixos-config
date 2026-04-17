@@ -8,9 +8,9 @@
 }: let
   global_const = import ../../global_constants.nix;
   hostname = "superserver";
-  local_ai = import ./../../modules/local_ai.nix {};
-  ollama = import ./../../modules/ollama.nix;
-  vllm = import ./../../modules/vllm_cuda_container.nix {
+  local_ai = import ./../../modules/ai/local_ai.nix;
+  ollama = import ./../../modules/ai/ollama.nix;
+  vllm = import ./../../modules/ai/vllm_cuda_container.nix {
     port = 8000;
   };
 in {

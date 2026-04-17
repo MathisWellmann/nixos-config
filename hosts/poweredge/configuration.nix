@@ -102,18 +102,18 @@ in {
     #   originalsPath = "/SATA_SSD_POOL/magewe/bilder";
     #   passwordFile = "/etc/nixos/secrets/photoprism";
     # };
-    cloudflared = {
-      enable = true;
-      tunnels."poweredge" = {
-        credentialsFile = "/home/magewe/.cloudflared/9c4b5093-598c-45cb-89b7-8fa608bfb363.json";
-        default = "http_status:404";
-        ingress = {
-          "immich.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
-          "www.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
-          "@.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
-        };
-      };
-    };
+    # cloudflared = {
+    #   enable = true;
+    #   tunnels."poweredge" = {
+    #     credentialsFile = "/home/magewe/.cloudflared/9c4b5093-598c-45cb-89b7-8fa608bfb363.json";
+    #     default = "http_status:404";
+    #     ingress = {
+    #       "immich.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
+    #       "www.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
+    #       "@.mwtradingsystems.com" = "http://localhost:${builtins.toString const.immich_port}";
+    #     };
+    # };
+    # };
     # Nix Cache Proxy Server
     ncps = {
       enable = true;

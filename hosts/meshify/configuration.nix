@@ -11,15 +11,15 @@
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
-  local_ai = import ./../../modules/local_ai.nix {};
-  ollama = import ./../../modules/ollama.nix;
-  # vllm = import ./../../modules/vllm_cuda_container.nix {
+  local_ai = import ./../../modules/ai/local_ai.nix;
+  ollama = import ./../../modules/ai/ollama.nix;
+  # vllm = import ./../../modules/ai/vllm_cuda_container.nix {
   #   port = const.vllm_port;
   #   # model = "Qwen/Qwen3.5-27B";
   #   # model = "google/gemma-4-31B-it";
   #   model = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4";
   # };
-  tensorrt = import ./../../modules/tensorrt_llm_container.nix {
+  tensorrt = import ./../../modules/ai/tensorrt_llm_container.nix {
     port = const.tensorrt_port;
   };
 in {

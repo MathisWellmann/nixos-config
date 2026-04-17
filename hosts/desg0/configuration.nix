@@ -14,8 +14,8 @@
     state_dir = "/etc/forgejo_runner";
     runner_capacity = 6;
   };
-  local_ai = import ./../../modules/local_ai.nix;
-  ollama = import ./../../modules/ollama.nix;
+  local_ai = import ./../../modules/ai/local_ai.nix;
+  ollama = import ./../../modules/ai/ollama.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
