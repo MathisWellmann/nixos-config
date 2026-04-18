@@ -6,7 +6,7 @@
   imports = [
     ./desktop_common.nix
   ];
-  boot.kernelParams = ["nvidia-drm.modeset=1"];
+  boot.kernelParams = ["nvidia-drm.modeset=1" "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"];
   hardware.nvidia = {
     open = true;
     modesetting.enable = true;
