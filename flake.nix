@@ -28,6 +28,7 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     hermes-agent.url = "github:NousResearch/hermes-agent";
+    llm-agents.url = "github:numtide/llm-agents.nix";
 
     # Local paths
     nexus = {
@@ -44,9 +45,11 @@
   nixConfig = {
     extra-substituters = [
       "https://cache.nixos-cuda.org"
+      "https://cache.numtide.com"
     ];
     extra-trusted-public-keys = [
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+      "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
     ];
   };
 
