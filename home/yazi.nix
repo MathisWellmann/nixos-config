@@ -1,4 +1,4 @@
-_: {
+{pkgs, ...}: {
   programs.yazi = {
     enable = true;
     shellWrapperName = "y"; # New behaviour
@@ -7,31 +7,31 @@ _: {
       opener = {
         edit = [
           {
-            run = "hx $0";
+            run = "${pkgs.helix}/bin/hx $0";
             block = true;
           }
         ];
         image = [
           {
-            run = "viu $@ && sleep 10";
+            run = "${pkgs.viu}/bin/viu $@ && sleep 10";
             block = true;
           }
         ];
         mpv = [
           {
-            run = "mpv \"$@\"";
+            run = "${pkgs.mpv}/bin/mpv \"$@\"";
             block = true;
           }
         ];
         music = [
           {
-            run = ''mocp "$@"'';
+            run = ''${pkgs.moc}/bin/mocp "$@"'';
             block = true;
           }
         ];
         pdf = [
           {
-            run = "zathura \"$@\"";
+            run = "${pkgs.zathura}/bin/zathura \"$@\"";
             desc = "Open PDF";
           }
         ];
