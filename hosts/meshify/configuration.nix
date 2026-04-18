@@ -59,7 +59,6 @@ in {
   networking = {
     hostName = "${hostname}";
     networkmanager.enable = true;
-    nftables.enable = true;
     firewall.allowedTCPPorts = [1234]; # LM studio
   };
 
