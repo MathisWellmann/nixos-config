@@ -5,15 +5,15 @@
 }: let
   pi-models-config = (pkgs.formats.json {}).generate "pi-agent-models.json" {
     providers = {
-      LMStudio = {
+      "${baseUrl}" = {
         inherit baseUrl;
         api = "openai-completions";
         apiKey = "blah";
         models = [
+          {id = "qwen/qwen3.6-35b-a3b";}
+          {id = "unsloth/qwen3.5-27b";}
           {id = "gemma-4-31b-it@f16";}
           {id = "gemma-4-31b-it@q8_0";}
-          {id = "unsloth/qwen3.5-27b";}
-          {id = "qwen/qwen3.6-35b-a3b";}
         ];
       };
     };
