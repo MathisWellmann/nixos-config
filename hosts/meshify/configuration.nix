@@ -11,7 +11,6 @@
   # TODO: move to `constants.nix`
   hostname = "meshify";
   # const = import ./constants.nix;
-  static_ips = import ../../modules/static_ips.nix;
   global_const = import ../../global_constants.nix;
   # vllm = import ./../../modules/ai/vllm_cuda_container.nix {
   #   port = const.vllm_port;
@@ -33,6 +32,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
+    (import ./../../modules/remote_builder.nix {})
     # ./../../modules/mount_external_drives.nix
     # ./../../modules/mount_remote_nfs_exports.nix
     # ./../../modules/backup_home_to_remote.nix
@@ -176,31 +176,5 @@ in {
   sops = {
     defaultSopsFile = "./../../sops_secrets.yaml";
     defaultSopsFormat = "yaml";
-  };
-
-  # TODO: extract to own module.
-  # Use remote builder machine
-  # Make sure the `root` user can `ssh` into the host:
-  # sudo mkdir -p /root/.ssh
-  # sudo cp ~/.ssh/* /root/.ssh/
-  # sudo chmod 600 /root/.ssh/*
-  nix = {
-    distributedBuilds = true;
-    buildMachines = [
-      {
-        hostName = "desg0";
-        sshUser = "m";
-        system = "x86_64-linux";
-        protocol = "ssh-ng";
-        maxJobs = 4;
-        speedFactor = 2;
-        systems = ["x86_64-linux"];
-        # supportedFeatures = [ "nixos-test" "benchmark" "big-parallel" "kvm" ];
-        # mandatoryFeatures = [];
-      }
-    ];
-    extraOptions = ''
-      builders-use-substitutes = true
-    '';
   };
 }
