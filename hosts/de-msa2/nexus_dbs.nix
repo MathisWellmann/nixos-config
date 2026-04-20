@@ -56,7 +56,7 @@
 in {
   imports = [
     inputs.iggy.nixosModules.default
-    inputs.nexus.nixosModules.default
+    inputs.nexus.nixosModules.tikr-iggy
   ];
 
   # Nexus Database
