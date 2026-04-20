@@ -31,6 +31,16 @@
 
   pi-pkg = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
 
+  # Token-rate pi extension — downloaded from npm at build time
+  tokenRateSrc = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/token-rate-pi/-/token-rate-pi-1.0.2.tgz";
+    sha256 = "sha256-dTe4f8kBZxvADJhLpPtlnJ/y3ebNFG77ws/oGliAQJA=";
+  };
+  tokenRateExt = pkgs.runCommand "pi-token-rate" {} ''
+    mkdir -p $out
+    cp ${tokenRateSrc}/token-rate.ts $out/
+  '';
+
   # Agentica MCP server config JSON
   agenticaConfigJson = pkgs.writeText "agentica-config.json" (builtins.toJSON {
     agentica = {
@@ -201,6 +211,7 @@
   pi-wrapped = pkgs.writeShellScriptBin "pi" ''
     mkdir -p "$HOME/.pi/agent"
     ln -sf ${pi-models-config} "$HOME/.pi/agent/models.json"
+    ln -sf ${tokenRateExt}/token-rate.ts "$HOME/.pi/agent/extensions/token-rate.ts"
     ${lib.optionalString enableAgentica ''
       mkdir -p "$HOME/.pi/agent/extensions"
       rm -rf "$HOME/.pi/agent/extensions/agentica"

@@ -42,7 +42,10 @@ in {
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
     ./../../modules/ai/ollama.nix
-    (import ./../../modules/ai/pi-agent.nix {enableAgentica = true;})
+    (import ./../../modules/ai/pi-agent.nix {
+      baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
+      enableAgentica = true;
+    })
     (import ./../../modules/ai/llama-cpp.nix {
       model = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M";
       port = const.llama-cpp_port;
