@@ -25,7 +25,6 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
-    ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
     ./../../modules/ai/ollama.nix
     forgejo_runner
@@ -97,5 +96,4 @@ in {
     docker.enable = true;
     podman.enable = true;
   };
-  hardware.nvidia-container-toolkit.enable = true;
 }
