@@ -19,7 +19,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
-    ./../../modules/ai/pi-agent.nix
+    (import ./../../modules/ai/pi-agent.nix {baseUrl = "http://meshify:1234/v1";})
     # ./../../modules/mount_external_drives.nix
     # ./../../modules/prometheus_exporter.nix
   ];

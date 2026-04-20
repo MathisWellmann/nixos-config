@@ -1,14 +1,12 @@
-{
+{baseUrl ? "http://localhost:1234/v1"}: {
   pkgs,
   inputs,
   ...
 }: let
-  global_const = import ../../global_constants.nix;
-
   pi-models-config = (pkgs.formats.json {}).generate "pi-agent-models.json" {
     providers = {
       LMStudio = {
-        baseUrl = "http://localhost:1234/v1";
+        inherit baseUrl;
         api = "openai-completions";
         apiKey = "blah";
         models = [
