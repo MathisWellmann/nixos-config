@@ -12,6 +12,8 @@
     inherit port;
     openFirewall = true;
     extraFlags = [
+      "-c" # Increase context window.
+      "256000"
       "-hf"
       model
     ];
