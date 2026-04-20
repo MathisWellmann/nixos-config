@@ -67,7 +67,7 @@
     name = "pi-agentica";
     buildCommand = ''
       mkdir -p $out
-      cat > $out/index.ts << 'EOF'
+      cat > $out/agentica.ts << 'EOF'
       import { Type } from "@sinclair/typebox";
       import type { ExtensionAPI } from "@mariozechner/pi-coding-agent";
 
@@ -214,10 +214,8 @@
     mkdir -p "$HOME/.pi/agent/extensions"
     ln -sf ${tokenRateExt}/token-rate.ts "$HOME/.pi/agent/extensions/token-rate.ts"
     ${lib.optionalString enableAgentica ''
-      mkdir -p "$HOME/.pi/agent/extensions"
       rm -rf "$HOME/.pi/agent/extensions/agentica"
-      cp -r ${agenticaExt} "$HOME/.pi/agent/extensions/agentica"
-      chmod -R u+w "$HOME/.pi/agent/extensions/agentica"
+      ln -sf ${agenticaExt}/agentica.ts "$HOME/.pi/agent/extensions/agentica.ts"
     ''}
     exec ${pi-pkg}/bin/pi "$@"
   '';
