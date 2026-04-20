@@ -211,6 +211,7 @@
   pi-wrapped = pkgs.writeShellScriptBin "pi" ''
     mkdir -p "$HOME/.pi/agent"
     ln -sf ${pi-models-config} "$HOME/.pi/agent/models.json"
+    mkdir -p "$HOME/.pi/agent/extensions"
     ln -sf ${tokenRateExt}/token-rate.ts "$HOME/.pi/agent/extensions/token-rate.ts"
     ${lib.optionalString enableAgentica ''
       mkdir -p "$HOME/.pi/agent/extensions"
