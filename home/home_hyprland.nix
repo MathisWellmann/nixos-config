@@ -312,23 +312,23 @@
 
   services = {
     # Blue light filter at night.
-    # hyprsunset = {
-    #   enable = true;
-    #   settings = {
-    #     max-gamma = 150;
-    #     profile = [
-    #       {
-    #         time = "7:30";
-    #         identity = true;
-    #       }
-    #       {
-    #         time = "20:00";
-    #         temperature = 2500;
-    #         gamma = 0.8;
-    #       }
-    #     ];
-    #   };
-    # };
+    hyprsunset = {
+      enable = true;
+      settings = {
+        max-gamma = 150;
+        profile = [
+          {
+            time = "7:30";
+            identity = true;
+          }
+          {
+            time = "20:00";
+            temperature = 3000;
+            gamma = 0.9;
+          }
+        ];
+      };
+    };
     hypridle = {
       enable = true;
       settings = {
