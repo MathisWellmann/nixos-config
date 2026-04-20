@@ -42,7 +42,7 @@ in {
     ./../../modules/github_runner.nix # Don't run much load on this host. TODO: move to desg0
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://meshify:8001/v1";
-      enableAgentica = false;
+      enableAgentica = true;
     })
     # ./freshrss.nix
     ./nexus_dbs.nix
