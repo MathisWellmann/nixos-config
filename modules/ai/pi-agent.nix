@@ -210,11 +210,9 @@
     ln -sf ${pi-models-config} "$HOME/.pi/agent/models.json"
     ${lib.optionalString enableAgentica ''
       mkdir -p "$HOME/.pi/agent/extensions"
-      ln -sf ${agenticaExt} "$HOME/.pi/agent/extensions/agentica"
-    ''}
-    ${lib.optionalString enableAgentica ''
-      mkdir -p "$HOME/.claude"
-      ln -sf ${claudeSettingsJson} "$HOME/.claude/settings.json"
+      rm -rf "$HOME/.pi/agent/extensions/agentica"
+      cp -r ${agenticaExt} "$HOME/.pi/agent/extensions/agentica"
+      chmod -R u+w "$HOME/.pi/agent/extensions/agentica"
     ''}
     exec ${pi-pkg}/bin/pi "$@"
   '';
