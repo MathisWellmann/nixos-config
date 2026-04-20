@@ -19,7 +19,10 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
-    (import ./../../modules/ai/pi-agent.nix {baseUrl = "http://desg0:3001/v1";})
+    (import ./../../modules/ai/pi-agent.nix {
+      baseUrl = "http://desg0:3001/v1";
+      enableAgentica = true;
+    })
     # ./../../modules/mount_external_drives.nix
     # ./../../modules/prometheus_exporter.nix
   ];

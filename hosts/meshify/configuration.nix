@@ -42,7 +42,7 @@ in {
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
     ./../../modules/ai/ollama.nix
-    ./../../modules/ai/pi-agent.nix
+    (import ./../../modules/ai/pi-agent.nix {enableAgentica = true;})
     # monero_miner
     # vllm
     # tensorrt

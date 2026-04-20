@@ -27,7 +27,10 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/local_ai.nix
     ./../../modules/ai/ollama.nix
-    (import ./../../modules/ai/pi-agent.nix {baseUrl = "http://localhost:${toString const.llama-cpp_port}/v1";})
+    (import ./../../modules/ai/pi-agent.nix {
+      baseUrl = "http://localhost:${toString const.llama-cpp_port}/v1";
+      enableAgentica = true;
+    })
     (import ./../../modules/ai/llama-cpp.nix {
       model = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M";
       port = const.llama-cpp_port;
