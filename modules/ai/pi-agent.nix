@@ -19,6 +19,7 @@
           {
             id = "qwen/qwen3.6-35b-a3b";
             contextWindow = 256000;
+            # reasoning = true; # Need to test if there is a difference in performance.
           }
           {id = "unsloth/qwen3.5-27b";}
           {id = "gemma-4-31b-it@f16";}
@@ -143,12 +144,6 @@
     '';
   };
 
-  # Claude Code settings - this is read by the runtime to discover MCP servers
-  claudeSettingsJson = pkgs.writeText "claude-settings.json" (builtins.toJSON {
-    model = "opus[1m]";
-    mcpServers = {};
-  });
-
   # Helper Python script — launches the runtime directly and calls the `python` tool
   mcpHelper = pkgs.writeScript "mcp_helper.py" ''
     #!/usr/bin/env python3
@@ -171,7 +166,6 @@
 
     RUNTIME_PATH = Path("${agenicaPath}")
     CONFIG_FILE = "${agenticaConfigJson}"
-    CLAUDE_SETTINGS = "${claudeSettingsJson}"
 
     async def connect_and_execute(code: str) -> str:
         server_params = StdioServerParameters(
@@ -180,7 +174,6 @@
                 "develop", str(RUNTIME_PATH), "--command",
                 "uv", "run", "--project", str(RUNTIME_PATH),
                 "python", "-m", "agentica_mcp_runtime",
-                "--config", str(CLAUDE_SETTINGS),
             ],
         )
 
