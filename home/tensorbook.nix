@@ -20,28 +20,28 @@ in {
       cursor.no_hardware_cursors = true;
     };
   };
-  # services = {
-  # hyprpaper = {
-  #   enable = true;
-  #   settings = {
-  #     ipc = "on";
-  #     splash = true;
-  #     splash_offset = 2.0;
-  #     preload = [
-  #       # "/home/magewe/acapulco_wallpaper.jxl"
-  #       "/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
-  #       "/home/${global_const.username}/Wallpaper.jpg"
-  #     ];
-  #     # Convert single image into slices using `imagemagick`:
-  #     # magick convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
-  #     wallpaper = [
-  #       "HDMI-A-1,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
-  #       "DP-6,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
-  #       "eDP-1,/home/${global_const.username}/Wallpaper.jpg"
-  #     ];
-  #   };
-  # };
-  # };
+  services = {
+    hyprpaper = {
+      enable = true;
+      settings = {
+        ipc = "on";
+        splash = true;
+        splash_offset = 2.0;
+        preload = [
+          # "/home/magewe/acapulco_wallpaper.jxl"
+          "/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
+          "/home/${global_const.username}/Wallpaper.jpg"
+        ];
+        # Convert single image into slices using `imagemagick`:
+        # magick convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
+        wallpaper = [
+          "HDMI-A-1,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
+          "DP-6,/home/${global_const.username}/wallpaper_vertical_mountain.jpg"
+          "eDP-1,/home/${global_const.username}/Wallpaper.jpg"
+        ];
+      };
+    };
+  };
   home.packages = with pkgs; [
     stripe-cli
     devbox
