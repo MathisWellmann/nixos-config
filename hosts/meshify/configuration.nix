@@ -10,7 +10,7 @@
 }: let
   # TODO: move to `constants.nix`
   hostname = "meshify";
-  # const = import ./constants.nix;
+  const = import ./constants.nix;
   global_const = import ../../global_constants.nix;
   # vllm = import ./../../modules/ai/vllm_cuda_container.nix {
   #   port = const.vllm_port;
@@ -43,6 +43,10 @@ in {
     ./../../modules/ai/local_ai.nix
     ./../../modules/ai/ollama.nix
     (import ./../../modules/ai/pi-agent.nix {enableAgentica = true;})
+    (import ./../../modules/ai/llama-cpp.nix {
+      model = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M";
+      port = const.llama-cpp_port;
+    })
     # monero_miner
     # vllm
     # tensorrt
