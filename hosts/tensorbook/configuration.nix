@@ -40,6 +40,7 @@ in {
       bun
       supabase-cli
       nixpacks
+      slack
     ];
     shell = pkgs.nushell;
   };
