@@ -16,7 +16,10 @@
         api = "openai-completions";
         apiKey = "blah";
         models = [
-          {id = "qwen/qwen3.6-35b-a3b";}
+          {
+            id = "qwen/qwen3.6-35b-a3b";
+            contextWindow = 256000;
+          }
           {id = "unsloth/qwen3.5-27b";}
           {id = "gemma-4-31b-it@f16";}
           {id = "gemma-4-31b-it@q8_0";}
