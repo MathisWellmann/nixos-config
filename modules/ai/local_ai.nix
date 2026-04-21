@@ -1,10 +1,15 @@
-{pkgs, ...}: {
+{
+  inputs,
+  pkgs,
+  ...
+}: {
   environment.systemPackages = with pkgs; [
-    mistral-rs
+    inputs.forgecode.packages.${pkgs.stdenv.hostPlatform.system}.forge
+    # mistral-rs
     # vllm # Fails to build
     claude-code
     codex
     lmstudio
-    stable-diffusion-cpp-cuda
+    # stable-diffusion-cpp-cuda
   ];
 }

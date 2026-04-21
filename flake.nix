@@ -29,6 +29,7 @@
     };
     hermes-agent.url = "github:NousResearch/hermes-agent";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    forgecode.url = "github:tailcallhq/forgecode";
 
     # Local paths
     nexus = {

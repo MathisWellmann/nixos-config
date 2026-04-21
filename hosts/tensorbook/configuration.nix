@@ -19,6 +19,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
+    ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://desg0:3001/v1";
       enableAgentica = true;
