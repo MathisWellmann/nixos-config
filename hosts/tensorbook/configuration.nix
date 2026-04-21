@@ -21,7 +21,7 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/pi-agent.nix {
-      baseUrl = "http://desg0:3001/v1";
+      baseUrl = "http://meshify:3001/v1";
       enableAgentica = true;
     })
     # ./../../modules/mount_external_drives.nix
