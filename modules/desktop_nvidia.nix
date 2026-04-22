@@ -1,5 +1,6 @@
 {
   config,
+  lib,
   pkgs,
   ...
 }: {
@@ -36,7 +37,7 @@
     nerd-fonts.departure-mono
   ];
   environment.sessionVariables = {
-    AQ_DRM_DEVICES = "/dev/dri/card1";
+    AQ_DRM_DEVICES = lib.mkDefault "/dev/dri/card1";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
     AQ_NO_ATOMIC = "1";

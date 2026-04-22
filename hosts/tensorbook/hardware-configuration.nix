@@ -18,14 +18,22 @@
       kernelModules = [];
     };
     kernelModules = ["kvm-intel"];
+    kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"];
     extraModulePackages = [];
     kernelPackages = pkgs.linuxPackages_latest;
-    # Black‑list the integrated Intel GPU drivers (i915/xe) and Nouveau (just in case)
-    blacklistedKernelModules = ["i915" "xe" "nouveau"];
-    # power‑gate the iGPU after boot (saves a few watts)
-    extraModprobeConfig = ''
-      options i915 enable_fbc=0 enable_psr=0
-    '';
+    # Nouveau is blacklisted because we use the proprietary NVIDIA driver.
+    # i915/xe must stay loaded — the laptop eDP panel is physically wired
+    # through the Intel iGPU even when NVIDIA PRIME sync renders everything.
+    blacklistedKernelModules = ["nouveau"];
+  };
+  hardware.nvidia.prime = {
+    sync.enable = true;
+    # Verify with: lspci | grep -E 'VGA|3D'
+    intelBusId = "PCI:0:2:0";
+    nvidiaBusId = "PCI:1:0:0";
+  };
+  environment.sessionVariables = {
+    AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
   };
 
   fileSystems = {
