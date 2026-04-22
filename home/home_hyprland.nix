@@ -250,8 +250,8 @@
           }
           {
             time = "20:00";
-            temperature = 3000;
-            gamma = 0.9;
+            temperature = 2750;
+            gamma = 0.85;
           }
         ];
       };
