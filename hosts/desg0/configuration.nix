@@ -27,6 +27,7 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/local_ai.nix
     ./../../modules/ai/ollama.nix
+    (import ./../../modules/github_runner.nix {repos = ["symbiont"];})
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://localhost:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
@@ -88,6 +89,7 @@ in {
         prometheus-exporter = "prometheus-node-exporter";
         restic-backups-home = "restic-backups-home";
         forgejo_runner = "gitea-runner-default";
+        github_runner_symbiont = "github-runner-symbiont";
       };
       uptime.prefix = "up";
     };

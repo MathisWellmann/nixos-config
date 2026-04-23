@@ -1,12 +1,11 @@
 # Configure a Github Runner.
 # Set the `tokenFile` to the correct location where the secret is stored.
-{
+{repos}: {
   pkgs,
   config,
   ...
 }: let
   hostname = config.networking.hostName;
-  repos = ["lfest-rs" "trade_aggregation-rs" "openresponses-rs" "sliding_features-rs"];
 in {
   users.users.github-runner = {
     isSystemUser = true;
