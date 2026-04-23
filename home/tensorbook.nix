@@ -6,7 +6,7 @@ in {
   ];
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''hyprctl setcursor 'Banana' 48'';
+      "exec-once" = ''hyprctl setcursor 'Banana' 48 && ashell'';
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         # London
