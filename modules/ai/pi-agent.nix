@@ -21,6 +21,11 @@
             contextWindow = 256000;
             # reasoning = true; # Need to test if there is a difference in performance.
           }
+          {
+            id = "unsloth/qwen3.6-27b";
+            contextWindow = 256000;
+            # reasoning = true; # Need to test if there is a difference in performance.
+          }
           {id = "unsloth/qwen3.5-27b";}
           {id = "gemma-4-31b-it@f16";}
           {id = "gemma-4-31b-it@q8_0";}

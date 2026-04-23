@@ -47,7 +47,9 @@ in {
       enableAgentica = true;
     })
     (import ./../../modules/ai/llama-cpp.nix {
-      model = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M";
+      # model = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M"; # Very fast (150TPS) and good.
+      # model = "unsloth/Qwen3.6-27B-GGUF:BF16"; # Better in benchmarks, but only 25TPS.
+      model = "unsloth/Qwen3.6-27B-GGUF:UD-Q4_K_XL"; # Gets 50TPS.
       port = const.llama-cpp_port;
     })
     # monero_miner
