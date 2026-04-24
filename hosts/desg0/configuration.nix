@@ -33,7 +33,9 @@ in {
       enableAgentica = true;
     })
     (import ./../../modules/ai/llama-cpp.nix {
-      model = "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M";
+      models = [
+        "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M"
+      ];
       port = const.llama-cpp_port;
     })
 
