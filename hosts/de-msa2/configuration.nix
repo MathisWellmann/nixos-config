@@ -32,6 +32,7 @@ in {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
+    inputs.symbiont.nixosModules.zola-serve
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -39,7 +40,9 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
     ./../../modules/zfs_replication_service.nix
-    ./../../modules/github_runner.nix # Don't run much load on this host. TODO: move to desg0
+    (import ./../../modules/github_runner.nix {
+      repos = ["lfest-rs" "sliding_features-rs" "trade_aggregation-rs" "openresponses-rs"];
+    }) # Don't run much load on this host. TODO: move to desg0
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://meshify:8001/v1";
       enableAgentica = true;
@@ -237,5 +240,11 @@ in {
         INTERNAL_API_URL = "http://host.podman.internal:${toString const.bencher_api_port}";
       };
     };
+  };
+
+  services.zola-serve = {
+    enable = true;
+    hostname = "0.0.0.0";
+    port = const.symbiont_port;
   };
 }

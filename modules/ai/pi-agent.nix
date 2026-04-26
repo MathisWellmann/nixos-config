@@ -49,7 +49,7 @@
   # pi-autoresearch extension — cloned from GitHub at build time
   autoResearchSrc = pkgs.fetchzip {
     url = "https://github.com/davebcn87/pi-autoresearch/archive/main.tar.gz";
-    sha256 = "1bqqx5s3bzrp676pvnwk47i6nv6j1iafv3sj28bw4xvahyfa8xi2";
+    sha256 = "sha256-neMzIerafOuro0Z4PArFKOdGmWnkHH7OMwwjyqu1wYM=";
   };
   autoResearchExt = pkgs.runCommand "pi-autoresearch" {} ''
     mkdir -p $out
