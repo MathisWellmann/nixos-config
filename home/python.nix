@@ -3,11 +3,16 @@
     with ps; [
       numpy
       openai # Not using ClosedAi, but the package allows interacting with locally hosted ai services as well
-      # pymc3 # markov chain monte carlo methods.
+      pymc # markov chain monte carlo methods.
+      scipy
+      scikit-learn
       matplotlib # Plotting
+      rerun-sdk
+      requests
+      beautifulsoup4
     ];
 in {
   home.packages = with pkgs; [
-    (python312.withPackages my-python-packages)
+    (python313.withPackages my-python-packages)
   ];
 }

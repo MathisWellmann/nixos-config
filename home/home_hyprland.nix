@@ -34,7 +34,7 @@
     labplot
     mpvpaper # Animated wallpapers `mpvpaper DP-1 wallpaper_vertical_1080_1920.mp4  -o "loop"`
     obs-studio
-    rerun
+    # rerun — provided by rerun-sdk in python.nix (conflict otherwise)
 
     ##### Cursors #####
     banana-cursor
