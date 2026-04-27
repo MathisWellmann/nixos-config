@@ -30,6 +30,7 @@
     hermes-agent.url = "github:NousResearch/hermes-agent";
     llm-agents.url = "github:numtide/llm-agents.nix";
     forgecode.url = "github:tailcallhq/forgecode";
+    kopuz.url = "github:temidaradev/kopuz";
 
     # Local paths
     nexus = {
@@ -51,10 +52,12 @@
     extra-substituters = [
       "https://cache.nixos-cuda.org"
       "https://cache.numtide.com"
+      "https://kopuz.cachix.org"
     ];
     extra-trusted-public-keys = [
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
+      "kopuz.cachix.org-1:WXMpGpamblLUiJtcoxBxGGGGwIcWxGPJBUxarLiqWmw="
     ];
   };
 
