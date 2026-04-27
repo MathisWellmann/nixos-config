@@ -53,7 +53,9 @@
   };
   autoResearchExt = pkgs.runCommand "pi-autoresearch" {} ''
     mkdir -p $out
-    cp ${autoResearchSrc}/extensions/pi-autoresearch/index.ts $out/pi-autoresearch.ts
+    cp ${autoResearchSrc}/extensions/pi-autoresearch/index.ts $out/index.ts
+    cp ${autoResearchSrc}/extensions/pi-autoresearch/hooks.ts $out/hooks.ts
+    cp ${autoResearchSrc}/extensions/pi-autoresearch/jsonl.ts $out/jsonl.ts
   '';
 
   # Agentica MCP server config JSON
@@ -227,8 +229,11 @@
     mkdir -p "$HOME/.pi/agent"
     ln -sf ${pi-models-config} "$HOME/.pi/agent/models.json"
     mkdir -p "$HOME/.pi/agent/extensions"
+    # Clean stale files from previous packaging layout
+    rm -f "$HOME/.pi/agent/extensions/hooks.ts" "$HOME/.pi/agent/extensions/jsonl.ts"
+    rm -f "$HOME/.pi/agent/extensions/pi-autoresearch.ts"
     ln -sf ${tokenRateExt}/token-rate.ts "$HOME/.pi/agent/extensions/token-rate.ts"
-    ln -sf ${autoResearchExt}/pi-autoresearch.ts "$HOME/.pi/agent/extensions/pi-autoresearch.ts"
+    ln -sfn ${autoResearchExt} "$HOME/.pi/agent/extensions/pi-autoresearch"
     ${lib.optionalString enableAgentica ''
       rm -rf "$HOME/.pi/agent/extensions/agentica"
       ln -sf ${agenticaExt}/agentica.ts "$HOME/.pi/agent/extensions/agentica.ts"
