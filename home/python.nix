@@ -10,6 +10,7 @@
       rerun-sdk
       requests
       beautifulsoup4
+      pip
     ];
 in {
   home.packages = with pkgs; [
