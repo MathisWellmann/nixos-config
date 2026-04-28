@@ -2,6 +2,7 @@
   baseUrl ? "http://localhost:1234/v1",
   enableAgentica ? false,
   agenicaPath ? "/home/m/symbolica/agentica-mcp-runtime",
+  imageWidthCells ? 180,
 }: {
   pkgs,
   inputs,
@@ -225,6 +226,12 @@
         main()
   '';
 
+  pi-settings-patch = (pkgs.formats.json {}).generate "pi-settings-patch.json" {
+    terminal = {
+      inherit imageWidthCells;
+    };
+  };
+
   pi-wrapped = pkgs.writeShellScriptBin "pi" ''
     mkdir -p "$HOME/.pi/agent"
     ln -sf ${pi-models-config} "$HOME/.pi/agent/models.json"
@@ -238,6 +245,13 @@
       rm -rf "$HOME/.pi/agent/extensions/agentica"
       ln -sf ${agenticaExt}/agentica.ts "$HOME/.pi/agent/extensions/agentica.ts"
     ''}
+    # Merge Nix-managed settings into settings.json (creates if missing)
+    if [ -f "$HOME/.pi/agent/settings.json" ]; then
+      ${pkgs.jq}/bin/jq -s '.[0] * .[1]' "$HOME/.pi/agent/settings.json" ${pi-settings-patch} > "$HOME/.pi/agent/settings.json.tmp" \
+        && mv "$HOME/.pi/agent/settings.json.tmp" "$HOME/.pi/agent/settings.json"
+    else
+      cp ${pi-settings-patch} "$HOME/.pi/agent/settings.json"
+    fi
     exec ${pi-pkg}/bin/pi "$@"
   '';
 in {
