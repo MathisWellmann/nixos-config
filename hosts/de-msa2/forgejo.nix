@@ -1,5 +1,5 @@
 _: let
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
 in {
   networking.firewall.allowedTCPPorts = [
     const.forgejo_port

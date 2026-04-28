@@ -1,5 +1,7 @@
-{
-  nfs_port = 2049;
+{...}: let
+  shared = import ../../modules/ports.nix;
+in {
+  nfs_port = shared.nfs;
   forgejo_port = 2999;
   homepage_port = 3000;
   grafana_port = 3001;
@@ -24,10 +26,10 @@
   greptimedb_rpc_port = 4001;
   greptimedb_mysql_port = 4002;
   greptimedb_postgres_port = 4003;
-  iperf_port = 5201;
+  iperf_port = shared.iperf;
   minidlna_port = 8200;
   victoriametrics_port = 9003;
-  mongodb_port = 27017;
+  mongodb_port = shared.mongodb;
   dragonfly_port = 27018;
   tikr_base_port = 6700;
   prometheus_exporter_nut_port = 9199;

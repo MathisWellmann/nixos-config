@@ -3,7 +3,7 @@
   lib,
   ...
 }: let
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   static_ips = import ../../modules/static_ips.nix;
   node_scrape_configs = map (host: {
     job_name = "${host}-node";

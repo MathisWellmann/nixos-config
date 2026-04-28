@@ -1,5 +1,5 @@
 _: let
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   static_ips = import ./static_ips.nix;
 in {
   services.adguardhome = {

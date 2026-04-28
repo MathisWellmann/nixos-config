@@ -8,7 +8,7 @@
   ...
 }: let
   static_ips = import ../../modules/static_ips.nix;
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   # main_nic = "ens5f0";
   main_nic = "eno1";
 in {

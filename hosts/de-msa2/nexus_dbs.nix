@@ -4,7 +4,7 @@
   pkgs,
   ...
 }: let
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   iggyConfigFile = pkgs.writeText "iggy-server.toml" ''
 
     [system]

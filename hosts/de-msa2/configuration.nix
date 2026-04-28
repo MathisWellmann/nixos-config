@@ -7,7 +7,7 @@
   ...
 }: let
   global_const = import ../../global_constants.nix;
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   searx = import ./../../modules/searx.nix {port = const.searx_port;};
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 25;};
   readeck = import ./readeck.nix {

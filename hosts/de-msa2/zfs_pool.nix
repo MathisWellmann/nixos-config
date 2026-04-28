@@ -1,5 +1,5 @@
 {lib, ...}: let
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
 in {
   boot = {
     supportedFilesystems = ["zfs"];

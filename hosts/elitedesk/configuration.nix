@@ -8,7 +8,7 @@
   ...
 }: let
   global_const = import ../../global_constants.nix;
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   static_ips = import ../../modules/static_ips.nix;
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 50;};
 in {

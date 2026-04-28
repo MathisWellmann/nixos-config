@@ -1,5 +1,5 @@
 _: let
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   global_const = import ../../global_constants.nix;
   virtHost = "firefly";
 in {

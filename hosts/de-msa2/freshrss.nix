@@ -1,5 +1,5 @@
 _: let
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   virtHost = "freshrss";
 in {
   services = {

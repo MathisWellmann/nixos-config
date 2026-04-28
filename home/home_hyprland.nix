@@ -266,7 +266,7 @@
       settings = {
         listener = [
           {
-            timeout = 900;
+            timeout = 300;
             on-timeout = "hyprlock";
           }
           {

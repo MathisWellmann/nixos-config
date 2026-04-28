@@ -7,7 +7,7 @@
   inputs,
   ...
 }: let
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
   global_const = import ../../global_constants.nix;
   static_ips = import ./../../modules/static_ips.nix;
 in {

@@ -2,7 +2,7 @@
 _: let
   nut_user = "nut-admin";
   passwordFile = "/etc/ups-passwd.txt";
-  const = import ./constants.nix;
+  const = import ./constants.nix {};
 in {
   power.ups = {
     enable = true;

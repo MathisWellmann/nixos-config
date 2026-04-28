@@ -1,7 +1,7 @@
 {pkgs, ...}: let
   jq = "${pkgs.jq}/bin/jq";
   curl = "${pkgs.curl}/bin/curl";
-  de-msa2_const = import ./../hosts/de-msa2/constants.nix;
+  de-msa2_const = import ./../hosts/de-msa2/constants.nix {};
   forgejo_url = "http://localhost:${toString de-msa2_const.forgejo_port}";
 in
   pkgs.writeShellScriptBin "list-flake-apps" ''
