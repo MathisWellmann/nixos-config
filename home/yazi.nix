@@ -7,31 +7,31 @@
       opener = {
         edit = [
           {
-            run = "${pkgs.helix}/bin/hx $0";
+            run = ''${pkgs.helix}/bin/hx "%s"'';
             block = true;
           }
         ];
         image = [
           {
-            run = "${pkgs.viu}/bin/viu $@ && sleep 10";
+            run = ''${pkgs.viu}/bin/viu "%s" && sleep 10'';
             block = true;
           }
         ];
         mpv = [
           {
-            run = "${pkgs.mpv}/bin/mpv \"$@\"";
+            run = ''${pkgs.mpv}/bin/mpv "%s"'';
             block = true;
           }
         ];
         music = [
           {
-            run = ''${pkgs.moc}/bin/mocp "$@"'';
+            run = ''${pkgs.moc}/bin/mocp "%s"'';
             block = true;
           }
         ];
         pdf = [
           {
-            run = "${pkgs.zathura}/bin/zathura \"$@\"";
+            run = ''${pkgs.zathura}/bin/zathura "%s"'';
             desc = "Open PDF";
           }
         ];
@@ -40,24 +40,28 @@
         rules = [
           ##### Images #####
           {
-            name = "*.ARW";
+            url = "*.ARW";
             use = "image";
           }
           {
-            name = "*.jpg";
+            url = "*.jpg";
             use = "image";
           }
           {
-            name = "*.png";
+            url = "*.jpeg";
+            use = "image";
+          }
+          {
+            url = "*.png";
             use = "image";
           }
           ##### Video #####
           {
-            name = "*.webm";
+            url = "*.webm";
             use = "mpv";
           }
           {
-            name = "*.mp4";
+            url = "*.mp4";
             use = "mpv";
           }
           {
@@ -66,11 +70,11 @@
           }
           ##### Music #####
           {
-            name = "*.flac";
+            url = "*.flac";
             use = "music";
           }
           {
-            name = "*.mp3";
+            url = "*.mp3";
             use = "music";
           }
         ];
