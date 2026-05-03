@@ -17,6 +17,9 @@
     supportedFilesystems = ["vfat"];
     kernelModules = ["kvm-amd" "af_packet"];
     extraModulePackages = [];
+    extraModprobeConfig = ''
+      options nvidia NVreg_RestrictProfilingToAdminUsers=0
+    '';
   };
 
   fileSystems = {
