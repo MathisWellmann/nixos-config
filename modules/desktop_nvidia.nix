@@ -27,8 +27,8 @@
     cudaPackages.libcusolver
     cudaPackages.cuda_nvrtc
     cudaPackages.cuda_nvprof
-    # cudaPackages.nsight_compute
-    # cudaPackages.nsight_systems
+    cudaPackages.nsight_compute
+    cudaPackages.nsight_systems
   ];
 
   fonts.packages = with pkgs; [
