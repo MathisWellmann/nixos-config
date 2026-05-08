@@ -143,10 +143,6 @@ in {
         uptime.prefix = "up";
       };
     };
-    nix-ld = {
-      enable = true;
-      libraries = [];
-    };
   };
 
   hardware.bluetooth.enable = true;

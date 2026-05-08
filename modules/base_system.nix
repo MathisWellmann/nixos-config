@@ -45,6 +45,10 @@ in {
       enable = true;
       enableSSHSupport = true;
     };
+    nix-ld = {
+      enable = true;
+      libraries = [];
+    };
   };
 
   # Don't ask for user password for main user.
