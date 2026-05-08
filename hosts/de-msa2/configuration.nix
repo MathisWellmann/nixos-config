@@ -32,7 +32,6 @@ in {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
-    inputs.symbiont.nixosModules.zola-serve
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -240,11 +239,5 @@ in {
         INTERNAL_API_URL = "http://host.podman.internal:${toString const.bencher_api_port}";
       };
     };
-  };
-
-  services.zola-serve = {
-    enable = true;
-    hostname = "0.0.0.0";
-    port = const.symbiont_port;
   };
 }

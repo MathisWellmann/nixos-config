@@ -37,10 +37,6 @@
       url = "path:/home/m/MathisWellmann/nexus";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    symbiont = {
-      url = "path:/home/m/MathisWellmann/symbiont";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
     # agentica-framework = {
     #   url = "path:/home/m/symbolica/agentica-framework";
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
