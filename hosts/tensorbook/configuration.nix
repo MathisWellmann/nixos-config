@@ -24,6 +24,7 @@ in {
       baseUrl = "http://meshify:8001/v1";
       enableAgentica = true;
     })
+    (import ./../../modules/remote_builder.nix {})
     # ./../../modules/mount_external_drives.nix
     # ./../../modules/prometheus_exporter.nix
   ];
