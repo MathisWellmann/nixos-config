@@ -11,8 +11,7 @@
         todos = "rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
 
         # Cargo
-        udeps = "cargo +nightly udeps --all-targets";
-        fmt = "cargo +nightly fmt --all";
+        cfmt = "cargo fmt --all";
         tfmt = "taplo fmt";
         cu = "cargo update";
         cc = "cargo check";
