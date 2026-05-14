@@ -20,7 +20,7 @@ in {
       monitor = [
         "DP-6, 1920x1080@60, 6480x1679, 1"
         "DP-5, 1920x1080@60, 6480x2759, 1"
-        "DP-4, 3840x2160@159, 4320x0, 1, transform, 1"
+        "DP-4, 3840x2160@159, 4320x0, 1, transform, 1, vrr, 1"
       ];
       cursor.no_hardware_cursors = true;
     };
