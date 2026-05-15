@@ -20,6 +20,9 @@
     kernelModules = ["kvm-intel"];
     kernelParams = ["nvidia-drm.modeset=1" "nvidia-drm.fbdev=1" "nvidia.NVreg_OpenRmEnableUnsupportedGpus=1"];
     extraModulePackages = [];
+    extraModprobeConfig = ''
+      options nvidia NVreg_RestrictProfilingToAdminUsers=0
+    '';
     kernelPackages = pkgs.linuxPackages_latest;
     # Nouveau is blacklisted because we use the proprietary NVIDIA driver.
     # i915/xe must stay loaded — the laptop eDP panel is physically wired
