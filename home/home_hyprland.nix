@@ -13,6 +13,7 @@
   # environment.
   home.packages = with pkgs; [
     inputs.kopuz.packages.${system}.default # Music GUI
+    inputs.stochos.packages.${system}.default # keyboard driven mouse control
     # Desktop
     firefox
     ladybird
@@ -147,6 +148,8 @@
         "$mainMod, 7, workspace, 7"
         "$mainMod, 8, workspace, 8"
         "$mainMod, 9, workspace, 9"
+  
+        "$mainMod, l, exec, stochos"
       ];
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging
