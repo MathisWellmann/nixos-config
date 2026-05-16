@@ -18,6 +18,7 @@ in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
+    ./../../modules/user_m.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/bash_aliases.nix
@@ -47,17 +48,6 @@ in {
     hostName = const.hostname;
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "1840e132";
-  };
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.${global_const.username} = {
-    isNormalUser = true;
-    description = global_const.username;
-    extraGroups = ["networkmanager" "wheel"];
-    shell = pkgs.nushell;
-    packages = with pkgs; [
-      vllm
-    ];
   };
 
   home-manager = {

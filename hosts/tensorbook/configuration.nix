@@ -14,6 +14,7 @@ in {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
+    ./../../modules/user_m.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -33,22 +34,6 @@ in {
   networking = {
     hostName = "${hostname}";
     networkmanager.enable = true;
-  };
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users."${global_const.username}" = {
-    isNormalUser = true;
-    description = "${global_const.username}";
-    extraGroups = ["networkmanager" "wheel" "audio"];
-    packages = with pkgs; [
-      flyctl
-      bc # GNU calculator
-      bun
-      supabase-cli
-      nixpacks
-      slack
-    ];
-    shell = pkgs.nushell;
   };
 
   home-manager = {

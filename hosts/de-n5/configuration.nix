@@ -13,6 +13,7 @@ in {
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
     inputs.home-manager.nixosModules.default
+    ./../../modules/user_m.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -26,15 +27,6 @@ in {
 
   # Set your time zone.
   time.timeZone = "Europe/Berlin";
-
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users."${global_const.username}" = {
-    isNormalUser = true;
-    description = "${global_const.username}";
-    extraGroups = ["networkmanager" "wheel"];
-    shell = pkgs.nushell;
-    packages = [];
-  };
 
   # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
   home-manager = {

@@ -27,6 +27,7 @@ in {
     inputs.home-manager.nixosModules.default
     inputs.sops-nix.nixosModules.sops
     # inputs.agentica-framework.nixosModules.agentica-chat
+    ./../../modules/user_m.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
@@ -73,22 +74,6 @@ in {
     networkmanager.enable = true;
     nftables.enable = true;
     firewall.allowedTCPPorts = [1234]; # LM studio
-  };
-
-  # TODO: extract to own module and use on all hosts
-  # Define a user account. Don't forget to set a password with ‘passwd’.
-  users.users.${global_const.username} = {
-    isNormalUser = true;
-    description = "${global_const.username}";
-    extraGroups = [
-      "networkmanager"
-      "wheel"
-      "docker"
-      "dialout" # Allow access to serial device (for Arduino dev)
-      "tty"
-    ];
-    packages = [];
-    shell = pkgs.nushell;
   };
 
   # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
