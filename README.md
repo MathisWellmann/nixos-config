@@ -1,81 +1,83 @@
-NixOs Configuration files
-=========================
+# NixOS Configuration
 
-## Highlights:
-- `modules/github_runner.nix`: Create a dedicated Github runner service for each of my repositoies, defined in `repos`.
+## Highlights
 
-To apply a configuration for a particular host, e.g `meshify`:
+- **`modules/github_runner.nix`** — Create a dedicated GitHub runner service for each repository defined in `repos`.
 
-~~~~ shell
+## Applying a Configuration
+
+To switch a host (e.g. `meshify`):
+
+```sh
 sudo nixos-rebuild switch --flake .#meshify
-~~~~
+```
 
-Replace `meshify` with the desired host, found in `hosts`.
+Replace `meshify` with the desired host name found in the `hosts/` directory.
 
-I recommend using [`nh`] to switch the configuration using:
+I recommend using [nh](https://github.com/nix-community/nh) for a simpler workflow:
 
-~~~~ shell
+```sh
 nh os switch .
-~~~~
+```
 
-[`nh`]: https://github.com/nix-community/nh
+## Updating
 
+Update all flake inputs to pull in the newest packages:
 
-Updating
---------
-
-To update all flake inputs and pull in the newest packages:
-
-~~~~ shell
+```sh
 nix flake update
-~~~~
+```
 
-See the metadata and the current flake inputs:
+View metadata and current flake inputs:
 
-~~~~ shell
+```sh
 nix flake metadata .
-~~~~
+```
 
-To update the flake input `nixpkgs` specifically:
+Update a specific input (e.g. `nixpkgs`):
 
-~~~~ shell
+```sh
 nix flake lock --update-input nixpkgs
-~~~~
+```
 
-Then update the system, eg for the `meshify` host configuration:
+Then rebuild the system, e.g. for the `meshify` host:
 
-~~~~
+```sh
 sudo nixos-rebuild switch --flake .#meshify --upgrade-all
-~~~~
+```
 
+## Cleaning the System Store
 
-Cleaning system store manually
-------------------------------
+Manual garbage collection:
 
-~~~~ shell
+```sh
 nix-store --gc
-~~~~
+```
 
-Use `nh` to keep only the last 5 system revisions in the boot menu:
+Keep only the last 5 system revisions in the boot menu using `nh`:
 
-~~~~ shell
+```sh
 nh clean all --keep 5
-~~~~
+```
 
-Tips:
-=====
+## Tips
 
-When getting something like this:
+**Cached evaluation errors**
 
-~~~~ shell
-  error: cached failure of attribute 'nixosConfigurations.poweredge.config.system.build.toplevel'
-~~~~
+If you see something like:
 
-Then you can disable the eval-cache temporarily by running with
-`--option eval-cache false`.
+```
+error: cached failure of attribute 'nixosConfigurations.poweredge.config.system.build.toplevel'
+```
 
-Check out which package depends on another (for example an insecure one):
+Disable the eval cache temporarily:
 
-~~~~ shell
+```sh
+--option eval-cache false
+```
+
+**Find which package depends on another** (e.g. an insecure one):
+
+```sh
 nix why-depends /run/current-system $(nix-build '<nixpkgs>' -A electron_35 --no-out-link)
-~~~~
+```
