@@ -121,7 +121,7 @@
         "$mainMod, Q, killactive,"
         "$mainMod, J, exit,"
         "$mainMod, V, togglefloating,"
-        "$mainMod, COMMA, exec, $menu"
+        "$mainMod, W, exec, $menu"
         "$mainMod, P, pseudo"
         "$mainMod, S, togglesplit"
         "$mainMod, F, fullscreen"

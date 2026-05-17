@@ -87,7 +87,7 @@
         "}" = "move_char_right";
       };
       editor = {
-        scroll-lines = 1;
+        scroll-lines = 3;
         cursorline = true;
         auto-save = false;
         completion-trigger-len = 1;
