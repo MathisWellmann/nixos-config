@@ -123,7 +123,6 @@
         "$mainMod, V, togglefloating,"
         "$mainMod, W, exec, $menu"
         "$mainMod, P, pseudo"
-        "$mainMod, S, togglesplit"
         "$mainMod, F, fullscreen"
 
         # For rsthd layout on corne keyboard
