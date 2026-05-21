@@ -57,6 +57,8 @@
     cp ${autoResearchSrc}/extensions/pi-autoresearch/index.ts $out/index.ts
     cp ${autoResearchSrc}/extensions/pi-autoresearch/hooks.ts $out/hooks.ts
     cp ${autoResearchSrc}/extensions/pi-autoresearch/jsonl.ts $out/jsonl.ts
+    cp ${autoResearchSrc}/extensions/pi-autoresearch/compaction.ts $out/compaction.ts
+    cp ${autoResearchSrc}/extensions/pi-autoresearch/shortcuts.ts $out/shortcuts.ts
   '';
 
   # Agentica MCP server config JSON
