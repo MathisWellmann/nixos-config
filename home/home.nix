@@ -77,6 +77,7 @@ in {
     wakeonlan
     usbutils # For `lsusb`
     cacert
+    unipicker
 
     # Nix
     # Package version diff tool. E.g Compare system revision 405 with 420:

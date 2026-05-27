@@ -16,6 +16,14 @@
           command = "codebook-lsp";
           args = ["serve"];
         };
+        # provides easy unicode support for all those fancy symbols
+        scls = {
+          command = "simple-completion-language-server";
+          config = {
+            feature_words = false;
+            feature_unicode_input = true;
+          };
+        };
         # tinymist for Typst documents, enabling live preview along the way.
         tinymist = {
           command = "tinymist";
@@ -70,7 +78,11 @@
       language = [
         {
           name = "rust";
-          language-servers = ["rust-analyzer" "codebook" "lsp-ai"];
+          language-servers = ["rust-analyzer" "codebook" "lsp-ai" "scls"];
+        }
+        {
+          name = "markdown";
+          language-servers = ["scls"];
         }
         {
           name = "typst";
