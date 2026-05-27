@@ -147,7 +147,7 @@
         "$mainMod, 7, workspace, 7"
         "$mainMod, 8, workspace, 8"
         "$mainMod, 9, workspace, 9"
-  
+
         "$mainMod, l, exec, stochos"
       ];
       bindm = [

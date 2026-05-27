@@ -3,65 +3,68 @@
     tinymist # Typst markup language with `.typ` file extension
     codebook
     lsp-ai # language server that serves as a backend for AI-powered functionality
+    simple-completion-language-server
   ];
   programs.helix = {
     enable = true;
     languages = {
-      language-server.rust-analyzer = {
-        config = {cargo = {features = "all";};};
-      };
-      language-server.codebook = {
-        command = "codebook-lsp";
-        args = ["serve"];
-      };
-      # tinymist for Typst documents, enabling live preview along the way.
-      language-server.tinymist = {
-        command = "tinymist";
-        config = {
-          preview.background.enabled = true;
-          preview.background.args = [
-            "--data-plane-host=127.0.0.1:23635"
-            "--invert-colors=never"
-            "--open"
-          ];
+      language-server = {
+        rust-analyzer = {
+          config = {cargo = {features = "all";};};
         };
-      };
-      language-server.lsp-ai = let
-        max_context = 128000;
-      in {
-        command = "lsp-ai";
-        environment = {LSP_AI_LOG = "debug";};
-        timeout = 60;
-        config = {
-          memory.file_store = {};
-          models.qwen3coder = {
-            type = "ollama";
-            model = "qwen3-coder:30b";
+        codebook = {
+          command = "codebook-lsp";
+          args = ["serve"];
+        };
+        # tinymist for Typst documents, enabling live preview along the way.
+        tinymist = {
+          command = "tinymist";
+          config = {
+            preview.background.enabled = true;
+            preview.background.args = [
+              "--data-plane-host=127.0.0.1:23635"
+              "--invert-colors=never"
+              "--open"
+            ];
           };
-          completion = {
-            model = "qwen3-coder";
-            parameters = {
-              inherit max_context;
-              options.num_predict = 32;
+        };
+        lsp-ai = let
+          max_context = 128000;
+        in {
+          command = "lsp-ai";
+          environment = {LSP_AI_LOG = "debug";};
+          timeout = 60;
+          config = {
+            memory.file_store = {};
+            models.qwen3coder = {
+              type = "ollama";
+              model = "qwen3-coder:30b";
             };
-          };
-          chat = [
-            {
-              trigger = "!C";
-              action_display_name = "qwen3-coder:30b";
-              model = "qwen3coder";
+            completion = {
+              model = "qwen3-coder";
               parameters = {
                 inherit max_context;
-                max_tokens = 4096;
-                messages = [
-                  {
-                    role = "system";
-                    content = "You are a rust code assistant chatbot. You will give expertly responses and follow best rust coding practices.";
-                  }
-                ];
+                options.num_predict = 32;
               };
-            }
-          ];
+            };
+            chat = [
+              {
+                trigger = "!C";
+                action_display_name = "qwen3-coder:30b";
+                model = "qwen3coder";
+                parameters = {
+                  inherit max_context;
+                  max_tokens = 4096;
+                  messages = [
+                    {
+                      role = "system";
+                      content = "You are a rust code assistant chatbot. You will give expertly responses and follow best rust coding practices.";
+                    }
+                  ];
+                };
+              }
+            ];
+          };
         };
       };
       language = [

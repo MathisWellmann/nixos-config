@@ -32,7 +32,7 @@
     forgecode.url = "github:tailcallhq/forgecode";
     kopuz.url = "github:temidaradev/kopuz";
     stochos.url = "github:museslabs/stochos";
-    
+
     # Local paths
     nexus = {
       url = "path:/home/m/MathisWellmann/nexus";
