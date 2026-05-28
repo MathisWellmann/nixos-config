@@ -72,7 +72,6 @@ in {
   networking = {
     hostName = "${hostname}";
     networkmanager.enable = true;
-    nftables.enable = true;
     firewall.allowedTCPPorts = [1234]; # LM studio
   };
 
@@ -130,9 +129,9 @@ in {
   };
 
   services = {
-    # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
-    mullvad-vpn.enable = true;
-    resolved.enable = true;
+    # # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
+    # mullvad-vpn.enable = true;
+    # resolved.enable = true;
     blueman.enable = true;
     # backup_home_to_remote = {
     #   enable = true;
