@@ -22,7 +22,7 @@
           "monitor.alsa.rules" = [
             {
               matches = [
-                { "device.name" = "~alsa_card\\.usb-FiiO_FiiO_M15S.*"; }
+                {"device.name" = "~alsa_card\\.usb-FiiO_FiiO_M15S.*";}
               ];
               actions.update-props = {
                 "api.acp.auto-profile" = true;
@@ -39,7 +39,7 @@
           "device.profile.priority.rules" = [
             {
               matches = [
-                { "device.name" = "~alsa_card\\.usb-FiiO_FiiO_M15S.*"; }
+                {"device.name" = "~alsa_card\\.usb-FiiO_FiiO_M15S.*";}
               ];
               actions.update-props = {
                 priorities = [

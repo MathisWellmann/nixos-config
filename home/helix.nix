@@ -91,15 +91,17 @@
       ];
     };
     settings = {
-      theme = "gruvbox-material"; # Dark
-      # theme = "curzon"; # Dark
+      # theme = "gruvbox-material"; # Dark
+      theme = "curzon"; # Dark
       # theme = "onelight";
       keys.normal = {
         "f" = "file_picker";
-        # "," = "move_visual_line_up";
-        # "." = "move_visual_line_down";
-        "a" = "move_char_left";
-        "}" = "move_char_right";
+        "l" = "move_visual_line_up";
+        "w" = "move_visual_line_down";
+        "m" = "move_char_left";
+        "n" = "move_char_right";
+        "N" = "move_next_word_start";
+        "M" = "move_prev_word_start";
       };
       editor = {
         scroll-lines = 3;

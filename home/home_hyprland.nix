@@ -122,20 +122,21 @@
         "$mainMod, Q, killactive,"
         "$mainMod, J, exit,"
         "$mainMod, V, togglefloating,"
-        "$mainMod, W, exec, $menu"
+        "$mainMod, i, exec, $menu"
         "$mainMod, P, pseudo"
         "$mainMod, F, fullscreen"
 
         # For rsthd layout on corne keyboard
-        "$mainMod, m, movefocus, l"
-        "$mainMod, i, movefocus, r"
-        "$mainMod, n, movefocus, u"
-        "$mainMod, a, movefocus, d"
+        # "$mainMod, m, movefocus, l"
+        # "$mainMod, i, movefocus, r"
+        # "$mainMod, n, movefocus, u"
+        # "$mainMod, a, movefocus, d"
 
-        "$mainMod, left, movefocus, l"
-        "$mainMod, right, movefocus, r"
-        "$mainMod, up, movefocus, u"
-        "$mainMod, down, movefocus, d"
+        # for the charachorder
+        "$mainMod, m, movefocus, l"
+        "$mainMod, n, movefocus, r"
+        "$mainMod, l, movefocus, u"
+        "$mainMod, w, movefocus, d"
 
         # Switch workspaces with mainMod + [0-9]
         "$mainMod, 0, workspace, 10"
@@ -149,7 +150,7 @@
         "$mainMod, 8, workspace, 8"
         "$mainMod, 9, workspace, 9"
 
-        "$mainMod, l, exec, stochos"
+        "$mainMod, a, exec, stochos"
       ];
       bindm = [
         # Move/resize windows with mainMod + LMB/RMB and dragging
