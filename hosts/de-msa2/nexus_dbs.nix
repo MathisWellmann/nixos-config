@@ -56,7 +56,6 @@
 in {
   imports = [
     inputs.iggy.nixosModules.default
-    inputs.nexus.nixosModules.tikr-iggy
   ];
 
   # Nexus Database
@@ -118,21 +117,22 @@ in {
   ];
 
   services = {
-    tikr-iggy = {
-      enable = true;
-      iggy-addr = "127.0.0.1:${toString const.iggy_tcp_port}";
-      exchanges = [
-        "BinanceUsdMargin"
-        "BinanceCoinMargin"
-        "BinanceSpot"
-      ];
-      data-types = [
-        "Trade"
-        "Quotes"
-      ];
-      prometheus_exporter_base_port = const.tikr_base_port;
-      environment-file = "/etc/secrets/tikr-iggy";
-    };
+    # From module `inputs.nexus.nixosModules.tikr-iggy`
+    # tikr-iggy = {
+    #   enable = true;
+    #   iggy-addr = "127.0.0.1:${toString const.iggy_tcp_port}";
+    #   exchanges = [
+    #     "BinanceUsdMargin"
+    #     "BinanceCoinMargin"
+    #     "BinanceSpot"
+    #   ];
+    #   data-types = [
+    #     "Trade"
+    #     "Quotes"
+    #   ];
+    #   prometheus_exporter_base_port = const.tikr_base_port;
+    #   environment-file = "/etc/secrets/tikr-iggy";
+    # };
     iggy-server = {
       enable = true;
       openFirewall = true;

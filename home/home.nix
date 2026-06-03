@@ -35,7 +35,6 @@ in {
   home.packages = with pkgs; [
     # From inputs
     # inputs.nox.packages.${pkgs.stdenv.hostPlatform.system}.default # Nix options search
-    inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
 
     # Fonts
     terminus_font

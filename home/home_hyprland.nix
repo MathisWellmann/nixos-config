@@ -14,6 +14,7 @@
   home.packages = with pkgs; [
     inputs.kopuz.packages.${system}.default # Music GUI
     inputs.stochos.packages.${system}.default # keyboard driven mouse control
+    inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
     # Desktop
     firefox
     ladybird

@@ -34,10 +34,6 @@
     stochos.url = "github:museslabs/stochos";
 
     # Local paths
-    nexus = {
-      url = "path:/home/m/MathisWellmann/nexus";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
     # agentica-framework = {
     #   url = "path:/home/m/symbolica/agentica-framework";
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
