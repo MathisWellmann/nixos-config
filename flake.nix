@@ -88,6 +88,7 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/elitedesk/configuration.nix
+          inputs.agenix.nixosModules.default
           inputs.home-manager.nixosModules.default
         ];
       };
@@ -109,6 +110,7 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/desg0/configuration.nix
+          inputs.agenix.nixosModules.default
           {_module.args = inputs;}
         ];
       };
@@ -117,6 +119,7 @@
         specialArgs = {inherit inputs;};
         modules = [
           ./hosts/de-msa2/configuration.nix
+          inputs.agenix.nixosModules.default
           {_module.args = inputs;}
         ];
       };

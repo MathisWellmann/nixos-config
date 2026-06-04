@@ -49,6 +49,7 @@ in {
     })
     # ./freshrss.nix
     ./nexus_dbs.nix
+    ./k3s.nix
     ./forgejo.nix
     ./prometheus.nix
     ./zfs_pool.nix
