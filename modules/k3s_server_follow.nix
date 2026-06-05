@@ -1,5 +1,5 @@
 {config, ...}: {
-  age.secrets.k3s_token.file = ../../secrets/k3s_token.age;
+  age.secrets.k3s_token.file = ../secrets/k3s_token.age;
   services.k3s = {
     enable = true;
     role = "server";
@@ -13,4 +13,3 @@
     10250 # Kubelet metrics and API
   ];
 }
-

@@ -24,8 +24,8 @@ in {
     ./../../modules/monero.nix
     ./../../modules/adguardhome.nix
     ./../../modules/prometheus_exporter.nix
+    ./../../modules/k3s_server_follow.nix
     monero_miner
-    ./k3s.nix
   ];
 
   networking.hostName = "elitedesk"; # Define your hostname.
