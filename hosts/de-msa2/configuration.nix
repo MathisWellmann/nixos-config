@@ -114,12 +114,6 @@ in {
         bitmagnet = "bitmagnet";
         greptime_db = "podman-greptimedb";
         dragonfly_db = "podman-dragonfly";
-        tikr_BinanceCoinSpot_Quotes = "tikr@BinanceSpot_Quotes";
-        tikr_BinanceCoinSpot_Trade = "tikr@BinanceSpot_Trade";
-        tikr_BinanceCoinMargin_Quotes = "tikr@BinanceCoinMargin_Quotes";
-        tikr_BinanceCoinMargin_Trade = "tikr@BinanceCoinMargin_Trade";
-        tikr_BinanceUsdMargin_Quotes = "tikr@BinanceUsdMargin_Quotes";
-        tikr_BinanceUsdMargin_Trade = "tikr@BinanceUsdMargin_Trade";
         github-runner-lfest-rs = "github-runner-de-msa2-lfest-rs";
         github-runner-trade_aggregation-rs = "github-runner-de-msa2-trade_aggregation-rs";
         github-runner-openresponses-rs = "github-runner-de-msa2-openresponses-rs";
