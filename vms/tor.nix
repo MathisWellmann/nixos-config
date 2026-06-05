@@ -3,7 +3,13 @@ let
   pkgs = import <nixpkgs> {};
 
   tor_vm = {...}: {
-    users.extraUsers.root.password = "test";
+    users = {
+      users.root.initialPassword = "test";
+      users.guest = {
+        isNormalUser = true;
+        initialPassword = "guest";
+      };
+    };
     boot = {
       loader.systemd-boot.enable = true;
       loader.efi.canTouchEfiVariables = true;
@@ -16,7 +22,7 @@ let
         displayManager.autoLogin.user = "guest";
         desktopManager.xfce.enable = true;
         desktopManager.xfce.enableScreensaver = false;
-        videoDrivers = ["qxl"];
+        videoDrivers = ["modesetting"];
       };
       # For copy/paste to work
       spice-vdagentd.enable = true;
@@ -26,12 +32,18 @@ let
       tor-browser
     ];
     virtualisation.vmVariant = {
+      virtualisation.cores = 4;
+      virtualisation.memorySize = 3072;
       virtualisation.resolution = {
         x = 1920;
         y = 1080;
       };
       virtualisation.qemu.options = [
-        # Better display option
+        # Enable KVM hardware acceleration - biggest performance win
+        "-enable-kvm"
+        # Use host CPU features for near-native speed
+        "-cpu host"
+        # VirtIO GPU for accelerated 2D/3D graphics
         "-vga virtio"
         "-display gtk,zoom-to-fit=false"
         # Enable copy/paste
