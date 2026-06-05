@@ -132,6 +132,7 @@ in {
         calibre-web = "calibre-web";
         mealie = "mealie";
         immich = "immich-server";
+        k3s = "k3s";
       };
     };
   };

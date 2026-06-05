@@ -64,4 +64,9 @@ in {
       ];
     };
   };
+  # Wait for `tailscaled` mesh VPN to be ready before starting `nfs-server`, otherwise it will fail to resolve hosts.
+  systemd.services.nfs-server = {
+    after = [ "tailscaled.service" ];
+    wants = [ "tailscaled.service" ];
+  };
 }
