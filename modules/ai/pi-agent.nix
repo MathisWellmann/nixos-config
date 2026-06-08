@@ -18,18 +18,20 @@
         apiKey = "blah";
         models = [
           {
+            id = "LiquidAI/LFM2.5-8B-A1B-GGUF:Q8_0";
+            contextWindow = 128000;
+            reasoning = true;
+          }
+          {
             id = "qwen/qwen3.6-35b-a3b";
             contextWindow = 256000;
-            # reasoning = true; # Need to test if there is a difference in performance.
+            reasoning = true;
           }
           {
             id = "unsloth/qwen3.6-27b";
             contextWindow = 256000;
-            # reasoning = true; # Need to test if there is a difference in performance.
+            reasoning = true;
           }
-          {id = "unsloth/qwen3.5-27b";}
-          {id = "gemma-4-31b-it@f16";}
-          {id = "gemma-4-31b-it@q8_0";}
         ];
       };
     };

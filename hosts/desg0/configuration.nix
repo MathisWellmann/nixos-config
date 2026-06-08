@@ -34,9 +34,10 @@ in {
       baseUrl = "http://localhost:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
     })
-    (import ./../../modules/ai/llama-cpp.nix {
+    (import ./llama-cpp.nix {
       models = [
-        "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M"
+        # "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M"
+        "LiquidAI/LFM2.5-8B-A1B-GGUF:Q8_0"
       ];
       port = const.llama-cpp_port;
     })
