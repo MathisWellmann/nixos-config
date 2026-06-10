@@ -9,6 +9,7 @@
         bright = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -A 10";
         dim = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -U 10";
         todos = "rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
+        cl = "~/.local/bin/claude --dangerously-skip-permissions";
 
         # Cargo
         cfmt = "cargo fmt --all";
