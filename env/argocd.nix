@@ -27,13 +27,6 @@
         # Traefik terminates TLS; argocd-server itself speaks plain HTTP.
         configs.params."server.insecure" = "true";
 
-        # Fallback access without DNS/ingress: http://<any-node>:30080
-        # Can be removed once the ingress has proven itself.
-        server.service = {
-          type = "NodePort";
-          nodePortHttp = 30080;
-          nodePortHttps = 30443;
-        };
         # Dex is ArgoCD's SSO connector, unused here; local admin login is enough.
         dex.enabled = false;
       };
