@@ -41,6 +41,7 @@ in {
     ./../../modules/monero.nix
     ./../../modules/zfs_replication_service.nix
     ./../../modules/k3s_init.nix
+    ./../../modules/ai/local_ai.nix
     (import ./../../modules/github_runner.nix {
       repos = ["lfest-rs" "sliding_features-rs" "trade_aggregation-rs" "openresponses-rs"];
     }) # Don't run much load on this host. TODO: move to desg0
