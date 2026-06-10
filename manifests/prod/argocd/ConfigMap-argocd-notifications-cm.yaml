@@ -1,7 +1,7 @@
 apiVersion: v1
 data:
   context: |
-    argocdUrl: https://argocd.example.com
+    argocdUrl: https://argocd.k3s.lan
 kind: ConfigMap
 metadata:
   labels:

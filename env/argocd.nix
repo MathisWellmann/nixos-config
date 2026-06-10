@@ -12,10 +12,23 @@
     helm.releases.argocd = {
       chart = charts.argoproj.argo-cd;
       values = {
-        # Expose the web UI on fixed NodePorts on every cluster node.
-        # From inside the tailnet: https://<any-node>:30443
-        # (self-signed cert, login user is `admin`, initial password lives in
-        # the `argocd-initial-admin-secret` secret).
+        # Primary access path: https://argocd.k3s.lan through the built-in
+        # traefik ingress controller. The hostname resolves to a node's
+        # tailscale IP via `networking.hosts` in modules/base_system.nix and
+        # the certificate is issued by the k3s-lan-ca ClusterIssuer
+        # (see env/cert_manager.nix), so browsers on the fleet trust it.
+        global.domain = "argocd.k3s.lan";
+        server.ingress = {
+          enabled = true;
+          ingressClassName = "traefik";
+          annotations."cert-manager.io/cluster-issuer" = "k3s-lan-ca";
+          tls = true;
+        };
+        # Traefik terminates TLS; argocd-server itself speaks plain HTTP.
+        configs.params."server.insecure" = "true";
+
+        # Fallback access without DNS/ingress: http://<any-node>:30080
+        # Can be removed once the ingress has proven itself.
         server.service = {
           type = "NodePort";
           nodePortHttp = 30080;

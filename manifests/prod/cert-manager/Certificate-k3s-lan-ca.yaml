@@ -1,0 +1,17 @@
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: k3s-lan-ca
+  namespace: cert-manager
+spec:
+  commonName: k3s-lan-ca
+  duration: 87600h
+  isCA: true
+  issuerRef:
+    group: cert-manager.io
+    kind: ClusterIssuer
+    name: selfsigned
+  privateKey:
+    algorithm: ECDSA
+    size: 256
+  secretName: k3s-lan-ca

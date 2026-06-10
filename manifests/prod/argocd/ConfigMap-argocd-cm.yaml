@@ -101,7 +101,7 @@ data:
   timeout.hard.reconciliation: 0s
   timeout.reconciliation: 120s
   timeout.reconciliation.jitter: 60s
-  url: https://argocd.example.com
+  url: https://argocd.k3s.lan
 kind: ConfigMap
 metadata:
   labels:
