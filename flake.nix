@@ -9,29 +9,18 @@
       url = "github:nix-community/home-manager";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
-    sops-nix = {
-      url = "github:Mic92/sops-nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    agenix = {
-      url = "github:ryantm/agenix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
-    nox = {
-      url = "github:madsbv/nix-options-search";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    sops-nix.url = "github:Mic92/sops-nix";
+    agenix.url = "github:ryantm/agenix";
+    nox.url = "github:madsbv/nix-options-search";
     # Animated wallpaper daemon written in rust, because `mpvpaper` leaks memory.
     awww.url = "git+https://codeberg.org/LGFae/awww";
-    iggy = {
-      url = "github:MathisWellmann/iggy/nix";
-      inputs.nixpkgs.follows = "nixpkgs-unstable";
-    };
+    iggy.url = "github:MathisWellmann/iggy/nix";
     hermes-agent.url = "github:NousResearch/hermes-agent";
     llm-agents.url = "github:numtide/llm-agents.nix";
     forgecode.url = "github:tailcallhq/forgecode";
     kopuz.url = "github:temidaradev/kopuz";
     stochos.url = "github:museslabs/stochos";
+    nixidy.url = "github:arnarg/nixidy";
 
     # Local paths
     # agentica-framework = {
@@ -59,11 +48,22 @@
     nixpkgs-unstable,
     home-manager,
     hermes-agent,
+    nixidy,
     ...
-  } @ inputs: {
+  } @ inputs: let
+    system = "x86_64-linux";
+    pkgs = import nixpkgs-unstable { inherit system;};
+  in {
+    nixidyEnvs."${system}" = nixidy.lib.mkEnvs {
+      inherit pkgs;
+
+      envs = {
+        prod.modules = [./env/prod.nix];
+      };
+    };
     nixosConfigurations = {
       meshify = nixpkgs-unstable.lib.nixosSystem {
-        system = "x86_64-linux";
+        inherit system;
         specialArgs = {
           inherit inputs;
         };
@@ -138,12 +138,7 @@
         ];
       };
     };
-    apps = let
-      system = "x86_64-linux";
-      pkgs = import inputs.nixpkgs-unstable {
-        inherit system;
-      };
-    in {
+    apps = {
       "${system}" = rec {
         default = list_apps;
         list_apps = inputs.flake-utils.lib.mkApp {
