@@ -1,0 +1,15 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: nginx
+  namespace: argocd
+spec:
+  destination:
+    namespace: nginx
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: ./manifests/prod/nginx
+    repoURL: https://github.com/MathisWellmann/nixos-config.git
+    targetRevision: main
+  syncPolicy: {}
