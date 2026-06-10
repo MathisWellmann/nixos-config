@@ -21,6 +21,11 @@
     kopuz.url = "github:temidaradev/kopuz";
     stochos.url = "github:museslabs/stochos";
     nixidy.url = "github:arnarg/nixidy";
+    # Helm charts packaged as nix derivations, used by nixidy applications.
+    nixhelm = {
+      url = "github:farcaller/nixhelm";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # Local paths
     # agentica-framework = {
@@ -57,10 +62,15 @@
     nixidyEnvs."${system}" = nixidy.lib.mkEnvs {
       inherit pkgs;
 
+      # Makes helm charts available to applications as the `charts` module argument.
+      charts = inputs.nixhelm.chartsDerivations.${system};
+
       envs = {
         prod.modules = [./env/prod.nix];
       };
     };
+    # The nixidy CLI, e.g. `nix run .#nixidy -- switch .#prod`
+    packages."${system}".nixidy = nixidy.packages.${system}.default;
     nixosConfigurations = {
       meshify = nixpkgs-unstable.lib.nixosSystem {
         inherit system;
