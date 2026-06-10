@@ -52,7 +52,7 @@
     ...
   } @ inputs: let
     system = "x86_64-linux";
-    pkgs = import nixpkgs-unstable { inherit system;};
+    pkgs = import nixpkgs-unstable {inherit system;};
   in {
     nixidyEnvs."${system}" = nixidy.lib.mkEnvs {
       inherit pkgs;
