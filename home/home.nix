@@ -150,8 +150,6 @@ in {
 
     # Bittorrent
     intermodal # Command line BitTorrent metainfo utility, execute `imdl`
-
-    (import ../scripts/claude-local.nix {inherit pkgs;})
   ];
 
   fonts.fontconfig.enable = true;
