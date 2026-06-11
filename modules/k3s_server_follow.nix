@@ -1,6 +1,7 @@
 {config, ...}: let
   ips = import ./static_ips.nix;
 in {
+  imports = [./k3s_registries.nix];
   age.secrets.k3s_token.file = ../secrets/k3s_token.age;
   services.k3s = {
     enable = true;
