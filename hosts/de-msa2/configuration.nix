@@ -9,7 +9,6 @@
   global_const = import ../../global_constants.nix;
   const = import ./constants.nix {};
   searx = import ./../../modules/searx.nix {port = const.searx_port;};
-  monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 25;};
   readeck = import ./readeck.nix {
     dir = "/nvme_pool/readeck";
     port = const.readeck_port;
@@ -58,7 +57,7 @@ in {
     ./homepage.nix
     # ./ups.nix
     searx
-    monero_miner
+    # (import ./../../modules/monero_miner.nix {max-threads-hint = 25;})
     readeck
     polaris
     calibre-web
