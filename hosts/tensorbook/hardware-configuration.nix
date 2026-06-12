@@ -35,8 +35,21 @@
     intelBusId = "PCI:0:2:0";
     nvidiaBusId = "PCI:1:0:0";
   };
+  # /dev/dri/cardN numbering is NOT stable on this machine: the boot
+  # simple-framebuffer device plus the i915/nvidia probe order shuffle it
+  # (NVIDIA has been observed as card0, card1 and card2 on different boots),
+  # so hardcoded cardN paths randomly point Hyprland at the wrong device.
+  # The /dev/dri/by-path/* names cannot be used either, because aquamarine
+  # splits AQ_DRM_DEVICES on ':' and the PCI by-path names contain colons.
+  # Therefore create stable, colon-free symlinks via udev and use those.
+  services.udev.extraRules = ''
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]*", DRIVERS=="nvidia", SYMLINK+="dri/nvidia-card"
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]*", DRIVERS=="i915", SYMLINK+="dri/igpu-card"
+  '';
   environment.sessionVariables = {
-    AQ_DRM_DEVICES = "/dev/dri/card1:/dev/dri/card0";
+    # NVIDIA dGPU first (primary renderer, matches GBM_BACKEND=nvidia-drm),
+    # Intel iGPU second so aquamarine can scan out on the eDP panel.
+    AQ_DRM_DEVICES = "/dev/dri/nvidia-card:/dev/dri/igpu-card";
   };
 
   fileSystems = {
