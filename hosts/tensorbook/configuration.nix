@@ -79,6 +79,9 @@ in {
   environment.sessionVariables = {
     NIXOS_OZONE_WL = 1;
   };
+  environment.systemPackages = with pkgs; [
+    slack
+  ];
 
   hardware.brillo.enable = true; # Brightness adjustment, e.g.: `brillo -u 150000 -S 100`
 
