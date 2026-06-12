@@ -43,6 +43,11 @@
     ReadWritePaths = [
       state_dir
       "/var/sccache"
+      "/var/cache/sccache"
+    ];
+    CacheDirectory = [
+      "nexus-target"
+      "sccache"
     ];
     # Raise open file limits.
     LimitNOFILE = 1048576;
