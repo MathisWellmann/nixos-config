@@ -12,7 +12,7 @@
   forgejo_runner = import ./../../modules/forgejo_runner.nix {
     forgejo_url = "http://de-msa2:${toString de-msa2_const.forgejo_port}";
     state_dir = "/etc/forgejo_runner";
-    runner_capacity = 6;
+    runner_capacity = 8;
   };
 in {
   imports = [

@@ -5,8 +5,16 @@
 }: {
   pkgs,
   config,
+  lib,
   ...
 }: {
+  users.users.gitea-runner = {
+    isSystemUser = true;
+    group = "gitea-runner";
+    home = "/var/lib/gitea-runner";
+  };
+  users.groups.gitea-runner = {};
+
   services.gitea-actions-runner = {
     package = pkgs.forgejo-runner;
     instances.default = {
@@ -38,18 +46,22 @@
       };
     };
   };
-  # Ensure systemd allows writing to that ZFS directory.
+  # Run as a static user so /var/cache/<name> is a normal directory (not the
+  # /var/cache/private/ symlink that DynamicUser would create), and so the UID
+  # is stable across rebuilds — required for cargo to exec build scripts it
+  # writes into the cache.
   systemd.services.gitea-runner-default.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    User = "gitea-runner";
+    Group = "gitea-runner";
     ReadWritePaths = [
       state_dir
       "/var/sccache"
-      "/var/cache/sccache"
     ];
     CacheDirectory = [
       "nexus-target"
       "sccache"
     ];
-    # Raise open file limits.
     LimitNOFILE = 1048576;
   };
   # For CI to accept flake nix config like binary cache substituters, the CI user must be trusted.
