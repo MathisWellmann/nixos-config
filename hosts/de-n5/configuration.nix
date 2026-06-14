@@ -65,4 +65,5 @@ in {
 
   # Required for zfs replication.
   services.openssh.settings.PermitRootLogin = "yes";
+  environment.systemPackages = [ pkgs.lz4 ];
 }
