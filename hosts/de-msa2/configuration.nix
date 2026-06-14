@@ -38,7 +38,6 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
-    ./../../modules/zfs_replication_service.nix
     ./../../modules/k3s_init.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/github_runner.nix {

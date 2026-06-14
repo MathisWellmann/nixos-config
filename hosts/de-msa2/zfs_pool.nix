@@ -32,6 +32,18 @@ in {
         weekly = 4;
         monthly = 12;
       };
+      # The target and source must have the `lz4` package installed.
+      # root user must be able to log in to the target as root without password:
+      # `sudo ssh-copy-id root@target`
+      autoReplication = {
+        enable = true;
+        followDelete = true;
+        host = "de-n5";
+        identityFilePath = "/root/.ssh/id_ed25519";
+        localFilesystem = "nvme_pool";
+        remoteFilesystem = "hdd_pool";
+        username = "root";
+      };
       trim = {
         enable = true;
         interval = "weekly";
