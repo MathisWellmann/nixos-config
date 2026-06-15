@@ -33,6 +33,7 @@ in {
     ./../../modules/root_pkgs.nix
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
+    ./../../modules/mullvad_tailscale.nix
     (import ./../../modules/remote_builder.nix {})
     # ./../../modules/mount_external_drives.nix
     ./../../modules/mount_remote_nfs_exports.nix
@@ -129,9 +130,6 @@ in {
   };
 
   services = {
-    # # Mullvad required `resolved` and being connected disrupts `tailscale` connectivity in the current configuration.
-    # mullvad-vpn.enable = true;
-    # resolved.enable = true;
     blueman.enable = true;
     # backup_home_to_remote = {
     #   enable = true;
