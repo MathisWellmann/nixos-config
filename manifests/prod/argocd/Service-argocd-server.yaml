@@ -12,15 +12,12 @@ metadata:
   name: argocd-server
   namespace: argocd
 spec:
-  externalTrafficPolicy: Cluster
   ports:
     - name: http
-      nodePort: 30080
       port: 80
       protocol: TCP
       targetPort: 8080
     - name: https
-      nodePort: 30443
       port: 443
       protocol: TCP
       targetPort: 8080
@@ -28,4 +25,4 @@ spec:
     app.kubernetes.io/instance: argocd
     app.kubernetes.io/name: argocd-server
   sessionAffinity: None
-  type: NodePort
+  type: ClusterIP
