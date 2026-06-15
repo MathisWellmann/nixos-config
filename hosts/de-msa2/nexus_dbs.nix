@@ -1,58 +1,57 @@
 # Rename to `nexus_infra.nix`
 {
   inputs,
-  pkgs,
   ...
 }: let
   const = import ./constants.nix {};
-  iggyConfigFile = pkgs.writeText "iggy-server.toml" ''
+  # iggyConfigFile = pkgs.writeText "iggy-server.toml" ''
 
-    [system]
-    path = "/nvme_pool/iggy"
+  #   [system]
+  #   path = "/nvme_pool/iggy"
 
-    [system.memory_pool]
-    enabled = true
-    size = "1 GiB"          # default is 4 GiB — reduce this first
-    bucket_capacity = 1024  # default 8192 — lower = fewer pre-allocated buffers
+  #   [system.memory_pool]
+  #   enabled = true
+  #   size = "1 GiB"          # default is 4 GiB — reduce this first
+  #   bucket_capacity = 1024  # default 8192 — lower = fewer pre-allocated buffers
 
-    [system.partition]
-    # Flush to disk sooner — reduces in-memory message buffer
-    messages_required_to_save = 256        # default 1024
-    size_of_messages_required_to_save = "256 KiB"  # default 1 MiB
+  #   [system.partition]
+  #   # Flush to disk sooner — reduces in-memory message buffer
+  #   messages_required_to_save = 256        # default 1024
+  #   size_of_messages_required_to_save = "256 KiB"  # default 1 MiB
 
-    [system.segment]
-    cache_indexes = "none"  # options: "all", "open_segment", "none"
+  #   [system.segment]
+  #   cache_indexes = "none"  # options: "all", "open_segment", "none"
 
-    [system.topic]
-    # Add a size cap and/or message expiry if you don't need unbounded retention
-    max_size = "10 GiB"             # default "unlimited"
-    message_expiry = "2 days"       # default "none"
+  #   [system.topic]
+  #   # Add a size cap and/or message expiry if you don't need unbounded retention
+  #   max_size = "10 GiB"             # default "unlimited"
+  #   message_expiry = "2 days"       # default "none"
 
-    [message_saver]
-    enabled = true
-    enforce_fsync = true
-    interval = "30 s"
+  #   [message_saver]
+  #   enabled = true
+  #   enforce_fsync = true
+  #   interval = "30 s"
 
-    [http]
-    enabled = true
-    address = "0.0.0.0:${toString const.iggy_http_port}"
-    web_ui = true
+  #   [http]
+  #   enabled = true
+  #   address = "0.0.0.0:${toString const.iggy_http_port}"
+  #   web_ui = true
 
-    [tcp]
-    enabled = true
-    address = "0.0.0.0:${toString const.iggy_tcp_port}"
+  #   [tcp]
+  #   enabled = true
+  #   address = "0.0.0.0:${toString const.iggy_tcp_port}"
 
-    [quic]
-    enabled = false
-    address = "0.0.0.0:${toString const.iggy_quic_port}"
+  #   [quic]
+  #   enabled = false
+  #   address = "0.0.0.0:${toString const.iggy_quic_port}"
 
-    [websocket]
-    enabled = false
-    address = "0.0.0.0:${toString const.iggy_websocket_port}"
+  #   [websocket]
+  #   enabled = false
+  #   address = "0.0.0.0:${toString const.iggy_websocket_port}"
 
-    [telemetry]
-    enabled = false
-  '';
+  #   [telemetry]
+  #   enabled = false
+  # '';
 in {
   imports = [
     inputs.iggy.nixosModules.default
@@ -133,12 +132,13 @@ in {
     #   prometheus_exporter_base_port = const.tikr_base_port;
     #   environment-file = "/etc/secrets/tikr-iggy";
     # };
-    iggy-server = {
-      enable = true;
-      openFirewall = true;
-      dataDir = "/nvme_pool/iggy";
-      envFile = "/etc/secrets/iggy_server";
-      configFile = iggyConfigFile;
-    };
+    # Using the deployment on the k3s cluster now. 
+    # iggy-server = {
+    #   enable = true;
+    #   openFirewall = true;
+    #   dataDir = "/nvme_pool/iggy";
+    #   envFile = "/etc/secrets/iggy_server";
+    #   configFile = iggyConfigFile;
+    # };
   };
 }
