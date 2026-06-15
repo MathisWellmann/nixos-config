@@ -49,9 +49,31 @@ in {
   services.resolved.enable = true;
   # services.tailscale.enable is already set in modules/base_system.nix.
 
+  # `nft` on PATH so `sudo nft list table inet mullvad_tailscale` works.
+  environment.systemPackages = [pkgs.nftables];
+
   # Tailscale return traffic carries marks/uses a separate interface; strict
   # reverse-path filtering can drop it. "loose" is what Tailscale recommends.
   networking.firewall.checkReversePath = "loose";
+
+  # DNS: Mullvad and Tailscale both try to manage /etc/resolv.conf in "direct"
+  # mode, and Mullvad's lockdown wins — it points resolv.conf straight at its own
+  # resolver (10.64.0.1), so Tailscale's MagicDNS never registers and names like
+  # `de-msa2` stop resolving (routing to the IP still works via the marks above).
+  # Rather than fight that race declaratively, pin the Tailscale hosts we reach
+  # by name to their stable Tailscale IPs. systemd-resolved answers from
+  # /etc/hosts, so this works regardless of who owns resolv.conf, and the nft
+  # marks make these IPs reachable through the kill switch.
+  # Add more peers here as needed (see `tailscale status` for their IPs).
+  networking.hosts = {
+    "100.83.142.17" = ["de-msa2"]; # NFS exports + k3s ingress (*.k3s.lan)
+    "100.75.100.6" = ["de-n5"];
+    "100.74.91.37" = ["desg0"];
+    "100.85.196.111" = ["elitedesk"];
+    "100.64.102.10" = ["poweredge"];
+    "100.105.178.16" = ["razerblade"];
+    "100.89.173.74" = ["superserver"];
+  };
 
   # Load the exclusion table at boot. It lives in its own nftables table,
   # independent of the NixOS firewall and of Mullvad's own ruleset, so it
