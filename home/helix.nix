@@ -91,8 +91,8 @@
       ];
     };
     settings = {
-      # theme = "gruvbox-material"; # Dark
-      theme = "curzon"; # Dark
+      theme = "gruber-darker"; # Dark
+      # theme = "curzon"; # Dark
       # theme = "onelight";
       keys.normal = {
         "f" = "file_picker";

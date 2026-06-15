@@ -54,6 +54,9 @@
     DynamicUser = lib.mkForce false;
     User = "gitea-runner";
     Group = "gitea-runner";
+    # Grant the runner process the `docker` group so cluster creation isn't denied.
+    # Requires the host to enable `virtualisation.docker` (desg0 does), which provides this group.
+    SupplementaryGroups = ["docker"];
     ReadWritePaths = [
       state_dir
       "/var/sccache"
