@@ -67,9 +67,54 @@
       ];
     }
   ];
+  # Scrapes the in-cluster iggy-server broker (deployed by the `nexus` repo,
+  # `env/tikr/iggy-server.nix`, into the `tikr` namespace). Unlike the
+  # producers/sinks the iggy-server pod is not annotated with
+  # `prometheus.io/scrape`, so it is discovered here by its `app=iggy-server`
+  # pod label instead and scraped on its HTTP API port, which serves the
+  # Prometheus `/metrics` endpoint. Reuses the same Kubernetes service
+  # discovery + credentials as `tikr_scrape_configs` above (pod IPs are
+  # reachable from this host because `de-msa2` is a k3s node).
+  iggy_k8s_scrape_configs = [
+    {
+      job_name = "iggy-server-k8s";
+      scrape_interval = "5s";
+      scrape_timeout = "2s";
+      kubernetes_sd_configs = [
+        {
+          role = "pod";
+          api_server = "https://127.0.0.1:6443";
+          namespaces.names = ["tikr"];
+          bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+          tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
+        }
+      ];
+      relabel_configs = [
+        # Only keep the iggy-server broker pod.
+        {
+          source_labels = ["__meta_kubernetes_pod_label_app"];
+          action = "keep";
+          regex = "iggy-server";
+        }
+        # Scrape the iggy HTTP API port, which serves `/metrics`.
+        {
+          source_labels = ["__address__"];
+          action = "replace";
+          regex = "([^:]+)(?::\\d+)?";
+          replacement = "$1:${toString const.iggy_http_port}";
+          target_label = "__address__";
+        }
+        {
+          source_labels = ["__meta_kubernetes_pod_name"];
+          target_label = "pod";
+        }
+      ];
+    }
+  ];
   scrapeConfigs =
     node_scrape_configs
     ++ tikr_scrape_configs
+    ++ iggy_k8s_scrape_configs
     ++ [
       {
         job_name = "zfs";
@@ -77,8 +122,11 @@
           {targets = ["127.0.0.1:${toString config.services.prometheus.exporters.zfs.port}"];}
         ];
       }
+      # The legacy host-local iggy-server (see `nexus_dbs.nix`,
+      # `services.iggy-server`). The in-cluster broker is scraped by
+      # `iggy_k8s_scrape_configs` above.
       {
-        job_name = "iggy-server";
+        job_name = "iggy-server-host";
         static_configs = [
           {targets = ["127.0.0.1:${toString const.iggy_http_port}"];}
         ];
