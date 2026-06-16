@@ -5,12 +5,34 @@
 # Tailscale uses the CGNAT range 100.64.0.0/10 (+ IPv6 fd7a:115c:a1e0::/48),
 # which is NOT in that list, so the kill switch kills Tailscale connectivity.
 #
-# Fix: stamp Mullvad's own split-tunnel firewall marks onto traffic to/from the
-# Tailscale ranges. Mullvad routes packets carrying the "mole" mark (0x6d6f6c65)
-# via the main routing table instead of the VPN, and uses the conntrack mark
-# (0x00000f41) to keep return packets excluded too. Per Mullvad's docs these
-# marks are safe to leave set permanently and let the excluded IPs through even
-# when the tunnel is in its blocked/lockdown state.
+# Fix: stamp Mullvad's own split-tunnel firewall marks onto Tailscale traffic.
+# Mullvad's killswitch (its `inet mullvad` output/input chains, priority 0,
+# policy drop) accepts any packet whose conntrack mark is 0x00000f41, and routes
+# packets carrying the "mole" fwmark (0x6d6f6c65) via the main table instead of
+# the VPN. Per Mullvad's docs these marks are safe to leave set permanently.
+#
+# Two distinct flows must be excluded, or Tailscale breaks under the killswitch:
+#
+#   1. Peer (data-plane) traffic to/from the Tailscale CGNAT range. This egresses
+#      the tailscale0 interface, which the killswitch would otherwise drop.
+#
+#   2. tailscaled's OWN control-plane + DERP traffic. tailscaled marks its
+#      sockets with fwmark 0x80000 (mask 0xff0000) so its packets don't loop
+#      back into the tunnel; Tailscale's ip-rule then routes them out the
+#      *physical* interface, where the killswitch drops them — so tailscaled
+#      can never reach controlplane.tailscale.com / DERP, the node logs out,
+#      and every peer goes unreachable. We must stamp the killswitch's accept
+#      ct mark onto this flow too (without touching its routing mark).
+#
+# Hook priority is load-bearing. Tailscale installs an `ip mangle OUTPUT` rule
+# at priority `mangle` (-150) that copies the fwmark into the ct mark
+# (`ct mark set mark & 0xff0000`) for any packet with bits set in that mask —
+# which includes our mole mark (0x6d6f6c65 & 0xff0000 = 0x6f0000). If our chain
+# ran at/under -150 it would set ct mark 0x00000f41 only for Tailscale to
+# immediately clobber it, and the killswitch would then reject. So our output
+# chain must run AFTER Tailscale's mangle rule (-150) but BEFORE the killswitch
+# (0): priority -100 sits cleanly between them. (The original priority 0 tied
+# the killswitch's own priority, making the order undefined and boot-dependent.)
 #
 # Refs:
 #   https://mullvad.net/en/help/split-tunneling-with-linux-advanced
@@ -20,19 +42,28 @@
   ctMark = "0x00000f41";
   fwMark = "0x6d6f6c65"; # "mole"
 
+  # Tailscale's own socket fwmark for its control-plane/DERP traffic.
+  tsMark = "0x00080000";
+  tsMarkMask = "0x00ff0000";
+
   # Tailscale's address ranges.
   ts4 = "100.64.0.0/10";
   ts6 = "fd7a:115c:a1e0::/48";
 
   rules = pkgs.writeText "mullvad-tailscale.nft" ''
     table inet mullvad_tailscale {
-      # Mark locally-generated packets headed for Tailscale peers. The `route`
-      # hook re-runs the routing decision after the mark is applied, so they
-      # leave via the main table instead of the Mullvad tunnel.
+      # Priority -100: after Tailscale's `ip mangle OUTPUT` (-150, which would
+      # otherwise overwrite our ct mark) and before Mullvad's killswitch (0).
       chain output {
-        type route hook output priority 0; policy accept;
+        type route hook output priority -100; policy accept;
+        # (1) Peer traffic: exclude from tunnel + killswitch. The `route` hook
+        # re-runs routing after the mark, so it leaves via the main table.
         ip  daddr ${ts4} ct mark set ${ctMark} meta mark set ${fwMark};
         ip6 daddr ${ts6} ct mark set ${ctMark} meta mark set ${fwMark};
+        # (2) tailscaled's own egress (control plane + DERP, fwmark 0x80000):
+        # let it through the killswitch via the ct mark, but leave its routing
+        # mark alone so it still egresses the physical interface as intended.
+        meta mark and ${tsMarkMask} == ${tsMark} ct mark set ${ctMark};
       }
 
       # Mark inbound Tailscale traffic so replies stay excluded too.
