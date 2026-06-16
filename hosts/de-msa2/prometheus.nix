@@ -1,6 +1,10 @@
 {config, ...}: let
   const = import ./constants.nix {};
   static_ips = import ../../modules/static_ips.nix;
+
+  scrape_interval = "5s";
+  scrape_timeout = "2s";
+  
   node_scrape_configs = map (host: {
     job_name = "${host}-node";
     static_configs = [
@@ -28,13 +32,12 @@
   tikr_scrape_configs = [
     {
       job_name = "tikr-k8s-pods";
-      scrape_interval = "5s";
-      scrape_timeout = "2s";
+      inherit scrape_interval scrape_timeout;
       kubernetes_sd_configs = [
         {
           role = "pod";
           api_server = "https://127.0.0.1:6443";
-          namespaces.names = ["tikr"];
+          namespaces.names = ["tikr" "tikr-dev"];
           bearer_token_file = "${k8s_credentials_dir}/k8s_token";
           tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
         }
@@ -78,8 +81,7 @@
   iggy_k8s_scrape_configs = [
     {
       job_name = "iggy-server-k8s";
-      scrape_interval = "5s";
-      scrape_timeout = "2s";
+      inherit scrape_interval scrape_timeout;
       kubernetes_sd_configs = [
         {
           role = "pod";
