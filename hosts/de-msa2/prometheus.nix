@@ -4,7 +4,7 @@
 
   scrape_interval = "5s";
   scrape_timeout = "2s";
-  
+
   node_scrape_configs = map (host: {
     job_name = "${host}-node";
     static_configs = [
@@ -67,11 +67,20 @@
           source_labels = ["__meta_kubernetes_pod_name"];
           target_label = "pod";
         }
+        # Distinguish prod (`tikr`) from dev (`tikr-dev`): the producer/sink app
+        # names are identical across environments (e.g. both run
+        # `tikr-binancespot-trade`), so without this label their series would
+        # collide under one `job`. The `namespace` label keeps them separate.
+        {
+          source_labels = ["__meta_kubernetes_namespace"];
+          target_label = "namespace";
+        }
       ];
     }
   ];
-  # Scrapes the in-cluster iggy-server broker (deployed by the `nexus` repo,
-  # `env/tikr/iggy-server.nix`, into the `tikr` namespace). Unlike the
+  # Scrapes the in-cluster iggy-server brokers (deployed by the `nexus` repo,
+  # `env/tikr/iggy-server.nix`, into the `tikr` and `tikr-dev` namespaces).
+  # Unlike the
   # producers/sinks the iggy-server pod is not annotated with
   # `prometheus.io/scrape`, so it is discovered here by its `app=iggy-server`
   # pod label instead and scraped on its HTTP API port, which serves the
@@ -86,7 +95,11 @@
         {
           role = "pod";
           api_server = "https://127.0.0.1:6443";
-          namespaces.names = ["tikr"];
+          # Both environments' brokers: prod in `tikr`, dev in `tikr-dev`. The
+          # dev broker uses the same `app=iggy-server` label and HTTP port, so
+          # it is discovered and scraped the same way; the `namespace` relabel
+          # below keeps the two apart.
+          namespaces.names = ["tikr" "tikr-dev"];
           bearer_token_file = "${k8s_credentials_dir}/k8s_token";
           tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
         }
@@ -109,6 +122,13 @@
         {
           source_labels = ["__meta_kubernetes_pod_name"];
           target_label = "pod";
+        }
+        # Separate the prod (`tikr`) broker from the dev (`tikr-dev`) one: both
+        # are scraped under `job=iggy-server-k8s`, so the `namespace` label is
+        # what tells their series apart.
+        {
+          source_labels = ["__meta_kubernetes_namespace"];
+          target_label = "namespace";
         }
       ];
     }

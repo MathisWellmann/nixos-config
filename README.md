@@ -3,6 +3,8 @@
 ## Highlights
 
 - **`modules/github_runner.nix`** — Create a dedicated GitHub runner service for each repository defined in `repos`.
+- `k3s` cluster with `argocd` and `cert-manager`, using `nixidy` for switching deployments.
+- `mullvad` + `tailscale` split tunnel setup because authoritarian western regimes have made the free internet basically unusable.
 
 ## Applying a Configuration
 
