@@ -106,6 +106,7 @@ in {
         forgejo_runner = "gitea-runner-default";
         prometheus-node-exporter = "prometheus-node-exporter";
         victoriametrics = "victoriametrics";
+        victorialogs = "victorialogs";
         grafana = "grafana";
         nfs-server = "nfs-server";
         monero = "monero";

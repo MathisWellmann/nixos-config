@@ -28,6 +28,7 @@ in {
   iperf_port = shared.iperf;
   minidlna_port = 8200;
   victoriametrics_port = 9003;
+  victorialogs_port = 9004;
   mongodb_port = shared.mongodb;
   dragonfly_port = 27018;
   tikr_base_port = 6700;

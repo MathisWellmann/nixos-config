@@ -180,12 +180,20 @@
     ];
 in {
   # Drop in replacement for `prometheus`, but more efficient.
-  services.victoriametrics = {
-    enable = true;
-    listenAddress = "0.0.0.0:${toString const.victoriametrics_port}";
-    retentionPeriod = "5y";
-    prometheusConfig = {
-      scrape_configs = scrapeConfigs;
+  services = {
+    # defaults to storing data in `/var/lib/victoriametrics`
+    victoriametrics = {
+      enable = true;
+      listenAddress = "0.0.0.0:${toString const.victoriametrics_port}";
+      retentionPeriod = "5y";
+      prometheusConfig = {
+        scrape_configs = scrapeConfigs;
+      };
+    };
+    # defaults to storing data in `/var/lib/victorialogs`
+    victorialogs = {
+      enable = true;
+      listenAddress = ":${toString const.victorialogs_port}";
     };
   };
 
