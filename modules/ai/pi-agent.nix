@@ -49,6 +49,13 @@
     cp ${tokenRateSrc}/token-rate.ts $out/
   '';
 
+  # ponytail — lazy-senior-dev pi package (extension + skills)
+  # Pinned to commit 45f7d2f (2026-06-17). Update the ref + hash to upgrade.
+  ponytailSrc = pkgs.fetchzip {
+    url = "https://github.com/DietrichGebert/ponytail/archive/45f7d2f83fb430a65fd512a98ad7b14d79e06636.tar.gz";
+    sha256 = "sha256-BAwav7tf6RuHZ/A7TF/1k1TXWhYAdshlsYB3LbdgUD8=";
+  };
+
   # pi-autoresearch extension — cloned from GitHub at build time
   autoResearchSrc = pkgs.fetchzip {
     url = "https://github.com/davebcn87/pi-autoresearch/archive/main.tar.gz";
@@ -234,6 +241,12 @@
     terminal = {
       inherit imageWidthCells;
     };
+    # Local-directory pi packages. Pi reads each package's `pi` manifest,
+    # loading its extensions and skills. Local paths incur no npm/git fetch
+    # at runtime — the source lives read-only in the Nix store.
+    packages = [
+      "${ponytailSrc}"
+    ];
   };
 
   pi-wrapped = pkgs.writeShellScriptBin "pi" ''
