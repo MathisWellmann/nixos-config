@@ -111,6 +111,21 @@
           action = "keep";
           regex = "iggy-server";
         }
+        # The iggy pod exposes two named container ports (`http` 3011 and
+        # `tcp` 3012), so k8s SD role=pod emits one target per port -- two
+        # targets per pod. Without this keep, the address rewrite below maps
+        # both to <pod_ip>:3011 with identical final labels, and VM logs
+        # `skipping duplicate scrape target with identical labels` every
+        # scrape interval (pure journal spam -- metrics still flow from the
+        # first target). Keep only the `http` port at discovery time so SD
+        # emits a single target per pod; the rewrite then no-ops on it.
+        # Robust to a port-number change (the http port is identified by name,
+        # not number).
+        {
+          source_labels = ["__meta_kubernetes_pod_container_port_name"];
+          action = "keep";
+          regex = "http";
+        }
         # Scrape the iggy HTTP API port, which serves `/metrics`.
         {
           source_labels = ["__address__"];
