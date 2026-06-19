@@ -148,6 +148,74 @@
       ];
     }
   ];
+  # Scrapes the in-cluster GreptimeDB (deployed by the `nexus` repo,
+  # `env/tikr/greptimedb.nix`, into the `tikr` and `tikr-dev` namespaces).
+  # Replaces the former host-local podman GreptimeDB pruned from `nexus_dbs.nix`:
+  # the database now runs in the cluster, pinned to this host by its node-local
+  # ZFS data dir. Like the iggy broker its pod carries no `prometheus.io/scrape`
+  # annotation, so it is discovered here by its `app=greptimedb` pod label and
+  # scraped on its HTTP API port -- GreptimeDB standalone serves the Prometheus
+  # `/metrics` endpoint on the HTTP port (4000) by default. Reuses the same
+  # Kubernetes service discovery + credentials as the jobs above (pod IPs are
+  # reachable from this host because `de-msa2` is a k3s node).
+  greptimedb_k8s_scrape_configs = [
+    {
+      job_name = "greptimedb-k8s";
+      inherit scrape_interval scrape_timeout;
+      kubernetes_sd_configs = [
+        {
+          role = "pod";
+          api_server = "https://127.0.0.1:6443";
+          # Both environments' databases: prod in `tikr`, dev in `tikr-dev`. The
+          # dev DB uses the same `app=greptimedb` label and HTTP port, so it is
+          # discovered and scraped the same way; the `namespace` relabel below
+          # keeps the two apart.
+          namespaces.names = ["tikr" "tikr-dev"];
+          bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+          tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
+        }
+      ];
+      relabel_configs = [
+        # Only keep the GreptimeDB pod.
+        {
+          source_labels = ["__meta_kubernetes_pod_label_app"];
+          action = "keep";
+          regex = "greptimedb";
+        }
+        # The pod exposes two named container ports (`grpc` 4001 and `http`
+        # 4000), so k8s SD role=pod emits one target per port -- two per pod.
+        # Keep only the `http` port at discovery time so SD emits a single
+        # target per pod; otherwise the address rewrite below maps both to
+        # <pod_ip>:4000 with identical labels and VM logs `skipping duplicate
+        # scrape target` every interval. Identified by name, so robust to a
+        # port-number change.
+        {
+          source_labels = ["__meta_kubernetes_pod_container_port_name"];
+          action = "keep";
+          regex = "http";
+        }
+        # Scrape the GreptimeDB HTTP API port, which serves `/metrics`.
+        {
+          source_labels = ["__address__"];
+          action = "replace";
+          regex = "([^:]+)(?::\\d+)?";
+          replacement = "$1:${toString const.greptimedb_http_port}";
+          target_label = "__address__";
+        }
+        {
+          source_labels = ["__meta_kubernetes_pod_name"];
+          target_label = "pod";
+        }
+        # Separate the prod (`tikr`) DB from the dev (`tikr-dev`) one: both are
+        # scraped under `job=greptimedb-k8s`, so the `namespace` label is what
+        # tells their series apart.
+        {
+          source_labels = ["__meta_kubernetes_namespace"];
+          target_label = "namespace";
+        }
+      ];
+    }
+  ];
   # Per-pod CPU/memory via cAdvisor. cAdvisor is built into every k3s
   # kubelet and exposes container resource metrics at
   # `https://<node>:10250/metrics/cadvisor` (series like
@@ -228,6 +296,7 @@
     node_scrape_configs
     ++ tikr_scrape_configs
     ++ iggy_k8s_scrape_configs
+    ++ greptimedb_k8s_scrape_configs
     ++ cadvisor_scrape_configs
     ++ [
       {
@@ -243,12 +312,6 @@
         job_name = "iggy-server-host";
         static_configs = [
           {targets = ["127.0.0.1:${toString const.iggy_http_port}"];}
-        ];
-      }
-      {
-        job_name = "postgres-greptimedb";
-        static_configs = [
-          {targets = ["${static_ips.de-msa2_ip}:${toString const.greptimedb_postgres_port}"];}
         ];
       }
       {
