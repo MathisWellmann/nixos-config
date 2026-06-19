@@ -22,9 +22,6 @@ in {
   mealie_port = 3017;
   immich_port = 3018;
   greptimedb_http_port = 4000;
-  greptimedb_rpc_port = 4001;
-  greptimedb_mysql_port = 4002;
-  greptimedb_postgres_port = 4003;
   iperf_port = shared.iperf;
   minidlna_port = 8200;
   victoriametrics_port = 9003;
