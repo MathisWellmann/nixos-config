@@ -34,8 +34,8 @@ in {
   # tailscale. Any cluster node works; this is de-msa2's tailscale IP.
   networking.hosts."100.83.142.17" = [
     "argocd.k3s.lan"
-    # iggy web console, exposed via the traefik ingress in nexus env/prod.nix.
     "iggy.k3s.lan"
+    "greptimedb.k3s.lan"
   ];
 
   nix.settings = {
