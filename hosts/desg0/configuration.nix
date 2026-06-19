@@ -27,21 +27,12 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/local_ai.nix
-    ./../../modules/ai/ollama.nix
     ./../../modules/k3s_server_follow.nix
     (import ./../../modules/github_runner.nix {repos = ["symbiont"];})
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://localhost:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
     })
-    (import ./llama-cpp.nix {
-      models = [
-        # "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M"
-        "LiquidAI/LFM2.5-8B-A1B-GGUF:Q8_0"
-      ];
-      port = const.llama-cpp_port;
-    })
-
     forgejo_runner
     inputs.home-manager.nixosModules.default
   ];
