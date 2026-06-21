@@ -3,7 +3,11 @@
 in {
   boot = {
     supportedFilesystems = ["zfs"];
-    kernelParams = ["zfs.zfs_arc_max=32000000000"]; # 32GB ARC size limit
+    # To shrink the limit immediately:
+    # sudo sh -c 'echo 17179869184 > /sys/module/zfs/parameters/zfs_arc_max'
+    # Then clearing the caches:
+    # sudo sh -c 'sync; echo 3 > /proc/sys/vm/drop_caches'
+    kernelParams = ["zfs.zfs_arc_max=16000000000"]; # 16GB ARC size limit
     zfs = {
       forceImportRoot = false;
       extraPools = [
