@@ -56,20 +56,6 @@
     sha256 = "sha256-BAwav7tf6RuHZ/A7TF/1k1TXWhYAdshlsYB3LbdgUD8=";
   };
 
-  # pi-autoresearch extension — cloned from GitHub at build time
-  autoResearchSrc = pkgs.fetchzip {
-    url = "https://github.com/davebcn87/pi-autoresearch/archive/main.tar.gz";
-    sha256 = "sha256-RL39+VJ++ObJuv81tvSj8+bhqldcTmpXvWeYcH5VlFI=";
-  };
-  autoResearchExt = pkgs.runCommand "pi-autoresearch" {} ''
-    mkdir -p $out
-    cp ${autoResearchSrc}/extensions/pi-autoresearch/index.ts $out/index.ts
-    cp ${autoResearchSrc}/extensions/pi-autoresearch/hooks.ts $out/hooks.ts
-    cp ${autoResearchSrc}/extensions/pi-autoresearch/jsonl.ts $out/jsonl.ts
-    cp ${autoResearchSrc}/extensions/pi-autoresearch/compaction.ts $out/compaction.ts
-    cp ${autoResearchSrc}/extensions/pi-autoresearch/shortcuts.ts $out/shortcuts.ts
-  '';
-
   # Agentica MCP server config JSON
   agenticaConfigJson = pkgs.writeText "agentica-config.json" (builtins.toJSON {
     agentica = {
@@ -257,7 +243,6 @@
     rm -f "$HOME/.pi/agent/extensions/hooks.ts" "$HOME/.pi/agent/extensions/jsonl.ts"
     rm -f "$HOME/.pi/agent/extensions/pi-autoresearch.ts"
     ln -sf ${tokenRateExt}/token-rate.ts "$HOME/.pi/agent/extensions/token-rate.ts"
-    ln -sfn ${autoResearchExt} "$HOME/.pi/agent/extensions/pi-autoresearch"
     ${lib.optionalString enableAgentica ''
       rm -rf "$HOME/.pi/agent/extensions/agentica"
       ln -sf ${agenticaExt}/agentica.ts "$HOME/.pi/agent/extensions/agentica.ts"
