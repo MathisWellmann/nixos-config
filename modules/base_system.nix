@@ -36,6 +36,7 @@ in {
     "argocd.k3s.lan"
     "iggy.k3s.lan"
     "greptimedb.k3s.lan"
+    "clickhouse.k3s.lan"
   ];
 
   nix.settings = {

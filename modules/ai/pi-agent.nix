@@ -241,7 +241,6 @@
     mkdir -p "$HOME/.pi/agent/extensions"
     # Clean stale files from previous packaging layout
     rm -f "$HOME/.pi/agent/extensions/hooks.ts" "$HOME/.pi/agent/extensions/jsonl.ts"
-    rm -f "$HOME/.pi/agent/extensions/pi-autoresearch.ts"
     ln -sf ${tokenRateExt}/token-rate.ts "$HOME/.pi/agent/extensions/token-rate.ts"
     ${lib.optionalString enableAgentica ''
       rm -rf "$HOME/.pi/agent/extensions/agentica"
