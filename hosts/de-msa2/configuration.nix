@@ -112,7 +112,6 @@ in {
         monero = "monero";
         monero_miner = "xmrig";
         bitmagnet = "bitmagnet";
-        greptime_db = "podman-greptimedb";
         dragonfly_db = "podman-dragonfly";
         github-runner-lfest-rs = "github-runner-de-msa2-lfest-rs";
         github-runner-trade_aggregation-rs = "github-runner-de-msa2-trade_aggregation-rs";
@@ -120,13 +119,13 @@ in {
         github-runner-sliding_features-rs = "github-runner-de-msa2-sliding_features-rs";
         bencher-ui = "podman-bencher-ui";
         bencher-api = "podman-bencher-api";
-        iggy-server = "iggy-server";
         readeck = "podman-readeck";
         polaris = "polaris";
         calibre-web = "calibre-web";
         mealie = "mealie";
         immich = "immich-server";
         k3s = "k3s";
+        ntfy-sh = "ntfy-sh";
       };
     };
   };
