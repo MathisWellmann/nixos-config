@@ -103,7 +103,8 @@ in {
     zls # Zig LSP
 
     # Terminal
-    tokei
+    tokei # Count lines of code.
+    scc # Also count lines of code like tokei
     ttyper
     fastfetch
     onefetch

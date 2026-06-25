@@ -99,6 +99,29 @@
           git log -p -S $text
         }
 
+        # Count the LOCs for each rust workspace member
+        def locs [] {
+          let metadata = (cargo metadata --no-deps --format-version 1 | from json)
+
+          $metadata.packages
+          | where {|pkg| $pkg.id in $metadata.workspace_members }
+          | each {|pkg|
+              let path = ($pkg.manifest_path | path dirname)
+
+              let code = (
+                  scc --no-complexity --format json $path
+                  | from json
+                  | get 0.Code
+              )
+
+              {
+                  crate: $pkg.name
+                  loc: $code
+              }
+          }
+          | sort-by loc --reverse
+        }
+
         $env.EDITOR = "${pkgs.helix}/bin/hx";
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin) |
