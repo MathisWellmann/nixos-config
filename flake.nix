@@ -59,6 +59,21 @@
   } @ inputs: let
     system = "x86_64-linux";
     pkgs = import nixpkgs-unstable {inherit system;};
+    # Build a NixOS configuration for a host in `hosts/<name>/`.
+    # `home-manager` is always wired in here so individual host
+    # `configuration.nix` files don't each re-import it. `extraModules`
+    # carries host-specific flake modules (agenix, sops, hermes-agent, ...).
+    mkHost = name: extraModules:
+      nixpkgs-unstable.lib.nixosSystem {
+        inherit system;
+        specialArgs = {inherit inputs;};
+        modules =
+          [
+            ./hosts/${name}/configuration.nix
+            home-manager.nixosModules.default
+          ]
+          ++ extraModules;
+      };
   in {
     nixidyEnvs."${system}" = nixidy.lib.mkEnvs {
       inherit pkgs;
@@ -72,82 +87,38 @@
     };
     # The nixidy CLI, e.g. `nix run .#nixidy -- switch .#prod`
     packages."${system}".nixidy = nixidy.packages.${system}.default;
+
     nixosConfigurations = {
-      meshify = nixpkgs-unstable.lib.nixosSystem {
-        inherit system;
-        specialArgs = {
-          inherit inputs;
-        };
-        modules = [
-          ./hosts/meshify/configuration.nix
-          home-manager.nixosModules.default
-          inputs.agenix.nixosModules.default
-          inputs.sops-nix.nixosModules.sops
-          hermes-agent.nixosModules.default
-          {_module.args = inputs;}
-        ];
-      };
-      superserver = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/superserver/configuration.nix
-          inputs.home-manager.nixosModules.default
-          inputs.agenix.nixosModules.default
-        ];
-      };
-      elitedesk = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/elitedesk/configuration.nix
-          inputs.agenix.nixosModules.default
-          inputs.home-manager.nixosModules.default
-        ];
-      };
-      poweredge = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/poweredge/configuration.nix
-          inputs.home-manager.nixosModules.default
-        ];
-      };
-      razerblade = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/razerblade/configuration.nix
-          {_module.args = inputs;}
-        ];
-      };
-      desg0 = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/desg0/configuration.nix
-          inputs.agenix.nixosModules.default
-          {_module.args = inputs;}
-        ];
-      };
-      de-msa2 = nixpkgs-unstable.lib.nixosSystem {
-        system = "x86_64-linux";
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/de-msa2/configuration.nix
-          inputs.agenix.nixosModules.default
-          {_module.args = inputs;}
-        ];
-      };
-      de-n5 = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/de-n5/configuration.nix
-          {_module.args = inputs;}
-        ];
-      };
-      tensorbook = nixpkgs-unstable.lib.nixosSystem {
-        specialArgs = {inherit inputs;};
-        modules = [
-          ./hosts/tensorbook/configuration.nix
-          {_module.args = inputs;}
-        ];
-      };
+      meshify = mkHost "meshify" [
+        inputs.agenix.nixosModules.default
+        inputs.sops-nix.nixosModules.sops
+        hermes-agent.nixosModules.default
+        {_module.args = inputs;}
+      ];
+      superserver = mkHost "superserver" [
+        inputs.agenix.nixosModules.default
+      ];
+      elitedesk = mkHost "elitedesk" [
+        inputs.agenix.nixosModules.default
+      ];
+      poweredge = mkHost "poweredge" [];
+      razerblade = mkHost "razerblade" [
+        {_module.args = inputs;}
+      ];
+      desg0 = mkHost "desg0" [
+        inputs.agenix.nixosModules.default
+        {_module.args = inputs;}
+      ];
+      de-msa2 = mkHost "de-msa2" [
+        inputs.agenix.nixosModules.default
+        {_module.args = inputs;}
+      ];
+      de-n5 = mkHost "de-n5" [
+        {_module.args = inputs;}
+      ];
+      tensorbook = mkHost "tensorbook" [
+        {_module.args = inputs;}
+      ];
     };
     apps = {
       "${system}" = rec {
