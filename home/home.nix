@@ -124,7 +124,6 @@ in {
     dust # Check disk usage of directories.
     broot # Navigate directory trees.
     ouch # Obvious unified compression helper
-    rage # Modern encryption implemented in rust. Go reference is `age`
     # bend # A massively parallel, high-level programming language
     # futhark # A data-parallel functional programming language
     kew # music player for shell
