@@ -8,7 +8,7 @@ in {
   wayland.windowManager.hyprland = {
     settings = {
       # Play the animated video wallpaper with mpvpaper, looping and forked into the background.
-      "exec-once" = ''hyprctl setcursor 'Banana' 48 && ashell & mpvpaper HDMI-A-1 ${wallpaper} -o "loop" --fork'';
+      "exec-once" = ''hyprctl setcursor 'Banana' 48 && ashell & mpvpaper HDMI-A-1 ${wallpaper} -o "loop" --fork & mpvpaper DP-6 ${wallpaper} -o "loop" --fork'';
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         # London
