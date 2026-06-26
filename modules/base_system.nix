@@ -37,6 +37,7 @@ in {
     "iggy.k3s.lan"
     "greptimedb.k3s.lan"
     "clickhouse.k3s.lan"
+    "tikr.k3s.lan"
   ];
 
   nix.settings = {

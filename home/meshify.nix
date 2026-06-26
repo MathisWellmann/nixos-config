@@ -1,5 +1,6 @@
 _: let
   global_const = import ../global_constants.nix;
+  wallpaper = "~/wallpaper_vertical_animated_1080_1920_25fps_orange_blue.mp4";
 in {
   imports = [
     ./home_hyprland.nix
@@ -8,7 +9,7 @@ in {
 
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''ashell & hyprctl setcursor 'Banana' 48 && mpvpaper DP-1 ~/orange-train-at-sunset.3840x2160.mp4 -o "loop" --fork'';
+      "exec-once" = ''ashell & hyprctl setcursor 'Banana' 48 && mpvpaper DP-4 ${wallpaper} -o "loop" --fork'';
       env = [
         "LIBVA_DRIVER_NAME,nvidia"
         "XDG_SESSION_TYPE,wayland"
