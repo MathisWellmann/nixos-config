@@ -35,7 +35,6 @@ in {
       enableAgentica = true;
     })
     forgejo_runner
-    inputs.home-manager.nixosModules.default
   ];
 
   networking = {

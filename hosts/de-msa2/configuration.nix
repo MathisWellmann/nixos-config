@@ -30,7 +30,6 @@ in {
   imports = [
     # Include the results of the hardware scan.
     ./hardware-configuration.nix
-    inputs.home-manager.nixosModules.default
     ./../../modules/user_m.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
