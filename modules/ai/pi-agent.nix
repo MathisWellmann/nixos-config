@@ -8,7 +8,7 @@
   inputs,
   ...
 }: let
-  lib = pkgs.lib;
+  inherit (pkgs) lib;
 
   pi-models-config = (pkgs.formats.json {}).generate "pi-agent-models.json" {
     providers = {

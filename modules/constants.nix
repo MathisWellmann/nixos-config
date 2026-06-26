@@ -1,5 +1,3 @@
-{...}: let
-  ports = import ./ports.nix;
-in {
+_: {
   adguardhome_port = 5000;
 }

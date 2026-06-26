@@ -1,4 +1,4 @@
-{hostname ? "desg0"}: _: {
+_: _: {
   # Use remote builder machine
   # Make sure the `root` user can `ssh` into the host:
   # sudo mkdir -p /root/.ssh
