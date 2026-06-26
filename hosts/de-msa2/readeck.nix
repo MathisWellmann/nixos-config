@@ -1,7 +1,7 @@
 {
   dir,
   port ? 8080,
-}: {...}: {
+}: _: {
   virtualisation.oci-containers.containers = {
     "readeck" = {
       image = "codeberg.org/readeck/readeck:latest";

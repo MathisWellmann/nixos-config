@@ -1,4 +1,4 @@
-{...}: let
+_: let
   shared = import ../../modules/ports.nix;
 in {
   # Constants regarding the `poweredge` host.

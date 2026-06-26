@@ -4,6 +4,7 @@
   inputs = {
     nixpkgs-unstable.url = "github:nixos/nixpkgs/nixos-unstable";
     flake-utils.url = "github:numtide/flake-utils";
+    treefmt-nix.url = "github:numtide/treefmt-nix";
 
     home-manager = {
       url = "github:nix-community/home-manager";
@@ -74,6 +75,7 @@
           ]
           ++ extraModules;
       };
+    treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
   in {
     nixidyEnvs."${system}" = nixidy.lib.mkEnvs {
       inherit pkgs;
@@ -120,6 +122,7 @@
         {_module.args = inputs;}
       ];
     };
+    formatter.${system} = treefmtEval.config.build.wrapper;
     apps = {
       "${system}" = rec {
         default = list_apps;

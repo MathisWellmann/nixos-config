@@ -2,7 +2,7 @@
 let
   pkgs = import <nixpkgs> {};
 
-  tor_vm = {...}: {
+  tor_vm = _: {
     users = {
       users.root.initialPassword = "test";
       users.guest = {
