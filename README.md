@@ -39,7 +39,7 @@ nix flake metadata .
 Update a specific input (e.g. `nixpkgs`):
 
 ```sh
-nix flake lock --update-input nixpkgs
+nix flake lock --update-input nixpkgs-unstable
 ```
 
 Then rebuild the system, e.g. for the `meshify` host:

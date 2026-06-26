@@ -118,11 +118,6 @@ in {
       };
     };
     npm.enable = true;
-    # E.g `kani` requires this if installed with `cargo install --locked kani`
-    nix-ld = {
-      enable = true;
-      libraries = [];
-    };
   };
   virtualisation = {
     docker.enable = true;
