@@ -12,8 +12,8 @@
   # The home.packages option allows you to install Nix packages into your
   # environment.
   home.packages = with pkgs; [
-    inputs.kopuz.packages.${system}.default # Music GUI
-    inputs.stochos.packages.${system}.default # keyboard driven mouse control
+    inputs.kopuz.packages.${pkgs.stdenv.hostPlatform.system}.default # Music GUI
+    inputs.stochos.packages.${pkgs.stdenv.hostPlatform.system}.default # keyboard driven mouse control
     inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
     # Desktop
     firefox
