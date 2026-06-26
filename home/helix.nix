@@ -91,9 +91,10 @@
       ];
     };
     settings = {
-      theme = "gruber-darker"; # Dark
+      # theme = "gruber-darker"; # Dark
       # theme = "curzon"; # Dark
-      # theme = "onelight";
+      theme = "base16_terminal"; # Transparent
+      # theme = "onelight"; # Light
       keys.normal = {
         "f" = "file_picker";
         "l" = "move_visual_line_up";
