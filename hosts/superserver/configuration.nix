@@ -13,7 +13,6 @@
   };
 in {
   imports = [
-    inputs.home-manager.nixosModules.default
     ./hardware-configuration.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix

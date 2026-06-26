@@ -12,21 +12,9 @@
   hostname = "meshify";
   const = import ./constants.nix {};
   global_const = import ../../global_constants.nix;
-  # vllm = import ./../../modules/ai/vllm_cuda_container.nix {
-  #   port = const.vllm_port;
-  #   # model = "Qwen/Qwen3.5-27B";
-  #   # model = "google/gemma-4-31B-it";
-  #   model = "nvidia/NVIDIA-Nemotron-3-Super-120B-A12B-NVFP4";
-  # };
-  # tensorrt = import ./../../modules/ai/tensorrt_llm_container.nix {
-  #   port = const.tensorrt_port;
-  # };
 in {
   imports = [
     ./hardware-configuration.nix
-    inputs.home-manager.nixosModules.default
-    inputs.sops-nix.nixosModules.sops
-    # inputs.agentica-framework.nixosModules.agentica-chat
     ./../../modules/user_m.nix
     ./../../modules/bash_aliases.nix
     ./../../modules/german_locale.nix
@@ -35,9 +23,7 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mullvad_tailscale.nix
     (import ./../../modules/remote_builder.nix {})
-    # ./../../modules/mount_external_drives.nix
     ./../../modules/mount_remote_nfs_exports.nix
-    # ./../../modules/backup_home_to_remote.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
     ./../../modules/nix_binary_cache_client.nix
@@ -126,41 +112,14 @@ in {
 
   services = {
     blueman.enable = true;
-    # backup_home_to_remote = {
-    #   enable = true;
-    #   local_username = "${global_const.username}";
-    #   backup_host_addr = "poweredge";
-    #   backup_host_name = "poweredge";
-    #   backup_host_dir = "/SATA_SSD_POOL/backup_${hostname}";
-    # };
     mount_remote_nfs_exports = {
       enable = true;
       nfs_host_name = "de-msa2";
       nfs_host_addr = "de-msa2";
       nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
     };
-    # agentica-chat = {
-    #   enable = true;
-    #   sourceDir = "/home/m/symbolica/agentica-framework";
-    #   environmentFile = "/etc/secrets/agentica-framework";
-    #   frontendPort = 5173;
-    #   openFirewall = true;
-    # };
   };
   programs.steam.enable = true;
-
-  # fileSystems = {
-  #   "/mnt/elitedesk_series" = {
-  #     device = "${static_ips.elitedesk_ip}:/external_hdd/series";
-  #     fsType = "nfs";
-  #     options = ["rw" "rsize=131072" "wsize=131072"];
-  #   };
-  #   "/mnt/elitedesk_movies" = {
-  #     device = "${static_ips.elitedesk_ip}:/external_hdd/movies";
-  #     fsType = "nfs";
-  #     options = ["rw" "rsize=131072" "wsize=131072"];
-  #   };
-  # };
 
   sops = {
     defaultSopsFile = "./../../sops_secrets.yaml";
