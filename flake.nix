@@ -23,6 +23,7 @@
     stochos.url = "github:museslabs/stochos";
     nixidy.url = "github:arnarg/nixidy";
     dirge.url = "github:dirge-code/dirge";
+    maki.url = "github:tontinton/maki";
     # Helm charts packaged as nix derivations, used by nixidy applications.
     nixhelm = {
       url = "github:farcaller/nixhelm";
