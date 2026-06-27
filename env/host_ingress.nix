@@ -37,6 +37,11 @@
       host = "grafana.k3s.lan";
       port = 3001; # const.grafana_port
     }
+    {
+      name = "vikunja";
+      host = "vikunja.k3s.lan";
+      port = 3005; # const.vikunja_port
+    }
   ];
 
   mkApp = {

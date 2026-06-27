@@ -41,6 +41,7 @@ in {
     "ntfy.k3s.lan"
     "forgejo.k3s.lan"
     "grafana.k3s.lan"
+    "vikunja.k3s.lan"
   ];
 
   nix.settings = {

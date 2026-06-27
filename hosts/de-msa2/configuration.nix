@@ -181,8 +181,10 @@ in {
     vikunja = {
       enable = true;
       port = const.vikunja_port;
-      frontendScheme = "http";
-      frontendHostname = "0.0.0.0";
+      # Exposed off-cluster at https://vikunja.k3s.lan through the k3s traefik
+      # ingress (see env/host_ingress.nix); fleet-trusted `k3s-lan-ca` cert.
+      frontendScheme = "https";
+      frontendHostname = "vikunja.k3s.lan";
     };
     immich = {
       enable = true;
