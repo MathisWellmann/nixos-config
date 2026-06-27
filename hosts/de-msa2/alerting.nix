@@ -342,15 +342,19 @@ in {
     ntfy-sh = {
       enable = true;
       settings = {
-        # Reachable on the LAN/tailnet. Subscribe the ntfy app to BOTH topics:
-        #   prod: http://de-msa2:${toString const.ntfy_port}/cluster-alerts
-        #   dev:  http://de-msa2:${toString const.ntfy_port}/cluster-alerts-dev
-        # Topics are created implicitly on first publish -- no server-side
-        # config per topic. Mute/unsubscribe `cluster-alerts-dev` independently
-        # when you don't want dev noise; prod pages keep coming.
-        base-url = "http://de-msa2:${toString const.ntfy_port}";
+        # Exposed off-cluster at https://ntfy.k3s.lan through the k3s traefik
+        # ingress (see env/ntfy.nix); the ntfy app subscribes to BOTH topics:
+        #   prod: https://ntfy.k3s.lan/cluster-alerts
+        #   dev:  https://ntfy.k3s.lan/cluster-alerts-dev
+        # with the fleet-trusted `k3s-lan-ca` cert. Topics are created
+        # implicitly on first publish -- no server-side config per topic.
+        # Mute/unsubscribe `cluster-alerts-dev` independently when you don't
+        # want dev noise; prod pages keep coming.
+        # `behind-proxy = true` so ntfy trusts the X-Forwarded-* headers
+        # traefik sets.
+        base-url = "https://ntfy.k3s.lan";
         listen-http = ":${toString const.ntfy_port}";
-        behind-proxy = false;
+        behind-proxy = true;
       };
     };
   };
