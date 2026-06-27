@@ -291,17 +291,37 @@ in {
         ntfy = {
           baseurl = "http://127.0.0.1:${toString const.ntfy_port}";
           notification = {
-            # The topic is effectively a password (anyone who knows it can read
-            # the alerts). Fine on the tailnet/LAN; if you ever expose ntfy
-            # publicly, move this to `extraConfigFiles` (an agenix secret) and
-            # enable ntfy auth.
-            topic = "cluster-alerts";
-            # Firing -> phone-waking "high" priority; resolved -> quiet "default".
-            priority = ''status == "firing" ? "high" : "default"'';
+            # Split prod vs dev by the alert's `namespace` label (set by KSM /
+            # cadvisor on every pod alert). Dev (`tikr-dev`) alerts go to a
+            # SEPARATE ntfy topic so a dev hiccup never looks like a prod page
+            # and can be muted independently -- but they are still delivered, so
+            # any dev problem (which should block a rollout) is visible.
+            #
+            # gval scope is the alert's JSON map (see alertmanager-ntfy's
+            # `Alert.Map()`): `status` plus the `labels`/`annotations` maps.
+            # Guard the map lookup with `in` so node-level alerts that carry no
+            # `namespace` label (e.g. NodeLoadHigh) don't error -- they fall
+            # through to the prod topic, which is correct (a node problem is
+            # everyone's problem).
+            #
+            # Topics are de-facto passwords; both live on the tailnet/LAN. If you
+            # ever expose ntfy publicly, move these to `extraConfigFiles` (an
+            # agenix secret) + ntfy auth.
+            topic = ''("namespace" in labels && labels["namespace"] == "tikr-dev") ? "cluster-alerts-dev" : "cluster-alerts"'';
+            # Prod firing -> phone-waking "high"; dev firing -> quiet "default"
+            # (notify, don't page); anything resolved -> "min".
+            priority = ''
+              status == "resolved" ? "min"
+                : (("namespace" in labels && labels["namespace"] == "tikr-dev") ? "default" : "high")
+            '';
             tags = [
               {
                 tag = "rotating_light";
-                condition = ''status == "firing"'';
+                condition = ''status == "firing" && !("namespace" in labels && labels["namespace"] == "tikr-dev")'';
+              }
+              {
+                tag = "construction";
+                condition = ''status == "firing" && ("namespace" in labels && labels["namespace"] == "tikr-dev")'';
               }
               {
                 tag = "white_check_mark";
@@ -309,7 +329,8 @@ in {
               }
             ];
             templates = {
-              title = ''{{ if eq .Status "resolved" }}Resolved: {{ end }}{{ index .Annotations "summary" }}'';
+              # Prefix dev alerts so they're unmistakable in the notification list.
+              title = ''{{ if eq .Status "resolved" }}Resolved: {{ end }}{{ if eq (index .Labels "namespace") "tikr-dev" }}[dev] {{ end }}{{ index .Annotations "summary" }}'';
               description = ''{{ index .Annotations "description" }}'';
             };
           };
@@ -321,8 +342,12 @@ in {
     ntfy-sh = {
       enable = true;
       settings = {
-        # Reachable on the LAN/tailnet; the ntfy app subscribes to
-        # `http://de-msa2:${toString const.ntfy_port}/cluster-alerts`.
+        # Reachable on the LAN/tailnet. Subscribe the ntfy app to BOTH topics:
+        #   prod: http://de-msa2:${toString const.ntfy_port}/cluster-alerts
+        #   dev:  http://de-msa2:${toString const.ntfy_port}/cluster-alerts-dev
+        # Topics are created implicitly on first publish -- no server-side
+        # config per topic. Mute/unsubscribe `cluster-alerts-dev` independently
+        # when you don't want dev noise; prod pages keep coming.
         base-url = "http://de-msa2:${toString const.ntfy_port}";
         listen-http = ":${toString const.ntfy_port}";
         behind-proxy = false;
