@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+  name: vikunja
+  namespace: vikunja
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: vikunja.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: vikunja
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - vikunja.k3s.lan
+      secretName: vikunja-tls

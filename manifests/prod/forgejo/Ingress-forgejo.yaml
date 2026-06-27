@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+  name: forgejo
+  namespace: forgejo
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: forgejo.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: forgejo
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - forgejo.k3s.lan
+      secretName: forgejo-tls
