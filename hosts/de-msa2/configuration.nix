@@ -143,9 +143,13 @@ in {
       settings = {
         security.secret_key = "/etc/secrets/grafana";
         server = {
-          # Listening Address
+          # Exposed off-cluster at https://grafana.k3s.lan through the k3s
+          # traefik ingress (see env/host_ingress.nix); fleet-trusted
+          # `k3s-lan-ca` cert. `root_url` makes the UI emit correct links.
           http_addr = "0.0.0.0";
           http_port = const.grafana_port;
+          root_url = "https://grafana.k3s.lan/";
+          serve_from_sub_path = false;
         };
       };
     };

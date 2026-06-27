@@ -2,7 +2,7 @@
   imports = [
     ./argocd.nix
     ./cert_manager.nix
-    ./ntfy.nix
+    ./host_ingress.nix
   ];
 
   # Where should the generated manifests be stored?
