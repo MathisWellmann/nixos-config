@@ -50,6 +50,7 @@ in {
     ./nexus_dbs.nix
     ./forgejo.nix
     ./prometheus.nix
+    ./alerting.nix
     ./zfs_pool.nix
     ./harmonia.nix
     ./homepage.nix
