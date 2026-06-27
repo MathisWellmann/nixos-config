@@ -95,6 +95,14 @@
     mongodb-compass
   ];
 
+  # Notification daemon: serves the org.freedesktop.Notifications D-Bus name.
+  # Without one, ghostty (and any libnotify caller) errors with
+  # `GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown`.
+  services.mako = {
+    enable = true;
+    defaultTimeout = 5000; # 5s, quiet enough for terminal bells / exit notices
+  };
+
   wayland.windowManager.hyprland = {
     enable = true;
     # xwayland.enable = true;
