@@ -32,6 +32,7 @@ _: {
     ghostty = {
       enable = true;
       settings = {
+        term = "xterm-256color";
         font-size = 16;
         mouse-scroll-multiplier = "1.0";
         background-opacity = 0.8;

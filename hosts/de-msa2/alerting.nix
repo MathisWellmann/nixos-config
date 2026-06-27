@@ -15,9 +15,10 @@
 # Motivating incident (2026-06-27): in-cluster greptimedb had no CPU limit on
 # the 192-core desg0 node, sized its worker pools to all cores, pegged ~33 of
 # them (load avg 177) and starved its own `/health` handler into liveness-probe
-# timeouts. The `NodeLoadHigh` + `ContainerCPUNearLimit` rules below fire on
-# exactly that signature from metrics already scraped today; the higher-signal
-# pod-restart / probe-failure rules need kube-state-metrics (see PHASE 2 TODO).
+# timeouts. The `NodeLoadHigh` + `ContainerCPUNearLimit` rules fire on that
+# signature from node/cadvisor metrics; the `PodRestartLooping` rule (from
+# kube-state-metrics, see `kubernetes-pods` group) catches it once the failing
+# probe restarts the pod.
 _: let
   const = import ./constants.nix {};
 
@@ -25,9 +26,9 @@ _: let
   alertmanagerUrl = "http://127.0.0.1:${toString const.alertmanager_port}";
 
   # ── Alert rules ───────────────────────────────────────────────────────────
-  # PHASE 1 (live today): everything below works from metrics victoriametrics
-  # already scrapes -- node_exporter (`node_*`) and cadvisor
-  # (`container_cpu_usage_seconds_total`). No new exporters required.
+  # Sources: node_exporter (`node_*`), cadvisor (`container_*`), and
+  # kube-state-metrics (`kube_*`, the `kubernetes-pods` group) -- all scraped by
+  # the victoriametrics jobs in `prometheus.nix`.
   ruleGroups = [
     {
       name = "node-health";
@@ -157,36 +158,84 @@ _: let
       ];
     }
 
-    # ── PHASE 2 (TODO: needs kube-state-metrics) ──────────────────────────────
-    # The highest-signal alerts for the greptimedb incident class -- pod restart
-    # loops, liveness/readiness probe failures, OOMKills, containers stuck not-
-    # ready -- all derive from kube-state-metrics (`kube_pod_*`), which is NOT
-    # currently deployed/scraped (verified 2026-06-27: VM has no `kube_*`
-    # series). To enable:
-    #   1. Deploy kube-state-metrics in the `nexus` repo (a Deployment + Service
-    #      in e.g. `env/tikr` or a new `monitoring` namespace), annotated with
-    #      `prometheus.io/scrape: "true"` + `prometheus.io/port` so the existing
-    #      pod-discovery scrape config in `prometheus.nix` picks it up.
-    #   2. Uncomment the rule group below.
-    #
-    # {
-    #   name = "kubernetes-pods";
-    #   interval = "30s";
-    #   rules = [
-    #     { alert = "PodRestartLooping";
-    #       expr = ''increase(kube_pod_container_status_restarts_total[15m]) > 2'';
-    #       for = "5m"; labels.severity = "critical";
-    #       annotations.summary = ''{{ $labels.namespace }}/{{ $labels.pod }} restarting (likely probe/OOM loop)''; }
-    #     { alert = "PodNotReady";
-    #       expr = ''kube_pod_status_ready{condition="true"} == 0'';
-    #       for = "10m"; labels.severity = "warning";
-    #       annotations.summary = ''{{ $labels.namespace }}/{{ $labels.pod }} not Ready for 10m''; }
-    #     { alert = "ContainerOOMKilled";
-    #       expr = ''increase(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[15m]) > 0'';
-    #       for = "0m"; labels.severity = "critical";
-    #       annotations.summary = ''{{ $labels.namespace }}/{{ $labels.pod }} OOMKilled''; }
-    #   ];
-    # }
+    # ── Kubernetes object-state alerts (from kube-state-metrics) ──────────────
+    # These are the highest-signal alerts for the greptimedb incident class --
+    # pod restart loops, not-ready pods, OOMKills, and pods stuck pending. They
+    # derive from kube-state-metrics (`kube_*`), deployed in the `nexus` repo
+    # (`env/tikr/kube-state-metrics.nix`, prod `tikr` namespace) and scraped by
+    # the existing `tikr-k8s-pods` job. The 2026-06-27 greptimedb incident would
+    # have surfaced here as `PodRestartLooping` once the failing liveness probe
+    # restarted the pod.
+    {
+      name = "kubernetes-pods";
+      interval = "30s";
+      rules = [
+        {
+          alert = "PodRestartLooping";
+          # More than 2 container restarts in 15m -- a probe-kill or OOM loop.
+          expr = ''increase(kube_pod_container_status_restarts_total[15m]) > 2'';
+          for = "5m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.namespace }}/{{ $labels.pod }} restart looping'';
+            description = ''Container {{ $labels.container }} restarted {{ printf "%.0f" $value }}x in 15m -- likely a failing liveness probe or OOM (cf. the 2026-06-27 greptimedb liveness-timeout incident).'';
+          };
+        }
+        {
+          alert = "ContainerOOMKilled";
+          # Fire immediately on any OOMKill -- it is always worth knowing.
+          expr = ''increase(kube_pod_container_status_last_terminated_reason{reason="OOMKilled"}[15m]) > 0'';
+          for = "0m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.namespace }}/{{ $labels.pod }} OOMKilled'';
+            description = ''Container {{ $labels.container }} was OOMKilled -- it hit its memory limit. Raise the limit or fix the leak (cf. the node-wide OOM on 2026-06-12).'';
+          };
+        }
+        {
+          alert = "PodNotReady";
+          # A pod that exists but is not Ready for 15m (excludes terminal
+          # Succeeded/Failed pods so completed jobs don't alert). Catches a
+          # workload wedged un-Ready without necessarily restart-looping -- e.g.
+          # a readiness probe failing because a dependency is down.
+          expr = ''
+            sum by (namespace, pod) (kube_pod_status_ready{condition="true"}) == 0
+            and on (namespace, pod)
+            sum by (namespace, pod) (kube_pod_status_phase{phase=~"Pending|Running|Unknown"}) > 0
+          '';
+          for = "15m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''{{ $labels.namespace }}/{{ $labels.pod }} not Ready for 15m'';
+            description = ''The pod is not passing its readiness check. Check the pod events and logs.'';
+          };
+        }
+        {
+          alert = "PodStuckPending";
+          expr = ''sum by (namespace, pod) (kube_pod_status_phase{phase="Pending"}) > 0'';
+          for = "15m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''{{ $labels.namespace }}/{{ $labels.pod }} stuck Pending for 15m'';
+            description = ''The pod cannot schedule (no node fits its requests/affinity, or it is waiting on a volume).'';
+          };
+        }
+        {
+          alert = "DeploymentReplicasMismatch";
+          # Desired != available for 15m -- a rollout that never converges.
+          expr = ''
+            kube_deployment_spec_replicas
+              != kube_deployment_status_replicas_available
+          '';
+          for = "15m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''{{ $labels.namespace }}/{{ $labels.deployment }} has unavailable replicas'';
+            description = ''Available replicas have not matched the desired count for 15m -- a stuck or failing rollout.'';
+          };
+        }
+      ];
+    }
   ];
 in {
   services = {
