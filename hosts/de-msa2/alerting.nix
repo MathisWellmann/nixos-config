@@ -78,7 +78,7 @@ _: let
           labels.severity = "warning";
           annotations = {
             summary = ''Disk {{ $labels.mountpoint }} on {{ $labels.instance }} > 90% full'';
-            description = ''{{ printf "%.0f" (mul $value 100) }}% used. Free space or expand the volume.'';
+            description = "Disk usage is above 90%. Free space or expand the volume.";
           };
         }
         {
