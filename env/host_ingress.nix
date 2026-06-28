@@ -18,7 +18,7 @@
   # tailscale IP because they NAT through the node.
   hostIp = "100.83.142.17";
 
-  # Each entry renders a Namespace + selector-less Service + Endpoints +
+  # Each entry renders a Namespace + selector-less Service + EndpointSlice +
   # TLS Ingress. `name` is the app/k8s name, `host` the `*.k3s.lan` FQDN,
   # `port` the host-local HTTP port the service listens on.
   services = [
@@ -53,7 +53,11 @@
     namespace = name;
     createNamespace = true;
     # Raw YAML: selector-less Service (does NOT load-balance to any pod)
-    # backed by manual Endpoints at the host IP, plus the TLS Ingress.
+    # backed by a manual EndpointSlice at the host IP, plus the TLS Ingress.
+    # NOTE: must be an EndpointSlice (discovery.k8s.io/v1), not the legacy
+    # `v1 Endpoints` -- the latter is deprecated since k8s 1.33 and is no
+    # longer reconciled/applied on this cluster (k3s 1.35), which left the
+    # Services with zero backends and traefik returning 503.
     yamls = [
       ''
         apiVersion: v1
@@ -69,17 +73,23 @@
               targetPort: ${toString port}
       ''
       ''
-        apiVersion: v1
-        kind: Endpoints
+        apiVersion: discovery.k8s.io/v1
+        kind: EndpointSlice
         metadata:
           name: ${name}
           namespace: ${name}
-        subsets:
+          labels:
+            kubernetes.io/service-name: ${name}
+        addressType: IPv4
+        endpoints:
           - addresses:
-              - ip: ${hostIp}
-            ports:
-              - name: http
-                port: ${toString port}
+              - ${hostIp}
+            conditions:
+              ready: true
+        ports:
+          - name: http
+            port: ${toString port}
+            protocol: TCP
       ''
       ''
         apiVersion: networking.k8s.io/v1
