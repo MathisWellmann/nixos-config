@@ -33,19 +33,17 @@ in {
         ipc = "on";
         splash = true;
         splash_offset = 2;
-        preload = [
-          # "/home/magewe/acapulco_wallpaper.jxl"
-          "/home/${global_const.username}/acapulco_wallpaper_0.jxl"
-          "/home/${global_const.username}/acapulco_wallpaper_1.jxl"
-          "/home/${global_const.username}/acapulco_wallpaper_2.jxl"
-        ];
         # Convert single image into slices using `imagemagick`:
         # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
+        # NOTE: hyprpaper >=0.8 uses `wallpaper { }` blocks; the old
+        # `preload = ...` + `wallpaper = "monitor,path"` flat syntax is ignored.
+        # NOTE: DP-1 is not a real monitor on this host (monitors: DP-6/DP-5/DP-4,
+        # and DP-4 is driven by mpvpaper); set `monitor` to DP-5/DP-6 to display it.
         wallpaper = [
-          # "HDMI-A-5,/home/${global_const.username}/acapulco_wallpaper_0.jxl"
-          # "DP-5,/home/${global_const.username}/acapulco_wallpaper_1.jxl"
-          "DP-1,/home/${global_const.username}/acapulco_wallpaper_2.jxl"
-          # "HDMI-A-5,/home/${global_const.username}/acapulco_wallpaper.jxl"
+          {
+            monitor = "DP-1";
+            path = "/home/${global_const.username}/acapulco_wallpaper_2.jxl";
+          }
         ];
       };
     };
