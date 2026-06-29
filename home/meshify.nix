@@ -32,7 +32,7 @@ in {
       settings = {
         ipc = "on";
         splash = true;
-        splash_offset = 2.0;
+        splash_offset = 2;
         preload = [
           # "/home/magewe/acapulco_wallpaper.jxl"
           "/home/${global_const.username}/acapulco_wallpaper_0.jxl"

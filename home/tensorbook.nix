@@ -1,14 +1,10 @@
-{pkgs, ...}: let
-  # Animated wallpaper baked into the Nix store so the path is reproducible.
-  wallpaper = ../wallpapers/wallpaper_vertical_animated-uhd_2160_3840_60fps_water_blue.mp4;
-in {
+{pkgs, ...}: {
   imports = [
     ./home_hyprland.nix
   ];
   wayland.windowManager.hyprland = {
     settings = {
-      # Play the animated video wallpaper with mpvpaper, looping and forked into the background.
-      "exec-once" = ''hyprctl setcursor 'Banana' 48 && ashell & mpvpaper HDMI-A-1 ${wallpaper} -o "loop" --fork & mpvpaper DP-6 ${wallpaper} -o "loop" --fork'';
+      "exec-once" = ''hyprctl setcursor 'Banana' 48 && ashell'';
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         # London
@@ -17,6 +13,30 @@ in {
         "eDP-1, 1920x1200@60, 4320x2760, 1"
       ];
       cursor.no_hardware_cursors = true;
+    };
+  };
+  services = {
+    hyprpaper = {
+      enable = true;
+      settings = {
+        ipc = "on";
+        splash = true;
+        splash_offset = 2;
+        # Convert single image into slices using `imagemagick`:
+        # convert -extract 2160x3840+X_OFFSET+0 SOURCE TARGET
+        # NOTE: hyprpaper >=0.8 uses `wallpaper { }` blocks; the old
+        # `preload = ...` + `wallpaper = "monitor,path"` flat syntax is ignored.
+        wallpaper = [
+          {
+            monitor = "DP-6";
+            path = "/home/m/acapulco_wallpaper_0.jxl";
+          }
+          {
+            monitor = "HDMI-A-1";
+            path = "/home/m/acapulco_wallpaper_1.jxl";
+          }
+        ];
+      };
     };
   };
   home.packages = with pkgs; [
