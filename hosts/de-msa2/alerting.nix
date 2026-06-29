@@ -234,6 +234,223 @@ _: let
             description = ''Available replicas have not matched the desired count for 15m -- a stuck or failing rollout.'';
           };
         }
+        {
+          alert = "K3sNodeNotReady";
+          # A cluster node that is not Ready for 10m. The pod alerts above only
+          # catch workloads; this catches a whole node dropping out (kubelet
+          # down, network partition, host crash) -- which would otherwise only
+          # surface indirectly as the pods on it going un-Ready/Pending.
+          expr = ''
+            kube_node_status_condition{condition="Ready",status="true"} == 0
+          '';
+          for = "10m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''k3s node {{ $labels.node }} is NotReady'';
+            description = ''The node has not reported Ready for 10m -- kubelet down, host crashed, or a network partition. Pods on it will be evicted/rescheduled.'';
+          };
+        }
+      ];
+    }
+
+    # ── Storage health (ZFS pools + filesystem/inode capacity + PVCs) ─────────
+    # The existing `NodeDiskFillingUp` (node-health) catches a filesystem past
+    # 90% used; these cover the blind spots around it: a degraded ZFS pool
+    # (silent data-loss risk), inode exhaustion (writes fail while `df` still
+    # shows free bytes), a *predicted* fill before the 90% cliff, and the
+    # in-cluster PVCs (iggy/greptimedb data volumes).
+    {
+      name = "storage-health";
+      interval = "30s";
+      rules = [
+        {
+          alert = "ZpoolDegraded";
+          # `node_zfs_zpool_state{state=...}` is 1 for the pool's CURRENT state.
+          # Any active state other than `online` (degraded/faulted/offline/
+          # removed/suspended/unavail) means a vdev/disk dropped -- the silent
+          # failure the weekly autoScrub + de-n5 replication exist to survive.
+          # Covers both this host's `nvme_pool` and de-n5's `hdd_pool` (the
+          # off-site replica), since node-exporter on both is scraped.
+          expr = ''node_zfs_zpool_state{state!="online"} == 1'';
+          for = "1m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''ZFS pool {{ $labels.zpool }} is {{ $labels.state }} on {{ $labels.instance }}'';
+            description = ''The pool left the `online` state -- a disk likely faulted. Run `zpool status -v {{ $labels.zpool }}`, replace/resilver the device, and check the de-n5 replica.'';
+          };
+        }
+        {
+          alert = "NodeInodeFillingUp";
+          # Inode exhaustion fails writes (ENOSPC) while `df` still shows free
+          # bytes, so the byte-based NodeDiskFillingUp misses it. Fires under
+          # 10% free inodes on a real (non-virtual) filesystem.
+          expr = ''
+            (node_filesystem_files_free{fstype!~"tmpfs|ramfs|overlay"}
+               / node_filesystem_files{fstype!~"tmpfs|ramfs|overlay"})
+            < 0.10
+            and node_filesystem_files{fstype!~"tmpfs|ramfs|overlay"} > 0
+          '';
+          for = "15m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''Inodes < 10% free on {{ $labels.mountpoint }} ({{ $labels.instance }})'';
+            description = ''The filesystem is running out of inodes (lots of small files); writes will fail with ENOSPC even though free space remains. Delete files or recreate the FS with more inodes.'';
+          };
+        }
+        {
+          alert = "NodeDiskFillPredicted";
+          # Linear-extrapolate the last 6h of free space: if it trends to empty
+          # within 24h, warn now -- before the 90%-used NodeDiskFillingUp cliff,
+          # giving time to act on a steady leak rather than paging at the edge.
+          expr = ''
+            predict_linear(node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs|overlay"}[6h], 24*3600) < 0
+            and (node_filesystem_avail_bytes{fstype!~"tmpfs|ramfs|overlay"}
+                   / node_filesystem_size_bytes{fstype!~"tmpfs|ramfs|overlay"}) < 0.30
+          '';
+          for = "1h";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''Disk {{ $labels.mountpoint }} on {{ $labels.instance }} predicted full within 24h'';
+            description = ''At the current fill rate this filesystem runs out of space in under 24h. Free space or expand the volume before it hits the hard limit.'';
+          };
+        }
+        {
+          alert = "PersistentVolumeFillingUp";
+          # The kubelet exports per-PVC usage (already scraped for cadvisor).
+          # Catches the iggy/greptimedb data volumes filling before they wedge
+          # the workload. Under 10% free.
+          expr = ''
+            (kubelet_volume_stats_available_bytes
+               / kubelet_volume_stats_capacity_bytes)
+            < 0.10
+          '';
+          for = "15m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} < 10% free'';
+            description = ''The persistent volume is nearly full. Expand the PVC or free data before writes fail and the workload wedges.'';
+          };
+        }
+        {
+          alert = "PersistentVolumeInodesFillingUp";
+          expr = ''
+            (kubelet_volume_stats_inodes_free
+               / kubelet_volume_stats_inodes)
+            < 0.10
+          '';
+          for = "15m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''PVC {{ $labels.namespace }}/{{ $labels.persistentvolumeclaim }} < 10% inodes free'';
+            description = ''The persistent volume is running out of inodes; writes will fail with ENOSPC even with free bytes remaining.'';
+          };
+        }
+      ];
+    }
+
+    # ── Host integrity (systemd units, reboots, clock, NIC, host OOM) ─────────
+    {
+      name = "host-integrity";
+      interval = "30s";
+      rules = [
+        {
+          alert = "SystemdUnitFailed";
+          # Requires the `systemd` collector (enabled in
+          # modules/prometheus_exporter.nix). Catches any unit in the `failed`
+          # state -- e.g. nfs-server, the zfs autoreplication timer, the NUT
+          # services -- that would otherwise go unnoticed until something breaks.
+          expr = ''node_systemd_unit_state{state="failed"} == 1'';
+          for = "5m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''systemd unit {{ $labels.name }} failed on {{ $labels.instance }}'';
+            description = ''The unit is in the `failed` state. Inspect with `systemctl status {{ $labels.name }}` / `journalctl -u {{ $labels.name }}`.'';
+          };
+        }
+        {
+          alert = "HostUnexpectedReboot";
+          # The host booted within the last 10m. A planned `nixos-rebuild switch`
+          # does NOT reboot, so this firing means a crash, panic, or power event
+          # (the UPS exists to prevent the last one). `for: 0m` -- report it as
+          # soon as the freshly-booted node is scraped.
+          expr = ''(node_time_seconds - node_boot_time_seconds) < 600'';
+          for = "0m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''{{ $labels.instance }} rebooted recently (up {{ printf "%.0f" $value }}s)'';
+            description = ''The host booted in the last 10 minutes. If you did not plan this, it crashed or lost power -- check `journalctl -b -1 -e` for the cause.'';
+          };
+        }
+        {
+          alert = "NodeClockSkew";
+          # NTP offset over 0.5s. Clock skew breaks TLS handshakes, k3s leader
+          # election, and corrupts the timestamp ordering of the tikr market
+          # data this fleet exists to capture.
+          expr = ''abs(node_timex_offset_seconds) > 0.5'';
+          for = "10m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''Clock skew on {{ $labels.instance }} ({{ printf "%.2f" $value }}s offset)'';
+            description = ''The system clock is more than 0.5s off NTP for 10m. Check `timedatectl` / the NTP service -- skew breaks TLS, k3s, and market-data timestamps.'';
+          };
+        }
+        {
+          alert = "NodeNetworkReceiveErrors";
+          # Sustained RX errors point at a flaky NIC, cable, or driver.
+          expr = ''rate(node_network_receive_errs_total{device!~"lo|veth.*|cni.*|flannel.*|cali.*"}[5m]) > 1'';
+          for = "10m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''Network RX errors on {{ $labels.instance }} ({{ $labels.device }})'';
+            description = ''The interface is logging receive errors -- likely a failing NIC, cable, or driver issue.'';
+          };
+        }
+        {
+          alert = "NodeOOMKill";
+          # Host-level OOM kills (from /proc/vmstat). Distinct from the k8s
+          # `ContainerOOMKilled` alert, which only catches cgroup-limited
+          # containers -- this is the node-wide signature of the 2026-06-12 OOM.
+          expr = ''increase(node_vmstat_oom_kill[15m]) > 0'';
+          for = "0m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''OOM kill on {{ $labels.instance }}'';
+            description = ''The host kernel OOM-killed a process in the last 15m -- memory pressure at the node level (cf. the 2026-06-12 node-wide OOM). Check `dmesg`/`journalctl -k` for the victim.'';
+          };
+        }
+      ];
+    }
+
+    # ── Core tikr datastores: named, higher-severity down alerts ──────────────
+    # `ScrapeTargetDown` (monitoring-meta) already catches any target's `up==0`
+    # as a warning, but iggy-server and GreptimeDB are the heart of the trading
+    # pipeline, so they get dedicated `critical` alerts that page rather than
+    # warn. Scoped to the prod (`tikr`) namespace so a dev outage stays a warning
+    # via ScrapeTargetDown (and routes to the dev ntfy topic) rather than paging.
+    {
+      name = "tikr-datastores";
+      interval = "30s";
+      rules = [
+        {
+          alert = "GreptimeDBDown";
+          expr = ''up{job="greptimedb-k8s",namespace="tikr"} == 0'';
+          for = "2m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''GreptimeDB (prod) is down'';
+            description = ''The in-cluster GreptimeDB has been unscrapeable for 2m -- the sinks cannot write and the dashboard cannot read. Check the `greptimedb` pod in the `tikr` namespace.'';
+          };
+        }
+        {
+          alert = "IggyServerDown";
+          expr = ''up{job="iggy-server-k8s",namespace="tikr"} == 0'';
+          for = "2m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''iggy-server (prod) is down'';
+            description = ''The in-cluster iggy broker has been unscrapeable for 2m -- producers cannot publish and sinks cannot consume. Check the `iggy-server` pod in the `tikr` namespace.'';
+          };
+        }
       ];
     }
   ];
