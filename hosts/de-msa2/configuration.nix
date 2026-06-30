@@ -49,6 +49,7 @@ in {
     # ./freshrss.nix
     ./nexus_dbs.nix
     ./forgejo.nix
+    ./bencher.nix
     ./prometheus.nix
     ./alerting.nix
     ./zfs_pool.nix
@@ -133,8 +134,6 @@ in {
   networking.firewall.allowedTCPPorts = [
     const.iperf_port
     const.habit_trove_port
-    const.bencher_ui_port
-    const.bencher_api_port
   ];
 
   services = {
@@ -207,30 +206,6 @@ in {
       environmentFiles = [
         /etc/secrets/habit_trove
       ];
-    };
-    "bencher-api" = {
-      image = "ghcr.io/bencherdev/bencher-api:latest";
-      ports = [
-        "${toString const.bencher_api_port}:3000"
-      ];
-      volumes = [
-        "/nvme_pool/bencher/config:/etc/bencher" # Config dir
-        "/nvme_pool/bencher/data:/var/lib/bencher/data" # Data dir
-      ];
-    };
-    "bencher-ui" = {
-      image = "ghcr.io/bencherdev/bencher-console:latest";
-      ports = [
-        "${toString const.bencher_ui_port}:3000"
-      ];
-      environment = {
-        # Browser-facing API URL: fleet browsers load the console at
-        # https://bencher.k3s.lan and must reach the API over a routable
-        # HTTPS host, not the host-local 127.0.0.1 port. Exposed via the
-        # cluster traefik ingress (see env/host_ingress.nix).
-        BENCHER_API_URL = "https://bencher-api.k3s.lan";
-        INTERNAL_API_URL = "http://host.podman.internal:${toString const.bencher_api_port}";
-      };
     };
   };
 }
