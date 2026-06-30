@@ -36,7 +36,8 @@ in {
     })
     (import ./../../modules/ai/llama-cpp.nix {
       models = [
-        "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M" # Very fast (150TPS) and good.
+        "deepreinforce-ai/Ornith-1.0-35B-GGUF:Q8_0"
+        # "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M" # Very fast (150TPS) and good.
         # "unsloth/Qwen3.6-27B-GGUF:BF16" # Only 25TPS
         # "unsloth/Qwen3.6-27B-GGUF:UD-Q4_K_XL" # Gets 50TPS.
       ];
