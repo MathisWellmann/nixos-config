@@ -1,0 +1,17 @@
+addressType: IPv4
+apiVersion: discovery.k8s.io/v1
+endpoints:
+  - addresses:
+      - 100.83.142.17
+    conditions:
+      ready: true
+kind: EndpointSlice
+metadata:
+  labels:
+    kubernetes.io/service-name: bencher
+  name: bencher
+  namespace: bencher
+ports:
+  - name: http
+    port: 3008
+    protocol: TCP

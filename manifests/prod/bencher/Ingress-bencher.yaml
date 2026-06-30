@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+  name: bencher
+  namespace: bencher
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: bencher.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: bencher
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - bencher.k3s.lan
+      secretName: bencher-tls

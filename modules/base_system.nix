@@ -42,6 +42,8 @@ in {
     "forgejo.k3s.lan"
     "grafana.k3s.lan"
     "vikunja.k3s.lan"
+    "bencher.k3s.lan"
+    "bencher-api.k3s.lan"
   ];
 
   nix.settings = {

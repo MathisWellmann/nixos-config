@@ -1,0 +1,18 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: bencher
+  namespace: argocd
+spec:
+  destination:
+    namespace: bencher
+    server: https://kubernetes.default.svc
+  project: default
+  source:
+    path: ./manifests/prod/bencher
+    repoURL: https://github.com/MathisWellmann/nixos-config.git
+    targetRevision: main
+  syncPolicy:
+    automated:
+      prune: true
+      selfHeal: true

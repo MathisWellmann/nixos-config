@@ -42,6 +42,16 @@
       host = "vikunja.k3s.lan";
       port = 3005; # const.vikunja_port
     }
+    {
+      name = "bencher";
+      host = "bencher.k3s.lan";
+      port = 3008; # const.bencher_ui_port
+    }
+    {
+      name = "bencher-api";
+      host = "bencher-api.k3s.lan";
+      port = 61016; # const.bencher_api_port
+    }
   ];
 
   mkApp = {

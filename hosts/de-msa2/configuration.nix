@@ -224,7 +224,11 @@ in {
         "${toString const.bencher_ui_port}:3000"
       ];
       environment = {
-        BENCHER_API_URL = "http://127.0.0.1:${toString const.bencher_api_port}";
+        # Browser-facing API URL: fleet browsers load the console at
+        # https://bencher.k3s.lan and must reach the API over a routable
+        # HTTPS host, not the host-local 127.0.0.1 port. Exposed via the
+        # cluster traefik ingress (see env/host_ingress.nix).
+        BENCHER_API_URL = "https://bencher-api.k3s.lan";
         INTERNAL_API_URL = "http://host.podman.internal:${toString const.bencher_api_port}";
       };
     };
