@@ -283,17 +283,17 @@ _: let
           alert = "NodeInodeFillingUp";
           # Inode exhaustion fails writes (ENOSPC) while `df` still shows free
           # bytes, so the byte-based NodeDiskFillingUp misses it. Fires under
-          # 10% free inodes on a real (non-virtual) filesystem.
+          # 20% free inodes on a real (non-virtual) filesystem.
           expr = ''
             (node_filesystem_files_free{fstype!~"tmpfs|ramfs|overlay"}
                / node_filesystem_files{fstype!~"tmpfs|ramfs|overlay"})
-            < 0.10
+            < 0.20
             and node_filesystem_files{fstype!~"tmpfs|ramfs|overlay"} > 0
           '';
           for = "15m";
           labels.severity = "warning";
           annotations = {
-            summary = ''Inodes < 10% free on {{ $labels.mountpoint }} ({{ $labels.instance }})'';
+            summary = ''Inodes < 20% free on {{ $labels.mountpoint }} ({{ $labels.instance }})'';
             description = ''The filesystem is running out of inodes (lots of small files); writes will fail with ENOSPC even though free space remains. Delete files or recreate the FS with more inodes.'';
           };
         }
