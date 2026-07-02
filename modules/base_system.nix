@@ -33,6 +33,7 @@ in {
   # Hostnames for services behind the k3s traefik ingress, reachable over
   # tailscale. Any cluster node works; this is de-msa2's tailscale IP.
   networking.hosts."100.83.142.17" = [
+    "home.k3s.lan"
     "argocd.k3s.lan"
     "iggy.k3s.lan"
     "greptimedb.k3s.lan"

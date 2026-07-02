@@ -54,7 +54,6 @@ in {
     ./alerting.nix
     ./zfs_pool.nix
     ./harmonia.nix
-    ./homepage.nix
     # ./ups.nix
     searx
     # (import ./../../modules/monero_miner.nix {max-threads-hint = 25;})

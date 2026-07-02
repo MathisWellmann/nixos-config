@@ -3,6 +3,11 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: Push notifications
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Utilities
+    gethomepage.dev/icon: ntfy.svg
+    gethomepage.dev/name: ntfy
   name: ntfy
   namespace: ntfy
 spec:

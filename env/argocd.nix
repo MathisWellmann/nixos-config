@@ -21,7 +21,15 @@
         server.ingress = {
           enabled = true;
           ingressClassName = "traefik";
-          annotations."cert-manager.io/cluster-issuer" = "k3s-lan-ca";
+          annotations = {
+            "cert-manager.io/cluster-issuer" = "k3s-lan-ca";
+            # Discovered by the homepage dashboard (env/homepage.nix).
+            "gethomepage.dev/enabled" = "true";
+            "gethomepage.dev/name" = "ArgoCD";
+            "gethomepage.dev/group" = "DevOps";
+            "gethomepage.dev/icon" = "argo-cd.svg";
+            "gethomepage.dev/description" = "GitOps continuous delivery";
+          };
           tls = true;
         };
         # Traefik terminates TLS; argocd-server itself speaks plain HTTP.

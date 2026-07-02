@@ -3,6 +3,7 @@
     ./argocd.nix
     ./cert_manager.nix
     ./host_ingress.nix
+    ./homepage.nix
   ];
 
   # Where should the generated manifests be stored?

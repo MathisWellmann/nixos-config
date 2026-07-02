@@ -3,6 +3,11 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: GitOps continuous delivery
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: argo-cd.svg
+    gethomepage.dev/name: ArgoCD
   labels:
     app.kubernetes.io/component: server
     app.kubernetes.io/instance: argocd

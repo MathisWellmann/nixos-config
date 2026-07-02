@@ -3,7 +3,6 @@ _: let
 in {
   nfs_port = shared.nfs;
   forgejo_port = 2999;
-  homepage_port = 3000;
   grafana_port = 3001;
   freshrss_port = 3002;
   uptime_kuma_port = 3003;

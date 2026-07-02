@@ -3,6 +3,11 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: Tasks & projects
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: Productivity
+    gethomepage.dev/icon: vikunja.svg
+    gethomepage.dev/name: vikunja
   name: vikunja
   namespace: vikunja
 spec:

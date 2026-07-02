@@ -39,6 +39,8 @@ cert-manager are declared as nixidy apps and bootstrapped through GitOps.
   has a browser-trusted TLS cert with zero manual trust steps
 - `env/host_ingress.nix` — fronts host-local NixOS services (ntfy, forgejo,
   grafana, vikunja) at `*.k3s.lan` via traefik + cert-manager
+- `env/homepage.nix` — [homepage](https://gethomepage.dev) dashboard at
+  `https://home.k3s.lan`, auto-discovering every annotated `*.k3s.lan` Ingress
 
 ### 🔔 Full observability & alerting stack
 
@@ -82,7 +84,7 @@ A curated set of self-hosted apps, each a NixOS module, fronted over HTTPS
 through the cluster ingress where it matters:
 
 **ntfy** (push notifications) · **forgejo** (git + actions + LFS) · **grafana**
-(dashboards) · **vikunja** (tasks) · **homepage** (dashboard) · **harmonia**
+(dashboards) · **vikunja** (tasks) · **harmonia**
 (local nix binary cache) · **polaris** (music) · **calibre-web** (ebooks) ·
 **mealie** (recipes) · **immich** (photos) · **searx** (search) · **readeck** ·
 **uptime-kuma** · and more.
@@ -108,7 +110,7 @@ and per-host home configs (`home/<host>.nix`).
 hosts/        one dir per machine — its configuration.nix + host-local services
 modules/      reusable NixOS modules (base system, k3s, AI, networking, desktop)
 home/         Home Manager configs (shell, editors, Hyprland, per-host tweaks)
-env/          nixidy cluster environment: argocd, cert-manager, host_ingress
+env/          nixidy cluster environment: argocd, cert-manager, host_ingress, homepage
 manifests/    rendered k8s YAML (auto-generated, committed for ArgoCD)
 secrets/      agenix-encrypted secrets
 scripts/      small nix scripts (wake-on-lan, forgejo starred sync, app list)

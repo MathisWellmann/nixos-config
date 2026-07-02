@@ -1,0 +1,33 @@
+apiVersion: v1
+data:
+  bookmarks.yaml: ""
+  docker.yaml: ""
+  kubernetes.yaml: |
+    mode: cluster
+  services.yaml: ""
+  settings.yaml: |
+    title: k3s.lan
+    theme: dark
+    color: slate
+    hideFooter: true
+    headerStyle: boxed
+  widgets.yaml: |
+    - kubernetes:
+        cluster:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+          label: k3s
+        nodes:
+          show: true
+          cpu: true
+          memory: true
+          showLabel: true
+    - search:
+        provider: duckduckgo
+        target: _blank
+kind: ConfigMap
+metadata:
+  name: homepage
+  namespace: homepage

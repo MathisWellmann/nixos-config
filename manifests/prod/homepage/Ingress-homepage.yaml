@@ -3,27 +3,22 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: k3s-lan-ca
-    gethomepage.dev/description: Dashboards
-    gethomepage.dev/enabled: "true"
-    gethomepage.dev/group: Monitoring
-    gethomepage.dev/icon: grafana.svg
-    gethomepage.dev/name: grafana
-  name: grafana
-  namespace: grafana
+  name: homepage
+  namespace: homepage
 spec:
   ingressClassName: traefik
   rules:
-    - host: grafana.k3s.lan
+    - host: home.k3s.lan
       http:
         paths:
           - backend:
               service:
-                name: grafana
+                name: homepage
                 port:
                   number: 80
             path: /
             pathType: Prefix
   tls:
     - hosts:
-        - grafana.k3s.lan
-      secretName: grafana-tls
+        - home.k3s.lan
+      secretName: homepage-tls

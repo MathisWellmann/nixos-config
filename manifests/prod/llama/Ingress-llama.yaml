@@ -3,6 +3,11 @@ kind: Ingress
 metadata:
   annotations:
     cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: llama.cpp inference server
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: AI
+    gethomepage.dev/icon: mdi-robot
+    gethomepage.dev/name: llama
   name: llama
   namespace: llama
 spec:
