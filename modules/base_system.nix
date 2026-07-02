@@ -44,6 +44,7 @@ in {
     "vikunja.k3s.lan"
     "bencher.k3s.lan"
     "bencher-api.k3s.lan"
+    "llama.k3s.lan"
   ];
 
   nix.settings = {

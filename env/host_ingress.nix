@@ -9,15 +9,13 @@
 #
 # Add a new entry to `services` below to expose another host-local service
 # the same way -- nothing else needed.
-{lib, ...}: let
-  # de-msa2's tailscale IP -- the same IP `*.k3s.lan` resolves to via
-  # networking.hosts in modules/base_system.nix. Pods reach the host's
-  # tailscale IP because they NAT through the node.
-  hostIp = "100.83.142.17";
+{...}: let
+  meshify_const = import ../hosts/meshify/constants.nix {};
 
   # Each entry renders a Namespace + selector-less Service + EndpointSlice +
   # TLS Ingress. `name` is the app/k8s name, `host` the `*.k3s.lan` FQDN,
-  # `port` the host-local HTTP port the service listens on.
+  # `port` the host-local HTTP port the service listens on, `hostIp` the
+  # tailscale IP of the machine running the service (defaults to de-msa2).
   services = [
     {
       name = "ntfy";
@@ -49,12 +47,19 @@
       host = "bencher-api.k3s.lan";
       port = 61016; # const.bencher_api_port
     }
+    {
+      name = "llama";
+      host = "llama.k3s.lan";
+      port = meshify_const.llama-cpp_port;
+      hostIp = "100.94.190.65"; # meshify tailscale IP
+    }
   ];
 
   mkApp = {
     name,
     host,
     port,
+    hostIp ? "100.83.142.17",
   }: {
     inherit name;
     namespace = name;
