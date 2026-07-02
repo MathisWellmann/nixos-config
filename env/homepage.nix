@@ -138,16 +138,37 @@ _: {
                   env:
                     - name: HOMEPAGE_ALLOWED_HOSTS
                       value: home.k3s.lan
+                  # /app/config must be WRITABLE: on startup homepage copies
+                  # missing skeleton files (proxmox.yaml, custom.css, ...) into
+                  # it and exits with EROFS if it cannot. So the dir itself is
+                  # an emptyDir and each managed config file is overlaid
+                  # read-only from the ConfigMap via subPath.
                   volumeMounts:
-                    - name: config
+                    - name: config-dir
                       mountPath: /app/config
-                    - name: logs
-                      mountPath: /app/config/logs
+                    - name: config
+                      mountPath: /app/config/settings.yaml
+                      subPath: settings.yaml
+                    - name: config
+                      mountPath: /app/config/kubernetes.yaml
+                      subPath: kubernetes.yaml
+                    - name: config
+                      mountPath: /app/config/widgets.yaml
+                      subPath: widgets.yaml
+                    - name: config
+                      mountPath: /app/config/services.yaml
+                      subPath: services.yaml
+                    - name: config
+                      mountPath: /app/config/bookmarks.yaml
+                      subPath: bookmarks.yaml
+                    - name: config
+                      mountPath: /app/config/docker.yaml
+                      subPath: docker.yaml
               volumes:
                 - name: config
                   configMap:
                     name: homepage
-                - name: logs
+                - name: config-dir
                   emptyDir: {}
       ''
       ''

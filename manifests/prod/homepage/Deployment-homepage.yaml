@@ -26,13 +26,29 @@ spec:
               protocol: TCP
           volumeMounts:
             - mountPath: /app/config
+              name: config-dir
+            - mountPath: /app/config/settings.yaml
               name: config
-            - mountPath: /app/config/logs
-              name: logs
+              subPath: settings.yaml
+            - mountPath: /app/config/kubernetes.yaml
+              name: config
+              subPath: kubernetes.yaml
+            - mountPath: /app/config/widgets.yaml
+              name: config
+              subPath: widgets.yaml
+            - mountPath: /app/config/services.yaml
+              name: config
+              subPath: services.yaml
+            - mountPath: /app/config/bookmarks.yaml
+              name: config
+              subPath: bookmarks.yaml
+            - mountPath: /app/config/docker.yaml
+              name: config
+              subPath: docker.yaml
       serviceAccountName: homepage
       volumes:
         - configMap:
             name: homepage
           name: config
         - emptyDir: {}
-          name: logs
+          name: config-dir
