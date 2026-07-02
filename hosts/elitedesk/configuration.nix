@@ -28,7 +28,7 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://meshify:${toString meshify_const.llama-cpp_port}/v1";
       enableAgentica = true;
-      localModel = meshify_const.localModel;
+      inherit (meshify_const) localModel;
     })
     monero_miner
   ];

@@ -6,9 +6,11 @@
   ];
 
   # Where should the generated manifests be stored?
-  nixidy.target.repository = "https://github.com/MathisWellmann/nixos-config.git";
-  nixidy.target.branch = "main";
-  nixidy.target.rootPath = "./manifests/prod";
+  nixidy.target = {
+    repository = "https://github.com/MathisWellmann/nixos-config.git";
+    branch = "main";
+    rootPath = "./manifests/prod";
+  };
 
   # Let ArgoCD automatically sync, prune and self-heal all applications,
   # so pushing rendered manifests to the repo is all that is needed.

@@ -9,7 +9,7 @@
 #
 # Add a new entry to `services` below to expose another host-local service
 # the same way -- nothing else needed.
-{...}: let
+{_}: let
   meshify_const = import ../hosts/meshify/constants.nix {};
 
   # Each entry renders a Namespace + selector-less Service + EndpointSlice +
@@ -134,7 +134,7 @@
 in {
   applications = builtins.listToAttrs (
     map (s: {
-      name = s.name;
+      inherit (s) name;
       value = mkApp s;
     })
     services

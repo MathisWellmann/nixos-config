@@ -33,7 +33,7 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
-      localModel = const.localModel;
+      inherit (const) localModel;
     })
     (import ./../../modules/ai/llama-cpp.nix {
       models = [
@@ -45,13 +45,15 @@ in {
     # vllm
     # tensorrt
   ];
-  boot.kernelPackages = pkgs.linuxPackages_latest;
-  # Workaround: nixpkgs regression where the initrd activation script runs before
-  # /proc and /sys are mounted, so it can't write firmware_class.path or modprobe path.
-  # Setting firmware path on the kernel command line ensures it's available from boot start.
-  boot.kernelParams = ["firmware_class.path=${config.hardware.firmware}/lib/firmware"];
+  boot = {
+    kernelPackages = pkgs.linuxPackages_latest;
+    # Workaround: nixpkgs regression where the initrd activation script runs before
+    # /proc and /sys are mounted, so it can't write firmware_class.path or modprobe path.
+    # Setting firmware path on the kernel command line ensures it's available from boot start.
+    kernelParams = ["firmware_class.path=${config.hardware.firmware}/lib/firmware"];
+    initrd.systemd.services."modprobe@".serviceConfig.ExecStart = lib.mkForce "-${pkgs.kmod}/sbin/modprobe -abq %i";
+  };
   systemd.services."modprobe@".serviceConfig.ExecStart = lib.mkForce "-${pkgs.kmod}/sbin/modprobe -abq %i";
-  boot.initrd.systemd.services."modprobe@".serviceConfig.ExecStart = lib.mkForce "-${pkgs.kmod}/sbin/modprobe -abq %i";
 
   age.identityPaths = ["/home/${global_const.username}/.ssh/magewe_meshify"];
 

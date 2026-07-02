@@ -32,13 +32,13 @@ let
       tor-browser
     ];
     virtualisation.vmVariant = {
-      virtualisation.cores = 4;
-      virtualisation.memorySize = 3072;
-      virtualisation.resolution = {
+      cores = 4;
+      memorySize = 3072;
+      resolution = {
         x = 1920;
         y = 1080;
       };
-      virtualisation.qemu.options = [
+      qemu.options = [
         # Enable KVM hardware acceleration - biggest performance win
         "-enable-kvm"
         # Use host CPU features for near-native speed
