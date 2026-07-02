@@ -332,12 +332,6 @@
         ];
       }
       {
-        job_name = "mongodb";
-        static_configs = [
-          {targets = ["${static_ips.de-msa2_ip}:${toString const.mongodb_port}"];}
-        ];
-      }
-      {
         job_name = "dragonflydb";
         static_configs = [
           {targets = ["${static_ips.de-msa2_ip}:${toString const.dragonfly_port}"];}
