@@ -37,6 +37,10 @@ in {
     ./../../modules/ai/local_ai.nix
     ./../../modules/k3s_server_follow.nix
     ./../../modules/k3s_nvidia.nix
+    # Make the runner's IOWeight actually enforceable: the NVMe uses the
+    # `none` scheduler, so proportional io.weight needs blk-iocost (see the
+    # module comment).
+    (import ./../../modules/blk_iocost.nix {devices = ["nvme0n1"];})
     (import ./../../modules/github_runner.nix {repos = ["symbiont"];})
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://localhost:${toString const.llama-cpp_port}/v1";
