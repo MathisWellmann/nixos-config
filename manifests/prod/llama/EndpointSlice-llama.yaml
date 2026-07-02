@@ -1,0 +1,17 @@
+addressType: IPv4
+apiVersion: discovery.k8s.io/v1
+endpoints:
+  - addresses:
+      - 100.94.190.65
+    conditions:
+      ready: true
+kind: EndpointSlice
+metadata:
+  labels:
+    kubernetes.io/service-name: llama
+  name: llama
+  namespace: llama
+ports:
+  - name: http
+    port: 8001
+    protocol: TCP

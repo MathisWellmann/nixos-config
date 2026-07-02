@@ -1,0 +1,24 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+  name: llama
+  namespace: llama
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: llama.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: llama
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - llama.k3s.lan
+      secretName: llama-tls

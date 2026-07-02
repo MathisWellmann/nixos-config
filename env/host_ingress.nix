@@ -9,7 +9,7 @@
 #
 # Add a new entry to `services` below to expose another host-local service
 # the same way -- nothing else needed.
-{_}: let
+_: let
   meshify_const = import ../hosts/meshify/constants.nix {};
 
   # Each entry renders a Namespace + selector-less Service + EndpointSlice +
