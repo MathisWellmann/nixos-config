@@ -266,7 +266,7 @@ _: let
           for = "0m";
           labels.severity = "warning";
           annotations = {
-            summary = ''{{ $labels.namespace }}/{{ $labels.pod }} readiness flapping ({{ printf "%.0f" (mul $value 100) }}% Ready over 15m)'';
+            summary = ''{{ $labels.namespace }}/{{ $labels.pod }} readiness flapping (Ready {{ $value | humanizePercentage }} of the last 15m)'';
             description = ''The pod bounced in and out of Ready over the last 15m -- too briefly each time to trip PodNotReady. Look for node flapping, a marginal readiness probe, or an unstable dependency.'';
           };
         }
@@ -311,7 +311,7 @@ _: let
           for = "0m";
           labels.severity = "critical";
           annotations = {
-            summary = ''k3s node {{ $labels.node }} is flapping NotReady ({{ printf "%.0f" (mul $value 100) }}% Ready over 15m)'';
+            summary = ''k3s node {{ $labels.node }} is flapping NotReady (Ready {{ $value | humanizePercentage }} of the last 15m)'';
             description = ''The node has been NotReady for more than 10% of the last 15m -- an intermittent kubelet stall (overload, I/O starvation) that the sustained K3sNodeNotReady alert misses. Check node load and what is starving the kubelet/etcd (cf. the 2026-07-02 CI-overload incident).'';
           };
         }

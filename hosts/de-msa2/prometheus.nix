@@ -5,17 +5,34 @@
   scrape_interval = "5s";
   scrape_timeout = "2s";
 
-  node_scrape_configs = map (host: {
-    job_name = "${host}-node";
-    static_configs = [
-      {
-        targets = ["${host}:${toString config.services.prometheus.exporters.node.port}"];
-      }
-      {
-        targets = ["${host}:${toString config.services.prometheus.exporters.nvidia-gpu.port}"];
-      }
-    ];
-  }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "elitedesk" "tensorbook"];
+  node_scrape_configs = let
+    # Hosts that are INTENTIONALLY powered off most of the time (laptops,
+    # desktops, the wake-on-lan backup target de-n5). Their targets get
+    # `always_on="false"` so the ScrapeTargetDown alert (alerting.nix) skips
+    # them -- before this, their permanently-firing down-alerts re-paged every
+    # 4h and buried real alerts. The always-on k3s/infra hosts (this host,
+    # desg0, elitedesk) stay covered.
+    intermittent_hosts = ["meshify" "superserver" "poweredge" "razerblade" "de-n5" "tensorbook"];
+  in
+    map (host: {
+      job_name = "${host}-node";
+      static_configs = [
+        {
+          targets = ["${host}:${toString config.services.prometheus.exporters.node.port}"];
+          labels.always_on =
+            if builtins.elem host intermittent_hosts
+            then "false"
+            else "true";
+        }
+        {
+          targets = ["${host}:${toString config.services.prometheus.exporters.nvidia-gpu.port}"];
+          labels.always_on =
+            if builtins.elem host intermittent_hosts
+            then "false"
+            else "true";
+        }
+      ];
+    }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "elitedesk" "tensorbook"];
   # Scrapes the tikr pods running in the k3s cluster (deployments live in the
   # `nexus` repo, `env/prod.nix`). Pods are discovered through the Kubernetes
   # API: any pod annotated with `prometheus.io/scrape: "true"` is kept and
