@@ -12,6 +12,7 @@
   hostname = "meshify";
   const = import ./constants.nix {};
   global_const = import ../../global_constants.nix;
+  localModel = "deepreinforce-ai/Ornith-1.0-35B-GGUF:Q8_0";
 in {
   imports = [
     ./hardware-configuration.nix
@@ -33,13 +34,11 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
+      inherit localModel;
     })
     (import ./../../modules/ai/llama-cpp.nix {
       models = [
-        "deepreinforce-ai/Ornith-1.0-35B-GGUF:Q8_0"
-        # "unsloth/Qwen3.6-35B-A3B-GGUF:UD-Q4_K_M" # Very fast (150TPS) and good.
-        # "unsloth/Qwen3.6-27B-GGUF:BF16" # Only 25TPS
-        # "unsloth/Qwen3.6-27B-GGUF:UD-Q4_K_XL" # Gets 50TPS.
+        localModel
       ];
       port = const.llama-cpp_port;
     })

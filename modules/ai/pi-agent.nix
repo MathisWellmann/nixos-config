@@ -1,5 +1,6 @@
 {
   baseUrl ? "http://localhost:1234/v1",
+  localModel ? "local",
   enableAgentica ? false,
   agenicaPath ? "/home/m/symbolica/agentica-mcp-runtime",
   imageWidthCells ? 180,
@@ -18,18 +19,8 @@
         apiKey = "blah";
         models = [
           {
-            id = "LiquidAI/LFM2.5-8B-A1B-GGUF:Q8_0";
-            contextWindow = 128000;
-            reasoning = true;
-          }
-          {
-            id = "qwen/qwen3.6-35b-a3b";
-            contextWindow = 256000;
-            reasoning = true;
-          }
-          {
-            id = "unsloth/qwen3.6-27b";
-            contextWindow = 256000;
+            id = "${localModel}";
+            contextWindow = 250000;
             reasoning = true;
           }
         ];
