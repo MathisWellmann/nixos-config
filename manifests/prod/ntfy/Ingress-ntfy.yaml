@@ -5,9 +5,11 @@ metadata:
     cert-manager.io/cluster-issuer: k3s-lan-ca
     gethomepage.dev/description: Push notifications
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
     gethomepage.dev/group: Utilities
     gethomepage.dev/icon: ntfy.svg
     gethomepage.dev/name: ntfy
+    gethomepage.dev/siteMonitor: http://ntfy.ntfy.svc.cluster.local
   name: ntfy
   namespace: ntfy
 spec:

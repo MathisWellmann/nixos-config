@@ -5,9 +5,11 @@ metadata:
     cert-manager.io/cluster-issuer: k3s-lan-ca
     gethomepage.dev/description: llama.cpp inference server
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
     gethomepage.dev/group: AI
     gethomepage.dev/icon: mdi-robot
     gethomepage.dev/name: llama
+    gethomepage.dev/siteMonitor: http://llama.llama.svc.cluster.local
   name: llama
   namespace: llama
 spec:

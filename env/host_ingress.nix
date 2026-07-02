@@ -142,6 +142,14 @@ _: let
             gethomepage.dev/group: ${group}
             gethomepage.dev/icon: ${icon}
             gethomepage.dev/description: ${description}
+            # These namespaces contain NO pods (the workload runs on a host,
+            # fronted via selector-less Service + EndpointSlice), so homepage's
+            # default kubernetes pod-status badge would always be "Not Found".
+            # `external: true` hides it; `siteMonitor` replaces it with an HTTP
+            # health check through the in-cluster Service (the same
+            # Service -> EndpointSlice -> host path traefik uses).
+            gethomepage.dev/external: "true"
+            gethomepage.dev/siteMonitor: http://${name}.${name}.svc.cluster.local
         spec:
           ingressClassName: traefik
           rules:

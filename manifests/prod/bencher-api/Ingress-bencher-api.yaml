@@ -5,9 +5,11 @@ metadata:
     cert-manager.io/cluster-issuer: k3s-lan-ca
     gethomepage.dev/description: Bencher API
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
     gethomepage.dev/group: DevOps
     gethomepage.dev/icon: mdi-api
     gethomepage.dev/name: bencher-api
+    gethomepage.dev/siteMonitor: http://bencher-api.bencher-api.svc.cluster.local
   name: bencher-api
   namespace: bencher-api
 spec:

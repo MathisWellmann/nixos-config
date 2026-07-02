@@ -5,9 +5,11 @@ metadata:
     cert-manager.io/cluster-issuer: k3s-lan-ca
     gethomepage.dev/description: Tasks & projects
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
     gethomepage.dev/group: Productivity
     gethomepage.dev/icon: vikunja.svg
     gethomepage.dev/name: vikunja
+    gethomepage.dev/siteMonitor: http://vikunja.vikunja.svc.cluster.local
   name: vikunja
   namespace: vikunja
 spec:

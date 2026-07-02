@@ -5,9 +5,11 @@ metadata:
     cert-manager.io/cluster-issuer: k3s-lan-ca
     gethomepage.dev/description: Dashboards
     gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
     gethomepage.dev/group: Monitoring
     gethomepage.dev/icon: grafana.svg
     gethomepage.dev/name: grafana
+    gethomepage.dev/siteMonitor: http://grafana.grafana.svc.cluster.local
   name: grafana
   namespace: grafana
 spec:
