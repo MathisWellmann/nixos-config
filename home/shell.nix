@@ -30,7 +30,7 @@
         jjd = "jj describe -m ";
         jjde = "jj describe"; # Loads up helix with the changed diff visible.
         jjr = "jj rebase";
-        jjf = "jj git fetch";
+        jjf = "jj git fetch --all-remotes";
       };
       settings = {
         keybindings = [
