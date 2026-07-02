@@ -17,6 +17,10 @@
     # (etcd/apiserver/kubelet) is never starved (cf. the 2026-07-02
     # NotReady-flapping incident caused by unbounded nexus builds).
     cpu_quota = "12800%";
+    # Deprioritise CI disk I/O 5:1 against the default-weight k3s/etcd units
+    # sharing the NVMe -- etcd fsync stalls were the other half of the
+    # 2026-07-02 incident. Proportional, so CI keeps full speed on an idle disk.
+    io_weight = "20";
   };
 in {
   imports = [

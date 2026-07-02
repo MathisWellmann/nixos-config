@@ -40,9 +40,15 @@ _: let
           # load5 normalised by core count: > 0.8 means the run queue is ~80% of
           # the machine's CPUs for 10m. `count(node_cpu_seconds_total{mode=idle})`
           # is one series per core, so it equals nproc per instance.
+          #
+          # `on(instance)` is REQUIRED: without it the vector division matches
+          # on the full label set, and node_load5 carries a `job` label the
+          # `count by (instance)` side lacks -- the expression silently
+          # evaluated to an empty vector and this alert could NEVER fire
+          # (found during the 2026-07-02 desg0 CI-overload incident).
           expr = ''
             node_load5
-              / count by (instance) (node_cpu_seconds_total{mode="idle"})
+              / on (instance) count by (instance) (node_cpu_seconds_total{mode="idle"})
               > 0.8
           '';
           for = "10m";
@@ -56,7 +62,7 @@ _: let
           alert = "NodeLoadCritical";
           expr = ''
             node_load5
-              / count by (instance) (node_cpu_seconds_total{mode="idle"})
+              / on (instance) count by (instance) (node_cpu_seconds_total{mode="idle"})
               > 2
           '';
           for = "5m";
@@ -64,6 +70,29 @@ _: let
           annotations = {
             summary = ''Severe load on {{ $labels.instance }} (load5 {{ printf "%.1f" $value }}x cores)'';
             description = ''Run queue is more than 2x the core count -- the node is overloaded and may become unresponsive.'';
+          };
+        }
+        {
+          alert = "NodeLoadSpike";
+          # load1 peak over the last 10m exceeding the core count. Complements
+          # NodeLoadHigh two ways (2026-07-02 incident, where load1 hit 242 on
+          # 192 cores but load5 stayed under the 0.8 bar):
+          #   * load1 reacts in seconds where load5 smooths a burst away, and
+          #   * `max_over_time` LATCHES the peak for 10m, so a short spike
+          #     cannot dodge the alert by receding before an eval tick --
+          #     no `for:` timer to reset (`for: 0m`).
+          # A many-core host can starve latency-critical daemons (etcd fsync,
+          # kubelet lease) during exactly such bursts.
+          expr = ''
+            max_over_time(node_load1[10m])
+              / on (instance) count by (instance) (node_cpu_seconds_total{mode="idle"})
+              > 1
+          '';
+          for = "0m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''Load spike on {{ $labels.instance }} (load1 peaked at {{ printf "%.1f" $value }}x cores)'';
+            description = ''node_load1 exceeded the core count within the last 10m. Bursts like this starve etcd/kubelet even when load5 stays under the NodeLoadHigh bar (cf. the 2026-07-02 CI-overload incident).'';
           };
         }
         {
@@ -146,8 +175,16 @@ _: let
       rules = [
         {
           # If a scrape target disappears we'd otherwise go silent on its alerts.
+          # Scoped to `always_on!="false"`: the node_exporter jobs for hosts
+          # that are INTENTIONALLY powered off most of the time (laptops,
+          # lab boxes, the wake-on-lan backup target -- labelled in
+          # `prometheus.nix`) are excluded. Before this, 10+ dead-host
+          # ScrapeTargetDown alerts had been firing continuously since
+          # 2026-06-28, re-paging every 4h and drowning real signal (nobody
+          # noticed the 2026-07-02 desg0 incident pages). K8s-discovered jobs
+          # carry no `always_on` label and so are always covered.
           alert = "ScrapeTargetDown";
-          expr = ''up == 0'';
+          expr = ''up{always_on!="false"} == 0'';
           for = "5m";
           labels.severity = "warning";
           annotations = {
@@ -211,6 +248,29 @@ _: let
           };
         }
         {
+          alert = "PodReadyFlapping";
+          # Same flap-proof pattern as K3sNodeReadyFlapping, per pod: Ready
+          # less than 90% of the last 15m. PodNotReady's 15m `for:` resets on
+          # every brief Ready blip, so a pod bouncing in and out of Ready
+          # (node flaps, crashlooping dependency, marginal readiness probe)
+          # never fires it. Guards: only Running pods (completed Jobs don't
+          # alert) that have existed longer than the window (a fresh rollout's
+          # startup un-readiness is not a flap).
+          expr = ''
+            avg_over_time(kube_pod_status_ready{condition="true"}[15m]) < 0.9
+              and on (namespace, pod)
+            kube_pod_status_phase{phase="Running"} == 1
+              and on (namespace, pod)
+            (time() - kube_pod_start_time) > 900
+          '';
+          for = "0m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''{{ $labels.namespace }}/{{ $labels.pod }} readiness flapping ({{ printf "%.0f" (mul $value 100) }}% Ready over 15m)'';
+            description = ''The pod bounced in and out of Ready over the last 15m -- too briefly each time to trip PodNotReady. Look for node flapping, a marginal readiness probe, or an unstable dependency.'';
+          };
+        }
+        {
           alert = "PodStuckPending";
           expr = ''sum by (namespace, pod) (kube_pod_status_phase{phase="Pending"}) > 0'';
           for = "15m";
@@ -232,6 +292,27 @@ _: let
           annotations = {
             summary = ''{{ $labels.namespace }}/{{ $labels.deployment }} has unavailable replicas'';
             description = ''Available replicas have not matched the desired count for 15m -- a stuck or failing rollout.'';
+          };
+        }
+        {
+          alert = "K3sNodeReadyFlapping";
+          # Ready < 90% of the time over 15m -- catches a node OSCILLATING
+          # NotReady<->Ready, which K3sNodeNotReady structurally cannot: its
+          # 10m `for:` timer resets on every Ready blip, and during the
+          # 2026-07-02 desg0 incident (1-2m NotReady episodes every few
+          # minutes) it sat in `pending` for hours without firing. The same
+          # reset also happens when kube-state-metrics itself runs on the sick
+          # node and its scrape gaps produce no-data evals. `avg_over_time`
+          # over the raw condition sidesteps both: the damage accumulates in
+          # the window instead of a timer, so `for: 0m`.
+          expr = ''
+            avg_over_time(kube_node_status_condition{condition="Ready",status="true"}[15m]) < 0.9
+          '';
+          for = "0m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''k3s node {{ $labels.node }} is flapping NotReady ({{ printf "%.0f" (mul $value 100) }}% Ready over 15m)'';
+            description = ''The node has been NotReady for more than 10% of the last 15m -- an intermittent kubelet stall (overload, I/O starvation) that the sustained K3sNodeNotReady alert misses. Check node load and what is starving the kubelet/etcd (cf. the 2026-07-02 CI-overload incident).'';
           };
         }
         {

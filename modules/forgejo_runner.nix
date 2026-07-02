@@ -19,6 +19,14 @@
   # flapped NotReady and every ArgoCD app on it bounced Healthy<->Progressing.
   # Keep this well under the host's core count so k3s always has headroom.
   cpu_quota ? "",
+  # systemd IOWeight for the runner cgroup (empty string disables). Unlike
+  # CPUQuota this is a proportional share, not a cap: it only bites when the
+  # disk is contended, and the runner gets full bandwidth when it is idle.
+  # Default cgroup weight is 100, so e.g. 20 gives every default-weight peer
+  # (k3s/etcd on the same NVMe) a 5:1 advantage under contention. Same
+  # 2026-07-02 incident as `cpu_quota`: CI I/O stalled etcd fsync/ReadIndex,
+  # which is what actually flapped the node NotReady alongside the CPU load.
+  io_weight ? "",
 }: {
   pkgs,
   config,
@@ -86,6 +94,9 @@
   }
   // lib.optionalAttrs (cpu_quota != "") {
     CPUQuota = cpu_quota;
+  }
+  // lib.optionalAttrs (io_weight != "") {
+    IOWeight = io_weight;
   };
   # For CI to accept flake nix config like binary cache substituters, the CI user must be trusted.
   nix.settings.trusted-users = ["gitea-runner"];
