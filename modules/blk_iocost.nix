@@ -28,8 +28,10 @@
       Type = "oneshot";
       RemainAfterExit = true;
     };
-    script = lib.concatMapStringsSep "\n" (dev: ''
-      echo "$(cat /sys/block/${dev}/dev) enable=1" > /sys/fs/cgroup/io.cost.qos
-    '') devices;
+    script =
+      lib.concatMapStringsSep "\n" (dev: ''
+        echo "$(cat /sys/block/${dev}/dev) enable=1" > /sys/fs/cgroup/io.cost.qos
+      '')
+      devices;
   };
 }

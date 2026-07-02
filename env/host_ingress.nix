@@ -9,10 +9,7 @@
 #
 # Add a new entry to `services` below to expose another host-local service
 # the same way -- nothing else needed.
-{
-  lib,
-  ...
-}: let
+{lib, ...}: let
   # de-msa2's tailscale IP -- the same IP `*.k3s.lan` resolves to via
   # networking.hosts in modules/base_system.nix. Pods reach the host's
   # tailscale IP because they NAT through the node.

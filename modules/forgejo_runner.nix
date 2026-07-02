@@ -75,29 +75,30 @@
   # /var/cache/private/ symlink that DynamicUser would create), and so the UID
   # is stable across rebuilds — required for cargo to exec build scripts it
   # writes into the cache.
-  systemd.services.gitea-runner-default.serviceConfig = {
-    DynamicUser = lib.mkForce false;
-    User = "gitea-runner";
-    Group = "gitea-runner";
-    # Grant the runner process the `docker` group so cluster creation isn't denied.
-    # Requires the host to enable `virtualisation.docker` (desg0 does), which provides this group.
-    SupplementaryGroups = ["docker"];
-    ReadWritePaths = [
-      state_dir
-      "/var/sccache"
-    ];
-    CacheDirectory = [
-      "nexus-target"
-      "sccache"
-    ];
-    LimitNOFILE = 1048576;
-  }
-  // lib.optionalAttrs (cpu_quota != "") {
-    CPUQuota = cpu_quota;
-  }
-  // lib.optionalAttrs (io_weight != "") {
-    IOWeight = io_weight;
-  };
+  systemd.services.gitea-runner-default.serviceConfig =
+    {
+      DynamicUser = lib.mkForce false;
+      User = "gitea-runner";
+      Group = "gitea-runner";
+      # Grant the runner process the `docker` group so cluster creation isn't denied.
+      # Requires the host to enable `virtualisation.docker` (desg0 does), which provides this group.
+      SupplementaryGroups = ["docker"];
+      ReadWritePaths = [
+        state_dir
+        "/var/sccache"
+      ];
+      CacheDirectory = [
+        "nexus-target"
+        "sccache"
+      ];
+      LimitNOFILE = 1048576;
+    }
+    // lib.optionalAttrs (cpu_quota != "") {
+      CPUQuota = cpu_quota;
+    }
+    // lib.optionalAttrs (io_weight != "") {
+      IOWeight = io_weight;
+    };
   # For CI to accept flake nix config like binary cache substituters, the CI user must be trusted.
   nix.settings.trusted-users = ["gitea-runner"];
 

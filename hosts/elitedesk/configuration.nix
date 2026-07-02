@@ -9,6 +9,7 @@
 }: let
   global_const = import ../../global_constants.nix;
   const = import ./constants.nix {};
+  meshify_const = import ./../meshify/constants.nix {};
   static_ips = import ../../modules/static_ips.nix;
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 50;};
 in {
@@ -24,6 +25,11 @@ in {
     ./../../modules/adguardhome.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/k3s_server_follow.nix
+    (import ./../../modules/ai/pi-agent.nix {
+      baseUrl = "http://meshify:${toString meshify_const.llama-cpp_port}/v1";
+      enableAgentica = true;
+      localModel = meshify_const.localModel;
+    })
     monero_miner
   ];
 
