@@ -13,6 +13,10 @@
     forgejo_url = "http://de-msa2:${toString de-msa2_const.forgejo_port}";
     state_dir = "/etc/forgejo_runner";
     runner_capacity = 8;
+    # Cap CI at 128 of the 192 cores so the co-located k3s control plane
+    # (etcd/apiserver/kubelet) is never starved (cf. the 2026-07-02
+    # NotReady-flapping incident caused by unbounded nexus builds).
+    cpu_quota = "12800%";
   };
 in {
   imports = [

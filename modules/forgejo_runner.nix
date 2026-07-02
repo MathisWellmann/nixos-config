@@ -11,6 +11,14 @@
   ci_cache_dir ? "/var/cache/nexus-ci",
   # Per-job target dirs untouched for longer than this are pruned.
   ci_cache_prune_age_days ? 3,
+  # systemd CPUQuota for the runner cgroup (empty string disables). Bounds the
+  # aggregate CPU of ALL CI jobs (rustc fans out to every core, and with
+  # runner_capacity > 1 several builds overlap). Motivating incident
+  # (2026-07-02): unbounded nexus builds on the 192-core desg0 drove load5 to
+  # ~230, starving the k3s apiserver/etcd/kubelet on the same host -- the node
+  # flapped NotReady and every ArgoCD app on it bounced Healthy<->Progressing.
+  # Keep this well under the host's core count so k3s always has headroom.
+  cpu_quota ? "",
 }: {
   pkgs,
   config,
@@ -75,6 +83,9 @@
       "sccache"
     ];
     LimitNOFILE = 1048576;
+  }
+  // lib.optionalAttrs (cpu_quota != "") {
+    CPUQuota = cpu_quota;
   };
   # For CI to accept flake nix config like binary cache substituters, the CI user must be trusted.
   nix.settings.trusted-users = ["gitea-runner"];
