@@ -9,6 +9,7 @@
 }: let
   hostname = "tensorbook";
   global_const = import ../../global_constants.nix;
+  meshify_const = import ./../meshify/constants.nix {};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -23,6 +24,7 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://meshify:8001/v1";
       enableAgentica = true;
+      inherit (meshify_const) localModel;
     })
     (import ./../../modules/remote_builder.nix {})
     # ./../../modules/mount_external_drives.nix
