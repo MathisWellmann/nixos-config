@@ -233,6 +233,77 @@
       ];
     }
   ];
+  # Scrapes the in-cluster ClickHouse (deployed by the `nexus` repo into the
+  # `clickhouse` and `clickhouse-dev` namespaces). Unlike the iggy/greptimedb
+  # pods, ClickHouse does not expose Prometheus metrics out of the box: the
+  # default `config.xml` ships the `<prometheus>` handler commented out, so the
+  # deployment must mount a `config.d` snippet enabling it (set
+  # `<handle_prometheus>1</handle_prometheus>` -- the handler then listens on
+  # its default port 9363 at `/metrics`) AND declare a `prometheus` named
+  # container port on 9363. Until that nexus-side change lands these targets
+  # stay down; once it does, this job discovers the pod by its `app=clickhouse`
+  # label, keeps only the `prometheus` port, and scrapes `<pod_ip>:9363/metrics`.
+  # Reuses the same Kubernetes SD + credentials as the jobs above (the
+  # `victoriametrics-scraper` ClusterRole grants pods get/list/watch
+  # cluster-wide, so it already covers the `clickhouse`/`clickhouse-dev`
+  # namespaces); the `namespace` relabel keeps prod and dev apart.
+  clickhouse_k8s_scrape_configs = [
+    {
+      job_name = "clickhouse-k8s";
+      inherit scrape_interval scrape_timeout;
+      kubernetes_sd_configs = [
+        {
+          role = "pod";
+          api_server = "https://127.0.0.1:6443";
+          # Both environments: prod in `clickhouse`, dev in `clickhouse-dev`.
+          # Same `app=clickhouse` label and prometheus port, so discovered and
+          # scraped the same way; the `namespace` relabel below keeps the two
+          # apart.
+          namespaces.names = ["clickhouse" "clickhouse-dev"];
+          bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+          tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
+        }
+      ];
+      relabel_configs = [
+        # Only keep the ClickHouse pod.
+        {
+          source_labels = ["__meta_kubernetes_pod_label_app"];
+          action = "keep";
+          regex = "clickhouse";
+        }
+        # The pod declares multiple named container ports (`http` 8123,
+        # `native` 9000, and once enabled `prometheus` 9363), so k8s SD
+        # role=pod emits one target per port. Keep only the `prometheus` port
+        # so SD emits a single target per pod; the address rewrite below then
+        # no-ops on it. Identified by name, so robust to a port-number change.
+        {
+          source_labels = ["__meta_kubernetes_pod_container_port_name"];
+          action = "keep";
+          regex = "prometheus";
+        }
+        # Scrape the ClickHouse prometheus handler, which serves `/metrics`
+        # (the default `<endpoint>`) on port 9363.
+        {
+          source_labels = ["__address__"];
+          action = "replace";
+          regex = "([^:]+)(?::\\d+)?";
+          replacement = "$1:${toString const.clickhouse_prometheus_port}";
+          target_label = "__address__";
+        }
+        {
+          source_labels = ["__meta_kubernetes_pod_name"];
+          target_label = "pod";
+        }
+        # Separate the prod (`clickhouse`) DB from the dev (`clickhouse-dev`)
+        # one: both are scraped under `job=clickhouse-k8s`, so the `namespace`
+        # label is what tells their series apart.
+        {
+          source_labels = ["__meta_kubernetes_namespace"];
+          target_label = "namespace";
+        }
+      ];
+    }
+  ];
   # Per-pod CPU/memory via cAdvisor. cAdvisor is built into every k3s
   # kubelet and exposes container resource metrics at
   # `https://<node>:10250/metrics/cadvisor` (series like
@@ -314,6 +385,7 @@
     ++ tikr_scrape_configs
     ++ iggy_k8s_scrape_configs
     ++ greptimedb_k8s_scrape_configs
+    ++ clickhouse_k8s_scrape_configs
     ++ cadvisor_scrape_configs
     ++ [
       {

@@ -21,6 +21,7 @@ in {
   mealie_port = 3017;
   immich_port = 3018;
   greptimedb_http_port = 4000;
+  clickhouse_prometheus_port = 9363;
   iperf_port = shared.iperf;
   minidlna_port = 8200;
   victoriametrics_port = 9003;
