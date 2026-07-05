@@ -32,13 +32,14 @@ let
       tor-browser
     ];
     virtualisation.vmVariant = {
-      cores = 4;
-      memorySize = 3072;
-      resolution = {
-        x = 1920;
-        y = 1080;
-      };
-      qemu.options = [
+      virtualisation = {
+        cores = 4;
+        memorySize = 3072;
+        resolution = {
+          x = 1920;
+          y = 1080;
+        };
+        qemu.options = [
         # Enable KVM hardware acceleration - biggest performance win
         "-enable-kvm"
         # Use host CPU features for near-native speed
@@ -50,8 +51,9 @@ let
         # https://www.kraxel.org/blog/2021/05/qemu-cut-paste/
         "-chardev qemu-vdagent,id=ch1,name=vdagent,clipboard=on"
         "-device virtio-serial-pci"
-        "-device virtserialport,chardev=ch1,id=ch1,name=com.redhat.spice.0"
-      ];
+          "-device virtserialport,chardev=ch1,id=ch1,name=com.redhat.spice.0"
+        ];
+      };
     };
   };
   vms = pkgs.nixos [
