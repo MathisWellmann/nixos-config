@@ -13,10 +13,10 @@
     forgejo_url = "http://de-msa2:${toString de-msa2_const.forgejo_port}";
     state_dir = "/etc/forgejo_runner";
     runner_capacity = 4;
-    # Cap CI at 128 of the 192 cores so the co-located k3s control plane
+    # Cap CI at 64 of the 192 cores so the co-located k3s control plane
     # (etcd/apiserver/kubelet) is never starved (cf. the 2026-07-02
     # NotReady-flapping incident caused by unbounded nexus builds).
-    cpu_quota = "12800%";
+    cpu_quota = "6400%";
     # Deprioritise CI disk I/O 5:1 against the default-weight k3s/etcd units
     # sharing the NVMe -- etcd fsync stalls were the other half of the
     # 2026-07-02 incident. Proportional, so CI keeps full speed on an idle disk.
