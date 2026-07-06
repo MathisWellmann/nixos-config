@@ -39,6 +39,7 @@ in {
     "greptimedb.k3s.lan"
     "clickhouse.k3s.lan"
     "tikr.k3s.lan"
+    "tikr-dev.k3s.lan"
     "ntfy.k3s.lan"
     "forgejo.k3s.lan"
     "grafana.k3s.lan"
