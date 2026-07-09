@@ -15,7 +15,7 @@
       # Context
       c = 128000; # context window
       # GPU offload - max layers (96GB VRAM can easily fit this model)
-      ngl = 999; # all layers to GPU
+      n-gpu-layers = 999; # all layers to GPU
       # GPU optimization (Blackwell FA3 native support)
       flash-attn = "on"; # Flash Attention 3
       kv-offload = true; # keep KV cache in VRAM
