@@ -88,8 +88,13 @@
         prod.modules = [./env/prod.nix];
       };
     };
-    # The nixidy CLI, e.g. `nix run .#nixidy -- switch .#prod`
-    packages."${system}".nixidy = nixidy.packages.${system}.default;
+    packages."${system}" = {
+      # The nixidy CLI, e.g. `nix run .#nixidy -- switch .#prod`
+      nixidy = nixidy.packages.${system}.default;
+
+      # The Hugging Face `hf` CLI, e.g. `nix run .#hf -- download <repo>`
+      hf = pkgs.callPackage ./pkgs/hf.nix {};
+    };
 
     nixosConfigurations = {
       meshify = mkHost "meshify" [
@@ -138,6 +143,10 @@
         };
         sync_starred_github_to_forgejo = inputs.flake-utils.lib.mkApp {
           drv = import scripts/sync_starred_github_to_forgejo.nix {inherit pkgs;};
+        };
+        hf = inputs.flake-utils.lib.mkApp {
+          drv = self.packages.${system}.hf;
+          name = "hf";
         };
       };
     };
