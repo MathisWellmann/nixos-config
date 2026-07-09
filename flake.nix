@@ -15,7 +15,6 @@
     nox.url = "github:madsbv/nix-options-search";
     # Animated wallpaper daemon written in rust, because `mpvpaper` leaks memory.
     awww.url = "git+https://codeberg.org/LGFae/awww";
-    iggy.url = "github:MathisWellmann/iggy/nix";
     hermes-agent.url = "github:NousResearch/hermes-agent";
     llm-agents.url = "github:numtide/llm-agents.nix";
     forgecode.url = "github:tailcallhq/forgecode";
