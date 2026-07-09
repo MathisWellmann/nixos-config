@@ -9,10 +9,11 @@
   ];
   services.xserver.videoDrivers = ["nvidia"];
 
-  environment.systemPackages = with pkgs; [
-    cudaPackages.nsight_compute
-    cudaPackages.nsight_systems
-  ];
+  # Build issues currently
+  # environment.systemPackages = with pkgs; [
+  #   cudaPackages.nsight_compute
+  #   cudaPackages.nsight_systems
+  # ];
 
   fonts.packages = with pkgs; [
     noto-fonts
