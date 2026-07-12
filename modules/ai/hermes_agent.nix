@@ -1,7 +1,7 @@
-_: {
+{model, ...}: _: {
   services.hermes-agent = {
     enable = true;
-    settings.model.default = "unsloth/Qwen3.5:27B";
+    settings.model.default = model;
     environmentFiles = ["/etc/secrets/hermes-agent.env"];
     addToSystemPackages = true;
   };

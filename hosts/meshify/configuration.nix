@@ -30,6 +30,9 @@ in {
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
     ./../../modules/ai/ollama.nix
+    (import ../../modules/ai/hermes_agent.nix {
+      model = const.localModel;
+    })
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
