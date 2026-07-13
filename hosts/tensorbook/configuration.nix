@@ -112,9 +112,12 @@ in {
       "soft" # Return errors instead of hanging indefinitely
       "timeo=50" # NFS operation timeout (5 seconds)
       "_netdev" # tells systemd it's a network filesystem
-      "x-systemd.wants=tailscaled.service" # Soft dependency (won't block if tailscaled unavailable)
-      "x-systemd.after=tailscaled.service"
+      # ponytail: stronger than `wants` so a tailscale bounce drops the stale mount
+      # instead of leaving it hung; requires+after keeps it off until tailscale is up.
+      "x-systemd.requires=tailscaled.service"
+      "x-systemd.after=tailscaled.service network-online.target"
       "x-systemd.mount-timeout=10" # Timeout mount attempts after 10 seconds
+      "x-systemd.idle-timeout=1min" # Unmount when idle so shutdown/freeze never blocks on a live NFS mount.
       "x-systemd.automount" # Only mount when directory is accessed.
     ];
   };
