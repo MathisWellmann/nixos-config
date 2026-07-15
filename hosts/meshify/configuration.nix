@@ -39,9 +39,7 @@ in {
       inherit (const) localModel;
     })
     (import ./../../modules/ai/llama-cpp.nix {
-      models = [
-        const.localModel
-      ];
+      models = const.localModels;
       port = const.llama-cpp_port;
     })
     # monero_miner

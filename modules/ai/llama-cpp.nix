@@ -5,7 +5,14 @@
   pkgs,
   lib,
   ...
-}: {
+}: let
+  modelsPreset = pkgs.writeText "llama-models.ini" (''
+    version = 1
+  '' + lib.concatMapStringsSep "\n" (model: ''
+    [${model}]
+    hf-repo = ${model}
+  '') models);
+in {
   services.llama-cpp = {
     enable = true;
     openFirewall = true;
@@ -21,6 +28,10 @@
       cache-type-k = "f16"; # KV cache type for K
       cache-type-v = "f16"; # KV cache type for V
       kv-offload = true; # keep KV cache in VRAM
+      # No top-level model: this starts llama-server in router mode. Requests are
+      # routed by their OpenAI `model` field and models load on demand.
+      models-preset = modelsPreset;
+      models-max = 2;
       # Load fully into VRAM (no disk mmap)
       no-mmap = true;
       # CPU / threading (7950X: 16C/32T)
@@ -33,7 +44,6 @@
       # NUMA / memory (1 NUMA node system)
       numa = "isolate";
       mlock = true; # lock model in RAM (prevent swapping)
-      hf-repo = models;
     };
   };
   environment.systemPackages = with pkgs; [
