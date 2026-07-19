@@ -80,6 +80,7 @@ in {
     usbutils # For `lsusb`
     cacert
     unipicker
+    steel # Scheme dialect
 
     # Nix
     # Package version diff tool. E.g Compare system revision 405 with 420:

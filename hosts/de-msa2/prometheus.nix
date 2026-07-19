@@ -410,6 +410,12 @@
         ];
       }
       {
+        job_name = "symbiont";
+        static_configs = [
+          {targets = ["meshify:9000"];}
+        ];
+      }
+      {
         job_name = "ups";
         static_configs = [
           {targets = ["localhost:${toString const.prometheus_exporter_nut_port}"];}
