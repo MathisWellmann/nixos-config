@@ -92,8 +92,8 @@
     };
     settings = {
       # theme = "gruber-darker"; # Dark
-      # theme = "curzon"; # Dark
-      theme = "base16_terminal"; # Transparent
+      theme = "catppuccin_frappe"; # Dark
+      # theme = "base16_terminal"; # Transparent
       # theme = "onelight"; # Light
       keys.normal = {
         "f" = "file_picker";
