@@ -61,7 +61,10 @@ in {
   networking = {
     hostName = "${hostname}";
     networkmanager.enable = true;
-    firewall.allowedTCPPorts = [1234]; # LM studio
+    firewall.allowedTCPPorts = [
+      1234 # LM studio
+      9000 # Local symbiont binary exposing `/metrics`
+    ];
   };
 
   # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
