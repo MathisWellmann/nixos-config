@@ -141,7 +141,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Resident memory (jemalloc). The metric that exposed GreptimeDB's unbounded growth; ClickHouse should stay well under its 16Gi limit.",
+      "description": "Resident memory (jemalloc). ClickHouse should stay well under its 16Gi limit.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "bytes", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "yellow", "value": 12884901888 }, { "color": "red", "value": 15461882265 } ] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
       "id": 5,
