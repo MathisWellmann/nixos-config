@@ -37,6 +37,7 @@ in {
     # inputs.nox.packages.${pkgs.stdenv.hostPlatform.system}.default # Nix options search
     inputs.nixidy.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.hf # Hugging Face `hf` CLI
+    inputs.eilmeldung.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Fonts
     terminus_font
