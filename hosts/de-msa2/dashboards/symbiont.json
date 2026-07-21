@@ -104,12 +104,15 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Completed agentic LLM runs per hour across the selected fleet.",
+      "description": "Completed agentic LLM runs per hour across the selected fleet, with a 15-minute smoothed trend.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
       "id": 2,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_runs_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) * 3600", "legendFormat": "runs/h", "refId": "A" } ],
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_runs_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) * 3600", "legendFormat": "runs/h", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_runs_total{model=~\"$model\",instance=~\"$instance\"}[15m])) * 3600", "legendFormat": "runs/h (15m avg)", "refId": "B" }
+      ],
       "title": "LLM runs / h",
       "type": "stat"
     },
@@ -230,12 +233,15 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Token consumption per second by kind (input / cached_input / output), summed across selected instances. cached_input is cheap; watch fresh input + output for cost.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "description": "Token consumption per second by kind (input / cached_input / output), summed across selected instances, with 15-minute smoothed trends. cached_input is cheap; watch fresh input + output for cost.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [ { "matcher": { "id": "byRegexp", "options": "/.*\\(15m avg\\)$/" }, "properties": [ { "id": "custom.fillOpacity", "value": 0 }, { "id": "custom.lineWidth", "value": 3 }, { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } }, { "id": "custom.stacking", "value": { "group": "B", "mode": "none" } } ] } ] },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 31 },
       "id": 20,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (rate(symbiont_llm_tokens_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "{{kind}}", "refId": "A" } ],
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (rate(symbiont_llm_tokens_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "{{kind}}", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (rate(symbiont_llm_tokens_total{model=~\"$model\",instance=~\"$instance\"}[15m]))", "legendFormat": "{{kind}} (15m avg)", "refId": "B" }
+      ],
       "title": "Token rate by kind",
       "type": "timeseries"
     },
