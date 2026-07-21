@@ -148,13 +148,13 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "LLM output tokens generated per second across the fleet (fresh input and cached-input rates are on the LLM row).",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "description": "Cumulative LLM output tokens reported by the selected fleet.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
       "id": 6,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_tokens_total{kind=\"output\",model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "output tokens/s", "refId": "A" } ],
-      "title": "Output token rate",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(symbiont_llm_tokens_total{kind=\"output\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "output tokens", "refId": "A" } ],
+      "title": "Cumulative output tokens",
       "type": "stat"
     },
     {
