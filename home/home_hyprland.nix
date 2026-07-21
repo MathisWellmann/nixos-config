@@ -292,6 +292,21 @@
   };
   programs.ashell = {
     enable = true;
+    # 0.9.0 renders transparent on Hyprland; remove once fixed upstream.
+    package = pkgs.ashell.overrideAttrs (_: rec {
+      version = "0.8.0";
+      src = pkgs.fetchFromGitHub {
+        owner = "MalpenZibo";
+        repo = "ashell";
+        tag = version;
+        hash = "sha256-X9TU866PAzaf52qKsCpeJvwE0suu1lJndHNQdPg51HM=";
+      };
+      cargoDeps = pkgs.rustPlatform.fetchCargoVendor {
+        inherit src;
+        name = "ashell-0.8.0-vendor";
+        hash = "sha256-nhYbehlgB8pzMoj39G0BHRca9mIT+0QjUaebCx+DDE0=";
+      };
+    });
     settings = {
       modules = {
         center = [
