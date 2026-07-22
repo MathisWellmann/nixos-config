@@ -21,7 +21,6 @@
     kopuz.url = "github:temidaradev/kopuz";
     stochos.url = "github:museslabs/stochos";
     nixidy.url = "github:arnarg/nixidy";
-    dirge.url = "github:dirge-code/dirge";
     maki.url = "github:tontinton/maki";
     eilmeldung.url = "github:christo-auer/eilmeldung";
     # Helm charts packaged as nix derivations, used by nixidy applications.
