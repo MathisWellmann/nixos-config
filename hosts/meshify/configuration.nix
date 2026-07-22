@@ -42,8 +42,11 @@ in {
       models = const.localModels;
       port = const.llama-cpp_port;
     })
+    (import ./../../modules/ai/vllm_cuda_container.nix {
+      port = const.vllm_port;
+      inherit (global_const) username;
+    })
     # monero_miner
-    # vllm
     # tensorrt
   ];
   boot = {
