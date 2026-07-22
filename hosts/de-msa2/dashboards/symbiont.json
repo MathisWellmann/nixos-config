@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "agent-symbiont fleet: self-evolving binaries reporting evolution pipeline health, LLM token consumption and revision registry state. Designed for many concurrent instances -- filter via the model/instance variables; all timeseries break down per instance. Summary quantiles are unpopulated (report 0), so means are derived from _sum/_count rates.",
+  "description": "agent-symbiont fleet: self-evolving binaries reporting evolution pipeline health, LLM token consumption and revision registry state. Designed for many concurrent instances -- filter via the model/instance variables; all timeseries break down per instance. Summary quantiles are unpopulated (report 0), so means are derived from _sum/_count rates. The Training harness / Pareto frontier / Persistence rows cover the agent_symbiont_* series emitted by the agent-symbiont harness on top of the framework.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -80,7 +80,7 @@
   "timezone": "",
   "title": "symbiont",
   "uid": "symbiont-fleet",
-  "version": 1,
+  "version": 2,
   "weekStart": "",
   "panels": [
     {
@@ -316,6 +316,209 @@
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_dylib_size_bytes_sum{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) / sum(rate(symbiont_dylib_size_bytes_count{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "dylib bytes/revision", "refId": "B" }
       ],
       "title": "Mean artifact size per revision",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 56 },
+      "id": 104,
+      "panels": [],
+      "title": "Training harness",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Backtest throughput across selected instances, summed over splits (train/test) and phases (fresh rounds / frontier re-evaluation).",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 57 },
+      "id": 40,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_backtests_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "backtests/s", "refId": "A" } ],
+      "title": "Backtests / s",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Fraction of backtests aborted early because the evolved code panicked. A rising ratio means the LLM generates crashier code.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "percentunit", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "yellow", "value": 0.05 }, { "color": "red", "value": 0.25 } ] }, "max": 1, "min": 0 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 57 },
+      "id": 41,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_backtest_panics_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) / sum(rate(agent_symbiont_backtests_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "panic ratio", "refId": "A" } ],
+      "title": "Backtest panic ratio",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Completed refinement rounds per hour (evolve + evaluate + persist), all outcomes.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 57 },
+      "id": 42,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_refinement_rounds_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) * 3600", "legendFormat": "rounds/h", "refId": "A" } ],
+      "title": "Rounds / h",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Fraction of refinement rounds that completed (outcome ok); the complement aborted the training run on a failed evolution.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "percentunit", "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "yellow", "value": 0.5 }, { "color": "green", "value": 0.9 } ] }, "max": 1, "min": 0 }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 57 },
+      "id": 43,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_refinement_rounds_total{outcome=\"ok\",model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) / sum(rate(agent_symbiont_refinement_rounds_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "success ratio", "refId": "A" } ],
+      "title": "Round success ratio",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Candidates retained on the pareto frontier, summed across selected instances. Drops to 0 while the frontier is drained for re-evaluation at the start of a training run.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 57 },
+      "id": 44,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(agent_symbiont_pareto_frontier_size{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "candidates", "refId": "A" } ],
+      "title": "Frontier candidates",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Time since the most recent successfully completed training run. Training runs daily; alert past ~26h.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "s", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "yellow", "value": 93600 }, { "color": "red", "value": 180000 } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 57 },
+      "id": 45,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "time() - max(agent_symbiont_last_train_success_timestamp_seconds{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "staleness", "refId": "A" } ],
+      "title": "Since last successful train",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Backtest throughput broken down by dataset split (train/test) and phase (fresh candidate rounds vs. frontier re-evaluation). rate() of a counter, robust across process restarts.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 61 },
+      "id": 50,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split, phase) (rate(agent_symbiont_backtests_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "{{split}}/{{phase}}", "refId": "A" } ],
+      "title": "Backtests / s by split & phase",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Backtests aborted early by a panic in the evolved code, per hour. Should be near zero; spikes correlate with prompt or prelude changes.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 61 },
+      "id": 51,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split, phase) (rate(agent_symbiont_backtest_panics_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) * 3600", "legendFormat": "{{split}}/{{phase}}", "refId": "A" } ],
+      "title": "Backtest panics / h by split & phase",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Mean wall-clock duration of one evaluation pass (all datasets x all matrix configurations), derived from _sum/_count rates.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "s", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 69 },
+      "id": 52,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split, phase) (rate(agent_symbiont_evaluation_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) / sum by (split, phase) (rate(agent_symbiont_evaluation_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "{{split}}/{{phase}}", "refId": "A" } ],
+      "title": "Mean evaluation duration by split & phase",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Mean wall-clock duration of one full refinement round (evolve + train/test evaluation + persistence). The evolve share alone is symbiont_evolve_duration_seconds.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "s", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 69 },
+      "id": 53,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(agent_symbiont_round_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) / sum by (instance) (rate(agent_symbiont_round_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "title": "Mean round duration by instance",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 77 },
+      "id": 105,
+      "panels": [],
+      "title": "Pareto frontier",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Candidates retained on the pareto frontier per instance. Transient drops to 0 are the re-evaluation drain at the start of each training run; pinned at pareto_capacity means the eviction path is active.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 78 },
+      "id": 54,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_pareto_frontier_size{model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "title": "Frontier size by instance",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Pareto frontier verdicts for freshly evolved candidates (phase=round). The entered share is the key signal that the agentic loop still produces improving candidates.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 78 },
+      "id": 55,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (verdict) (rate(agent_symbiont_frontier_verdicts_total{phase=\"round\",model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) * 3600", "legendFormat": "{{verdict}}", "refId": "A" } ],
+      "title": "Verdicts / h by verdict (fresh candidates)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Objectives of the best retained candidate (by median surefire ratio): reward = median daily return on starting equity, risk = p95 daily equity drawdown. The long-term trend answers whether the frontier actually improves.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "percentunit", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 86 },
+      "id": 56,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_frontier_best_reward{model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{instance}} reward", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_frontier_best_risk{model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{instance}} risk", "refId": "B" }
+      ],
+      "title": "Best candidate objectives",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Verdicts when retained frontier candidates are re-scored on the slid dataset window (phase=frontier_reeval): entered = incumbents whose edge survives; everything else is pruned overfitting.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 86 },
+      "id": 57,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (verdict) (rate(agent_symbiont_frontier_verdicts_total{phase=\"frontier_reeval\",model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) * 3600", "legendFormat": "{{verdict}}", "refId": "A" } ],
+      "title": "Re-evaluation verdicts / h by verdict",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 94 },
+      "id": 106,
+      "panels": [],
+      "title": "Persistence (ClickHouse)",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Mean ClickHouse insert latency by store (backtest results, generated candidates, evolve failures), derived from _sum/_count rates.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "s", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 95 },
+      "id": 58,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) / sum by (store) (rate(agent_symbiont_persist_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval]))", "legendFormat": "{{store}}", "refId": "A" } ],
+      "title": "Mean insert duration by store",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Failed ClickHouse inserts per hour by store. Any non-zero rate stalls or aborts training runs.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 95 },
+      "id": 59,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_failures_total{model=~\"$model\",instance=~\"$instance\"}[$__rate_interval])) * 3600", "legendFormat": "{{store}}", "refId": "A" } ],
+      "title": "Insert failures / h by store",
       "type": "timeseries"
     }
   ]
