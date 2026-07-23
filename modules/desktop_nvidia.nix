@@ -24,6 +24,6 @@
     AQ_DRM_DEVICES = lib.mkDefault "/dev/dri/card1";
     GBM_BACKEND = "nvidia-drm";
     __GLX_VENDOR_LIBRARY_NAME = "nvidia";
-    AQ_NO_ATOMIC = "1";
+    # AQ_NO_ATOMIC = "1"; # Do not use Linux DRM/KMS atomic modesetting; use the legacy display path instead.
   };
 }
