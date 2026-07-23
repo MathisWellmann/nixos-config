@@ -57,6 +57,12 @@ scraped. Alert rules are set to notify if things go haywire, so the stack fires
 on `NodeLoadHigh`, `ContainerCPUNearLimit`, `PodRestartLooping`, `OOMKilled`
 and more — paging the ntfy app at `https://ntfy.k3s.lan/cluster-alerts`.
 
+In the ntfy web interface at `https://ntfy.k3s.lan`, manually subscribe to the
+**`cluster-alerts`** topic. This is the only required subscription; it receives
+production, development (prefixed `[dev]`), host, storage, and cluster alerts.
+ntfy topics are created on first publish, so they are not listed automatically
+in a new browser profile.
+
 ### 🔐 Secrets managed with agenix
 
 Host-specific secrets (k3s token, grafana secret key, …) live encrypted in
