@@ -489,8 +489,19 @@
       "type": "timeseries"
     },
     {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Quality-gate criteria violated by evaluated candidates, per hour by criterion (30m smoothed, phase=round). Only liquidation and invalid_metrics (SAFETY) reject a candidate; the rest are advisory feedback. The dominating criterion is the gate to tune or the defect the agent must engineer away.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 94 },
+      "id": 60,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (criterion) (rate(agent_symbiont_quality_gate_failures_total{phase=\"round\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{criterion}}", "refId": "A" } ],
+      "title": "Quality gate failures / h by criterion",
+      "type": "timeseries"
+    },
+    {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 94 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 102 },
       "id": 106,
       "panels": [],
       "title": "Persistence (ClickHouse)",
@@ -500,7 +511,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Mean ClickHouse insert latency by store (backtest results, generated candidates, evolve failures), derived from _sum/_count rates.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "s", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 95 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 103 },
       "id": 58,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (store) (rate(agent_symbiont_persist_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{store}}", "refId": "A" } ],
@@ -511,7 +522,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Failed ClickHouse inserts per hour by store. Any non-zero rate stalls or aborts training runs.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 95 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 103 },
       "id": 59,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_failures_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{store}}", "refId": "A" } ],
