@@ -35,8 +35,8 @@ _: {
         term = "xterm-256color";
         font-size = 16;
         mouse-scroll-multiplier = "1.0";
-        background-opacity = 0.8;
-        background-blur = true;
+        background-opacity = 1.0;
+        background-blur = false;
         keybind = [
           "ctrl+h=goto_split:left"
           "ctrl+l=goto_split:right"
