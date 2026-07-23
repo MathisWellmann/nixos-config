@@ -468,7 +468,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Refinement rounds per hour by outcome (ok / evolve_failed / error), 30m smoothed. Replaces the former best-candidate objectives panel: the harness does not emit agent_symbiont_frontier_best_reward/_risk.",
+      "description": "Refinement rounds per hour by outcome (ok / evolve_failed / error), 30m smoothed.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "percentunit", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 86 },
       "id": 56,
@@ -492,11 +492,25 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Median surefire ratio of every candidate retained on the pareto frontier, by rank (0 = best, descending). The raw gauge drains to 0 every round and vacated ranks are reset to 0, so the 30m max envelope is plotted. The spread between rank 0 and the worst rank shows frontier diversity; ranks collapsing onto each other means the frontier holds near-duplicates.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 94 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 94 },
       "id": 61,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (instance, rank) (max_over_time(agent_symbiont_frontier_surefire_ratio{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} rank {{rank}}", "refId": "A" } ],
       "title": "Frontier surefire ratios by rank (30m max)",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Objectives of the best retained candidate per instance: reward = median excess-return surefire ratio, risk = p95 daily equity drawdown. The raw gauges drain to 0 every round, so the 30m max envelope is plotted. A non-positive reward means only a reference seed is retained.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 94 },
+      "id": 62,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (instance) (max_over_time(agent_symbiont_frontier_best_reward{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} reward (30m max)", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (instance) (max_over_time(agent_symbiont_frontier_best_risk{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} risk (30m max)", "refId": "B" }
+      ],
+      "title": "Best candidate objectives by instance",
       "type": "timeseries"
     },
     {
