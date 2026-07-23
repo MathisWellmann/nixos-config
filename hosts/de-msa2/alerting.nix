@@ -589,37 +589,20 @@ in {
         ntfy = {
           baseurl = "http://127.0.0.1:${toString const.ntfy_port}";
           notification = {
-            # Split prod vs dev by the alert's `namespace` label (set by KSM /
-            # cadvisor on every pod alert). Dev (`tikr-dev`) alerts go to a
-            # SEPARATE ntfy topic so a dev hiccup never looks like a prod page
-            # and can be muted independently -- but they are still delivered, so
-            # any dev problem (which should block a rollout) is visible.
+            # Keep routing independent of optional labels: alertmanager-ntfy's
+            # gval evaluator errors on missing map keys, which previously made
+            # every host-level notification return HTTP 502. Dev alerts retain
+            # their title prefix but share the reliable production topic.
             #
-            # gval scope is the alert's JSON map (see alertmanager-ntfy's
-            # `Alert.Map()`): `status` plus the `labels`/`annotations` maps.
-            # Guard the map lookup with `in` so node-level alerts that carry no
-            # `namespace` label (e.g. NodeLoadHigh) don't error -- they fall
-            # through to the prod topic, which is correct (a node problem is
-            # everyone's problem).
-            #
-            # Topics are de-facto passwords; both live on the tailnet/LAN. If you
-            # ever expose ntfy publicly, move these to `extraConfigFiles` (an
+            # Topics are de-facto passwords; this lives on the tailnet/LAN. If
+            # you ever expose ntfy publicly, move it to `extraConfigFiles` (an
             # agenix secret) + ntfy auth.
-            topic = ''("namespace" in labels && labels["namespace"] == "tikr-dev") ? "cluster-alerts-dev" : "cluster-alerts"'';
-            # Prod firing -> phone-waking "high"; dev firing -> quiet "default"
-            # (notify, don't page); anything resolved -> "min".
-            priority = ''
-              status == "resolved" ? "min"
-                : (("namespace" in labels && labels["namespace"] == "tikr-dev") ? "default" : "high")
-            '';
+            topic = ''"cluster-alerts"'';
+            priority = ''status == "resolved" ? "min" : "high"'';
             tags = [
               {
                 tag = "rotating_light";
-                condition = ''status == "firing" && !("namespace" in labels && labels["namespace"] == "tikr-dev")'';
-              }
-              {
-                tag = "construction";
-                condition = ''status == "firing" && ("namespace" in labels && labels["namespace"] == "tikr-dev")'';
+                condition = ''status == "firing"'';
               }
               {
                 tag = "white_check_mark";
@@ -641,13 +624,10 @@ in {
       enable = true;
       settings = {
         # Exposed off-cluster at https://ntfy.k3s.lan through the k3s traefik
-        # ingress (see env/ntfy.nix); the ntfy app subscribes to BOTH topics:
-        #   prod: https://ntfy.k3s.lan/cluster-alerts
-        #   dev:  https://ntfy.k3s.lan/cluster-alerts-dev
-        # with the fleet-trusted `k3s-lan-ca` cert. Topics are created
-        # implicitly on first publish -- no server-side config per topic.
-        # Mute/unsubscribe `cluster-alerts-dev` independently when you don't
-        # want dev noise; prod pages keep coming.
+        # ingress (see env/ntfy.nix); subscribe the ntfy app to:
+        #   https://ntfy.k3s.lan/cluster-alerts
+        # with the fleet-trusted `k3s-lan-ca` cert. The topic is created
+        # implicitly on first publish -- no server-side config is needed.
         # `behind-proxy = true` so ntfy trusts the X-Forwarded-* headers
         # traefik sets.
         base-url = "https://ntfy.k3s.lan";
