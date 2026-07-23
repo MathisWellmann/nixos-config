@@ -4,12 +4,17 @@
   enableAgentica ? false,
   agenicaPath ? "/home/m/symbolica/agentica-mcp-runtime",
   imageWidthCells ? 180,
+  llamaServerUrl ? null,
 }: {
   pkgs,
   inputs,
   ...
 }: let
   inherit (pkgs) lib;
+  effectiveLlamaServerUrl =
+    if llamaServerUrl != null
+    then llamaServerUrl
+    else lib.removeSuffix "/v1" baseUrl;
 
   pi-models-config = (pkgs.formats.json {}).generate "pi-agent-models.json" {
     providers = {
@@ -39,6 +44,12 @@
     mkdir -p $out
     cp ${tokenRateSrc}/token-rate.ts $out/
   '';
+
+  # Pinned npm package; Pi loads its extension from the package manifest.
+  piLlamaCppSrc = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/pi-llama-cpp/-/pi-llama-cpp-0.9.1.tgz";
+    sha256 = "sha256-dIXXkjcavmN8P3YFP1rXpnB4tNEDsR10vw6zn+YBQVA=";
+  };
 
   # ponytail — lazy-senior-dev pi package (extension + skills)
   # Pinned to commit 45f7d2f (2026-06-17). Update the ref + hash to upgrade.
@@ -218,10 +229,12 @@
     terminal = {
       inherit imageWidthCells;
     };
+    llamaServerUrl = effectiveLlamaServerUrl;
     # Local-directory pi packages. Pi reads each package's `pi` manifest,
     # loading its extensions and skills. Local paths incur no npm/git fetch
     # at runtime — the source lives read-only in the Nix store.
     packages = [
+      "${piLlamaCppSrc}"
       "${ponytailSrc}"
     ];
   };
