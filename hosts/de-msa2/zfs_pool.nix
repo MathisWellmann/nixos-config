@@ -1,5 +1,6 @@
 {lib, ...}: let
   const = import ./constants.nix {};
+  static_ips = import ../../modules/static_ips.nix;
 in {
   boot = {
     supportedFilesystems = ["zfs"];
@@ -42,7 +43,7 @@ in {
       autoReplication = {
         enable = true;
         followDelete = true;
-        host = "de-n5";
+        host = static_ips.de-n5_ip;
         identityFilePath = "/root/.ssh/id_ed25519";
         localFilesystem = "nvme_pool";
         remoteFilesystem = "hdd_pool";
