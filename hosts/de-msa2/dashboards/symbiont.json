@@ -148,13 +148,13 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Cumulative LLM output tokens reported by the selected fleet.",
+      "description": "LLM output tokens produced by the selected fleet over the last 24h (increase over a fixed 24h window, robust to process restarts / counter resets).",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
       "id": 6,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(symbiont_llm_tokens_total{kind=\"output\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "output tokens", "refId": "A" } ],
-      "title": "Cumulative output tokens",
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_llm_tokens_total{kind=\"output\",model=~\"$model\",instance=~\"$instance\"}[24h]))", "legendFormat": "output tokens (24h)", "refId": "A" } ],
+      "title": "Output tokens (24h)",
       "type": "stat"
     },
     {
