@@ -2,7 +2,6 @@
   home.packages = with pkgs; [
     tinymist # Typst markup language with `.typ` file extension
     codebook
-    lsp-ai # language server that serves as a backend for AI-powered functionality
     simple-completion-language-server
   ];
   programs.helix = {
@@ -36,49 +35,11 @@
             ];
           };
         };
-        lsp-ai = let
-          max_context = 128000;
-        in {
-          command = "lsp-ai";
-          environment = {LSP_AI_LOG = "debug";};
-          timeout = 60;
-          config = {
-            memory.file_store = {};
-            models.qwen3coder = {
-              type = "ollama";
-              model = "qwen3-coder:30b";
-            };
-            completion = {
-              model = "qwen3-coder";
-              parameters = {
-                inherit max_context;
-                options.num_predict = 32;
-              };
-            };
-            chat = [
-              {
-                trigger = "!C";
-                action_display_name = "qwen3-coder:30b";
-                model = "qwen3coder";
-                parameters = {
-                  inherit max_context;
-                  max_tokens = 4096;
-                  messages = [
-                    {
-                      role = "system";
-                      content = "You are a rust code assistant chatbot. You will give expertly responses and follow best rust coding practices.";
-                    }
-                  ];
-                };
-              }
-            ];
-          };
-        };
       };
       language = [
         {
           name = "rust";
-          language-servers = ["rust-analyzer" "codebook" "lsp-ai" "scls"];
+          language-servers = ["rust-analyzer" "codebook" "scls"];
         }
         {
           name = "markdown";
