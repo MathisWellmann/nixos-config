@@ -26,6 +26,7 @@
   mealie = import ./../../modules/mealie.nix {
     port = const.mealie_port;
   };
+  sync-starred-github-to-forgejo = import ../../scripts/sync_starred_github_to_forgejo.nix {inherit pkgs;};
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -64,6 +65,26 @@ in {
   ];
 
   networking.hostName = "de-msa2"; # Define your hostname.
+
+  systemd = {
+    services.sync-starred-github-to-forgejo = {
+      description = "Mirror GitHub starred repositories to Forgejo";
+      after = ["network-online.target" "forgejo.service"];
+      wants = ["network-online.target"];
+      requires = ["forgejo.service"];
+      serviceConfig = {
+        Type = "oneshot";
+        ExecStart = "${sync-starred-github-to-forgejo}/bin/sync-starred-github-to-forgejo";
+      };
+    };
+    timers.sync-starred-github-to-forgejo = {
+      wantedBy = ["timers.target"];
+      timerConfig = {
+        OnCalendar = "daily";
+        Persistent = true;
+      };
+    };
+  };
 
   # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
   home-manager = {

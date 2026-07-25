@@ -4,7 +4,7 @@
   de-msa2_const = import ./../hosts/de-msa2/constants.nix {};
   forgejo_url = "http://localhost:${toString de-msa2_const.forgejo_port}";
 in
-  pkgs.writeShellScriptBin "list-flake-apps" ''
+  pkgs.writeShellScriptBin "sync-starred-github-to-forgejo" ''
     set -euo pipefail
 
     ############################################
@@ -22,11 +22,11 @@ in
 
     # Mirror settings
     VISIBILITY="public"
-    MIRROR_INTERVAL="24h"
+    MIRROR_INTERVAL="8h"
     REPO_PREFIX="github"     # github-OWNER-REPO
 
     gh_api() {
-      ${curl} -fsSL -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" $@
+      ${curl} -fsSL -H "Authorization: token $GITHUB_TOKEN" -H "Accept: application/vnd.github+json" "$@"
     }
 
     fj_api() {
@@ -34,7 +34,7 @@ in
     }
 
     get_starred_repos() {
-      local page=0
+      local page=1
       while :; do
         local result
         result="$(gh_api "$GITHUB_API/user/starred?per_page=100&page=$page")"
@@ -42,7 +42,7 @@ in
         if [[ "$(${jq} length <<<"$result")" -eq 0 ]]; then
           break
         fi
-        ((page++))
+        ((++page))
       done
     }
 
