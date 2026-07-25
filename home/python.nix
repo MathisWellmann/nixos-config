@@ -7,7 +7,7 @@
       scipy
       scikit-learn
       matplotlib # Plotting
-      rerun-sdk
+      # rerun-sdk
       requests
       beautifulsoup4
       pip
