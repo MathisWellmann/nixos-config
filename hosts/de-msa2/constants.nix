@@ -32,7 +32,6 @@ in {
   alertmanager_port = 9005;
   alertmanager_ntfy_port = 9006;
   ntfy_port = 9007;
-  mongodb_port = shared.mongodb;
   dragonfly_port = 27018;
   tikr_base_port = 6700;
   prometheus_exporter_nut_port = 9199;

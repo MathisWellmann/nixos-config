@@ -46,7 +46,6 @@ in {
     hostId = "d198feeb";
     firewall.allowedTCPPorts = [
       2049 # nfs
-      const.mongodb_port
       const.nats_port
     ];
     # For containers to access the internet.

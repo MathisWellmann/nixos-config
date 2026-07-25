@@ -11,5 +11,4 @@ in {
   ncps_port = 3501;
   nats_port = 4222;
   iperf_port = shared.iperf;
-  mongodb_port = shared.mongodb;
 }

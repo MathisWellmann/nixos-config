@@ -92,7 +92,6 @@
     heaptrack # Heap memory profiler for linux
     # tlaplusToolbox
     # redisinsight
-    mongodb-compass
   ];
 
   # Notification daemon: serves the org.freedesktop.Notifications D-Bus name.

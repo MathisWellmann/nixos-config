@@ -3,7 +3,7 @@
     with ps; [
       numpy
       openai # Not using ClosedAi, but the package allows interacting with locally hosted ai services as well
-      pymc # markov chain monte carlo methods.
+      # pymc # markov chain monte carlo methods.
       scipy
       scikit-learn
       matplotlib # Plotting
