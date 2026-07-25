@@ -25,7 +25,6 @@ in {
     ./../../modules/virtualization_host.nix
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
-    ./../../modules/ai/ollama.nix
   ];
   time.timeZone = lib.mkForce "Europe/London";
 

@@ -29,7 +29,6 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
-    ./../../modules/ai/ollama.nix
     (import ../../modules/ai/hermes_agent.nix {
       model = const.localModel;
     })

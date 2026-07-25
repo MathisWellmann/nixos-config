@@ -78,8 +78,7 @@ node's tailscale IP through `networking.hosts` in `modules/base_system.nix`.
 
 ### 🤖 Local AI stack
 
-`modules/ai/` declares a battery of local LLM serving options: `ollama`,
-`vllm_cuda_container`, `tensorrt_llm_container`, `llama-cpp`, a
+`modules/ai/` declares a battery of local LLM serving options: `vllm_cuda_container`, `tensorrt_llm_container`, `llama-cpp`, a
 `hermes-agent` runner, `qwen_code`, and a `pi-agent` harness. The
 `remote_builder.nix` module turns GPU hosts into distributed nix builders over
 SSH.

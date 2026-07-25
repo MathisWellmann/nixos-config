@@ -22,7 +22,6 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
-    ./../../modules/ai/ollama.nix
     vllm
   ];
 
