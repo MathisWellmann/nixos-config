@@ -48,6 +48,7 @@ in {
     "bencher-api.k3s.lan"
     "llama.k3s.lan"
     "llmkube.k3s.lan"
+    "symbiont.k3s.lan"
   ];
 
   nix.settings = {
