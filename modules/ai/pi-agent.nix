@@ -5,6 +5,16 @@
   agenicaPath ? "/home/m/symbolica/agentica-mcp-runtime",
   imageWidthCells ? 180,
   llamaServerUrl ? null,
+  # OpenAI-compatible endpoint of a vLLM server, e.g. `http://meshify:8000/v1`.
+  # When set, the `pi` wrapper queries `<vllmBaseUrl>/models` on every launch and
+  # generates a `vllm` provider from whatever the server currently serves.
+  vllmBaseUrl ? null,
+  # Fallback model ids, used when the vLLM server is unreachable (e.g. still
+  # loading weights) so `/model` keeps working.
+  vllmModels ? [],
+  # Fallback context window; discovery prefers the server's `max_model_len`.
+  vllmContextWindow ? 262144,
+  vllmMaxTokens ? 32768,
 }: {
   pkgs,
   inputs,
@@ -16,22 +26,78 @@
     then llamaServerUrl
     else lib.removeSuffix "/v1" baseUrl;
 
-  pi-models-config = (pkgs.formats.json {}).generate "pi-agent-models.json" {
-    providers = {
-      "${baseUrl}" = {
-        inherit baseUrl;
-        api = "openai-completions";
-        apiKey = "blah";
-        models = [
-          {
-            id = "${localModel}";
-            contextWindow = 250000;
-            reasoning = true;
-          }
-        ];
+  # vLLM speaks OpenAI Chat Completions, but has no `developer` role and no
+  # `reasoning_effort`; Qwen-style thinking is toggled via `chat_template_kwargs`.
+  vllmProvider = lib.optionalAttrs (vllmBaseUrl != null) {
+    vllm = {
+      baseUrl = vllmBaseUrl;
+      api = "openai-completions";
+      # Placeholder: vLLM is started without `--api-key`, but pi hides models
+      # that have no auth configured.
+      apiKey = "vllm";
+      compat = {
+        supportsDeveloperRole = false;
+        supportsReasoningEffort = false;
+        thinkingFormat = "qwen-chat-template";
       };
+      models =
+        map (id: {
+          inherit id;
+          contextWindow = vllmContextWindow;
+          maxTokens = vllmMaxTokens;
+          reasoning = true;
+        })
+        vllmModels;
     };
   };
+
+  pi-models-config = (pkgs.formats.json {}).generate "pi-agent-models.json" {
+    providers =
+      {
+        "${baseUrl}" = {
+          inherit baseUrl;
+          api = "openai-completions";
+          apiKey = "blah";
+          models = [
+            {
+              id = "${localModel}";
+              contextWindow = 250000;
+              reasoning = true;
+            }
+          ];
+        };
+      }
+      // vllmProvider;
+  };
+
+  # Rewrites `models.json` on every `pi` launch: the static Nix-generated config,
+  # with the `vllm` provider's model list replaced by live `/v1/models` output.
+  writeModelsJson =
+    if vllmBaseUrl == null
+    then ''cp ${pi-models-config} "$models_json"''
+    else ''
+      discovered=$(${pkgs.curl}/bin/curl -fsS -m 3 "${vllmBaseUrl}/models" 2>/dev/null || true)
+      if printf '%s' "$discovered" | ${pkgs.jq}/bin/jq -e '(.data // []) | length > 0' >/dev/null 2>&1; then
+        printf '%s' "$discovered" | ${pkgs.jq}/bin/jq \
+          --slurpfile base ${pi-models-config} \
+          --argjson ctx ${toString vllmContextWindow} \
+          --argjson maxTokens ${toString vllmMaxTokens} \
+          '$base[0] * {providers: {vllm: {models: [
+             .data[] | {
+               id: .id,
+               reasoning: true,
+               contextWindow: (.max_model_len // $ctx),
+               # Leave room for the prompt: vLLM rejects requests whose
+               # prompt + max_tokens exceed `max_model_len`.
+               maxTokens: ([$maxTokens, (((.max_model_len // $ctx) / 4) | floor)] | min),
+             }
+           ]}}}' > "$models_json.tmp" \
+          && mv "$models_json.tmp" "$models_json" \
+          || cp ${pi-models-config} "$models_json"
+      else
+        cp ${pi-models-config} "$models_json"
+      fi
+    '';
 
   pi-pkg = inputs.llm-agents.packages.${pkgs.stdenv.hostPlatform.system}.pi;
 
@@ -241,7 +307,11 @@
 
   pi-wrapped = pkgs.writeShellScriptBin "pi" ''
     mkdir -p "$HOME/.pi/agent"
-    ln -sf ${pi-models-config} "$HOME/.pi/agent/models.json"
+    models_json="$HOME/.pi/agent/models.json"
+    # Drop the symlink/read-only copy left by earlier generations before writing.
+    rm -f "$models_json"
+    ${writeModelsJson}
+    chmod u+w "$models_json" 2>/dev/null || true
     mkdir -p "$HOME/.pi/agent/extensions"
     # Clean stale files from previous packaging layout
     rm -f "$HOME/.pi/agent/extensions/hooks.ts" "$HOME/.pi/agent/extensions/jsonl.ts"

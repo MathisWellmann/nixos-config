@@ -25,6 +25,8 @@ in {
       baseUrl = "http://meshify:8001/v1";
       enableAgentica = true;
       inherit (meshify_const) localModel;
+      vllmBaseUrl = "http://meshify:${toString meshify_const.vllm_port}/v1";
+      vllmModels = [meshify_const.vllmModel];
     })
     (import ./../../modules/remote_builder.nix {})
     # ./../../modules/mount_external_drives.nix

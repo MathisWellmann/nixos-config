@@ -29,6 +29,8 @@ in {
       baseUrl = "http://meshify:${toString meshify_const.llama-cpp_port}/v1";
       enableAgentica = true;
       inherit (meshify_const) localModel;
+      vllmBaseUrl = "http://meshify:${toString meshify_const.vllm_port}/v1";
+      vllmModels = [meshify_const.vllmModel];
     })
     monero_miner
   ];

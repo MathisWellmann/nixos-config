@@ -8,6 +8,7 @@
 }: let
   global_const = import ../../global_constants.nix;
   const = import ./constants.nix {};
+  meshify_const = import ./../meshify/constants.nix {};
   searx = import ./../../modules/searx.nix {port = const.searx_port;};
   readeck = import ./readeck.nix {
     dir = "/nvme_pool/readeck";
@@ -46,6 +47,8 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://meshify:8001/v1";
       enableAgentica = true;
+      vllmBaseUrl = "http://meshify:8000/v1";
+      vllmModels = [meshify_const.vllmModel];
     })
     # ./freshrss.nix
     ./nexus_dbs.nix
