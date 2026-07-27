@@ -50,6 +50,9 @@
     {
       job_name = "tikr-k8s-pods";
       inherit scrape_interval scrape_timeout;
+      # Keep kube-state-metrics' namespace/pod labels instead of replacing
+      # them with the scrape target's labels and creating exported_* labels.
+      honor_labels = true;
       kubernetes_sd_configs = [
         {
           role = "pod";
