@@ -105,12 +105,11 @@ in {
         service_status = {
           tailscale = "tailscaled";
           prometheus-exporter = "prometheus-node-exporter";
-          mnt-poweredge-magewe = "mnt-de-msa2_SATA_SSD_POOL_magewe.mount";
-          mnt-poweredge-movies = "mnt-de-msa2_SATA_SSD_POOL_movies.mount";
-          mnt-poweredge-music = "mnt-de-msa2_SATA_SSD_POOL_music.mount";
-          mnt-poweredge-pdfs = "mnt-de-msa2_SATA_SSD_POOL_pdfs.mount";
-          mnt-poweredge-series = "mnt-de-msa2_SATA_SSD_POOL_series.mount";
-          mnt-poweredge-video = "mnt-de-msa2_SATA_SSD_POOL_video.mount";
+          mnt-de-msa2-magewe = "mnt-de_msa2_nvme_pool_magewe.mount";
+          mnt-de-msa2-music = "mnt-de_msa2_nvme_pool_music.mount";
+          mnt-de-msa2-video = "mnt-de_msa2_nvme_pool_video.mount";
+          mnt-elitedesk-movies = "mnt-elitedesk_movies.mount";
+          mnt-elitedesk-series = "mnt-elitedesk_series.mount";
           restic-backups-home = "restic-backups-home";
         };
       };
@@ -128,9 +127,22 @@ in {
       enable = true;
       nfs_host_name = "de-msa2";
       nfs_host_addr = "de-msa2";
-      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "series" "movies" "music" "magewe"];
+      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe"];
     };
   };
+  fileSystems = {
+    "/mnt/elitedesk_movies" = {
+      device = "elitedesk:/mnt/external_hdd/movies";
+      fsType = "nfs";
+      options = ["rw" "nofail"];
+    };
+    "/mnt/elitedesk_series" = {
+      device = "elitedesk:/mnt/external_hdd/series";
+      fsType = "nfs";
+      options = ["rw" "nofail"];
+    };
+  };
+
   programs.steam.enable = true;
 
   sops = {
