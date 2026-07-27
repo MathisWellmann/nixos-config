@@ -20,12 +20,13 @@
   };
   config = let
     cfg = config.services.mount_remote_nfs_exports;
+    local_host_name = lib.replaceStrings ["-"] ["_"] cfg.nfs_host_name;
   in
     lib.mkIf cfg.enable {
       fileSystems = builtins.listToAttrs (map (dir: let
           local_suffix = lib.replaceStrings ["/"] ["_"] dir;
         in {
-          name = "/mnt/${cfg.nfs_host_name}${local_suffix}";
+          name = "/mnt/${local_host_name}${local_suffix}";
           value = {
             device = "${cfg.nfs_host_addr}:${dir}";
             fsType = "nfs";
