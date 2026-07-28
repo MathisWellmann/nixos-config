@@ -369,20 +369,9 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Candidates retained on the pareto frontier, summed across selected instances. The gauge drains to 0 every round, so this shows the 30m maximum instead of the instantaneous (mostly 0) sample.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 57 },
-      "id": 44,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(max_over_time(agent_symbiont_pareto_frontier_size{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "candidates", "refId": "A" } ],
-      "title": "Frontier candidates",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Time since the most recent successfully completed training run. Training runs daily; alert past ~26h.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "s", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "yellow", "value": 93600 }, { "color": "red", "value": 180000 } ] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 57 },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 57 },
       "id": 45,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "time() - max(agent_symbiont_last_train_success_timestamp_seconds{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "staleness", "refId": "A" } ],
@@ -443,23 +432,9 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Candidates retained on the pareto frontier per instance. The raw gauge drains to 0 every round (comb pattern), so the 30m max envelope is plotted alongside it; envelope pinned at pareto_capacity means the eviction path is active.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 78 },
-      "id": 54,
-      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (instance) (max_over_time(agent_symbiont_pareto_frontier_size{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} (30m max)", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (instance) (agent_symbiont_pareto_frontier_size{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "{{instance}} (raw)", "refId": "B" }
-      ],
-      "title": "Frontier size by instance",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Pareto frontier verdicts for freshly evolved candidates (phase=round). The entered share is the key signal that the agentic loop still produces improving candidates.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 78 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 78 },
       "id": 55,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (verdict) (rate(agent_symbiont_frontier_verdicts_total{phase=\"round\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{verdict}}", "refId": "A" } ],
@@ -492,25 +467,11 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Median surefire ratio of every candidate retained on the pareto frontier, by rank (0 = best, descending). The raw gauge drains to 0 every round and vacated ranks are reset to 0, so the 30m max envelope is plotted. The spread between rank 0 and the worst rank shows frontier diversity; ranks collapsing onto each other means the frontier holds near-duplicates.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 94 },
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 94 },
       "id": 61,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (instance, rank) (max_over_time(agent_symbiont_frontier_surefire_ratio{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} rank {{rank}}", "refId": "A" } ],
       "title": "Frontier surefire ratios by rank (30m max)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Objectives of the best retained candidate per instance: reward = median excess-return surefire ratio, risk = p95 daily equity drawdown. The raw gauges drain to 0 every round, so the 30m max envelope is plotted. A non-positive reward means only a reference seed is retained.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 94 },
-      "id": 62,
-      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (instance) (max_over_time(agent_symbiont_frontier_best_reward{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} reward (30m max)", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (instance) (max_over_time(agent_symbiont_frontier_best_risk{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} risk (30m max)", "refId": "B" }
-      ],
-      "title": "Best candidate objectives by instance",
       "type": "timeseries"
     },
     {
