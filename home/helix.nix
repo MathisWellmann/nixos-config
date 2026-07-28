@@ -60,10 +60,6 @@
         "f" = "file_picker";
         "l" = "move_visual_line_up";
         "w" = "move_visual_line_down";
-        "m" = "move_char_left";
-        # "n" = "move_char_right";
-        # "N" = "move_next_word_start";
-        "M" = "move_prev_word_start";
       };
       editor = {
         scroll-lines = 3;
