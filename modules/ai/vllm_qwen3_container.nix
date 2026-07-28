@@ -2,7 +2,7 @@
 {
   port ? 8000,
   username ? "m",
-  model ? "Qwen/Qwen3.6-35B-A3B-NVFP4",
+  model ? "nvidia/Qwen3.6-35B-A3B-NVFP4",
   draftModel ? "z-lab/Qwen3.6-35B-A3B-DFlash",
   # 15 matches the drafter's block size of 16, which the model card recommends for longer
   # accept lengths. Drop to 7 with a block size of 8 when serving higher concurrency.
@@ -40,8 +40,8 @@
       cmd = [
         model
         "--trust-remote-code"
-        "--speculative-config"
-        ''{"model":"${draftModel}","num_speculative_tokens":${toString numSpeculativeTokens},"method":"dflash"}''
+        # "--speculative-config"
+        # ''{"model":"${draftModel}","num_speculative_tokens":${toString numSpeculativeTokens},"method":"dflash"}''
         "--enable-auto-tool-choice"
         "--tool-call-parser"
         "qwen3_coder"
