@@ -57,7 +57,7 @@
         "--max-model-len"
         "${toString maxModelLen}"
         "--gpu-memory-utilization"
-        "0.9"
+        "0.4"
         "--host"
         "0.0.0.0"
         "--port"
