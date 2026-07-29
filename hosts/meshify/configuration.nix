@@ -108,6 +108,7 @@ in {
           mnt-de-msa2-magewe = "mnt-de_msa2_nvme_pool_magewe.mount";
           mnt-de-msa2-music = "mnt-de_msa2_nvme_pool_music.mount";
           mnt-de-msa2-video = "mnt-de_msa2_nvme_pool_video.mount";
+          mnt-de-msa2-pdfs = "mnt-de_msa2_nvme_pool_pdfs.mount";
           mnt-elitedesk-movies = "mnt-elitedesk_movies.mount";
           mnt-elitedesk-series = "mnt-elitedesk_series.mount";
           restic-backups-home = "restic-backups-home";
@@ -127,7 +128,7 @@ in {
       enable = true;
       nfs_host_name = "de-msa2";
       nfs_host_addr = "de-msa2";
-      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe"];
+      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe" "pdfs"];
     };
   };
   fileSystems = {
