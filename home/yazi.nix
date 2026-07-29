@@ -7,31 +7,31 @@
       opener = {
         edit = [
           {
-            run = ''${pkgs.helix}/bin/hx "%s"'';
+            run = ''${pkgs.helix}/bin/hx "$@"'';
             block = true;
           }
         ];
         image = [
           {
-            run = ''${pkgs.viu}/bin/viu "%s" && sleep 10'';
+            run = ''${pkgs.viu}/bin/viu "$@" && sleep 10'';
             block = true;
           }
         ];
         mpv = [
           {
-            run = ''${pkgs.mpv}/bin/mpv "%s"'';
+            run = ''${pkgs.mpv}/bin/mpv "$@"'';
             block = true;
           }
         ];
         music = [
           {
-            run = ''${pkgs.moc}/bin/mocp "%s"'';
+            run = ''${pkgs.moc}/bin/mocp "$@"'';
             block = true;
           }
         ];
         pdf = [
           {
-            run = ''${pkgs.zathura}/bin/zathura "%s"'';
+            run = ''${pkgs.zathura}/bin/zathura "$@"'';
             desc = "Open PDF";
           }
         ];
