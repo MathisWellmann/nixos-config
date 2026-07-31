@@ -23,6 +23,7 @@
     nixidy.url = "github:arnarg/nixidy";
     maki.url = "github:tontinton/maki";
     eilmeldung.url = "github:christo-auer/eilmeldung";
+    rustgrep.url = "git+https://radicle.dpc.pw/z3wPTYCEHukxHQNU2fQ2b3eASNw8a.git";
     # Helm charts packaged as nix derivations, used by nixidy applications.
     nixhelm = {
       url = "github:farcaller/nixhelm";
