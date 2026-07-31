@@ -7,11 +7,13 @@
   ...
 }: let
   modelsPreset = pkgs.writeText "llama-models.ini" (''
-    version = 1
-  '' + lib.concatMapStringsSep "\n" (model: ''
-    [${model}]
-    hf-repo = ${model}
-  '') models);
+      version = 1
+    ''
+    + lib.concatMapStringsSep "\n" (model: ''
+      [${model}]
+      hf-repo = ${model}
+    '')
+    models);
 in {
   services.llama-cpp = {
     enable = true;

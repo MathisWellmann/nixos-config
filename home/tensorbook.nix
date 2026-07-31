@@ -1,10 +1,12 @@
-{pkgs, ...}: {
+{pkgs, ...}: let
+  wallpaper = "~/wallpaper_animated_orange_train_at_sunset_3840x2160.gif";
+in {
   imports = [
     ./home_hyprland.nix
   ];
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''hyprctl setcursor 'Banana' 48 && ashell'';
+      "exec-once" = ''ashell & hyprctl setcursor 'Banana' 48 && mpvpaper DP-4 ${wallpaper} -o "loop" --fork'';
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         # London

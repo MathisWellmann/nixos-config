@@ -20,6 +20,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
+    ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/virtualization_host.nix
@@ -74,6 +75,12 @@ in {
     resolved.enable = true;
     blueman.enable = true;
     trezord.enable = true;
+    mount_remote_nfs_exports = {
+      enable = true;
+      nfs_host_name = "de-msa2";
+      nfs_host_addr = "de-msa2";
+      nfs_dirs = map (dir: "/nvme_pool/${dir}") ["video" "music" "magewe" "pdfs"];
+    };
   };
   fileSystems = let
     fsType = "nfs";
@@ -96,22 +103,6 @@ in {
     };
     "/mnt/elitedesk_series" = {
       device = "elitedesk:/mnt/external_hdd/series";
-      inherit fsType options;
-    };
-    "/mnt/de-msa2_nvme_pool_magewe" = {
-      device = "de-msa2:/nvme_pool/magewe";
-      inherit fsType options;
-    };
-    "/mnt/de-msa2_nvme_pool_music" = {
-      device = "de-msa2:/nvme_pool/music";
-      inherit fsType options;
-    };
-    "/mnt/de-msa2_nvme_pool_video" = {
-      device = "de-msa2:/nvme_pool/video";
-      inherit fsType options;
-    };
-    "/mnt/de-msa2_nvme_pool_pdfs" = {
-      device = "de-msa2:/nvme_pool/pdfs";
       inherit fsType options;
     };
   };
