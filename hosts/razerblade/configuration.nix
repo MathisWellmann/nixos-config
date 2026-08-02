@@ -21,6 +21,7 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mount_external_drives.nix
     ./../../modules/mount_remote_nfs_exports.nix
+    (import ./../../modules/remote_builder.nix {})
     ./../../modules/prometheus_exporter.nix
     ./../../modules/backup_home_to_remote.nix
     ./../../modules/virtualization_host.nix
