@@ -46,6 +46,10 @@ in {
       baseUrl = "http://localhost:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
     })
+    (import ./../../modules/ai/llama-cpp.nix {
+      models = const.localModels;
+      port = const.llama-cpp_port;
+    })
     forgejo_runner
   ];
 
@@ -90,12 +94,6 @@ in {
       };
       uptime.prefix = "up";
     };
-  };
-  services.open-webui = {
-    enable = true;
-    host = "0.0.0.0";
-    port = const.open-webui_port;
-    openFirewall = true;
   };
 
   nix.settings.system-features = ["nixos-test" "benchmark" "big-parallel" "kvm"];
