@@ -43,8 +43,6 @@ in {
       models = const.localModels;
       port = const.llama-cpp_port;
     })
-    # Qwen3.6 + DFlash instead of `vllm_cuda_container.nix` (Laguna-S-2.1) for now,
-    # which does not fit into this machine's VRAM.
     (import ./../../modules/ai/vllm_qwen3_container.nix {
       port = const.vllm_port;
       model = const.vllmModel;

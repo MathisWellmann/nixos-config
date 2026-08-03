@@ -43,12 +43,20 @@ in {
     (import ./../../modules/blk_iocost.nix {devices = ["nvme0n1"];})
     (import ./../../modules/github_runner.nix {repos = ["symbiont"];})
     (import ./../../modules/ai/pi-agent.nix {
-      baseUrl = "http://localhost:${toString const.llama-cpp_port}/v1";
+      baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
+      inherit (const) localModel;
+      vllmBaseUrl = "http://127.0.0.1:${toString const.vllm_port}/v1";
+      vllmModels = [const.vllmModel];
     })
     (import ./../../modules/ai/llama-cpp.nix {
       models = const.localModels;
       port = const.llama-cpp_port;
+    })
+    (import ./../../modules/ai/vllm_qwen3_container.nix {
+      port = const.vllm_port;
+      model = const.vllmModel;
+      inherit (global_const) username;
     })
     forgejo_runner
   ];
