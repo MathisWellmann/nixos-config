@@ -34,11 +34,9 @@ in {
       # routed by their OpenAI `model` field and models load on demand.
       models-preset = modelsPreset;
       models-max = 2;
-      # Load fully into VRAM (no disk mmap)
-      no-mmap = true;
-      # CPU / threading (7950X: 16C/32T)
-      threads = 16; # inference threads
-      threads-batch = 16; # batch threads
+      # no-mmap = true; # Load fully into VRAM (no disk mmap)
+      threads = 64; # inference threads
+      threads-batch = 64; # batch threads
       batch-size = 2048; # batch size
       ubatch-size = 512; # uBatch size
       poll = 80; # high polling for low latency
@@ -51,7 +49,7 @@ in {
   environment.systemPackages = with pkgs; [
     llama-cpp
   ];
-  # ponytail: HUGGINGFACE_HUB_CACHE still needed for model discovery under the dynamic user.
+  # HUGGINGFACE_HUB_CACHE
   systemd.services.llama-cpp.serviceConfig.Environment =
-    lib.mkAfter ["HUGGINGFACE_HUB_CACHE=/var/cache/llama-cpp/huggingface"];
+    lib.mkAfter ["HUGGINGFACE_HUB_CACHE=/home/.cache/huggingface"];
 }

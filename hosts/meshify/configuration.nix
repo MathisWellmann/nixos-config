@@ -49,7 +49,6 @@ in {
       inherit (global_const) username;
     })
     # monero_miner
-    # tensorrt
   ];
   boot = {
     kernelPackages = pkgs.linuxPackages_latest;
