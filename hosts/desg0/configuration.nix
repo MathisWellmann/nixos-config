@@ -6,7 +6,7 @@
   pkgs,
   ...
 }: let
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
   de-msa2_const = import ../../hosts/de-msa2/constants.nix {};
   global_const = import ../../global_constants.nix;
   forgejo_runner = import ./../../modules/forgejo_runner.nix {

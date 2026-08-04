@@ -1,4 +1,4 @@
-_: {
+{
   vllm_port = 8000;
   llama-cpp_port = 8001;
   vllmModel = "nvidia/Qwen3.6-35B-A3B-NVFP4";

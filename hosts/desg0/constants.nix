@@ -1,4 +1,4 @@
-_: {
+{
   hostname = "desg0";
 
   vllm_port = 8000;

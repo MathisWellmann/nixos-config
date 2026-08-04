@@ -10,7 +10,7 @@
 }: let
   # TODO: move to `constants.nix`
   hostname = "meshify";
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
   global_const = import ../../global_constants.nix;
 in {
   imports = [
