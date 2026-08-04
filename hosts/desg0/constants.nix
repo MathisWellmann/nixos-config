@@ -3,6 +3,7 @@
 
   vllm_port = 8000;
   llama-cpp_port = 8001;
+  nemotron_voicechat_port = 9000;
   vllmModel = "nvidia/Qwen3.6-35B-A3B-NVFP4";
   localModel = "unsloth/gemma-4-31B-it-GGUF:UD-Q4_K_XL";
   localModels = [

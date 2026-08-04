@@ -3,10 +3,8 @@
   port ? 8000,
   username ? "m",
   model ? "nvidia/Qwen3.6-35B-A3B-NVFP4",
-  draftModel ? "z-lab/Qwen3.6-35B-A3B-DFlash",
   # 15 matches the drafter's block size of 16, which the model card recommends for longer
   # accept lengths. Drop to 7 with a block size of 8 when serving higher concurrency.
-  numSpeculativeTokens ? 15,
   maxModelLen ? 262144,
   maxNumSeqs ? 32,
 }: {
@@ -57,7 +55,7 @@
         "--max-model-len"
         "${toString maxModelLen}"
         "--gpu-memory-utilization"
-        "0.4"
+        "0.3"
         "--host"
         "0.0.0.0"
         "--port"

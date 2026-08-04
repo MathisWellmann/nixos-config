@@ -34,7 +34,7 @@ in {
       # No top-level model: this starts llama-server in router mode. Requests are
       # routed by their OpenAI `model` field and models load on demand.
       models-preset = modelsPreset;
-      models-max = 2;
+      models-max = 1;
       # no-mmap = true; # Load fully into VRAM (no disk mmap)
       threads = 64; # inference threads
       threads-batch = 64; # batch threads
