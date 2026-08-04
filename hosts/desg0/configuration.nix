@@ -92,6 +92,7 @@ in {
       };
       filesystems = {
         root = "/";
+        home = "/home";
       };
       service_status = {
         tailscale = "tailscaled";
