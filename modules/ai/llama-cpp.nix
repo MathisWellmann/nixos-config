@@ -6,6 +6,7 @@
   lib,
   ...
 }: let
+  global_const = import ../../global_constants.nix;
   modelsPreset = pkgs.writeText "llama-models.ini" (''
       version = 1
     ''
@@ -51,5 +52,5 @@ in {
   ];
   # HUGGINGFACE_HUB_CACHE
   systemd.services.llama-cpp.serviceConfig.Environment =
-    lib.mkAfter ["HUGGINGFACE_HUB_CACHE=/home/.cache/huggingface"];
+    lib.mkAfter ["HUGGINGFACE_HUB_CACHE=/home/${global_const.username}/.cache/llama-cpp"];
 }
