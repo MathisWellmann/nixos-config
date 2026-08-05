@@ -25,6 +25,10 @@ in {
       systemd-boot.enable = true;
       efi.canTouchEfiVariables = true;
     };
+    kernelParams = [
+      "iommu=pt"
+      "nohibernate"
+    ];
   };
 
   fileSystems."/" = {
