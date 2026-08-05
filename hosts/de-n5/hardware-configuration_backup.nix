@@ -27,27 +27,29 @@ in {
     };
   };
 
-  fileSystems."/" = {
-    device = "/dev/disk/by-uuid/d901cb28-7e63-46fc-ac6a-5f91c013e85f";
-    fsType = "ext4";
-  };
-
-  fileSystems."/boot" = {
-    device = "/dev/disk/by-uuid/579E-5A6C";
-    fsType = "vfat";
-    options = ["fmask=0077" "dmask=0077"];
+  fileSystems = {
+    "/" = {
+      device = "/dev/disk/by-uuid/24638f70-8606-4acb-9905-0058a6fffcc9";
+      fsType = "ext4";
+    };
+    "/boot" = {
+      device = "/dev/disk/by-uuid/7514-EBBB";
+      fsType = "vfat";
+      options = ["fmask=0077" "dmask=0077"];
+    };
   };
 
   swapDevices = [];
 
   nixpkgs.hostPlatform = lib.mkDefault "x86_64-linux";
   hardware.cpu.amd.updateMicrocode = lib.mkDefault config.hardware.enableRedistributableFirmware;
+
   networking = {
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "6bfb96a2";
 
     useDHCP = lib.mkDefault false;
-    networkmanager.enable = false;
+    networkmanager.enable = true;
 
     defaultGateway = {
       interface = main_nic;
@@ -72,7 +74,7 @@ in {
         # Can also manually set using `sudo ethtool -s enp3s0 wol g`
         wakeOnLan.enable = true;
         # Primarily set here to know where to send wakeOnLan packet using `wakeonlan $macAddress`
-        macAddress = "38:05:25:32:a7:22";
+        macAddress = "38:05:25:32:a7:21";
       };
     };
   };
