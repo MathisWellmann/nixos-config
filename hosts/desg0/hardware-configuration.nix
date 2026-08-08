@@ -39,6 +39,7 @@ in {
     "/home" = {
       device = "/dev/disk/by-uuid/6c617259-941c-4ac3-a96d-2abfb44f94fb";
       fsType = "ext4";
+      options = ["noatime" "discard"];
     };
   };
 
