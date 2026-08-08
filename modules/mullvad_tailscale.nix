@@ -98,12 +98,14 @@ in {
   # Add more peers here as needed (see `tailscale status` for their IPs).
   networking.hosts = {
     "100.83.142.17" = ["de-msa2"]; # NFS exports + k3s ingress (*.k3s.lan)
-    "100.75.100.6" = ["de-n5"];
+    # NOTE: reassigned when the host was reinstalled (was 100.75.100.6).
+    "100.107.128.19" = ["de-n5"];
     "100.74.91.37" = ["desg0"];
     "100.85.196.111" = ["elitedesk"];
     "100.64.102.10" = ["poweredge"];
     "100.105.178.16" = ["razerblade"];
-    "100.89.173.74" = ["superserver"];
+    "100.80.191.30" = ["superserver"];
+    "100.72.201.97" = ["tensorbook"];
   };
 
   # Load the exclusion table at boot. It lives in its own nftables table,
