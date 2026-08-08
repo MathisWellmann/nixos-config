@@ -7,11 +7,14 @@
 
   node_scrape_configs = let
     # Hosts that are INTENTIONALLY powered off most of the time (laptops,
-    # desktops, the wake-on-lan backup target de-n5). Their targets get
-    # `always_on="false"` so the ScrapeTargetDown alert (alerting.nix) skips
-    # them -- before this, their permanently-firing down-alerts re-paged every
-    # 4h and buried real alerts. The always-on k3s/infra hosts (this host,
-    # desg0, elitedesk) stay covered.
+    # desktops). Their targets get `always_on="false"` so the ScrapeTargetDown
+    # alert (alerting.nix) skips them -- before this, their permanently-firing
+    # down-alerts re-paged every 4h and buried real alerts. The always-on
+    # k3s/infra hosts (this host, desg0, de-n5) stay covered.
+    #
+    # de-n5 left this list on 2026-08-08: it took over elitedesk's k3s server
+    # slot, so it is now an etcd quorum member. If it goes down the cluster
+    # loses fault tolerance, and that must page.
     intermittent_hosts = ["meshify" "superserver" "poweredge" "razerblade" "tensorbook"];
   in
     map (host: {
@@ -32,7 +35,7 @@
             else "true";
         }
       ];
-    }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "elitedesk" "tensorbook"];
+    }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "tensorbook"];
   # Scrapes the tikr pods running in the k3s cluster (deployments live in the
   # `nexus` repo, `env/prod.nix`). Pods are discovered through the Kubernetes
   # API: any pod annotated with `prometheus.io/scrape: "true"` is kept and

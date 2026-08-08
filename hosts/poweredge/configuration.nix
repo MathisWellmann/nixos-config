@@ -130,18 +130,22 @@ in {
   };
 
   ### Backup Section ###
-  services.restic.backups = {
-    zfs_sata_ssd_pool = {
-      initialize = true;
-      paths = [
-        "/SATA_SSD_POOL/*"
-      ];
-      passwordFile = "/etc/nixos/secrets/restic/password";
-      repository = "/mnt/${const.backup_host}_backup/restic/SATA_SSD_POOL";
-      pruneOpts = ["--keep-daily 14"];
-      user = "${global_const.username}";
-    };
-  };
+  # DISABLED 2026-08-08: the repository lived on `elitedesk:/mnt/backup_hdd`,
+  # which was decommissioned. Re-enable once a new backup target is chosen and
+  # `backup_host`/`backup_target_dir` in ./constants.nix point at it -- leaving
+  # it enabled would just fail against a missing mount.
+  # services.restic.backups = {
+  #   zfs_sata_ssd_pool = {
+  #     initialize = true;
+  #     paths = [
+  #       "/SATA_SSD_POOL/*"
+  #     ];
+  #     passwordFile = "/etc/nixos/secrets/restic/password";
+  #     repository = "/mnt/${const.backup_host}_backup/restic/SATA_SSD_POOL";
+  #     pruneOpts = ["--keep-daily 14"];
+  #     user = "${global_const.username}";
+  #   };
+  # };
   environment.systemPackages = with pkgs; [
     restic
     radicle-node
@@ -186,7 +190,6 @@ in {
       service_status = {
         tailscale = "tailscaled";
         prometheus-exporter = "prometheus-node-exporter";
-        mnt-elitedesk_backup = "mnt-elitedesk_backup.mount";
         photoprism = "photoprism";
         greptimedb = "podman-greptimedb";
         cloudflare-tunnel = "cloudflared-tunnel-poweredge";
@@ -198,10 +201,6 @@ in {
     options = ["rw" "rsize=131072" "wsize=131072"];
     fsType = "nfs";
   in {
-    "/mnt/${const.backup_host}_backup" = {
-      device = "${const.backup_host}:${const.backup_target_dir}";
-      inherit fsType options;
-    };
     "/mnt/desg0_magewe" = {
       device = "${static_ips.desg0_ip}:/nvme_pool/magewe";
       inherit fsType options;
@@ -210,12 +209,14 @@ in {
       device = "${static_ips.desg0_ip}:/nvme_pool/ilka";
       inherit fsType options;
     };
-    "/mnt/elitedesk_movies" = {
-      device = "${static_ips.elitedesk_ip}:/mnt/external_hdd/movies";
+    # The media drive moved from elitedesk to de-msa2 (2026-08-08). This host
+    # mounts by IP because it does not resolve Tailscale names.
+    "/mnt/de_msa2_movies" = {
+      device = "${static_ips.de-msa2_ip}:/mnt/external_hdd/movies";
       inherit fsType options;
     };
-    "/mnt/elitedesk_series" = {
-      device = "${static_ips.elitedesk_ip}:/mnt/external_hdd/series";
+    "/mnt/de_msa2_series" = {
+      device = "${static_ips.de-msa2_ip}:/mnt/external_hdd/series";
       inherit fsType options;
     };
   };

@@ -22,7 +22,7 @@ from the same flake. Add a machine: drop a directory, add one line to
 |------|------|
 | `de-msa2` | k3s server + monitoring/alerting + git forge + self-hosted apps |
 | `desg0` | GPU node (remote builder, LLM serving) |
-| `meshify` / `superserver` / `poweredge` / `elitedesk` / `de-n5` | servers & nodes |
+| `meshify` / `superserver` / `poweredge` / `de-n5` | servers & nodes |
 | `razerblade` / `tensorbook` | laptops (Hyprland desktop) |
 
 ### ☸️ k3s cluster with GitOps via nixidy + ArgoCD

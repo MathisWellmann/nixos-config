@@ -9,7 +9,7 @@
 }: let
   hostname = "tensorbook";
   global_const = import ../../global_constants.nix;
-  meshify_const = import ./../meshify/constants.nix {};
+  meshify_const = import ./../meshify/constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.

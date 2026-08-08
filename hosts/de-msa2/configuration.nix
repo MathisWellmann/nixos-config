@@ -8,7 +8,7 @@
 }: let
   global_const = import ../../global_constants.nix;
   const = import ./constants.nix {};
-  meshify_const = import ./../meshify/constants.nix {};
+  meshify_const = import ./../meshify/constants.nix;
   searx = import ./../../modules/searx.nix {port = const.searx_port;};
   readeck = import ./readeck.nix {
     dir = "/nvme_pool/readeck";
@@ -115,6 +115,7 @@ in {
       };
       filesystems = {
         root = "/";
+        external_hdd = "/mnt/external_hdd";
         nvme_pool_magewe = "/nvme_pool/magewe";
         nvme_pool_ilka = "/nvme_pool/ilka";
         nvme_pool_forgejo = "/nvme_pool/forgejo";
@@ -127,6 +128,7 @@ in {
         tailscale = "tailscaled";
         home-manager = "home-manager-m";
         nfs-server = "nfs-server";
+        jellyfin = "jellyfin";
         zfs-replication = "zfs-replication";
         zfs-scrub = "zfs-scrub.timer";
         harmonia = "harmonia.socket";
@@ -162,7 +164,24 @@ in {
     const.habit_trove_port
   ];
 
+  # The media drive moved here from the decommissioned `elitedesk` (2026-08-08);
+  # same physical btrfs disk, same UUID. `nofail` keeps a boot from hanging if
+  # the drive is ever pulled -- this host runs the k3s control plane.
+  fileSystems."/mnt/external_hdd" = {
+    device = "/dev/disk/by-uuid/e15ce1db-586f-4e7b-a5d8-d8a4a0b45e48";
+    fsType = "btrfs";
+    options = [
+      "users"
+      "nofail"
+    ];
+  };
+
   services = {
+    # Also inherited from elitedesk, serving /mnt/external_hdd.
+    jellyfin = {
+      enable = true;
+      openFirewall = true;
+    };
     grafana = {
       enable = true;
       settings = {

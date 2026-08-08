@@ -106,8 +106,8 @@ in {
           mnt-de-msa2-music = "mnt-de_msa2_nvme_pool_music.mount";
           mnt-de-msa2-video = "mnt-de_msa2_nvme_pool_video.mount";
           mnt-de-msa2-pdfs = "mnt-de_msa2_nvme_pool_pdfs.mount";
-          mnt-elitedesk-movies = "mnt-elitedesk_movies.mount";
-          mnt-elitedesk-series = "mnt-elitedesk_series.mount";
+          mnt-de-msa2-movies = "mnt-de_msa2_movies.mount";
+          mnt-de-msa2-series = "mnt-de_msa2_series.mount";
           restic-backups-home = "restic-backups-home";
         };
       };
@@ -129,13 +129,14 @@ in {
     };
   };
   fileSystems = {
-    "/mnt/elitedesk_movies" = {
-      device = "elitedesk:/mnt/external_hdd/movies";
+    # The media drive moved from elitedesk to de-msa2 (2026-08-08).
+    "/mnt/de_msa2_movies" = {
+      device = "de-msa2:/mnt/external_hdd/movies";
       fsType = "nfs";
       options = ["rw" "nofail"];
     };
-    "/mnt/elitedesk_series" = {
-      device = "elitedesk:/mnt/external_hdd/series";
+    "/mnt/de_msa2_series" = {
+      device = "de-msa2:/mnt/external_hdd/series";
       fsType = "nfs";
       options = ["rw" "nofail"];
     };

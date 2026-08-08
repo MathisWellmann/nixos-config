@@ -106,12 +106,13 @@ in {
       "x-systemd.automount" # Only mount when directory is accessed.
     ];
   in {
-    "/mnt/elitedesk_movies" = {
-      device = "elitedesk:/mnt/external_hdd/movies";
+    # The media drive moved from elitedesk to de-msa2 (2026-08-08).
+    "/mnt/de_msa2_movies" = {
+      device = "de-msa2:/mnt/external_hdd/movies";
       inherit fsType options;
     };
-    "/mnt/elitedesk_series" = {
-      device = "elitedesk:/mnt/external_hdd/series";
+    "/mnt/de_msa2_series" = {
+      device = "de-msa2:/mnt/external_hdd/series";
       inherit fsType options;
     };
   };

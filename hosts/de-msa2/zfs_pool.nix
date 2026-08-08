@@ -71,6 +71,28 @@ in {
       exports_for_razerblade =
         lib.strings.concatMapStrings (dir: "/nvme_pool/" + dir + " razerblade(rw,sync,no_subtree_check)\n")
         common_dirs;
+
+      # Media dirs on the external btrfs drive that moved here from the
+      # decommissioned `elitedesk` (2026-08-08). poweredge still mounts by IP
+      # because it does not resolve Tailscale names.
+      media_dirs = [
+        "movies"
+        "series"
+      ];
+      media_exports =
+        lib.strings.concatMapStrings (
+          dir:
+            "/mnt/external_hdd/"
+            + dir
+            + " meshify(rw,sync,no_subtree_check)\n"
+            + "/mnt/external_hdd/"
+            + dir
+            + " razerblade(rw,sync,no_subtree_check)\n"
+            + "/mnt/external_hdd/"
+            + dir
+            + " ${static_ips.poweredge_ip}(rw,sync,no_subtree_check)\n"
+        )
+        media_dirs;
     in {
       enable = true;
       exports = lib.strings.concatStrings [
@@ -78,6 +100,7 @@ in {
         exports_for_razerblade
         # exports_for_poweredge
         "/nvme_pool/magewe tensorbook(rw,sync,no_subtree_check)\n"
+        media_exports
       ];
     };
   };

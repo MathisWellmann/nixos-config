@@ -10,7 +10,7 @@
 # Add a new entry to `services` below to expose another host-local service
 # the same way -- nothing else needed.
 _: let
-  meshify_const = import ../hosts/meshify/constants.nix {};
+  meshify_const = import ../hosts/meshify/constants.nix;
 
   # Each entry renders a Namespace + selector-less Service + EndpointSlice +
   # TLS Ingress. `name` is the app/k8s name, `host` the `*.k3s.lan` FQDN,

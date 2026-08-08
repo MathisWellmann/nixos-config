@@ -101,7 +101,6 @@ in {
     # NOTE: reassigned when the host was reinstalled (was 100.75.100.6).
     "100.107.128.19" = ["de-n5"];
     "100.74.91.37" = ["desg0"];
-    "100.85.196.111" = ["elitedesk"];
     "100.64.102.10" = ["poweredge"];
     "100.105.178.16" = ["razerblade"];
     "100.80.191.30" = ["superserver"];

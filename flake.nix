@@ -110,9 +110,6 @@
       superserver = mkHost "superserver" [
         inputs.agenix.nixosModules.default
       ];
-      elitedesk = mkHost "elitedesk" [
-        inputs.agenix.nixosModules.default
-      ];
       poweredge = mkHost "poweredge" [];
       razerblade = mkHost "razerblade" [
         {_module.args = inputs;}
