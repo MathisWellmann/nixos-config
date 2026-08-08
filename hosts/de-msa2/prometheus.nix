@@ -12,7 +12,7 @@
     # them -- before this, their permanently-firing down-alerts re-paged every
     # 4h and buried real alerts. The always-on k3s/infra hosts (this host,
     # desg0, elitedesk) stay covered.
-    intermittent_hosts = ["meshify" "superserver" "poweredge" "razerblade" "de-n5" "tensorbook"];
+    intermittent_hosts = ["meshify" "superserver" "poweredge" "razerblade" "tensorbook"];
   in
     map (host: {
       job_name = "${host}-node";

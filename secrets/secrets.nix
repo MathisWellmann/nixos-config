@@ -7,6 +7,11 @@ let
 
   user_desg0 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIAtbndl4uPNgCcQFyffE6yD0sUzp96bhaCQdMHUR6iqN";
   system_desg0 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIECiXqvyc2hfQ4vOTGfamVQhzA+KVk2r0AjnVnpx3kTo";
+
+  # de-n5 replaces elitedesk as the third k3s server (etcd quorum member).
+  # It has no per-user key pair, so only the host key is a recipient; rekey
+  # from de-msa2 or desg0, which do hold user identities.
+  system_de_n5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8Ea4zf+zxU0JZVppnFFLofPlQnzM6W039msFPiSPu+";
 in {
   "k3s_token.age" = {
     publicKeys = [
@@ -16,6 +21,7 @@ in {
       system_elitedesk
       user_desg0
       system_desg0
+      system_de_n5
     ];
     armor = true;
   };

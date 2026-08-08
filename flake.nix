@@ -126,6 +126,7 @@
         {_module.args = inputs;}
       ];
       de-n5 = mkHost "de-n5" [
+        inputs.agenix.nixosModules.default
         {_module.args = inputs;}
       ];
       tensorbook = mkHost "tensorbook" [
