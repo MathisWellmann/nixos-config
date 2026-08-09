@@ -69,6 +69,9 @@ in {
     hostName = const.hostname;
     # hostId can be generated with `head -c4 /dev/urandom | od -A none -t x4`
     hostId = "1840e132";
+    firewall.allowedTCPPorts = [
+      9000 # Local symbiont binary exposing `/metrics`
+    ];
   };
 
   home-manager = {

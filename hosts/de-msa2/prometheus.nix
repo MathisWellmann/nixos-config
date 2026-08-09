@@ -419,7 +419,7 @@
         job_name = "symbiont";
         inherit scrape_interval scrape_timeout;
         static_configs = [
-          {targets = ["meshify:9000"];}
+          {targets = ["desg0:9000"];}
         ];
       }
       {
