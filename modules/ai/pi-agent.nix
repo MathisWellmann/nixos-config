@@ -1,6 +1,5 @@
 {
   baseUrl ? "http://localhost:1234/v1",
-  localModel ? "local",
   enableAgentica ? false,
   agenicaPath ? "/home/m/symbolica/agentica-mcp-runtime",
   imageWidthCells ? 180,
@@ -52,22 +51,7 @@
   };
 
   pi-models-config = (pkgs.formats.json {}).generate "pi-agent-models.json" {
-    providers =
-      {
-        "${baseUrl}" = {
-          inherit baseUrl;
-          api = "openai-completions";
-          apiKey = "blah";
-          models = [
-            {
-              id = "${localModel}";
-              contextWindow = 250000;
-              reasoning = true;
-            }
-          ];
-        };
-      }
-      // vllmProvider;
+    providers = vllmProvider;
   };
 
   # Rewrites `models.json` on every `pi` launch: the static Nix-generated config,

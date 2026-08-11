@@ -4,7 +4,7 @@
 Usage:
   python3 scripts/benchmark_vllm.py [--url http://127.0.0.1:8000/v1/chat/completions]
                                     [--model nvidia/Qwen3.6-35B-A3B-NVFP4]
-                                    [--concurrencies 2,4,8,16,32]
+                                    [--concurrencies 2,4,8,16,32,64,128,256]
                                     [--max-tokens 128]
 """
 

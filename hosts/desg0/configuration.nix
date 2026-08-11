@@ -45,7 +45,6 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
-      inherit (const) localModel;
       vllmBaseUrl = "http://127.0.0.1:${toString const.vllm_port}/v1";
       vllmModels = [const.vllmModel];
     })
@@ -53,9 +52,13 @@ in {
       models = const.localModels;
       port = const.llama-cpp_port;
     })
-    (import ./../../modules/ai/vllm_qwen3_container.nix {
+    # (import ./../../modules/ai/vllm_qwen3_container.nix {
+    #   port = const.vllm_port;
+    #   model = const.vllmModel;
+    #   inherit (global_const) username;
+    # })
+    (import ./../../modules/ai/vllm_nemotron_container.nix {
       port = const.vllm_port;
-      model = const.vllmModel;
       inherit (global_const) username;
     })
     # (import ./../../modules/ai/nemotron_voicechat_container.nix {
