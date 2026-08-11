@@ -50,7 +50,12 @@ in {
   environment.systemPackages = with pkgs; [
     llama-cpp
   ];
-  # HUGGINGFACE_HUB_CACHE
-  systemd.services.llama-cpp.serviceConfig.Environment =
-    lib.mkAfter ["HUGGINGFACE_HUB_CACHE=/home/${global_const.username}/.cache/llama-cpp"];
+  # HUGGINGFACE_HUB_CACHE and LLAMA_CACHE
+  systemd.services.llama-cpp.serviceConfig = {
+    Environment = [
+      "HUGGINGFACE_HUB_CACHE=/home/${global_const.username}/.cache/llama-cpp"
+      "LLAMA_CACHE=/home/${global_const.username}/.cache/llama-cpp"
+    ];
+    ProtectHome = lib.mkForce "read-only"; # Allow systemd service access to /home
+  };
 }

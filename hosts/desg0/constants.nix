@@ -15,7 +15,7 @@
     "unsloth/Muse-Glimmer-30B-GGUF:Q4_K_XL"
     "AtomicChat/Ling-3.0-flash-GGUF:Q4_K_S"
     "bartowski/Kwaipilot_KAT-Coder-V2.5-Dev-GGUF:Q4_K_M"
-    "bartowski/endless-frontier_BigBang-v1-GGUFF:Q4_K_M"
-    "ProCreations/grug--35b-qat-q4-gguf:Q4_K_M"
+    "bartowski/endless-frontier_BigBang-v1-GGUF:Q4_K_M"
+    "ProCreations/grug-35b-qat-q4-gguf:Q4_K_M"
   ];
 }
