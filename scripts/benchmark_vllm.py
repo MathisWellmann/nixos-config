@@ -22,6 +22,7 @@ async def send_request(session, url, model, prompt, max_tokens, req_id):
         "messages": [{"role": "user", "content": prompt}],
         "max_tokens": max_tokens,
         "stream": True,
+        "stream_options": {"include_usage": True},
         "temperature": 0.6,
     }
 
@@ -44,11 +45,9 @@ async def send_request(session, url, model, prompt, max_tokens, req_id):
                         ttft = now - start_time
                     try:
                         data = json.loads(line_str[6:])
-                        choices = data.get("choices", [])
-                        if choices:
-                            delta = choices[0].get("delta", {})
-                            if delta.get("content") or delta.get("reasoning"):
-                                output_tokens += 1
+                        usage = data.get("usage")
+                        if usage and usage.get("completion_tokens"):
+                            output_tokens = usage["completion_tokens"]
                     except Exception:
                         pass
 

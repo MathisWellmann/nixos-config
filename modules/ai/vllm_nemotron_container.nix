@@ -4,7 +4,8 @@
   username ? "m",
   model ? "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4",
   maxModelLen ? 262144,
-  maxNumSeqs ? 32,
+  maxNumSeqs ? 128,
+  draftModel ? "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4-DSpark",
 }: {
   networking.firewall.allowedTCPPorts = [port];
   hardware.nvidia-container-toolkit.enable = true;
@@ -18,7 +19,7 @@
     backend = "podman";
 
     containers.vllm-nemotron = {
-      image = "docker.io/vllm/vllm-openai:v0.26.0-x86_64-cu129";
+      image = "docker.io/vllm/vllm-openai:v0.27.1-x86_64-cu129";
       ports = ["${toString port}:8000"];
       volumes = [
         "/home/${username}/.cache/huggingface:/root/.cache/huggingface"
@@ -45,7 +46,24 @@
         "--max-model-len"
         "${toString maxModelLen}"
         "--gpu-memory-utilization"
-        "0.25"
+        "0.35"
+        "--enable-prefix-caching"
+        "--async-scheduling"
+        "--kv-cache-dtype"
+        "fp8"
+        "--speculative_config.model"
+        draftModel
+        "--speculative_config.num_speculative_tokens"
+        "3"
+        "--mamba-backend"
+        "flashinfer"
+        "--mamba-cache-mode"
+        "align"
+        "--mamba-ssm-cache-dtype"
+        "float16"
+        "--enable-mamba-cache-stochastic-rounding"
+        "--mamba-cache-philox-rounds"
+        "5"
         "--host"
         "0.0.0.0"
         "--port"
