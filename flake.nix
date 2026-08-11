@@ -146,6 +146,9 @@
         sync_starred_github_to_forgejo = inputs.flake-utils.lib.mkApp {
           drv = import scripts/sync_starred_github_to_forgejo.nix {inherit pkgs;};
         };
+        llama_bench_matrix = inputs.flake-utils.lib.mkApp {
+          drv = import scripts/llama_bench_matrix.nix {inherit pkgs;};
+        };
         hf = inputs.flake-utils.lib.mkApp {
           drv = self.packages.${system}.hf;
           name = "hf";
