@@ -35,7 +35,6 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
-      inherit (const) localModel;
       vllmBaseUrl = "http://127.0.0.1:${toString const.vllm_port}/v1";
       vllmModels = [const.vllmModel];
     })
