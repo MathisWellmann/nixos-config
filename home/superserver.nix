@@ -5,19 +5,34 @@
   wayland.windowManager.hyprland = {
     settings = {
       env = [
-        "LIBVA_DRIVER_NAME,nvidia"
-        "XDG_SESSION_TYPE,wayland"
-        "GBM_BACKEND,nvidia-drm"
-        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+        {_args = ["LIBVA_DRIVER_NAME" "nvidia"];}
+        {_args = ["XDG_SESSION_TYPE" "wayland"];}
+        {_args = ["GBM_BACKEND" "nvidia-drm"];}
+        {_args = ["__GLX_VENDOR_LIBRARY_NAME" "nvidia"];}
       ];
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
-        "DP-1, 3840x2160@160, 960x0, 1.5, transform, 1"
-        "DP-2, 1920x1080@60, 2400x0, 1"
-        "DP-3, 1920x1080@60, 2400x1080, 1"
-        # "DP-4, 1920x1080@60, 0x1080, 1"
+        {
+          output = "DP-1";
+          mode = "3840x2160@160";
+          position = "960x0";
+          scale = 1.5;
+          transform = 1;
+        }
+        {
+          output = "DP-2";
+          mode = "1920x1080@60";
+          position = "2400x0";
+          scale = 1;
+        }
+        {
+          output = "DP-3";
+          mode = "1920x1080@60";
+          position = "2400x1080";
+          scale = 1;
+        }
       ];
-      cursor.no_hardware_cursors = true;
+      config.cursor.no_hardware_cursors = true;
     };
   };
 }

@@ -6,22 +6,36 @@
   programs.alacritty.settings.font.size = lib.mkForce 10;
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''waybar & hyprctl setcursor 'Banana' 48 && awww-daemon && awww img ~/orange-train-at-sunset.3840x2160.mp4'';
+      # Replaces the old `exec-once`.
+      on = [
+        {
+          _args = [
+            "hyprland.start"
+            (lib.generators.mkLuaInline ''
+              function()
+                hl.exec_cmd("waybar")
+                hl.exec_cmd("hyprctl setcursor 'Banana' 48")
+                hl.exec_cmd("awww-daemon && awww img ~/orange-train-at-sunset.3840x2160.mp4")
+              end'')
+          ];
+        }
+      ];
       env = [
-        "LIBVA_DRIVER_NAME,nvidia"
-        "XDG_SESSION_TYPE,wayland"
-        "GBM_BACKEND,nvidia-drm"
-        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
+        {_args = ["LIBVA_DRIVER_NAME" "nvidia"];}
+        {_args = ["XDG_SESSION_TYPE" "wayland"];}
+        {_args = ["GBM_BACKEND" "nvidia-drm"];}
+        {_args = ["__GLX_VENDOR_LIBRARY_NAME" "nvidia"];}
       ];
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
-        # "HDMI-A-2, 3840x2160@60, 0x0, 1, transform, 1"
-        # "DP-3, 1920x1080@60, 4720x1679, 1"
-        # "DP-4, 1920x1080@60, 4720x2760, 1"
-        "eDP-1, 2560x1440@240, 0x0, 1"
-        # "HDMI-A-1, 3840x2160, 2560x0, 1, transform, 1"
+        {
+          output = "eDP-1";
+          mode = "2560x1440@240";
+          position = "0x0";
+          scale = 1;
+        }
       ];
-      cursor.no_hardware_cursors = true;
+      config.cursor.no_hardware_cursors = true;
     };
   };
 }

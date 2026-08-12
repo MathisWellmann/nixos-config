@@ -1,5 +1,6 @@
 {
   inputs,
+  lib,
   pkgs,
   ...
 }: {
@@ -102,85 +103,87 @@
     defaultTimeout = 5000; # 5s, quiet enough for terminal bells / exit notices
   };
 
-  wayland.windowManager.hyprland = {
+  # NOTE: Since Hyprland 0.55 the hyprlang `hyprland.conf` format is deprecated
+  # (removed in 0.57) in favor of Lua (`hyprland.lua`). With
+  # `configType = "lua"`, every attribute of `settings` maps to an `hl.<name>(…)`
+  # call; lists generate one call per element, `_args` generates multi-argument
+  # calls and `lib.generators.mkLuaInline` emits raw Lua.
+  # See https://wiki.hypr.land/Configuring/Start/
+  wayland.windowManager.hyprland = let
+    inherit (lib.generators) mkLuaInline;
+    mainMod = "SUPER";
+    terminal = "ghostty";
+    menu = "fuzzel";
+    # `hl.bind(keys, dispatcher, opts?)`
+    b = keys: dispatcher: {_args = ["${mainMod} + ${keys}" (mkLuaInline dispatcher)];};
+    bm = keys: dispatcher: {_args = ["${mainMod} + ${keys}" (mkLuaInline dispatcher) {mouse = true;}];};
+  in {
     enable = true;
-    configType = "hyprlang";
+    configType = "lua";
     # xwayland.enable = true;
     # package = stable.hyprland;
     settings = {
-      "$terminal" = "ghostty";
-      "$menu" = "fuzzel";
-      "$mainMod" = "SUPER";
       env = [
-        # TODO: re-enable this for hosts that require it in their own files.
         # NVIDIA specific.
-        # "LIBVA_DRIVER_NAME,nvidia"
-        # "XDG_SESSION_TYPE,wayland"
-        # "GBM_BACKEND,nvidia-drm"
-        # "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-        # "__GL_GSYNC_ALLOWED,1"
-        #
-        # "__GL_VRR_ALLOWED,0"
-        # "HYPRLAND_LOG_WLR=1"
-        "XDG_CURRENT_DESKTOP,Hyprland"
-        "XDG_SESSION_DESKTOP,Hyprland"
+        {_args = ["XDG_CURRENT_DESKTOP" "Hyprland"];}
+        {_args = ["XDG_SESSION_DESKTOP" "Hyprland"];}
       ];
       bind = [
-        "$mainMod, RETURN, exec, $terminal"
-        "$mainMod, Q, killactive,"
-        "$mainMod, J, exit,"
-        "$mainMod, V, togglefloating,"
-        "$mainMod, i, exec, $menu"
-        "$mainMod, P, pseudo"
-        "$mainMod, F, fullscreen"
-
-        # For rsthd layout on corne keyboard
-        # "$mainMod, m, movefocus, l"
-        # "$mainMod, i, movefocus, r"
-        # "$mainMod, n, movefocus, u"
-        # "$mainMod, a, movefocus, d"
+        (b "RETURN" ''hl.dsp.exec_cmd("${terminal}")'')
+        (b "Q" "hl.dsp.window.close()")
+        (b "J" "hl.dsp.exit()")
+        (b "V" ''hl.dsp.window.float({ action = "toggle" })'')
+        (b "i" ''hl.dsp.exec_cmd("${menu}")'')
+        (b "P" "hl.dsp.window.pseudo()")
+        (b "F" "hl.dsp.window.fullscreen()")
 
         # for the charachorder
-        "$mainMod, m, movefocus, l"
-        "$mainMod, n, movefocus, r"
-        "$mainMod, l, movefocus, u"
-        "$mainMod, w, movefocus, d"
+        (b "m" ''hl.dsp.focus({ direction = "left" })'')
+        (b "n" ''hl.dsp.focus({ direction = "right" })'')
+        (b "l" ''hl.dsp.focus({ direction = "up" })'')
+        (b "w" ''hl.dsp.focus({ direction = "down" })'')
 
         # Switch workspaces with mainMod + [0-9]
-        "$mainMod, 0, workspace, 10"
-        "$mainMod, 1, workspace, 1"
-        "$mainMod, 2, workspace, 2"
-        "$mainMod, 3, workspace, 3"
-        "$mainMod, 4, workspace, 4"
-        "$mainMod, 5, workspace, 5"
-        "$mainMod, 6, workspace, 6"
-        "$mainMod, 7, workspace, 7"
-        "$mainMod, 8, workspace, 8"
-        "$mainMod, 9, workspace, 9"
+        (b "0" "hl.dsp.focus({ workspace = 10 })")
+        (b "1" "hl.dsp.focus({ workspace = 1 })")
+        (b "2" "hl.dsp.focus({ workspace = 2 })")
+        (b "3" "hl.dsp.focus({ workspace = 3 })")
+        (b "4" "hl.dsp.focus({ workspace = 4 })")
+        (b "5" "hl.dsp.focus({ workspace = 5 })")
+        (b "6" "hl.dsp.focus({ workspace = 6 })")
+        (b "7" "hl.dsp.focus({ workspace = 7 })")
+        (b "8" "hl.dsp.focus({ workspace = 8 })")
+        (b "9" "hl.dsp.focus({ workspace = 9 })")
 
-        "$mainMod, a, exec, stochos"
-      ];
-      bindm = [
+        (b "a" ''hl.dsp.exec_cmd("stochos")'')
+
         # Move/resize windows with mainMod + LMB/RMB and dragging
-        "$mainMod, mouse:272, movewindow" # NOTE: mouse:272 = left click
-        "$mainMod, mouse:273, resizewindow" # NOTE: mouse:273 = right click
+        (bm "mouse:272" "hl.dsp.window.drag()") # NOTE: mouse:272 = left click
+        (bm "mouse:273" "hl.dsp.window.resize()") # NOTE: mouse:273 = right click
       ];
-      general = {
-        "col.active_border" = "rgb(1ECBE1) rgb(E1341E) 45deg";
-        "col.inactive_border" = "rgba(595959aa)";
-        layout = "dwindle";
-        resize_on_border = true;
-        border_size = 2;
-        gaps_in = 5;
-        gaps_out = 5;
+      config = {
+        general = {
+          col = {
+            active_border = {
+              colors = ["rgb(1ECBE1)" "rgb(E1341E)"];
+              angle = 45;
+            };
+            inactive_border = "rgba(595959aa)";
+          };
+          layout = "dwindle";
+          resize_on_border = true;
+          border_size = 2;
+          gaps_in = 5;
+          gaps_out = 5;
+        };
+        decoration = {
+          rounding = 10;
+        };
+        dwindle = {
+          smart_split = true;
+        };
+        # debug.disable_logs = false;
       };
-      decoration = {
-        rounding = 10;
-      };
-      dwindle = {
-        smart_split = true;
-      };
-      # debug.disable_logs = false;
     };
   };
 

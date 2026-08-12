@@ -1,4 +1,4 @@
-_: let
+{lib, ...}: let
   global_const = import ../global_constants.nix;
   wallpaper = "~/wallpaper_vertical_animated_1080_1920_25fps_orange_blue.mp4";
 in {
@@ -9,21 +9,50 @@ in {
 
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''ashell & hyprctl setcursor 'Banana' 48 && mpvpaper DP-4 ${wallpaper} -o "loop" --fork'';
+      # Replaces the old `exec-once`.
+      on = [
+        {
+          _args = [
+            "hyprland.start"
+            (lib.generators.mkLuaInline ''
+              function()
+                hl.exec_cmd("ashell")
+                hl.exec_cmd("hyprctl setcursor 'Banana' 48")
+                hl.exec_cmd("mpvpaper DP-4 ${wallpaper} -o 'loop' --fork")
+              end'')
+          ];
+        }
+      ];
       env = [
-        "LIBVA_DRIVER_NAME,nvidia"
-        "XDG_SESSION_TYPE,wayland"
-        "GBM_BACKEND,nvidia-drm"
-        "__GLX_VENDOR_LIBRARY_NAME,nvidia"
-        # "WLR_NO_HARDWARE_CURSORS = 1"
+        {_args = ["LIBVA_DRIVER_NAME" "nvidia"];}
+        {_args = ["XDG_SESSION_TYPE" "wayland"];}
+        {_args = ["GBM_BACKEND" "nvidia-drm"];}
+        {_args = ["__GLX_VENDOR_LIBRARY_NAME" "nvidia"];}
       ];
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
-        "DP-6, 1920x1080@60, 6480x1679, 1"
-        "DP-5, 1920x1080@60, 6480x2759, 1"
-        "DP-4, 3840x2160@144, 4320x0, 1, transform, 1, vrr, 1"
+        {
+          output = "DP-6";
+          mode = "1920x1080@60";
+          position = "6480x1679";
+          scale = 1;
+        }
+        {
+          output = "DP-5";
+          mode = "1920x1080@60";
+          position = "6480x2759";
+          scale = 1;
+        }
+        {
+          output = "DP-4";
+          mode = "3840x2160@144";
+          position = "4320x0";
+          scale = 1;
+          transform = 1;
+          vrr = 1;
+        }
       ];
-      cursor.no_hardware_cursors = true;
+      config.cursor.no_hardware_cursors = true;
     };
   };
   services = {

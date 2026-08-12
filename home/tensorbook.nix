@@ -1,4 +1,8 @@
-{pkgs, ...}: let
+{
+  lib,
+  pkgs,
+  ...
+}: let
   wallpaper = "~/wallpaper_animated_orange_train_at_sunset_3840x2160.gif";
 in {
   imports = [
@@ -6,15 +10,45 @@ in {
   ];
   wayland.windowManager.hyprland = {
     settings = {
-      "exec-once" = ''ashell & hyprctl setcursor 'Banana' 48 && mpvpaper DP-4 ${wallpaper} -o "loop" --fork'';
+      # Replaces the old `exec-once`.
+      on = [
+        {
+          _args = [
+            "hyprland.start"
+            (lib.generators.mkLuaInline ''
+              function()
+                hl.exec_cmd("ashell")
+                hl.exec_cmd("hyprctl setcursor 'Banana' 48")
+                hl.exec_cmd("mpvpaper DP-4 ${wallpaper} -o 'loop' --fork")
+              end'')
+          ];
+        }
+      ];
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         # London
-        "DP-6, 3840x2160@60, 0x0, 1, transform, 1"
-        "HDMI-A-1, 3840x2160@60, 2160x0, 1, transform, 1"
-        "eDP-1, 1920x1200@60, 4320x2760, 1"
+        {
+          output = "DP-6";
+          mode = "3840x2160@60";
+          position = "0x0";
+          scale = 1;
+          transform = 1;
+        }
+        {
+          output = "HDMI-A-1";
+          mode = "3840x2160@60";
+          position = "2160x0";
+          scale = 1;
+          transform = 1;
+        }
+        {
+          output = "eDP-1";
+          mode = "1920x1200@60";
+          position = "4320x2760";
+          scale = 1;
+        }
       ];
-      cursor.no_hardware_cursors = true;
+      config.cursor.no_hardware_cursors = true;
     };
   };
   services = {

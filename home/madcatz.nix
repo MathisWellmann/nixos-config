@@ -7,10 +7,30 @@
   wayland.windowManager.hyprland = {
     settings = {
       monitor = [
-        "DP-1, preferred, 1920x0, 1"
-        "DP-2, preferred, 1920x1080, 1"
-        "DP-3, preferred, 0x0, 1"
-        "HDMI-A-1, preferred, 0x1080, 1"
+        {
+          output = "DP-1";
+          mode = "preferred";
+          position = "1920x0";
+          scale = 1;
+        }
+        {
+          output = "DP-2";
+          mode = "preferred";
+          position = "1920x1080";
+          scale = 1;
+        }
+        {
+          output = "DP-3";
+          mode = "preferred";
+          position = "0x0";
+          scale = 1;
+        }
+        {
+          output = "HDMI-A-1";
+          mode = "preferred";
+          position = "0x1080";
+          scale = 1;
+        }
       ];
     };
   };
