@@ -33,9 +33,9 @@ in {
       model = const.localModel;
     })
     (import ./../../modules/ai/pi-agent.nix {
-      baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
+      baseUrl = "http://desg0:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
-      vllmBaseUrl = "http://127.0.0.1:${toString const.vllm_port}/v1";
+      vllmBaseUrl = "http://desg0:${toString const.vllm_port}/v1";
       vllmModels = [const.vllmModel];
     })
     (import ./../../modules/ai/vllm_qwen3_container.nix {
