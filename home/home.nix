@@ -109,6 +109,7 @@ in {
     # Terminal
     tokei # Count lines of code.
     scc # Also count lines of code like tokei
+    erdtree # `tree` + `du` alternative (`erd`), can report line-counts per file
     ttyper
     fastfetch
     onefetch

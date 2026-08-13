@@ -9,6 +9,9 @@
         bright = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -A 10";
         dim = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -U 10";
         todos = "rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
+        # A `tree` that reports the line-count of each file, dirs being the sum of their children.
+        # Accepts extra `erd` args, e.g. `loctree -L 2 src` or `loctree -p '\.rs$'`.
+        loctree = "erd --disk-usage line --layout inverted --sort name --dir-order first --no-progress";
         cl = "~/.local/bin/claude --dangerously-skip-permissions";
 
         # Cargo
