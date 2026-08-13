@@ -52,10 +52,13 @@ in {
   ];
   # HUGGINGFACE_HUB_CACHE and LLAMA_CACHE
   systemd.services.llama-cpp.serviceConfig = {
+    DynamicUser = lib.mkForce false;
+    User = global_const.username;
+    Group = "users";
     Environment = [
       "HUGGINGFACE_HUB_CACHE=/home/${global_const.username}/.cache/llama-cpp"
       "LLAMA_CACHE=/home/${global_const.username}/.cache/llama-cpp"
     ];
-    ProtectHome = lib.mkForce "read-only"; # Allow systemd service access to /home
+    ProtectHome = lib.mkForce false;
   };
 }
