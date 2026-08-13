@@ -58,8 +58,8 @@
       # theme = "onelight"; # Light
       keys.normal = {
         "f" = "file_picker";
-        "l" = "move_visual_line_up";
-        "w" = "move_visual_line_down";
+        # "l" = "move_visual_line_up";
+        # "w" = "move_visual_line_down";
       };
       editor = {
         scroll-lines = 3;
