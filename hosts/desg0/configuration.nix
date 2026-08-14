@@ -61,6 +61,10 @@ in {
       port = const.vllm_port;
       inherit (global_const) username;
     })
+    (import ./../../modules/ai/minimax_music3_container.nix {
+      port = const.minimax_music3_port;
+      inherit (global_const) username;
+    })
     # (import ./../../modules/ai/nemotron_voicechat_container.nix {
     #   port = const.nemotron_voicechat_port;
     #   inherit (global_const) username;
