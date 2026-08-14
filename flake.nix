@@ -137,9 +137,6 @@
         list_apps = inputs.flake-utils.lib.mkApp {
           drv = (import ./scripts/list_apps.nix {inherit self pkgs system;}).script;
         };
-        zfs_replication = inputs.flake-utils.lib.mkApp {
-          drv = pkgs.writeShellScriptBin "zfs_replication" (import scripts/zfs_replication.nix {inherit pkgs;});
-        };
         wake_on_lan = inputs.flake-utils.lib.mkApp {
           drv = import scripts/wake_on_lan.nix {inherit self pkgs;};
         };
