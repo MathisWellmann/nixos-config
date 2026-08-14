@@ -52,6 +52,11 @@
         "--trust-remote-code"
         "--reasoning-parser"
         "qwen3"
+        # Without these, any request with `tool_choice: "auto"` (what agent
+        # harnesses like `pi` send) is rejected with a 400 by the OpenAI server.
+        "--enable-auto-tool-choice"
+        "--tool-call-parser"
+        "qwen3_coder"
         # Roughly doubles usable KV cache.
         "--kv-cache-dtype"
         "fp8"
