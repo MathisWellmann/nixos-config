@@ -11,6 +11,7 @@
   # TODO: move to `constants.nix`
   hostname = "meshify";
   const = import ./constants.nix;
+  const_desg0 = import ./../desg0/constants.nix;
   global_const = import ../../global_constants.nix;
 in {
   imports = [
@@ -33,10 +34,10 @@ in {
       model = const.localModel;
     })
     (import ./../../modules/ai/pi-agent.nix {
-      baseUrl = "http://desg0:${toString const.llama-cpp_port}/v1";
+      baseUrl = "http://desg0:${toString const_desg0.llama-cpp_port}/v1";
       enableAgentica = true;
-      vllmBaseUrl = "http://desg0:${toString const.vllm_port}/v1";
-      vllmModels = [const.vllmModel];
+      vllmBaseUrl = "http://desg0:${toString const_desg0.vllm_port}/v1";
+      vllmModels = [const_desg0.vllmModel];
     })
     (import ./../../modules/ai/vllm_qwen3_container.nix {
       port = const.vllm_port;
