@@ -5,7 +5,7 @@
   llama-cpp_port = 8001;
   nemotron_voicechat_port = 9000;
   minimax_music3_port = 8002;
-  vllmModel = "nvidia/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-NVFP4";
+  vllmModel = "Qwen/Qwen3.8-27B-FP8";
   localModels = [
     "InternScience/Agents-A1-Q4_K_M-GGUF"
     "unsloth/Qwen3.6-27B-GGUF:Q4_K_XL"

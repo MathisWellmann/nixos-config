@@ -39,11 +39,6 @@ in {
       vllmBaseUrl = "http://desg0:${toString const_desg0.vllm_port}/v1";
       vllmModels = [const_desg0.vllmModel];
     })
-    (import ./../../modules/ai/vllm_qwen3_container.nix {
-      port = const.vllm_port;
-      model = const.vllmModel;
-      inherit (global_const) username;
-    })
     # monero_miner
   ];
   boot = {

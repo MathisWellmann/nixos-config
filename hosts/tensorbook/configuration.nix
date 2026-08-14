@@ -9,7 +9,7 @@
 }: let
   hostname = "tensorbook";
   global_const = import ../../global_constants.nix;
-  meshify_const = import ./../meshify/constants.nix;
+  desg0_const = import ./../desg0/constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -24,8 +24,8 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://meshify:8001/v1";
       enableAgentica = true;
-      vllmBaseUrl = "http://meshify:${toString meshify_const.vllm_port}/v1";
-      vllmModels = [meshify_const.vllmModel];
+      vllmBaseUrl = "http://desg0:${toString desg0_const.vllm_port}/v1";
+      vllmModels = [desg0_const.vllmModel];
     })
     (import ./../../modules/remote_builder.nix {})
     # ./../../modules/mount_external_drives.nix

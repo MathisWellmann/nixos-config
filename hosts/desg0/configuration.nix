@@ -52,15 +52,15 @@ in {
       models = const.localModels;
       port = const.llama-cpp_port;
     })
-    (import ./../../modules/ai/vllm_qwen3_container.nix {
+    (import ./vllm_qwen3_container.nix {
       port = const.vllm_port;
       model = const.vllmModel;
       inherit (global_const) username;
     })
-    (import ./../../modules/ai/minimax_music3_container.nix {
-      port = const.minimax_music3_port;
-      inherit (global_const) username;
-    })
+    # (import ./../../modules/ai/minimax_music3_container.nix {
+    #   port = const.minimax_music3_port;
+    #   inherit (global_const) username;
+    # })
     # (import ./../../modules/ai/nemotron_voicechat_container.nix {
     #   port = const.nemotron_voicechat_port;
     #   inherit (global_const) username;

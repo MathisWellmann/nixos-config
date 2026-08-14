@@ -1,7 +1,5 @@
 {
-  vllm_port = 8000;
   llama-cpp_port = 8001;
-  vllmModel = "nvidia/Qwen3.6-35B-A3B-NVFP4";
   localModel = "unsloth/gemma-4-31B-it-GGUF:UD-Q4_K_XL";
   localModels = [
     "InternScience/Agents-A1-Q4_K_M-GGUF"
