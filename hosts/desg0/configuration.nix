@@ -35,6 +35,10 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/local_ai.nix
+    (import ./../../modules/ai/oh-my-pi.nix {
+      vllmBaseUrl = "http://127.0.0.1:${toString const.vllm_port}/v1";
+      defaultModel = "vllm/${const.vllmModel}";
+    })
     ./../../modules/k3s_server_follow.nix
     ./../../modules/k3s_nvidia.nix
     # Make the runner's IOWeight actually enforceable: the NVMe uses the

@@ -30,6 +30,9 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
+    (import ./../../modules/ai/oh-my-pi.nix {
+      defaultModel = "vllm/${const_desg0.vllmModel}";
+    })
     (import ../../modules/ai/hermes_agent.nix {
       model = const.localModel;
     })

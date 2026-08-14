@@ -41,6 +41,9 @@ in {
     ./../../modules/monero.nix
     ./../../modules/k3s_init.nix
     ./../../modules/ai/local_ai.nix
+    (import ./../../modules/ai/oh-my-pi.nix {
+      defaultModel = "vllm/${desg0_const.vllmModel}";
+    })
     (import ./../../modules/github_runner.nix {
       repos = ["lfest-rs" "sliding_features-rs" "trade_aggregation-rs" "openresponses-rs"];
     }) # Don't run much load on this host. TODO: move to desg0

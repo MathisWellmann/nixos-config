@@ -21,6 +21,9 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/ai/local_ai.nix
+    (import ./../../modules/ai/oh-my-pi.nix {
+      defaultModel = "vllm/${desg0_const.vllmModel}";
+    })
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://desg0:${toString desg0_const.llama-cpp_port}/v1";
       enableAgentica = true;

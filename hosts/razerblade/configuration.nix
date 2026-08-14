@@ -28,6 +28,10 @@ in {
     ./../../modules/virtualization_host.nix
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
+    (import ./../../modules/ai/oh-my-pi.nix {
+      vllmBaseUrl = "http://127.0.0.1:${toString desg0_const.vllm_port}/v1";
+      defaultModel = "vllm/${desg0_const.vllmModel}";
+    })
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://127.0.0.1:${toString desg0_const.llama-cpp_port}/v1";
       enableAgentica = true;
