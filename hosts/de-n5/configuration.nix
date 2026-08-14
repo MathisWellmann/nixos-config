@@ -8,6 +8,7 @@
 }: let
   global_const = import ../../global_constants.nix;
   monero_miner = import ./../../modules/monero_miner.nix {max-threads-hint = 50;};
+  const_desg0 = import ./../desg0/constants.nix;
 in {
   imports = [
     # Include the results of the hardware scan.
@@ -21,6 +22,12 @@ in {
     # Third k3s server, taking over the etcd quorum slot elitedesk used to
     # hold. Joins de-msa2 over the LAN (192.168.0.14), not Tailscale.
     ./../../modules/k3s_server_follow.nix
+    (import ./../../modules/ai/pi-agent.nix {
+      baseUrl = "http://desg0:${toString const_desg0.llama-cpp_port}/v1";
+      enableAgentica = true;
+      vllmBaseUrl = "http://desg0:${toString const_desg0.vllm_port}/v1";
+      vllmModels = [const_desg0.vllmModel];
+    })
     ./zfs_pool.nix
     monero_miner
   ];
