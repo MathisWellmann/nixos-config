@@ -150,6 +150,9 @@
           drv = self.packages.${system}.hf;
           name = "hf";
         };
+        hf-stars = inputs.flake-utils.lib.mkApp {
+          drv = import scripts/hf_stars.nix {inherit pkgs;};
+        };
       };
     };
   };
