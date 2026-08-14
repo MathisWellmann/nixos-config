@@ -52,13 +52,9 @@ in {
       models = const.localModels;
       port = const.llama-cpp_port;
     })
-    # (import ./../../modules/ai/vllm_qwen3_container.nix {
-    #   port = const.vllm_port;
-    #   model = const.vllmModel;
-    #   inherit (global_const) username;
-    # })
-    (import ./../../modules/ai/vllm_nemotron_container.nix {
+    (import ./../../modules/ai/vllm_qwen3_container.nix {
       port = const.vllm_port;
+      model = const.vllmModel;
       inherit (global_const) username;
     })
     (import ./../../modules/ai/minimax_music3_container.nix {
