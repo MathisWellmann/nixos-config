@@ -464,170 +464,15 @@
       "type": "timeseries"
     },
     {
-      "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 94 },
-      "id": 107,
-      "panels": [],
-      "title": "Last evaluated candidate",
-      "type": "row"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Backtests aggregated into the most recent train-split sweep of a fresh candidate: days x evaluation-matrix configurations (44 x 135 = 5940 for the default window). The denominator of the panic count next to it, and the sanity check that the distribution panels below summarize a complete sweep -- the histogram's own _count is cumulative across candidates and cannot serve as one.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 95 },
-      "id": 70,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(agent_symbiont_last_eval_backtests{split=\"train\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "train backtests", "refId": "A" } ],
-      "title": "Backtests in last sweep",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Backtests of the most recent sweep that aborted early because the evolved code panicked. Unlike agent_symbiont_backtest_panics_total this is not cumulative: it describes only the code evaluated last, so any non-zero value means the candidate being worked on right now is crashy.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 100 } ] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 95 },
-      "id": 71,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(agent_symbiont_last_eval_panics{split=\"train\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "panicking backtests", "refId": "A" } ],
-      "title": "Panicking backtests (last sweep)",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Time since the last-evaluation series were written. One refinement round (evolve + evaluate + persist) takes ~2-3 min, so a value far above that means training is stalled or the harness is between runs.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "s", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "yellow", "value": 1800 }, { "color": "red", "value": 7200 } ] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 95 },
-      "id": 72,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "time() - max(agent_symbiont_last_eval_timestamp_seconds{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "staleness", "refId": "A" } ],
-      "title": "Since last evaluation",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Mean per-backtest return on equity of the code evaluated last, train split. Derived from rate(_sum)/rate(_count) of the histogram: both are cumulative, so unlike the quantile series this never drains between evaluations. One backtest = one day under one matrix configuration.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "percent", "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "yellow", "value": 0 }, { "color": "green", "value": 0.1 } ] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 95 },
-      "id": 73,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_last_eval_metric_sum{metric=\"return_on_equity_pct\",split=\"train\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(agent_symbiont_last_eval_metric_count{metric=\"return_on_equity_pct\",split=\"train\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "train", "refId": "A" } ],
-      "title": "Mean return / backtest (train)",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "The same figure on the held-out test window the agent never sees. Persistently below the train figure = the generated code is overfitting the training window.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "percent", "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "yellow", "value": 0 }, { "color": "green", "value": 0.1 } ] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 95 },
-      "id": 74,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_last_eval_metric_sum{metric=\"return_on_equity_pct\",split=\"test\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(agent_symbiont_last_eval_metric_count{metric=\"return_on_equity_pct\",split=\"test\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "test", "refId": "A" } ],
-      "title": "Mean return / backtest (test)",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Mean per-backtest return in excess of buy-and-hold on the train split. This IS the per-backtest quantity both frontier objectives are built from: reward = its family-weighted median, risk = its family-weighted 5% expected shortfall. Both are taken at admission time over the whole sweep and live in ClickHouse (agent_rounds.train_reward / train_risk), not in Prometheus -- a plain mean is not either of them, but it moves with the reward and is the cheapest continuous proxy.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "percent", "decimals": 3, "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "yellow", "value": 0 }, { "color": "green", "value": 0.05 } ] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 95 },
-      "id": 75,
-      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_last_eval_metric_sum{metric=\"excess_return_pct\",split=\"train\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(agent_symbiont_last_eval_metric_count{metric=\"excess_return_pct\",split=\"train\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "train", "refId": "A" } ],
-      "title": "Mean excess return (train)",
-      "type": "stat"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Mean per-backtest return on equity of the freshly evolved candidate, by dataset split: train is the window it was selected on, test the held-out window. Frontier re-evaluations do not write these series at all, so every point is a candidate the model just produced. Means come from rate(_sum)/rate(_count) and are therefore continuous; the panel to the right shows the spread within one candidate.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "percent", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 99 },
-      "id": 76,
-      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_last_eval_metric_sum{metric=\"return_on_equity_pct\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (split) (rate(agent_symbiont_last_eval_metric_count{metric=\"return_on_equity_pct\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{split}}", "refId": "A" } ],
-      "title": "Mean return on equity per backtest by split",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Robustness spread of the code evaluated last across the 135 evaluation-matrix configurations (starting position x latency x balance x fee level): worst cell, median, best cell. These are summary quantiles over the harness exporter's 60s rolling window, so they read 0 between evaluations -- the query drops the zeros and the line spans the gaps, giving one point cluster per evaluated candidate. A deep worst cell under a healthy median means the strategy only works in favourable cells.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 0, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "always", "spanNulls": true, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "percent", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 99 },
-      "id": 77,
-      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_metric{metric=\"return_on_equity_pct\",quantile=\"0\",split=\"train\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "{{instance}} worst cell", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_metric{metric=\"return_on_equity_pct\",quantile=\"0.5\",split=\"train\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "{{instance}} median", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_metric{metric=\"return_on_equity_pct\",quantile=\"1\",split=\"train\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "{{instance}} best cell", "refId": "C" }
-      ],
-      "title": "Return on equity spread across the matrix (train, fresh candidates)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Mean per-backtest return in excess of buy-and-hold, by split, for the freshly evolved candidate. Both frontier objectives are reductions of exactly this quantity, so the train/test gap here is the generalization gap of the code being written right now -- and per the eval cohorts that gap, not held-out return, is the statistic that actually carries signal.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "percent", "decimals": 3, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 107 },
-      "id": 78,
-      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_last_eval_metric_sum{metric=\"excess_return_pct\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (split) (rate(agent_symbiont_last_eval_metric_count{metric=\"excess_return_pct\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{split}}", "refId": "A" } ],
-      "title": "Mean excess return per backtest by split",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Per-backtest equity drawdown of the code evaluated last: the continuous mean from rate(_sum)/rate(_count), plus the p95 tail read from the exporter's 60s rolling window (zeros dropped, hence gappy). NOTE: drawdown is a diagnostic, NOT the frontier's risk objective -- that is the family-weighted 5% expected shortfall of per-backtest excess return (agent_rounds.train_risk in ClickHouse). A candidate can be admitted with a deep drawdown if its excess-return tail holds up.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "percent", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 107 },
-      "id": 79,
-      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_last_eval_metric_sum{metric=\"drawdown_equity_pct\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (split) (rate(agent_symbiont_last_eval_metric_count{metric=\"drawdown_equity_pct\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{split}} mean", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_metric{metric=\"drawdown_equity_pct\",quantile=\"0.95\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "{{split}} p95 (last sweep)", "refId": "B" }
-      ],
-      "title": "Drawdown per backtest: mean & p95 (fresh candidates)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Robustness spread of per-backtest EXCESS return (over buy-and-hold) for the code evaluated last, across the 135 evaluation-matrix configurations: worst cell, median, best cell. This is the quantity both frontier objectives reduce, so this panel is the closest continuous view of the admission decision: the reward is (a family-weighted version of) the median line, and the risk is the mean of the worst 5% -- which the exporter's default summary quantiles (0, 0.5, 0.9, 0.95, 0.99, 0.999, 1) cannot express, so the worst cell stands in for the tail. A median hugging zero with a deep worst cell is the classic pattern of a candidate that will be rejected as unprofitable or gated on risk. Quantiles come from the exporter's 60s rolling window and read 0 between evaluations; the query drops the zeros, giving one point cluster per evaluated candidate.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": true, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 0, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "always", "spanNulls": true, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "percent", "decimals": 3, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 115 },
-      "id": 82,
-      "options": { "legend": { "calcs": ["lastNotNull", "min", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_metric{metric=\"excess_return_pct\",quantile=\"0\",split=\"train\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "{{instance}} worst cell (tail proxy)", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_metric{metric=\"excess_return_pct\",quantile=\"0.5\",split=\"train\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "{{instance}} median (~reward objective)", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_metric{metric=\"excess_return_pct\",quantile=\"1\",split=\"train\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "{{instance}} best cell", "refId": "C" }
-      ],
-      "title": "Excess return spread across the matrix (train, fresh candidates)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Observed values of the family-weighted quality-gate criteria for the last evaluated candidate -- the same numbers rendered into the agent's prompt. Gauges, so continuous. Requirements: active_rate >= 75%, p25_turnover >= 0.1%, p25_excess_return >= -0.5%, p95_failure_rate <= 10%, p95_dropped_command_rate <= 1%, p95_forced_cancel_rate <= 1%, liquidation = 0, invalid_metrics = 0. The last two are SAFETY criteria and reject a candidate outright; the rest are advisory optimization targets. How often each one is violated is the 'Quality gate failures / h' panel above.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "percentunit", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 123 },
-      "id": 80,
-      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_quality_gate{criterion=~\"active_rate|p25_turnover|p25_excess_return|p95_failure_rate|p95_dropped_command_rate|p95_forced_cancel_rate|liquidation|invalid_metrics\",split=\"train\",model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{criterion}}", "refId": "A" } ],
-      "title": "Quality gate observations: rates (train, fresh candidates)",
-      "type": "timeseries"
-    },
-    {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "The two count-scaled quality-gate criteria of the last evaluated candidate: p25 genuine fills per backtest (require >= 1, i.e. the strategy must actually trade) and p95 submitted orders per day (require <= 14400 = 10/min). Log scale, since the two differ by orders of magnitude.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "log", "log": 10 }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 123 },
-      "id": 81,
-      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "agent_symbiont_last_eval_quality_gate{criterion=~\"p25_fills|p95_order_rate\",split=\"train\",model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{criterion}}", "refId": "A" } ],
-      "title": "Quality gate observations: counts (train, fresh candidates)",
-      "type": "timeseries"
+      "gridPos": { "h": 4, "w": 24, "x": 0, "y": 94 },
+      "id": 108,
+      "options": { "mode": "markdown", "content": "The `agent_symbiont_last_eval_*` series were removed. They claimed to profile \"the most recently evaluated candidate\", which stops being well defined as soon as a population proposes more than one candidate per round.\n\nPer-candidate objectives, quality gate and population verdict now live in the ClickHouse table `agent_symbiont_evaluations` \u2014 one row per candidate per split, keyed by run, round and candidate. Query it there rather than re-adding gauges: it can say *which* candidate and *in which round*, and it is not bounded by a scrape window.\n\nEverything on this dashboard describes the training **process**: throughput, admission rates, durations, persistence health." },
+      "title": "Per-candidate results live in ClickHouse, not in Prometheus",
+      "type": "text"
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 131 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 98 },
       "id": 106,
       "panels": [],
       "title": "Persistence (ClickHouse)",
@@ -637,7 +482,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Mean ClickHouse insert latency by store (backtest results, generated candidates, evolve failures), derived from _sum/_count rates.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "s", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 132 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 99 },
       "id": 58,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (store) (rate(agent_symbiont_persist_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{store}}", "refId": "A" } ],
@@ -648,7 +493,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Failed ClickHouse inserts per hour by store. Any non-zero rate stalls or aborts training runs.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 132 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 99 },
       "id": 59,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_failures_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{store}}", "refId": "A" } ],
