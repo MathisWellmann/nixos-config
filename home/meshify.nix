@@ -33,11 +33,10 @@ in {
       provider = "vllm-desg0";
       model = "Qwen/Qwen3.8-27B-FP8";
     };
+    # Satisfies the route's `apiKeyEnv` without a login shell: vLLM ignores the
+    # value, it only has to exist.
+    dotenv.VLLM_API_KEY = "unused-by-vllm";
   };
-  # Reaches login-shell descendants only; `dsh` started from a Hyprland keybind
-  # or a user unit would report MISSING_CREDENTIAL without it.
-  home.sessionVariables.VLLM_API_KEY = "unused-by-vllm";
-  systemd.user.sessionVariables.VLLM_API_KEY = "unused-by-vllm";
 
   wayland.windowManager.hyprland = {
     settings = {

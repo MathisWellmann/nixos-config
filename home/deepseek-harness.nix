@@ -103,6 +103,27 @@ in {
         });
       };
 
+      dotenv = mkOption {
+        type = types.attrsOf types.str;
+        default = {};
+        description = ''
+          Credentials written to `$DSH_HOME/.env`, the read-only fallback of
+          `dsh-credentials-local` (resolution order: process environment >
+          `$DSH_HOME/.credentials.yaml` > `<cwd>/.env` > `$DSH_HOME/.env`).
+
+          This is how an `apiKeyEnv` reference is satisfied without depending on
+          the login environment — `home.sessionVariables` does not reach a `dsh`
+          started from a launcher or user unit, and the app never writes `.env`,
+          only `.credentials.yaml`.
+
+          Values land world-readable in the nix store, so this is for
+          placeholders (an unauthenticated local server) only. Real keys belong
+          in `.credentials.yaml` (the web Models page writes it) or in an
+          agenix/sops secret.
+        '';
+        example = literalExpression ''{VLLM_API_KEY = "unused-by-vllm";}'';
+      };
+
       patches = mkOption {
         type = types.listOf yaml.type;
         default = [];
@@ -132,6 +153,10 @@ in {
 
   config = lib.mkIf cfg.enable {
     home.packages = [cfg.package];
+
+    home.file.".dsh/.env" = lib.mkIf (cfg.dotenv != {}) {
+      text = lib.concatLines (lib.mapAttrsToList (name: value: "${name}=${value}") cfg.dotenv);
+    };
 
     home.file.".dsh/cordis.patch.yml" = lib.mkIf (patches != []) {
       # A profile init writes a placeholder patch file, so take an existing one
