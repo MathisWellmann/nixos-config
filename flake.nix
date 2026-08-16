@@ -98,6 +98,9 @@
 
       # The Hugging Face `hf` CLI, e.g. `nix run .#hf -- download <repo>`
       hf = pkgs.callPackage ./pkgs/hf.nix {};
+
+      # DeepSeek Harness agent CLI, e.g. `nix run .#deepseek-harness -- web`
+      deepseek-harness = pkgs.callPackage ./pkgs/deepseek-harness {};
     };
 
     nixosConfigurations = {
