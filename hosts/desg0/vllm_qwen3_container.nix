@@ -15,6 +15,9 @@
   # (nested under `text_config`, unlike the 2.4T which takes it flat).
   maxModelLen ? 262144,
   maxNumSeqs ? 32,
+  # ~27GiB of FP8 weights + KV cache on the 95.6GiB RTX PRO 6000, which also
+  # hosts llama.cpp (~27GiB). Raise only when the card is otherwise idle.
+  gpuMemoryUtilization ? "0.6",
 }: {
   networking.firewall.allowedTCPPorts = [port];
   hardware.nvidia-container-toolkit.enable = true;
@@ -64,10 +67,8 @@
         "${toString maxNumSeqs}"
         "--max-model-len"
         "${toString maxModelLen}"
-        # ~27GiB of FP8 weights + KV cache on the 95.6GiB RTX PRO 6000, which
-        # also hosts llama.cpp (~27GiB) and the minimax container. 0.45 => ~43GiB.
         "--gpu-memory-utilization"
-        "0.45"
+        gpuMemoryUtilization
         "--host"
         "0.0.0.0"
         "--port"
