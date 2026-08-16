@@ -5,7 +5,39 @@ in {
   imports = [
     ./home_hyprland.nix
     ./games.nix
+    ./deepseek-harness.nix
   ];
+
+  # DeepSeek Harness (`dsh`), pointed at the vLLM server on `desg0`.
+  programs.deepseek-harness = {
+    enable = true;
+    llmProviders.vllm-desg0 = {
+      displayName = "vLLM desg0";
+      api = "openai-completions";
+      baseURL = "http://desg0:8000/v1";
+      # vLLM is unauthenticated here, but the route still declares api-key
+      # auth; `VLLM_API_KEY` below is a placeholder vLLM ignores.
+      apiKeyEnv = "VLLM_API_KEY";
+      # vLLM reports `max_model_len` 262144 for this deployment.
+      defaultContextWindow = 262144;
+      defaultMaxTokens = 32768;
+      # Ids must match `/v1/models` exactly.
+      models = [
+        {
+          id = "Qwen/Qwen3.8-27B-FP8";
+          name = "Qwen3.8 27B FP8";
+        }
+      ];
+    };
+    defaultModel = {
+      provider = "vllm-desg0";
+      model = "Qwen/Qwen3.8-27B-FP8";
+    };
+  };
+  # Reaches login-shell descendants only; `dsh` started from a Hyprland keybind
+  # or a user unit would report MISSING_CREDENTIAL without it.
+  home.sessionVariables.VLLM_API_KEY = "unused-by-vllm";
+  systemd.user.sessionVariables.VLLM_API_KEY = "unused-by-vllm";
 
   wayland.windowManager.hyprland = {
     settings = {
