@@ -19,8 +19,8 @@ in {
       # vLLM is unauthenticated here, but the route still declares api-key
       # auth; `VLLM_API_KEY` below is a placeholder vLLM ignores.
       apiKeyEnv = "VLLM_API_KEY";
-      # vLLM reports `max_model_len` 262144 for this deployment.
-      defaultContextWindow = 262144;
+      # vLLM reports `max_model_len` 131072 for this deployment.
+      defaultContextWindow = 131072;
       defaultMaxTokens = 32768;
       # Ids must match `/v1/models` exactly.
       models = [

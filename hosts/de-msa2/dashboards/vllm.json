@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "vLLM serving Qwen/Qwen3.8-27B-FP8 on desg0 (single engine, scraped at desg0:8000, job \"vllm\"). Engine limits it is read against (hosts/desg0/vllm_qwen3_container.nix): --max-num-seqs 32, --max-model-len 262144, --gpu-memory-utilization 0.6, --kv-cache-dtype fp8. Traffic is bursty agent traffic, so request-level rates and histogram quantiles use fixed 30m windows; only the per-token histogram (inter-token latency, millions of samples) uses 5m. Means are rate(_sum)/rate(_count), which is restart-safe. Note: prefix caching is OFF for this hybrid qwen3_5 architecture (vllm:cache_config_info{enable_prefix_caching=\"False\"}), so all prefix-cache / cached-token series stay at 0 -- they live in the collapsed \"Caching\" row. vllm:estimated_flops_per_gpu_total is also always 0 on this build, so no MFU panel.",
+  "description": "vLLM serving Qwen/Qwen3.8-27B-FP8 on desg0 (single engine, scraped at desg0:8000, job \"vllm\"). Engine limits it is read against (set in hosts/desg0/configuration.nix, wired in hosts/desg0/vllm_qwen3_container.nix): --max-num-seqs 64, --max-model-len 131072, --gpu-memory-utilization 0.6, --kv-cache-dtype fp8. Traffic is bursty agent traffic, so request-level rates and histogram quantiles use fixed 30m windows; only the per-token histogram (inter-token latency, millions of samples) uses 5m. Means are rate(_sum)/rate(_count), which is restart-safe. Note: prefix caching is OFF for this hybrid qwen3_5 architecture (vllm:cache_config_info{enable_prefix_caching=\"False\"}), so all prefix-cache / cached-token series stay at 0 -- they live in the collapsed \"Caching\" row. vllm:estimated_flops_per_gpu_total is also always 0 on this build, so no MFU panel.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -77,8 +77,8 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Requests currently in model execution batches. Hard cap is --max-num-seqs 32; sitting at 32 with a non-empty queue means the engine is saturated.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "max": 32, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 24 }, { "color": "red", "value": 32 }] } }, "overrides": [] },
+      "description": "Requests currently in model execution batches. Hard cap is --max-num-seqs 64; sitting at 64 with a non-empty queue means the engine is saturated.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "max": 64, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 48 }, { "color": "red", "value": 64 }] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
       "id": 3,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
@@ -99,7 +99,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "KV cache utilization (1 = full). The cache is sized by --gpu-memory-utilization 0.6 with fp8 KV; long agent contexts (up to 262144 tokens) eat it fast. Sustained ~1 causes queueing and preemptions.",
+      "description": "KV cache utilization (1 = full). The cache is sized by --gpu-memory-utilization 0.6 with fp8 KV; long agent contexts (up to 131072 tokens) eat it fast. Sustained ~1 causes queueing and preemptions.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "percentunit", "max": 1, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 0.8 }, { "color": "red", "value": 0.95 }] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
       "id": 5,
@@ -335,7 +335,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Scheduler occupancy: running requests (capped at --max-num-seqs 32) against the queue split by reason. capacity = no scheduling room left (KV cache or seq slots), deferred = held back by transient constraints (LoRA budget, KV transfer, blocked status).",
+      "description": "Scheduler occupancy: running requests (capped at --max-num-seqs 64) against the queue split by reason. capacity = no scheduling room left (KV cache or seq slots), deferred = held back by transient constraints (LoRA budget, KV transfer, blocked status).",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "requests", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 44 },
       "id": 37,
@@ -357,7 +357,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Prompt tokens per request. Explains prefill cost and TTFT. Caveat: the histogram's largest finite bucket is 50000 tokens, so quantiles saturate there even though --max-model-len is 262144 -- use the mean and the \"> 50k share\" series to see genuinely huge agent contexts.",
+      "description": "Prompt tokens per request. Explains prefill cost and TTFT. Caveat: the histogram's largest finite bucket is 50000 tokens, so quantiles saturate there even though --max-model-len is 131072 -- use the mean and the \"> 50k share\" series to see genuinely huge agent contexts.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 53 },
       "id": 40,
