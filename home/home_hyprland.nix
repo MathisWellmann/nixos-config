@@ -18,7 +18,7 @@
     inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
     # Desktop
     firefox
-    ladybird
+    # ladybird # CVE currently
     brave
     # floorp-bin
     keepassxc
