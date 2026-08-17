@@ -36,6 +36,50 @@
         }
       ];
     }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "tensorbook"];
+  # Scrapes the llama-cpp router on desg0 (native NixOS service, see
+  # `hosts/desg0/configuration.nix` + `modules/ai/llama-cpp.nix`), running in
+  # router mode (`--models-preset` + `--models-max 1`): one process serving
+  # the 18 presets with on-demand model loading and LRU eviction.
+  #
+  # In router mode, `/metrics` requires `?model=<id>`, and a scrape of a
+  # model that is not currently loaded would trigger an on-demand load --
+  # with only one model fitting at a time (`models-max 1`), that evicts the
+  # model currently serving traffic. The per-request `autoload=false`
+  # parameter instead makes `/metrics` answer 200 only if the model is
+  # already loaded and a side-effect-free 400 otherwise, so scraping is
+  # always eviction-safe. `params` is job-level in the Prometheus scrape
+  # format, so this is one job per preset model: exactly one of the jobs is
+  # "up" at any time (the loaded model's), the rest are expected 400s and
+  # are therefore exempt from the ScrapeTargetDown alert (alerting.nix) via
+  # `always_on="false"`. A genuine router outage is still detected -- all 18
+  # jobs then go down together with `vllm` (desg0:8000) and `desg0-node`,
+  # which remain covered.
+  #
+  # The preset list and port are imported from desg0's constants, so adding
+  # a model to `localModels` over there adds a scrape job here automatically.
+  # llama-cpp's metric series carry no labels, so the per-target `model`
+  # label below is what separates one model's series from another in VM and
+  # Grafana.
+  llama_cpp_consts = import ../desg0/constants.nix;
+  llama_cpp_slug = id:
+    builtins.replaceStrings ["/" ":" "."] ["-" "-" "-"] id;
+  llama_cpp_scrape_configs = map (model: {
+    job_name = "llama-cpp-${llama_cpp_slug model}";
+    inherit scrape_interval scrape_timeout;
+    params = {
+      model = model;
+      autoload = "false";
+    };
+    static_configs = [
+      {
+        targets = ["desg0:${toString llama_cpp_consts.llama-cpp_port}"];
+        labels = {
+          always_on = "false";
+          model = model;
+        };
+      }
+    ];
+  }) llama_cpp_consts.localModels;
   # Scrapes the tikr pods running in the k3s cluster (deployments live in the
   # `nexus` repo, `env/prod.nix`). Pods are discovered through the Kubernetes
   # API: any pod annotated with `prometheus.io/scrape: "true"` is kept and
@@ -393,6 +437,7 @@
     ++ greptimedb_k8s_scrape_configs
     ++ clickhouse_k8s_scrape_configs
     ++ cadvisor_scrape_configs
+    ++ llama_cpp_scrape_configs
     ++ [
       {
         job_name = "zfs";

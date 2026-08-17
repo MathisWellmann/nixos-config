@@ -45,6 +45,10 @@ in {
       # NUMA / memory (1 NUMA node system)
       numa = "isolate";
       mlock = true; # lock model in RAM (prevent swapping)
+      # Prometheus exporter: llama-server only serves GET /metrics (router mode
+      # requires `?model=<id>`; scrape with `&autoload=false` so scrapes of an
+      # unloaded model 400 instead of evicting the active model).
+      metrics = true;
     };
   };
   environment.systemPackages = with pkgs; [
