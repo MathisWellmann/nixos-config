@@ -14,7 +14,7 @@
   # `--hf-overrides '{"text_config": {"max_position_embeddings": 1010000}}'`
   # (nested under `text_config`, unlike the 2.4T which takes it flat).
   maxModelLen ? 262144,
-  maxNumSeqs ? 32,
+  maxNumSeqs ? 64,
   # ~27GiB of FP8 weights + KV cache on the 95.6GiB RTX PRO 6000, which also
   # hosts llama.cpp (~27GiB). Raise only when the card is otherwise idle.
   gpuMemoryUtilization ? "0.6",

@@ -59,13 +59,8 @@ in {
     (import ./vllm_qwen3_container.nix {
       port = const.vllm_port;
       model = const.vllmModel;
-      # Tuned for multi-user serving. 64k context (down from the 262144 native)
-      # is what frees the KV cache: it took `kv_cache_max_concurrency` from
-      # 1.46 to 25.3 and lifted 256-stream throughput from 756 to 1373 tok/s
-      # while cutting median TTFT from 39.0s to 4.1s.
-      # VRAM stays at the 0.6 default so llama.cpp (~27GiB) can coexist.
-      maxModelLen = 65536;
-      maxNumSeqs = 256;
+      maxModelLen = 131072;
+      maxNumSeqs = 64;
       inherit (global_const) username;
     })
     # (import ./../../modules/ai/minimax_music3_container.nix {
