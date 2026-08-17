@@ -422,6 +422,17 @@
           {targets = ["desg0:9001"];}
         ];
       }
+      # vLLM OpenAI server on desg0 (podman container, see
+      # hosts/desg0/vllm_qwen3_container.nix). Serves `/metrics` on its API
+      # port; port 8000 is the container's published port and is allowed by
+      # desg0's firewall (`vllm_qwen3_container.nix`).
+      {
+        job_name = "vllm";
+        inherit scrape_interval scrape_timeout;
+        static_configs = [
+          {targets = ["desg0:8000"];}
+        ];
+      }
       {
         job_name = "ups";
         static_configs = [
