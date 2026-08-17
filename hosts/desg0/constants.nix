@@ -25,5 +25,6 @@
     "poolside/Laguna-XS-2.1-GGUF:Q4_K_M"
     "unsloth/Nemotron-3-Nano-30B-A3B-GGUF:Q4_K_M"
     "unsloth/NVIDIA-Nemotron-3.5-Lightning-30B-A3B-GGUF:UD-Q4_K_M"
+    "bloomer010/Ling-3.0-tiny-GGUF:UD-Q8_K_XL"
   ];
 }
