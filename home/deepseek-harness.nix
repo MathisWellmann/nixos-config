@@ -1,4 +1,4 @@
-# DeepSeek Harness (`dsh`) — the agent CLI packaged in `pkgs/deepseek-harness`.
+# DeepSeek Harness (`dsh`) — the agent CLI from the `llm-agents` flake input.
 #
 # Home-manager module: installs the CLI and declares its configuration through
 # the loader's *patch layer* instead of `~/.dsh/settings.yaml`.

@@ -100,7 +100,7 @@
       hf = pkgs.callPackage ./pkgs/hf.nix {};
 
       # DeepSeek Harness agent CLI, e.g. `nix run .#deepseek-harness -- web`
-      deepseek-harness = pkgs.callPackage ./pkgs/deepseek-harness {};
+      deepseek-harness = inputs.llm-agents.packages.${system}.dsh;
     };
 
     nixosConfigurations = {
