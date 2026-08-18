@@ -112,6 +112,9 @@
               --prefix NODE_PATH : "${dsh}/lib/node_modules/@deepseek-ai/dsh/node_modules"
           '';
         };
+
+      # Archify architecture diagram tool & agent skill CLI
+      archify = pkgs.callPackage ./pkgs/archify.nix {};
     };
 
     nixosConfigurations = {

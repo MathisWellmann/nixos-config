@@ -235,6 +235,11 @@
       '') customPets}
       node ${patchScript} $out/lib/client.js
     '';
+
+  archifyPlugin = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/@tt-a1i/archify-dsh/-/archify-dsh-0.1.0.tgz";
+    hash = "sha256-QWwjlh5H2l8DJYw24p0K6SaZ0OJKVI5oYsu/H/IIG5g=";
+  };
 in {
   options = {
     programs.deepseek-harness = with lib; {
@@ -370,6 +375,7 @@ in {
             hash = "sha256-2FP4duo1rO4WfNMsDhq3uxU+6EqRst7tAgmNA0XHmCA=";
           };
           "@hellosz/dsh-pets" = defaultPetsPlugin;
+          "@tt-a1i/archify-dsh" = archifyPlugin;
         };
         description = ''
           Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).
