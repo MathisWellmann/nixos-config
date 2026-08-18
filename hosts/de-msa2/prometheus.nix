@@ -67,8 +67,8 @@
     job_name = "llama-cpp-${llama_cpp_slug model}";
     inherit scrape_interval scrape_timeout;
     params = {
-      model = model;
-      autoload = "false";
+      model = [model];
+      autoload = ["false"];
     };
     static_configs = [
       {
