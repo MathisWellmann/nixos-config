@@ -44,6 +44,59 @@
       config = lib.filterAttrs (_: v: v != null) cfg.defaultModel;
     }
     ++ cfg.patches;
+
+  defaultPetsPlugin = let
+    src = pkgs.fetchFromGitHub {
+      owner = "hellosz";
+      repo = "dsh-pets";
+      rev = "master";
+      hash = "sha256-WNfdVsuek5mE+h/eenOYaNIENlujv6FwaAMJqulqMHo=";
+    };
+    apupepe-sprite = pkgs.fetchurl {
+      url = "https://assets.petdex.dev/pets/apupepe-81cc3b692eeb/sprite.webp";
+      hash = "sha256-WmEKImV+0Kor3KVPnhAi59+u1bg/CHlcY/MBh1UvguA=";
+    };
+    apupepe-pet-json = pkgs.writeText "pet.json" (builtins.toJSON {
+      id = "apupepe";
+      displayName = "Pepe";
+      description = "A compact Codex-style green frog pet in a plain blue shirt.";
+      spritesheetPath = "spritesheet.png";
+    });
+    patchScript = pkgs.writeText "patch.js" ''
+      const fs = require("fs");
+      const clientPath = process.argv[2];
+      let code = fs.readFileSync(clientPath, "utf8");
+      const pepeObj = `      {
+          id: 'apupepe',
+          name: '佩佩蛙 (Pepe)',
+          emoji: '🐸',
+          personality: '经典又治愈的蓝色短袖小青蛙',
+          speedMul: 1.0,
+          catchphrases: {
+            idle: ['呱~', '今天也是平静的一天', '看着屏幕发呆中…'],
+            running: ['呱呱！努力思考中', '冲呀！', '正在编写代码…'],
+            waiting: ['等你呢呱~', '到你了', '我准备好啦'],
+            review: ['看看写得怎么样？', '检查一下吧呱', '应该没问题吧'],
+            failed: ['FeelsBadMan…', '呜呜搞砸了…', '再试一次呱…'],
+          },
+        },
+  `;
+      code = code.replace("const PETS = [", "const PETS = [\n" + pepeObj);
+      code = code.replace("petId: 'pikachu'", "petId: 'apupepe'");
+      fs.writeFileSync(clientPath, code);
+    '';
+  in
+    pkgs.runCommand "dsh-pets-with-apupepe" {
+      nativeBuildInputs = [pkgs.imagemagick pkgs.nodejs];
+    } ''
+      mkdir -p $out
+      cp -r ${src}/* $out/
+      chmod -R u+w $out
+      mkdir -p $out/packs/apupepe
+      cp ${apupepe-pet-json} $out/packs/apupepe/pet.json
+      magick ${apupepe-sprite} $out/packs/apupepe/spritesheet.png
+      node ${patchScript} $out/lib/client.js
+    '';
 in {
   options = {
     programs.deepseek-harness = with lib; {
@@ -58,7 +111,22 @@ in {
 
       llmProviders = mkOption {
         type = types.attrsOf yaml.type;
-        default = {};
+        default = {
+          vllm-desg0 = {
+            displayName = "vLLM desg0";
+            api = "openai-completions";
+            baseURL = "http://desg0:8000/v1";
+            apiKeyEnv = "VLLM_API_KEY";
+            defaultContextWindow = 131072;
+            defaultMaxTokens = 32768;
+            models = [
+              {
+                id = "Qwen/Qwen3.8-27B-FP8";
+                name = "Qwen3.8 27B FP8";
+              }
+            ];
+          };
+        };
         description = ''
           Provider routes for `dsh-llm-pi-ai`, the generic adapter that serves
           OpenAI-completions, OpenAI-responses and Anthropic-messages endpoints.
@@ -82,7 +150,10 @@ in {
       };
 
       defaultModel = mkOption {
-        default = null;
+        default = {
+          provider = "vllm-desg0";
+          model = "Qwen/Qwen3.8-27B-FP8";
+        };
         description = "The provider/model new sessions start with (`agent-default-model`).";
         type = types.nullOr (types.submodule {
           options = {
@@ -105,7 +176,9 @@ in {
 
       dotenv = mkOption {
         type = types.attrsOf types.str;
-        default = {};
+        default = {
+          VLLM_API_KEY = "unused-by-vllm";
+        };
         description = ''
           Credentials written to `$DSH_HOME/.env`, the read-only fallback of
           `dsh-credentials-local` (resolution order: process environment >
@@ -151,7 +224,15 @@ in {
 
       plugins = mkOption {
         type = types.attrsOf types.package;
-        default = {};
+        default = {
+          "cyber-particle" = pkgs.fetchFromGitHub {
+            owner = "AKS1st";
+            repo = "dsh-cyber-particle";
+            rev = "master";
+            hash = "sha256-2FP4duo1rO4WfNMsDhq3uxU+6EqRst7tAgmNA0XHmCA=";
+          };
+          "@hellosz/dsh-pets" = defaultPetsPlugin;
+        };
         description = ''
           Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).
           Each entry key is the plugin package name, and the value is the derivation
@@ -200,9 +281,19 @@ in {
           };
         };
       } // (
-        lib.mapAttrs' (name: pkg:
+        lib.mapAttrs' (name: src:
+          let
+            # Inject dsh bundled node_modules into the plugin directory so Node's ESM
+            # resolution can find peer dependencies like `@deepseek-ai/dsh-tools`.
+            pluginPkg = pkgs.runCommand "dsh-plugin-${lib.strings.sanitizeDerivationName name}" {} ''
+              mkdir -p $out/node_modules/@deepseek-ai
+              cp -r ${src}/* $out/
+              chmod -R u+w $out
+              ln -s ${cfg.package}/lib/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/* $out/node_modules/@deepseek-ai/
+            '';
+          in
           lib.nameValuePair ".dsh/profiles/web/node_modules/${name}" {
-            source = pkg;
+            source = pluginPkg;
           }
         ) cfg.plugins
       ));

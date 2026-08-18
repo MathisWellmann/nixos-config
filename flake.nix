@@ -100,7 +100,18 @@
       hf = pkgs.callPackage ./pkgs/hf.nix {};
 
       # DeepSeek Harness agent CLI, e.g. `nix run .#deepseek-harness -- web`
-      deepseek-harness = inputs.llm-agents.packages.${system}.dsh;
+      deepseek-harness = let
+        dsh = inputs.llm-agents.packages.${system}.dsh;
+      in
+        pkgs.symlinkJoin {
+          name = "deepseek-harness";
+          paths = [dsh];
+          buildInputs = [pkgs.makeWrapper];
+          postBuild = ''
+            wrapProgram $out/bin/dsh \
+              --prefix NODE_PATH : "${dsh}/lib/node_modules/@deepseek-ai/dsh/node_modules"
+          '';
+        };
     };
 
     nixosConfigurations = {

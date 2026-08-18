@@ -1,8 +1,4 @@
-{
-  lib,
-  pkgs,
-  ...
-}: let
+{lib, ...}: let
   global_const = import ../global_constants.nix;
   wallpaper = "~/wallpaper_vertical_animated_1080_1920_25fps_orange_blue.mp4";
 in {
@@ -13,42 +9,7 @@ in {
   ];
 
   # DeepSeek Harness (`dsh`), pointed at the vLLM server on `desg0`.
-  programs.deepseek-harness = {
-    enable = true;
-    llmProviders.vllm-desg0 = {
-      displayName = "vLLM desg0";
-      api = "openai-completions";
-      baseURL = "http://desg0:8000/v1";
-      # vLLM is unauthenticated here, but the route still declares api-key
-      # auth; `VLLM_API_KEY` below is a placeholder vLLM ignores.
-      apiKeyEnv = "VLLM_API_KEY";
-      # vLLM reports `max_model_len` 131072 for this deployment.
-      defaultContextWindow = 131072;
-      defaultMaxTokens = 32768;
-      # Ids must match `/v1/models` exactly.
-      models = [
-        {
-          id = "Qwen/Qwen3.8-27B-FP8";
-          name = "Qwen3.8 27B FP8";
-        }
-      ];
-    };
-    defaultModel = {
-      provider = "vllm-desg0";
-      model = "Qwen/Qwen3.8-27B-FP8";
-    };
-    plugins = {
-      "cyber-particle" = pkgs.fetchFromGitHub {
-        owner = "AKS1st";
-        repo = "dsh-cyber-particle";
-        rev = "master";
-        hash = "sha256-2FP4duo1rO4WfNMsDhq3uxU+6EqRst7tAgmNA0XHmCA=";
-      };
-    };
-    # Satisfies the route's `apiKeyEnv` without a login shell: vLLM ignores the
-    # value, it only has to exist.
-    dotenv.VLLM_API_KEY = "unused-by-vllm";
-  };
+  programs.deepseek-harness.enable = true;
 
   wayland.windowManager.hyprland = {
     settings = {
