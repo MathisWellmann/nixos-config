@@ -52,49 +52,187 @@
       rev = "master";
       hash = "sha256-WNfdVsuek5mE+h/eenOYaNIENlujv6FwaAMJqulqMHo=";
     };
-    apupepe-sprite = pkgs.fetchurl {
-      url = "https://assets.petdex.dev/pets/apupepe-81cc3b692eeb/sprite.webp";
-      hash = "sha256-WmEKImV+0Kor3KVPnhAi59+u1bg/CHlcY/MBh1UvguA=";
-    };
-    apupepe-pet-json = pkgs.writeText "pet.json" (builtins.toJSON {
-      id = "apupepe";
-      displayName = "Pepe";
-      description = "A compact Codex-style green frog pet in a plain blue shirt.";
-      spritesheetPath = "spritesheet.png";
-    });
+    customPets = [
+      {
+        id = "apupepe";
+        name = "Pepe the Frog";
+        displayName = "Pepe";
+        emoji = "🐸";
+        description = "A compact Codex-style green frog pet in a plain blue shirt.";
+        personality = "A classic and wholesome green frog in a blue shirt";
+        url = "https://assets.petdex.dev/pets/apupepe-81cc3b692eeb/sprite.webp";
+        hash = "sha256-WmEKImV+0Kor3KVPnhAi59+u1bg/CHlcY/MBh1UvguA=";
+        speedMul = 1.0;
+        catchphrases = {
+          idle = ["Ribbit~" "Just another peaceful day" "Staring at the screen…"];
+          running = ["Ribbit! Thinking hard…" "Let's go!" "Writing code right now…"];
+          waiting = ["Waiting on you~" "Your turn!" "I'm ready!"];
+          review = ["Take a look at the results~" "Please review, ribbit" "Should be looking good!"];
+          failed = ["FeelsBadMan…" "Oops, messed up…" "Let's try again, ribbit…"];
+        };
+      }
+      {
+        id = "gilfoyle";
+        name = "Gilfoyle";
+        displayName = "Gilfoyle";
+        emoji = "💻";
+        description = "A dry, serious coding companion with long hair, glasses, beard, and deadpan focus inspired by Gilfoyle from Silicon Valley.";
+        personality = "A dry, deadpan systems architect with zero patience for bad code";
+        url = "https://assets.petdex.dev/pets/gilfoyle-c8e89136b516/sprite.webp";
+        hash = "sha256-E427oaLJ7Owb0eXzFlhe8RoWIxsUteYywKA4w24nF6Y=";
+        speedMul = 1.0;
+        catchphrases = {
+          idle = ["I do not work for you." "Your code is repulsive." "Maintaining server uptime…"];
+          running = ["Writing code that actually scales." "Optimizing your mediocre algorithms." "Compiling… do not disturb."];
+          waiting = ["I'm waiting. Make it worthwhile." "Are you done wasting my time?" "Your turn."];
+          review = ["It works. Unlike your code." "Review it if you must." "Perfection achieved."];
+          failed = ["Incompetence detected." "Failed. As expected." "I blame DNS."];
+        };
+      }
+      {
+        id = "wheatley";
+        name = "Wheatley";
+        displayName = "Wheatley";
+        emoji = "🔵";
+        description = "A tiny Wheatley-inspired spherical AI core companion with a bright blue eye and nervous charm.";
+        personality = "An enthusiastic yet slightly nervous AI core companion";
+        url = "https://assets.petdex.dev/pets/wheatley-669c4b72c3b6/sprite.webp";
+        hash = "sha256-FNv19O/M/LgLccDL/rr5HgL2NjUE7oZbNhT1gshjWyM=";
+        speedMul = 1.1;
+        catchphrases = {
+          idle = ["Hello! Still here!" "Look at me, brilliant as ever!" "Don't press any buttons…"];
+          running = ["I'm thinking! Brilliant ideas incoming!" "Doing some clever math right now!" "Full power to the processor!"];
+          waiting = ["Alright, over to you!" "Waiting on you, mate!" "What's the plan?"];
+          review = ["Take a look! Pretty genius, eh?" "All done! Flawless, honestly." "Check this out!"];
+          failed = ["Uh oh. Wasn't me!" "Minor malfunction, totally fixable!" "Let's pretend that didn't happen…"];
+        };
+      }
+      {
+        id = "pipey";
+        name = "Pipey";
+        displayName = "Pipey";
+        emoji = "🪈";
+        description = "A cheerful flute-shaped pet with a leafy green hat, red plume, big eyes, and green limbs.";
+        personality = "A cheerful, musical companion piping tunes into the terminal";
+        url = "https://assets.petdex.dev/pets/pipey-936c98bea25d/sprite.webp";
+        hash = "sha256-WKjHi3jrakBxNcPI0TWkJaumu5jGdYy/LtpJDPmJjKg=";
+        speedMul = 1.0;
+        catchphrases = {
+          idle = ["Toot toot~" "Playing a gentle melody…" "Enjoying the rhythm!"];
+          running = ["Playing up-tempo code melodies!" "Toot! Piping data through…" "Harmonizing the logic!"];
+          waiting = ["Waiting for the next cue~" "Your turn to play!" "Ready for the next verse!"];
+          review = ["Listen to that harmony~" "All tuned up and ready!" "How does that sound?"];
+          failed = ["Sour note…" "Lost the rhythm…" "Let's tune up and retry! toot~"];
+        };
+      }
+      {
+        id = "krabsy";
+        name = "Krabsy";
+        displayName = "Krabsy";
+        emoji = "🦀";
+        description = "A greedy capitalist crab redesigned as a compact desktop pet with money-obsessed personality.";
+        personality = "A money-obsessed crustacean focused on maximizing profit and minimizing overhead";
+        url = "https://assets.petdex.dev/pets/krabsy-8565d6d45b8c/sprite.webp";
+        hash = "sha256-411idSEYUAo2NE3EwLcGrLjc46VMitzshTjUnbcnH3E=";
+        speedMul = 1.0;
+        catchphrases = {
+          idle = ["Money, money, money! 💰" "Counting me pennies…" "Time is money, lad!"];
+          running = ["Working hard to earn those nickels!" "Claws moving at maximum profit speed!" "Refactoring costs money!"];
+          waiting = ["Every second waiting costs a dime!" "Your turn, lad!" "What's the holdup?"];
+          review = ["Inspect the goods! Worth every penny!" "High quality craftsmanship!" "That'll be five bucks to review."];
+          failed = ["Me money! Gone!" "Bankruptcy! Oh the horror!" "Try again, but cheaper!"];
+        };
+      }
+      {
+        id = "dude";
+        name = "The Dude";
+        displayName = "Dude";
+        emoji = "🎳";
+        description = "A relaxed bathrobe-and-sunglasses digital pet inspired by laid-back bowling comedy energy.";
+        personality = "The Dude abides — ultra-relaxed, easygoing, and taking it easy";
+        url = "https://assets.petdex.dev/pets/dude-3cdb593b03a8/sprite.webp";
+        hash = "sha256-RktkJFZ75T1FIVYVcJvTPidUo93DgUwrpLoPgcZPO28=";
+        speedMul = 0.85;
+        catchphrases = {
+          idle = ["The Dude abides, man." "Just taking it easy." "Careful man, there's a beverage here!"];
+          running = ["Striking those pins down, man." "Rolling right along…" "Coding at a chilled-out pace."];
+          waiting = ["Take your time, man." "Whenever you're ready." "No rush, dude."];
+          review = ["Yeah, well, that's just like, your opinion, man." "Looks pretty groovy to me." "Check it out, man."];
+          failed = ["This aggression will not stand, man." "Bummer, man…" "Let's roll another frame."];
+        };
+      }
+      {
+        id = "island-owner";
+        name = "Island Owner";
+        displayName = "Island Owner";
+        emoji = "🏝️";
+        description = "A gray-haired island-owner inmate pixel companion.";
+        personality = "A mysterious island resident keeping quiet about the guest list";
+        url = "https://assets.petdex.dev/pets/island-owner-b6587034b84e/sprite.webp";
+        hash = "sha256-jSoVmKQEBCerP0lGQz2JKDj2AjNkB8bdW9dqm7YQDYI=";
+        speedMul = 1.0;
+        catchphrases = {
+          idle = ["Enjoying the island breeze…" "Checking the flight logs…" "Nothing to see here."];
+          running = ["Processing private records…" "Managing the offshore server…" "Encrypting the directory…"];
+          waiting = ["Waiting on the mainland response…" "Your move." "Awaiting instructions."];
+          review = ["Review the logs carefully." "All transactions verified." "Everything in order."];
+          failed = ["Subpoenaed…" "The server went down…" "Redacting the logs…"];
+        };
+      }
+      {
+        id = "pickle-rick";
+        name = "Pickle Rick";
+        displayName = "Pickle Rick";
+        emoji = "🥒";
+        description = "A tiny pixel-pet pickle scientist inspired by Pickle Rick.";
+        personality = "A mad scientist who turned himself into a pickle to avoid family therapy";
+        url = "https://assets.petdex.dev/community/pickle-rick/spritesheet.webp";
+        hash = "sha256-PcFoX3dHEwYS+N7FCQFSa2KFvbc+WfU+vr+a1U9oZ28=";
+        speedMul = 1.2;
+        catchphrases = {
+          idle = ["I turned myself into a pickle! I'm Pickle Rick!" "Look at me!" "Pickle power!"];
+          running = ["Building rat-powered exo-skeletons!" "Science in progress, Morty!" "Coding with pickle genius!"];
+          waiting = ["Hurry up, I'm a pickle here!" "What are you waiting for?" "Your turn!"];
+          review = ["Look at my work! 100% pure genius!" "Check it out!" "Boom! Big reveal!"];
+          failed = ["Solenya got to us…" "Gotta rebuild the rig!" "Wubba Lubba Dub Dub! Failed!"];
+        };
+      }
+    ];
+    clientPetsJson = builtins.toJSON (map (p: {
+      id = p.id;
+      name = p.name;
+      emoji = p.emoji;
+      personality = p.personality;
+      speedMul = p.speedMul;
+      catchphrases = p.catchphrases;
+    }) customPets);
     patchScript = pkgs.writeText "patch.js" ''
       const fs = require("fs");
       const clientPath = process.argv[2];
       let code = fs.readFileSync(clientPath, "utf8");
-      const pepeObj = `      {
-          id: 'apupepe',
-          name: '佩佩蛙 (Pepe)',
-          emoji: '🐸',
-          personality: '经典又治愈的蓝色短袖小青蛙',
-          speedMul: 1.0,
-          catchphrases: {
-            idle: ['呱~', '今天也是平静的一天', '看着屏幕发呆中…'],
-            running: ['呱呱！努力思考中', '冲呀！', '正在编写代码…'],
-            waiting: ['等你呢呱~', '到你了', '我准备好啦'],
-            review: ['看看写得怎么样？', '检查一下吧呱', '应该没问题吧'],
-            failed: ['FeelsBadMan…', '呜呜搞砸了…', '再试一次呱…'],
-          },
-        },
-  `;
-      code = code.replace("const PETS = [", "const PETS = [\n" + pepeObj);
+      const pets = ${clientPetsJson};
+      const petsCode = pets.map(p => JSON.stringify(p, null, 2)).join(",\n");
+      code = code.replace("const PETS = [", "const PETS = [\n" + petsCode + ",\n");
       code = code.replace("petId: 'pikachu'", "petId: 'apupepe'");
       fs.writeFileSync(clientPath, code);
     '';
   in
-    pkgs.runCommand "dsh-pets-with-apupepe" {
+    pkgs.runCommand "dsh-pets-custom" {
       nativeBuildInputs = [pkgs.imagemagick pkgs.nodejs];
     } ''
       mkdir -p $out
       cp -r ${src}/* $out/
       chmod -R u+w $out
-      mkdir -p $out/packs/apupepe
-      cp ${apupepe-pet-json} $out/packs/apupepe/pet.json
-      magick ${apupepe-sprite} $out/packs/apupepe/spritesheet.png
+      ${lib.concatMapStringsSep "\n" (p: ''
+        mkdir -p $out/packs/${p.id}
+        cp ${pkgs.writeText "pet-${p.id}.json" (builtins.toJSON {
+          id = p.id;
+          displayName = p.displayName;
+          description = p.description;
+          spritesheetPath = "spritesheet.png";
+        })} $out/packs/${p.id}/pet.json
+        magick ${pkgs.fetchurl { url = p.url; hash = p.hash; }} $out/packs/${p.id}/spritesheet.png
+      '') customPets}
       node ${patchScript} $out/lib/client.js
     '';
 in {
