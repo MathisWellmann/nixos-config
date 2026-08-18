@@ -22,13 +22,13 @@ in {
     ./../../modules/desktop_nvidia.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/oh-my-pi.nix {
-      defaultModel = "vllm/${desg0_const.vllmModel}";
+      defaultModel = "vllm/${desg0_const.qwen3Model}";
     })
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://desg0:${toString desg0_const.llama-cpp_port}/v1";
       enableAgentica = true;
-      vllmBaseUrl = "http://desg0:${toString desg0_const.vllm_port}/v1";
-      vllmModels = [desg0_const.vllmModel];
+      vllmBaseUrl = "http://desg0:${toString desg0_const.qwen3_port}/v1";
+      vllmModels = [desg0_const.qwen3Model];
     })
     (import ./../../modules/remote_builder.nix {})
     # ./../../modules/mount_external_drives.nix

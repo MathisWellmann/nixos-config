@@ -42,7 +42,7 @@ in {
     ./../../modules/k3s_init.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/oh-my-pi.nix {
-      defaultModel = "vllm/${desg0_const.vllmModel}";
+      defaultModel = "vllm/${desg0_const.qwen3Model}";
     })
     (import ./../../modules/github_runner.nix {
       repos = ["lfest-rs" "sliding_features-rs" "trade_aggregation-rs" "openresponses-rs"];
@@ -50,8 +50,8 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://meshify:8001/v1";
       enableAgentica = true;
-      vllmBaseUrl = "http://desg0:${toString desg0_const.vllm_port}/v1";
-      vllmModels = [desg0_const.vllmModel];
+      vllmBaseUrl = "http://desg0:${toString desg0_const.qwen3_port}/v1";
+      vllmModels = [desg0_const.qwen3Model];
     })
     # ./freshrss.nix
     ./nexus_dbs.nix

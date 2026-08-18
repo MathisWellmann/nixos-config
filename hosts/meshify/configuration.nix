@@ -31,7 +31,7 @@ in {
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/oh-my-pi.nix {
-      defaultModel = "vllm/${const_desg0.vllmModel}";
+      defaultModel = "vllm/${const_desg0.qwen3Model}";
     })
     (import ../../modules/ai/hermes_agent.nix {
       model = const.localModel;
@@ -39,8 +39,8 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://desg0:${toString const_desg0.llama-cpp_port}/v1";
       enableAgentica = true;
-      vllmBaseUrl = "http://desg0:${toString const_desg0.vllm_port}/v1";
-      vllmModels = [const_desg0.vllmModel];
+      vllmBaseUrl = "http://desg0:${toString const_desg0.qwen3_port}/v1";
+      vllmModels = [const_desg0.qwen3Model];
     })
     # monero_miner
   ];

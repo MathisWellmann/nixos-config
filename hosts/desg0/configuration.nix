@@ -36,8 +36,11 @@ in {
     ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/oh-my-pi.nix {
-      vllmBaseUrl = "http://127.0.0.1:${toString const.vllm_port}/v1";
-      defaultModel = "vllm/${const.vllmModel}";
+      # Served by the sglang container (see sglang_qwen3_container.nix);
+      # module/provider names keep the "vllm" prefix for compatibility.
+      vllmBaseUrl = "http://127.0.0.1:${toString const.qwen3_port}/v1";
+      defaultModel = "vllm/${const.qwen3Model}";
+      vllmContextWindow = 262144;
     })
     ./../../modules/k3s_server_follow.nix
     ./../../modules/k3s_nvidia.nix
@@ -49,20 +52,32 @@ in {
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
       enableAgentica = true;
-      vllmBaseUrl = "http://127.0.0.1:${toString const.vllm_port}/v1";
-      vllmModels = [const.vllmModel];
+      vllmBaseUrl = "http://127.0.0.1:${toString const.qwen3_port}/v1";
+      vllmModels = [const.qwen3Model];
+      vllmContextWindow = 262144;
     })
     (import ./../../modules/ai/llama-cpp.nix {
       models = const.localModels;
       port = const.llama-cpp_port;
     })
-    (import ./vllm_qwen3_container.nix {
-      port = const.vllm_port;
-      model = const.vllmModel;
-      maxModelLen = 131072;
-      maxNumSeqs = 64;
+    # Qwen3.8 server: SGLang replaced vllm (2026-07) — vllm has no support
+    # for the qwen3_5 hybrid GDN (mamba) architecture. The vllm 0.6 (~57GB)
+    # and sglang (48GB) footprints do not coexist on the one GPU with
+    # llama.cpp, so to revert: disable the sglang import and re-enable the
+    # commented vllm import below.
+    (import ./sglang_qwen3_container.nix {
+      port = const.qwen3_port;
+      model = const.qwen3Model;
+      draftModel = const.qwen3DraftModel;
       inherit (global_const) username;
     })
+    # (import ./vllm_qwen3_container.nix {
+    #   port = const.qwen3_port;
+    #   model = "Qwen/Qwen3.8-27B-FP8";
+    #   maxModelLen = 131072;
+    #   maxNumSeqs = 64;
+    #   inherit (global_const) username;
+    # })
     # (import ./../../modules/ai/minimax_music3_container.nix {
     #   port = const.minimax_music3_port;
     #   inherit (global_const) username;

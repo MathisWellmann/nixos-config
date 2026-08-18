@@ -34,12 +34,12 @@
   effectiveBaseUrl =
     if vllmBaseUrl != null
     then vllmBaseUrl
-    else "http://${desg0.hostname}:${toString desg0.vllm_port}/v1";
+    else "http://${desg0.hostname}:${toString desg0.qwen3_port}/v1";
 
   effectiveModels =
     if vllmModels != null
     then vllmModels
-    else [desg0.vllmModel];
+    else [desg0.qwen3Model];
 
   yaml = pkgs.formats.yaml {};
 

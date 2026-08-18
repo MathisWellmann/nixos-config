@@ -1,5 +1,10 @@
 # vLLM serving `Qwen/Qwen3.8-27B-FP8` on desg0.
 #
+# DEPRECATED (2026-07): replaced by sglang_qwen3_container.nix (SGLang +
+# NVFP4 + DSpark). Not imported from configuration.nix anymore. Kept as a
+# fallback; re-importing it requires disabling the sglang container because
+# both 48–57GB footprints plus llama.cpp do not fit on the one GPU.
+#
 # Qwen3.8 is the `qwen3_5` hybrid architecture: only 16 of its 64 layers run
 # full attention (`full_attention_interval: 4`), the other 48 are Gated DeltaNet
 # linear attention. It is also multimodal (`Qwen3_5ForConditionalGeneration`,

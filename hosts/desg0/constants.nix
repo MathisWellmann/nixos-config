@@ -1,11 +1,14 @@
 {
   hostname = "desg0";
 
-  vllm_port = 8000;
+  # Qwen3.8-27B server. Served by SGLang (NVFP4 + DSpark) since 2026-07;
+  # previously vllm (FP8). Named engine-neutral because other hosts share it.
+  qwen3_port = 8000;
+  qwen3Model = "RadixArk/Qwen3.8-27B-NVFP4";
+  qwen3DraftModel = "RadixArk/Qwen3.8-27B-DSpark";
   llama-cpp_port = 8001;
   nemotron_voicechat_port = 9000;
   minimax_music3_port = 8002;
-  vllmModel = "Qwen/Qwen3.8-27B-FP8";
   localModels = [
     "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL"
     "unsloth/Qwen3.6-27B-GGUF:Q4_K_XL"
