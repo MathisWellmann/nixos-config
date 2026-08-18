@@ -34,6 +34,14 @@ in {
       provider = "vllm-desg0";
       model = "Qwen/Qwen3.8-27B-FP8";
     };
+    plugins = {
+      "cyber-particle" = pkgs.fetchFromGitHub {
+        owner = "AKS1st";
+        repo = "dsh-cyber-particle";
+        rev = "master";
+        hash = "sha256-2FP4duo1rO4WfNMsDhq3uxU+6EqRst7tAgmNA0XHmCA=";
+      };
+    };
     # Satisfies the route's `apiKeyEnv` without a login shell: vLLM ignores the
     # value, it only has to exist.
     dotenv.VLLM_API_KEY = "unused-by-vllm";

@@ -148,21 +148,63 @@ in {
           ]
         '';
       };
+
+      plugins = mkOption {
+        type = types.attrsOf types.package;
+        default = {};
+        description = ''
+          Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).
+          Each entry key is the plugin package name, and the value is the derivation
+          containing the plugin's root directory (with `package.json`, `client.js`, etc.).
+        '';
+        example = literalExpression ''
+          {
+            "cyber-particle" = pkgs.fetchFromGitHub {
+              owner = "AKS1st";
+              repo = "dsh-cyber-particle";
+              rev = "master";
+              hash = "sha256-2FP4duo1rO4WfNMsDhq3uxU+6EqRst7tAgmNA0XHmCA=";
+            };
+          }
+        '';
+      };
     };
   };
 
   config = lib.mkIf cfg.enable {
     home.packages = [cfg.package];
 
-    home.file.".dsh/.env" = lib.mkIf (cfg.dotenv != {}) {
-      text = lib.concatLines (lib.mapAttrsToList (name: value: "${name}=${value}") cfg.dotenv);
-    };
-
-    home.file.".dsh/cordis.patch.yml" = lib.mkIf (patches != []) {
-      # A profile init writes a placeholder patch file, so take an existing one
-      # over instead of failing with "would be clobbered".
-      force = true;
-      source = yaml.generate "dsh-cordis.patch.yml" patches;
-    };
+    home.file =
+      lib.optionalAttrs (cfg.dotenv != {}) {
+        ".dsh/.env".text = lib.concatLines (lib.mapAttrsToList (name: value: "${name}=${value}") cfg.dotenv);
+      }
+      // lib.optionalAttrs (patches != []) {
+        # A profile init writes a placeholder patch file, so take an existing one
+        # over instead of failing with "would be clobbered".
+        ".dsh/cordis.patch.yml" = {
+          force = true;
+          source = yaml.generate "dsh-cordis.patch.yml" patches;
+        };
+      }
+      // lib.optionalAttrs (cfg.plugins != {}) ({
+        ".dsh/profiles/web/package.json" = {
+          force = true;
+          text = builtins.toJSON {
+            name = "dsh-profile-web";
+            private = true;
+            dependencies = lib.mapAttrs (name: pkg: "${pkg}") cfg.plugins;
+            dsh.profile.bundles = [
+              "@deepseek-ai/dsh-base"
+              "@deepseek-ai/dsh-web-app"
+            ] ++ (builtins.attrNames cfg.plugins);
+          };
+        };
+      } // (
+        lib.mapAttrs' (name: pkg:
+          lib.nameValuePair ".dsh/profiles/web/node_modules/${name}" {
+            source = pkg;
+          }
+        ) cfg.plugins
+      ));
   };
 }

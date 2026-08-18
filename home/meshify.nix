@@ -1,4 +1,8 @@
-{lib, ...}: let
+{
+  lib,
+  pkgs,
+  ...
+}: let
   global_const = import ../global_constants.nix;
   wallpaper = "~/wallpaper_vertical_animated_1080_1920_25fps_orange_blue.mp4";
 in {
@@ -32,6 +36,14 @@ in {
     defaultModel = {
       provider = "vllm-desg0";
       model = "Qwen/Qwen3.8-27B-FP8";
+    };
+    plugins = {
+      "cyber-particle" = pkgs.fetchFromGitHub {
+        owner = "AKS1st";
+        repo = "dsh-cyber-particle";
+        rev = "master";
+        hash = "sha256-2FP4duo1rO4WfNMsDhq3uxU+6EqRst7tAgmNA0XHmCA=";
+      };
     };
     # Satisfies the route's `apiKeyEnv` without a login shell: vLLM ignores the
     # value, it only has to exist.
