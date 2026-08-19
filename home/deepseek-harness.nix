@@ -414,6 +414,18 @@ in {
             rev = "b95d997a787ddfc2dfe05e167f59229ccd8bafb2";
             hash = "sha256-+5bbbVJEp1i7RwOi/g3dL3NiEkT/AMSwjvBQocyf4ek=";
           };
+          # Rotates the turn-status label through a phrase bank. Its host half
+          # persists the Settings → "Status Texts" editor by writing
+          # `config.json` into its own package root, which is a read-only store
+          # path here: the editor reports a write failure and the served bank
+          # stays whatever `config.example.json` ships. Phrases are declarative
+          # instead — drop a `config.json` into the derivation to change them.
+          "dsh-status-rotator" = pkgs.fetchFromGitHub {
+            owner = "01Virex";
+            repo = "dsh-status-rotator";
+            rev = "cab8715d471b0d83814f247c3adbe64e520fa6ea";
+            hash = "sha256-PjFJ8Gw0Ymh+v9R0NzKVSQ4BoqpooBSgfbuTFHx7oqA=";
+          };
           "@hellosz/dsh-pets" = defaultPetsPlugin;
           "@tt-a1i/archify-dsh" = archifyPlugin;
           "dsh-mermaid" = mermaidPlugin;
