@@ -405,17 +405,9 @@ in {
             rev = "master";
             hash = "sha256-2FP4duo1rO4WfNMsDhq3uxU+6EqRst7tAgmNA0XHmCA=";
           };
-          # Reasoning-effort slider in the model menu; the host half also feeds
-          # a thinking level to providers outside dsh's built-in catalog.
-          # Client-only deps (`dsh.client.inject`) resolve through the
-          # `@deepseek-ai/*` links the wrapper below adds, so no npm build or
-          # runtime dependency of its own.
-          "dsh-effort-slider" = pkgs.fetchFromGitHub {
-            owner = "2768651338";
-            repo = "dsh-effort-slider";
-            rev = "b95d997a787ddfc2dfe05e167f59229ccd8bafb2";
-            hash = "sha256-+5bbbVJEp1i7RwOi/g3dL3NiEkT/AMSwjvBQocyf4ek=";
-          };
+          # dsh-effort-slider: out — its OpenAI-style effort spellings (high/max)
+          # 400 on the SGLang endpoint, which only accepts low/medium/xhigh.
+
           # Rotates the turn-status label through a phrase bank. Its host half
           # persists the Settings → "Status Texts" editor by writing
           # `config.json` into its own package root, which is a read-only store
