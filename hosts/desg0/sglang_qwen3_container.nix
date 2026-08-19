@@ -116,6 +116,9 @@
       "qwen3"
       "--tool-call-parser"
       "qwen3_coder"
+      # Expose Prometheus /metrics on the API port. OFF by default in SGLang;
+      # without it the `sglang` scrape job on de-msa2 gets a 404.
+      "--enable-metrics"
       "--host"
       "0.0.0.0"
       "--port"

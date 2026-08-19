@@ -124,7 +124,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Scrape jobs answering 200 right now. There is one job per preset model (18 in desg0's constants.nix) and --models-max 1, so exactly 1 is expected. 0 = no model loaded (router boot or a reload in progress) -- if vllm and desg0-node go down with it, the router itself is out.",
+      "description": "Scrape jobs answering 200 right now. There is one job per preset model (18 in desg0's constants.nix) and --models-max 1, so exactly 1 is expected. 0 = no model loaded (router boot or a reload in progress) -- if sglang and desg0-node go down with it, the router itself is out.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "decimals": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 1 }, { "color": "green", "value": 1 }, { "color": "yellow", "value": 2 }] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
       "id": 6,

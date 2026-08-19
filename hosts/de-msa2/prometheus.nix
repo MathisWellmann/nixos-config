@@ -52,7 +52,7 @@
   # "up" at any time (the loaded model's), the rest are expected 400s and
   # are therefore exempt from the ScrapeTargetDown alert (alerting.nix) via
   # `always_on="false"`. A genuine router outage is still detected -- all 18
-  # jobs then go down together with `vllm` (desg0:8000) and `desg0-node`,
+  # jobs then go down together with `sglang` (desg0:8000) and `desg0-node`,
   # which remain covered.
   #
   # The preset list and port are imported from desg0's constants, so adding
@@ -467,15 +467,16 @@
           {targets = ["desg0:9001"];}
         ];
       }
-      # vLLM OpenAI server on desg0 (podman container, see
-      # hosts/desg0/vllm_qwen3_container.nix). Serves `/metrics` on its API
-      # port; port 8000 is the container's published port and is allowed by
-      # desg0's firewall (`vllm_qwen3_container.nix`).
+      # SGLang OpenAI server on desg0 (podman container, see
+      # hosts/desg0/sglang_qwen3_container.nix; SGLang replaced vllm in
+      # 2026-07). Serves `/metrics` on its API port only because the container
+      # is started with --enable-metrics (SGLang's default is off); the port
+      # is the container's published port, allowed by desg0's firewall.
       {
-        job_name = "vllm";
+        job_name = "sglang";
         inherit scrape_interval scrape_timeout;
         static_configs = [
-          {targets = ["desg0:8000"];}
+          {targets = ["desg0:${toString llama_cpp_consts.qwen3_port}"];}
         ];
       }
       {
