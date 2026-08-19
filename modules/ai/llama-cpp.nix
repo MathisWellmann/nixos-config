@@ -23,7 +23,7 @@ in {
       host = "0.0.0.0";
       inherit port;
       # Context
-      ctx-size = 256000; # context window
+      ctx-size = 128000; # context window
       # GPU offload - max layers (96GB VRAM can easily fit this model)
       n-gpu-layers = 999; # all layers to GPU
       # GPU optimization (Blackwell FA3 native support)
