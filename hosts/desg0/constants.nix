@@ -14,6 +14,7 @@
     "unsloth/Qwen3.6-27B-GGUF:Q4_K_XL"
     "InternScience/Agents-A1-Q4_K_M-GGUF"
     "deepreinforce-ai/Ornith-1.0-35B-GGUF:Q4_K_M"
+    "ornith-ai/Ornith-1.5-35B-A3B-GGUF:Q4_K_M"
     "bottlecapai/ThinkingCap-Qwen3.6-27B-GGUF:Q8_0"
     "prism-ml/Ternary-Bonsai-27B-gguf:BF16"
     "ProCreations/grug-35b-qat-q4-gguf:Q4_K_M"
