@@ -293,8 +293,10 @@ in {
             defaultMaxTokens = 32768;
             models = [
               {
-                id = "Qwen/Qwen3.8-27B-FP8";
-                name = "Qwen3.8 27B FP8";
+                # Must match --model-path of the SGLang container on desg0
+                # (no --served-model-name, so /v1/models reports the path).
+                id = "RadixArk/Qwen3.8-27B-NVFP4";
+                name = "Qwen3.8 27B NVFP4";
               }
             ];
           };
@@ -324,7 +326,7 @@ in {
       defaultModel = mkOption {
         default = {
           provider = "vllm-desg0";
-          model = "Qwen/Qwen3.8-27B-FP8";
+          model = "RadixArk/Qwen3.8-27B-NVFP4";
         };
         description = "The provider/model new sessions start with (`agent-default-model`).";
         type = types.nullOr (types.submodule {
