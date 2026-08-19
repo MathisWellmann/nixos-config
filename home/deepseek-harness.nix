@@ -199,13 +199,14 @@
       }
     ];
     clientPetsJson = builtins.toJSON (map (p: {
-      id = p.id;
-      name = p.name;
-      emoji = p.emoji;
-      personality = p.personality;
-      speedMul = p.speedMul;
-      catchphrases = p.catchphrases;
-    }) customPets);
+        id = p.id;
+        name = p.name;
+        emoji = p.emoji;
+        personality = p.personality;
+        speedMul = p.speedMul;
+        catchphrases = p.catchphrases;
+      })
+      customPets);
     patchScript = pkgs.writeText "patch.js" ''
       const fs = require("fs");
       const clientPath = process.argv[2];
@@ -224,15 +225,19 @@
       cp -r ${src}/* $out/
       chmod -R u+w $out
       ${lib.concatMapStringsSep "\n" (p: ''
-        mkdir -p $out/packs/${p.id}
-        cp ${pkgs.writeText "pet-${p.id}.json" (builtins.toJSON {
-          id = p.id;
-          displayName = p.displayName;
-          description = p.description;
-          spritesheetPath = "spritesheet.png";
-        })} $out/packs/${p.id}/pet.json
-        magick ${pkgs.fetchurl { url = p.url; hash = p.hash; }} $out/packs/${p.id}/spritesheet.png
-      '') customPets}
+          mkdir -p $out/packs/${p.id}
+          cp ${pkgs.writeText "pet-${p.id}.json" (builtins.toJSON {
+            id = p.id;
+            displayName = p.displayName;
+            description = p.description;
+            spritesheetPath = "spritesheet.png";
+          })} $out/packs/${p.id}/pet.json
+          magick ${pkgs.fetchurl {
+            url = p.url;
+            hash = p.hash;
+          }} $out/packs/${p.id}/spritesheet.png
+        '')
+        customPets}
       node ${patchScript} $out/lib/client.js
     '';
 
@@ -240,6 +245,30 @@
     url = "https://registry.npmjs.org/@tt-a1i/archify-dsh/-/archify-dsh-0.1.0.tgz";
     hash = "sha256-QWwjlh5H2l8DJYw24p0K6SaZ0OJKVI5oYsu/H/IIG5g=";
   };
+
+  # dsh-mermaid ships its build output (`lib/`) in the repo, so no npm build is
+  # needed — but its host half serves the mermaid UMD bundle off disk through
+  # `require.resolve("mermaid/dist/mermaid.min.js")`, which only resolves if the
+  # runtime dependency sits in the plugin's own `node_modules`.
+  mermaidPlugin = let
+    src = pkgs.fetchFromGitHub {
+      owner = "AKS1st";
+      repo = "dsh-mermaid";
+      rev = "2708cdf2e2eb1c0cd15448c3d3d680b8fba58d48";
+      hash = "sha256-TsdIyxil8Kyy0pVi2PE1lcCugMpshtj71r+9wA1p9u8=";
+    };
+    mermaid = pkgs.fetchzip {
+      url = "https://registry.npmjs.org/mermaid/-/mermaid-11.17.0.tgz";
+      hash = "sha256-xQgpKiye2/il8GjX5VylWL2NEymn8R3NNRjNfW2zit0=";
+    };
+  in
+    pkgs.runCommand "dsh-mermaid" {} ''
+      mkdir -p $out
+      cp -r ${src}/. $out/
+      chmod -R u+w $out
+      mkdir -p $out/node_modules
+      ln -s ${mermaid} $out/node_modules/mermaid
+    '';
 in {
   options = {
     programs.deepseek-harness = with lib; {
@@ -376,6 +405,7 @@ in {
           };
           "@hellosz/dsh-pets" = defaultPetsPlugin;
           "@tt-a1i/archify-dsh" = archifyPlugin;
+          "dsh-mermaid" = mermaidPlugin;
         };
         description = ''
           Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).
@@ -412,34 +442,39 @@ in {
         };
       }
       // lib.optionalAttrs (cfg.plugins != {}) ({
-        ".dsh/profiles/web/package.json" = {
-          force = true;
-          text = builtins.toJSON {
-            name = "dsh-profile-web";
-            private = true;
-            dependencies = lib.mapAttrs (name: pkg: "${pkg}") cfg.plugins;
-            dsh.profile.bundles = [
-              "@deepseek-ai/dsh-base"
-              "@deepseek-ai/dsh-web-app"
-            ] ++ (builtins.attrNames cfg.plugins);
+          ".dsh/profiles/web/package.json" = {
+            force = true;
+            text = builtins.toJSON {
+              name = "dsh-profile-web";
+              private = true;
+              dependencies = lib.mapAttrs (name: pkg: "${pkg}") cfg.plugins;
+              dsh.profile.bundles =
+                [
+                  "@deepseek-ai/dsh-base"
+                  "@deepseek-ai/dsh-web-app"
+                ]
+                ++ (builtins.attrNames cfg.plugins);
+            };
           };
-        };
-      } // (
-        lib.mapAttrs' (name: src:
-          let
-            # Inject dsh bundled node_modules into the plugin directory so Node's ESM
-            # resolution can find peer dependencies like `@deepseek-ai/dsh-tools`.
-            pluginPkg = pkgs.runCommand "dsh-plugin-${lib.strings.sanitizeDerivationName name}" {} ''
-              mkdir -p $out/node_modules/@deepseek-ai
-              cp -r ${src}/* $out/
-              chmod -R u+w $out
-              ln -s ${cfg.package}/lib/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/* $out/node_modules/@deepseek-ai/
-            '';
-          in
-          lib.nameValuePair ".dsh/profiles/web/node_modules/${name}" {
-            source = pluginPkg;
-          }
-        ) cfg.plugins
-      ));
+        }
+        // (
+          lib.mapAttrs' (
+            name: src: let
+              # Inject dsh bundled node_modules into the plugin directory so Node's ESM
+              # resolution can find peer dependencies like `@deepseek-ai/dsh-tools`.
+              pluginPkg = pkgs.runCommand "dsh-plugin-${lib.strings.sanitizeDerivationName name}" {} ''
+                mkdir -p $out
+                cp -r ${src}/. $out/
+                chmod -R u+w $out
+                mkdir -p $out/node_modules/@deepseek-ai
+                ln -s ${cfg.package}/lib/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/* $out/node_modules/@deepseek-ai/
+              '';
+            in
+              lib.nameValuePair ".dsh/profiles/web/node_modules/${name}" {
+                source = pluginPkg;
+              }
+          )
+          cfg.plugins
+        ));
   };
 }
