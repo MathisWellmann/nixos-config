@@ -8,6 +8,7 @@ Prints a per-level table plus METRIC lines for the primary metric
 """
 import asyncio
 import json
+import os
 import statistics
 import sys
 import time
@@ -17,9 +18,13 @@ import httpx
 BASE = sys.argv[1] if len(sys.argv) > 1 else "http://localhost:8000/v1"
 MODEL = sys.argv[2] if len(sys.argv) > 2 else "Qwen/Qwen3.8-27B-FP8"
 LEVELS = [int(x) for x in sys.argv[3].split(",")] if len(sys.argv) > 3 else [1, 2, 4, 8, 16, 32, 64, 128]
-MAX_TOKENS = 128
-# ponytail: fixed repeated sentence ≈128 tokens, close enough for a sweep
-PROMPT = ("The quick brown fox jumps over the lazy dog. " * 16).strip()
+# Overridable for long-context sweeps: BENCH_MAX_TOKENS / BENCH_PROMPT_TOKENS.
+MAX_TOKENS = int(os.environ.get("BENCH_MAX_TOKENS", 128))
+PROMPT_TOKENS = int(os.environ.get("BENCH_PROMPT_TOKENS", 128))
+# Calibrated against the Qwen3 tokenizer: this repeated sentence packs
+# ~10.55 tok/rep (96 reps = 1012 prompt_tokens), denser than a naive
+# 8 tok/rep guess which overshot 1k by ~30%.
+PROMPT = ("The quick brown fox jumps over the lazy dog. " * max(1, round(PROMPT_TOKENS / 10.55))).strip()
 
 HDRS = {"Authorization": f"Bearer {sys.argv[4] if len(sys.argv) > 4 else 'sk-dummy'}"}
 
@@ -91,7 +96,7 @@ async def sweep_level(level: int) -> dict:
 
 
 def main():
-    print(f"model={MODEL} base={BASE} prompt≈128tok max_tokens={MAX_TOKENS} levels={LEVELS}")
+    print(f"model={MODEL} base={BASE} prompt≈{PROMPT_TOKENS}tok max_tokens={MAX_TOKENS} levels={LEVELS}")
     stats = []
     for lvl in LEVELS:
         s = asyncio.run(sweep_level(lvl))
