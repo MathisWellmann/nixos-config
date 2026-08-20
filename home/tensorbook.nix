@@ -9,7 +9,7 @@ in {
     ./home_hyprland.nix
     ./deepseek-harness.nix
   ];
-  # DeepSeek Harness (`dsh`), pointed at the vLLM server on `desg0`.
+  # DeepSeek Harness (`dsh`), pointed at the SGLang server on `desg0`.
   programs.deepseek-harness.enable = true;
 
   wayland.windowManager.hyprland = {

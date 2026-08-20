@@ -284,11 +284,11 @@ in {
       llmProviders = mkOption {
         type = types.attrsOf yaml.type;
         default = {
-          vllm-desg0 = {
-            displayName = "vLLM desg0";
+          sglang-desg0 = {
+            displayName = "SGlang desg0";
             api = "openai-completions";
             baseURL = "http://desg0:8000/v1";
-            apiKeyEnv = "VLLM_API_KEY";
+            apiKeyEnv = "SGLANG_API_KEY";
             defaultContextWindow = 131072;
             defaultMaxTokens = 32768;
             models = [
@@ -316,7 +316,7 @@ in {
             my-vllm = {
               api = "openai-completions";
               baseURL = "http://localhost:8000/v1";
-              apiKeyEnv = "VLLM_API_KEY";
+              apiKeyEnv = "SGLANG_API_KEY";
               models = [{id = "Qwen/Qwen3.8-27B-FP8";}];
             };
           }
@@ -325,7 +325,7 @@ in {
 
       defaultModel = mkOption {
         default = {
-          provider = "vllm-desg0";
+          provider = "sglang-desg0";
           model = "RadixArk/Qwen3.8-27B-NVFP4";
         };
         description = "The provider/model new sessions start with (`agent-default-model`).";
@@ -351,7 +351,7 @@ in {
       dotenv = mkOption {
         type = types.attrsOf types.str;
         default = {
-          VLLM_API_KEY = "unused-by-vllm";
+          SGLANG_API_KEY = "unused-by-vllm";
         };
         description = ''
           Credentials written to `$DSH_HOME/.env`, the read-only fallback of
@@ -368,7 +368,7 @@ in {
           in `.credentials.yaml` (the web Models page writes it) or in an
           agenix/sops secret.
         '';
-        example = literalExpression ''{VLLM_API_KEY = "unused-by-vllm";}'';
+        example = literalExpression ''{SGLANG_API_KEY = "unused";}'';
       };
 
       patches = mkOption {
