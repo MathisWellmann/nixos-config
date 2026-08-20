@@ -6,6 +6,7 @@
   const = import ../global_constants.nix;
 in {
   imports = [
+    ./agent-skills.nix
     ./helix.nix
     ./vcs.nix
     ./shell.nix
