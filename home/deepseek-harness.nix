@@ -373,7 +373,18 @@ in {
 
       patches = mkOption {
         type = types.listOf yaml.type;
-        default = [];
+        default = [
+          # The SGLang route runs a thinking model (hand-declared model, no
+          # reasoning metadata, so the provider's default thinking is on).
+          # compaction-basic's default 8192-token summary cap counts reasoning
+          # tokens, so the checkpoint gets truncated: "summarization truncated
+          # at the token cap (incomplete checkpoint)". Give the summary call
+          # the same generation budget as ordinary requests.
+          {
+            id = "compaction-basic";
+            config.maxTokens = 32768;
+          }
+        ];
         description = ''
           Extra loader patch rows appended to `$DSH_HOME/cordis.patch.yml`,
           after the rows derived from `llmProviders` and `defaultModel`. Use
