@@ -269,6 +269,49 @@
       mkdir -p $out/node_modules
       ln -s ${mermaid} $out/node_modules/mermaid
     '';
+
+  # The host half fetches quotes through `yahoo-finance2`, which resolves
+  # upwards from the real path of its entry file; the profile ships no
+  # `npm install`, so the complete eager import chain (yahoo-finance2 ->
+  # tough-cookie -> tldts -> tldts-core) is copied into the plugin's
+  # `node_modules` (as real directories: Node walks up from the symlinked
+  # store path, not from the link's neighbour, so symlinks would leave the
+  # inner deps unresolvable). The remaining runtime deps
+  # (`@modelcontextprotocol/sdk`, `@deno/shim-deno`, `zod`, `json-schema`,
+  # `tough-cookie-file-store`, `fetch-mock-cache`) are only reachable from the
+  # MCP-server export and test shims, which the dsh entry points never import.
+  usStocksPlugin = let
+    src = pkgs.fetchzip {
+      url = "https://registry.npmjs.org/dsh-us-stocks/-/dsh-us-stocks-0.3.0.tgz";
+      hash = "sha256-Ra/28OIyyZsfIlCDN0zuNL62d3cEDqVS7jHcrgmddRc=";
+    };
+    yahooFinance = pkgs.fetchzip {
+      url = "https://registry.npmjs.org/yahoo-finance2/-/yahoo-finance2-4.0.2.tgz";
+      hash = "sha256-5aJcBP6uPD7pqXOBEKUK4g3rIVc3+lPXagn7TJPOkNs=";
+    };
+    toughCookie = pkgs.fetchzip {
+      url = "https://registry.npmjs.org/tough-cookie/-/tough-cookie-6.0.2.tgz";
+      hash = "sha256-QIW+r6MPS/sFAYJFUHHXKVl+fbEzDLKaDv8qSMrnJHY=";
+    };
+    tldts = pkgs.fetchzip {
+      url = "https://registry.npmjs.org/tldts/-/tldts-7.4.10.tgz";
+      hash = "sha256-KC3Tmd0bUEzVw2C4PB8QRHVsRFRdvdpDtjKlW4SFK7Q=";
+    };
+    tldtsCore = pkgs.fetchzip {
+      url = "https://registry.npmjs.org/tldts-core/-/tldts-core-7.4.10.tgz";
+      hash = "sha256-8b4nCK03JrMu/Cm37jLJDEZzFajotRPlh1cy3f9Wh/k=";
+    };
+  in
+    pkgs.runCommand "dsh-us-stocks" {} ''
+      mkdir -p $out
+      cp -r ${src}/. $out/
+      mkdir -p $out/node_modules
+      cp -r ${yahooFinance} $out/node_modules/yahoo-finance2
+      cp -r ${toughCookie} $out/node_modules/tough-cookie
+      cp -r ${tldts} $out/node_modules/tldts
+      cp -r ${tldtsCore} $out/node_modules/tldts-core
+      chmod -R u+w $out
+    '';
 in {
   options = {
     programs.deepseek-harness = with lib; {
@@ -434,6 +477,7 @@ in {
           "@hellosz/dsh-pets" = defaultPetsPlugin;
           "@tt-a1i/archify-dsh" = archifyPlugin;
           "dsh-mermaid" = mermaidPlugin;
+          "dsh-us-stocks" = usStocksPlugin;
         };
         description = ''
           Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).
