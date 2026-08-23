@@ -463,6 +463,15 @@
       {
         job_name = "symbiont";
         inherit scrape_interval scrape_timeout;
+        # symbiont exposes its own `instance` label (`$INSTANCE`, else
+        # `hostname-pid`), which is the only thing that tells two harness
+        # processes on the same host apart -- the scrape target is a single
+        # shared exporter port. Without this the exposed label is renamed to
+        # `exported_instance` and every "by (instance)" panel on the symbiont
+        # dashboard collapses to one series named "desg0:9001", which also
+        # makes per-process ratios (build slot utilization) wrong by summing
+        # across processes.
+        honor_labels = true;
         static_configs = [
           {targets = ["desg0:9001"];}
         ];
