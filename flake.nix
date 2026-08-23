@@ -17,6 +17,7 @@
     awww.url = "git+https://codeberg.org/LGFae/awww";
     hermes-agent.url = "github:NousResearch/hermes-agent";
     llm-agents.url = "github:numtide/llm-agents.nix";
+    autolith.url = "github:lambda-symbolics/autolith";
     forgecode.url = "github:tailcallhq/forgecode";
     kopuz.url = "github:temidaradev/kopuz";
     stochos.url = "github:museslabs/stochos";
