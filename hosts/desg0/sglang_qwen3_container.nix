@@ -3,7 +3,7 @@
 # Replaces the vllm-qwen3 container (2026-07): SGLang supports the qwen3_5
 # hybrid GDN (mamba) architecture with DSpark, vllm does not.
 #
-# Sizing target (2026-08): 128k context at concurrency 4, on the 96GB
+# Sizing target (2026-08): 256k context at concurrency 2, on the 96GB
 # RTX PRO 6000 shared with llama-cpp.service (~20GB resident).
 #
 # Per the cookbook's mamba ratio calculator:
@@ -11,7 +11,7 @@
 # where S = state slots/request (extra_buffer_lazy = 4), D = DSpark verify
 # slots = gamma+1 = 8, state_bytes = 78.4MB at bf16, kv_bytes_per_token =
 # 32.8KB at fp8, and L = avg total request length (input+output).
-# For L = 128k+1k: ratio = (4+8) x 78.4e6 / (132096 x 32.8e3) = 0.217.
+# For L = 256k+1k: ratio = (4+8) x 78.4e6 / (263168 x 32.8e3) = 0.109.
 #
 # --mamba-full-memory-ratio was previously UNSET, so it defaulted to 0.9 --
 # the exact failure the docs warn about ("the default (0.9) over-provisions
@@ -20,21 +20,20 @@
 # only max_total_num_tokens=21714 -- i.e. the advertised 262144 context
 # rejected anything past ~21.7k tokens with HTTP 400.
 #
-# MEASURED with the settings below (llama-cpp running, mem-fraction 0.62):
-#   max_total_num_tokens=445052  (20.5x the old 21714)
-#   mamba cache 4.1GB (was 15.6GB); peak KV usage 0.28 at 4x118k concurrent
-#   4 concurrent 118k-token prompts served with 0 errors, 0 retractions
-#   124k-token single prompt accepted (was HTTP 400 above ~21.7k)
-# 445052 KV tokens = 3.4x 131072, so 4-way 128k is admitted with headroom.
+# MEASURED at the prior 128k/concurrency-4 settings (mem-fraction 0.62):
+#   max_total_num_tokens=445052; mamba cache 4.1GB; 4x118k concurrent served
+#   with 0 errors, 0 retractions; 124k single prompt accepted.
+# The 256k/concurrency-2 settings below are derived from the same formula,
+# not measured -- check max_total_num_tokens after first boot.
 #
 # - extra_buffer_lazy lowers S from 5 to 4 "at no accuracy cost" (docs) and
 #   is the recommended lever when the state pool bounds concurrency.
-# - --max-mamba-cache-size = target_concurrency x S = 4 x 4 = 16. This pins
+# - --max-mamba-cache-size = target_concurrency x S = 2 x 4 = 8. This pins
 #   the state pool and overrides the ratio; both are emitted per the docs.
 #   D is deliberately NOT folded in -- the engine sizes the verify buffer
 #   separately, so including it would over-provision.
-# - --context-length 131072 makes the advertised limit match what the pool
-#   can actually serve, instead of claiming the checkpoint's native 262144.
+# - --context-length 262144 is the checkpoint's native limit; at concurrency
+#   2 the pool must cover 2x 256k -- verify max_total_num_tokens on boot.
 # - bf16 SSM state halves the state pool vs fp32 (78.4MB vs 153.9MB/slot).
 #   Docs flag this as an accuracy gate worth validating for the workload.
 #
@@ -47,12 +46,12 @@
   model ? "RadixArk/Qwen3.8-27B-NVFP4",
   draftModel ? "RadixArk/Qwen3.8-27B-DSpark",
   memFractionStatic ? "0.62",
-  # target_concurrency (4) x S (4, extra_buffer_lazy).
-  maxMambaCacheSize ? 16,
-  # Balanced ratio for L = 128k input + 1k output; see header.
-  mambaFullMemoryRatio ? "0.217",
-  maxRunningRequests ? 4,
-  contextLength ? 131072,
+  # target_concurrency (2) x S (4, extra_buffer_lazy).
+  maxMambaCacheSize ? 8,
+  # Balanced ratio for L = 256k input + 1k output; see header.
+  mambaFullMemoryRatio ? "0.109",
+  maxRunningRequests ? 2,
+  contextLength ? 262144,
 }:
 
 { config, lib, ... }:

@@ -15,7 +15,7 @@
   # entry, so listing the real id causes no duplicates.
   vllmModels ? null,
   # Fallback context window; discovery prefers the server's `max_model_len`.
-  vllmContextWindow ? 131072,
+  vllmContextWindow ? 262144,
   # Discovery leaves `maxTokens` unset, and vLLM rejects requests whose
   # prompt + max_tokens exceed `max_model_len`, so cap the output budget.
   vllmMaxTokens ? 32768,

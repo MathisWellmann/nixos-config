@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "SGLang serving RadixArk/Qwen3.8-27B-NVFP4 (+ DSpark draft) on desg0 (single engine, scraped at desg0:8000, job \"sglang\"). Engine limits it is read against (set in hosts/desg0/sglang_qwen3_container.nix): --max-running-requests 4, --context-length 131072, --mem-fraction-static 0.62, fp8 KV cache, bf16 mamba (GDN) SSM state, DSpark speculative decoding. SGLang exposes /metrics only when started with --enable-metrics (default OFF; set in the container config). All rates and histogram quantiles use the shared rate window via the \"Rate window\" variable (5m default, 30m option); means are rate(_sum)/rate(_count), restart-safe. Metric names are `sglang:*` (the `vllm:*` series ended when the engine was swapped, 2026-07). SGLang's /metrics registry carries no process_* / python_* series, so the former uptime/RSS/CPU panels are gone. SGLang also has no finished-reason label on completed requests (aborts are separate: sglang:num_aborted_requests_total).",
+  "description": "SGLang serving RadixArk/Qwen3.8-27B-NVFP4 (+ DSpark draft) on desg0 (single engine, scraped at desg0:8000, job \"sglang\"). Engine limits it is read against (set in hosts/desg0/sglang_qwen3_container.nix): --max-running-requests 2, --context-length 262144, --mem-fraction-static 0.62, fp8 KV cache, bf16 mamba (GDN) SSM state, DSpark speculative decoding. SGLang exposes /metrics only when started with --enable-metrics (default OFF; set in the container config). All rates and histogram quantiles use the shared rate window via the \"Rate window\" variable (5m default, 30m option); means are rate(_sum)/rate(_count), restart-safe. Metric names are `sglang:*` (the `vllm:*` series ended when the engine was swapped, 2026-07). SGLang's /metrics registry carries no process_* / python_* series, so the former uptime/RSS/CPU panels are gone. SGLang also has no finished-reason label on completed requests (aborts are separate: sglang:num_aborted_requests_total).",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -113,7 +113,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "KV token-pool utilization (1 = full). Sized by --mem-fraction-static 0.62 with fp8 KV; long agent contexts (up to 131072 tokens) eat it fast. Sustained ~1 causes queueing and retractions.",
+      "description": "KV token-pool utilization (1 = full). Sized by --mem-fraction-static 0.62 with fp8 KV; long agent contexts (up to 262144 tokens) eat it fast. Sustained ~1 causes queueing and retractions.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "percentunit", "max": 1, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 0.8 }, { "color": "red", "value": 0.95 }] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
       "id": 5,
@@ -374,7 +374,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Prompt tokens per request. Explains prefill cost and TTFT. The default histogram buckets reach ~1.1M tokens, so quantiles stay trustworthy well beyond the 131072 context limit (vllm's saturated at 50k).",
+      "description": "Prompt tokens per request. Explains prefill cost and TTFT. The default histogram buckets reach ~1.1M tokens, so quantiles stay trustworthy well beyond the 262144 context limit (vllm's saturated at 50k).",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 61 },
       "id": 40,
@@ -501,7 +501,7 @@
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "description": "Engine configuration constants as emitted at startup: the advertised context length (--context-length 131072) and the total KV token pool (~445k at the current mem-fraction). A reset to 0/blank between up periods is a restart; the series is constant between restarts.",
+          "description": "Engine configuration constants as emitted at startup: the advertised context length (--context-length 262144) and the total KV token pool (~445k at the current mem-fraction). A reset to 0/blank between up periods is a restart; the series is constant between restarts.",
           "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
           "gridPos": { "h": 8, "w": 8, "x": 16, "y": 88 },
           "id": 72,

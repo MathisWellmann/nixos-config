@@ -12,7 +12,7 @@
   # loading weights) so `/model` keeps working.
   vllmModels ? [],
   # Fallback context window; discovery prefers the server's `max_model_len`.
-  vllmContextWindow ? 131072,
+  vllmContextWindow ? 262144,
   vllmMaxTokens ? 32768,
 }: {
   pkgs,

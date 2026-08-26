@@ -332,7 +332,7 @@ in {
             api = "openai-completions";
             baseURL = "http://desg0:8000/v1";
             apiKeyEnv = "SGLANG_API_KEY";
-            defaultContextWindow = 131072;
+            defaultContextWindow = 262144;
             defaultMaxTokens = 32768;
             models = [
               {
