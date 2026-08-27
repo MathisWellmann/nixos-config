@@ -1,4 +1,7 @@
 {pkgs, ...}: {
+  # ponytail: yazi needs `file` on PATH for mime-based open rules (video/*, pdf)
+  home.packages = [pkgs.file];
+
   programs.yazi = {
     enable = true;
     shellWrapperName = "y"; # New behaviour
@@ -7,37 +10,40 @@
       opener = {
         edit = [
           {
-            run = ''${pkgs.helix}/bin/hx "$@"'';
+            run = ''${pkgs.helix}/bin/hx %s'';
             block = true;
           }
         ];
         image = [
           {
-            run = ''${pkgs.viu}/bin/viu "$@" && sleep 10'';
+            run = ''${pkgs.viu}/bin/viu %s && sleep 10'';
             block = true;
           }
         ];
         mpv = [
           {
-            run = ''${pkgs.mpv}/bin/mpv "$@"'';
+            run = ''${pkgs.mpv}/bin/mpv %s'';
             block = true;
           }
         ];
         music = [
           {
-            run = ''${pkgs.moc}/bin/mocp "$@"'';
+            run = ''${pkgs.moc}/bin/mocp %s'';
             block = true;
           }
         ];
         pdf = [
           {
-            run = ''${pkgs.zathura}/bin/zathura "$@"'';
+            run = ''${pkgs.zathura}/bin/zathura %s'';
             desc = "Open PDF";
           }
         ];
       };
       open = {
-        rules = [
+        # ponytail: `prepend_rules` keeps yazi's preset rules (dirs, text, archives,
+        # and the `url = "*"` fallback). Using `rules` would replace them outright,
+        # leaving anything unmatched silently unopenable.
+        prepend_rules = [
           ##### Images #####
           {
             url = "*.ARW";
@@ -57,11 +63,7 @@
           }
           ##### Video #####
           {
-            url = "*.webm";
-            use = "mpv";
-          }
-          {
-            url = "*.mp4";
+            mime = "video/*"; # covers mp4, webm, mkv, mov, ...
             use = "mpv";
           }
           {
