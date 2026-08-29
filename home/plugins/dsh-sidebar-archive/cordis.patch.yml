@@ -1,0 +1,10 @@
+# dsh-sidebar-archive bundle patch.
+#
+# Inserts one tree row for this package. The row's node half is a deliberate
+# no-op (there is no host-side capability behind the button); the browser half
+# is picked up because this package declares `dsh.client` — the Web client
+# module scanner turns the row into a boot-graph line and serves this
+# package's `./client` export under /plugins.
+- insert:
+    - id: sidebar-archive
+      name: dsh-sidebar-archive

@@ -312,6 +312,18 @@
       cp -r ${tldtsCore} $out/node_modules/tldts-core
       chmod -R u+w $out
     '';
+
+  # dsh-sidebar-archive ships in this repository (home/plugins): a zero-dependency
+  # client plugin that injects a one-click "Archive session" (×) button next to
+  # the ⋯ row menu on every web-sidebar session row, committing the same
+  # `workspace.archiveSession` action that menu performs. Its selectors target
+  # the 0.1.0-rc.6 web UI; every lookup is guarded, so a UI that drops the
+  # expected classes degrades to "no buttons" instead of a broken sidebar.
+  sidebarArchivePlugin = pkgs.runCommand "dsh-sidebar-archive" {} ''
+    mkdir -p $out
+    cp -r ${./plugins/dsh-sidebar-archive}/. $out/
+    chmod -R u+w $out
+  '';
 in {
   options = {
     programs.deepseek-harness = with lib; {
@@ -478,6 +490,7 @@ in {
           "@tt-a1i/archify-dsh" = archifyPlugin;
           "dsh-mermaid" = mermaidPlugin;
           "dsh-us-stocks" = usStocksPlugin;
+          "dsh-sidebar-archive" = sidebarArchivePlugin;
         };
         description = ''
           Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).
