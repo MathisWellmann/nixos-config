@@ -1,57 +1,54 @@
 # SGLang container for Qwen3.8-27B NVFP4 with DSpark speculative decoding.
 #
-# Replaces the vllm-qwen3 container (2026-07): SGLang supports the qwen3_5
-# hybrid GDN (mamba) architecture with DSpark, vllm does not.
+# SGLang supports the qwen3_5 hybrid GDN (mamba) architecture, vllm does not.
 #
-# Sizing target (2026-08): 256k context at concurrency 2, on the 96GB
-# RTX PRO 6000 shared with llama-cpp.service (~20GB resident).
+# Sizing: 192k context at concurrency 2, in a 48GB cap. llama-cpp gets the
+# other half of the 96GB RTX PRO 6000.
 #
-# Per the cookbook's mamba ratio calculator:
+# VRAM model, measured 2026-08-29:
+#   total = 27.4GB fixed + 40.03KB/token of KV pool + 0.296GB/slot of mamba
+# The fixed part is weights 21.68 + draft 3.64 + CUDA graphs 1.6 + misc 0.5.
+# KV is 40.03KB/token, not the 32.8KB of the ratio formula, because SGLang
+# allocates two KV pools. 200k context needs 48.6GB and gets only 12 mamba
+# slots, so 192k is better.
+#
+# --mem-fraction-static is a ceiling on TOTAL GPU memory, not a target. It
+# bounds the KV pool. At 0.52 the pool held 267302 tokens, which is less than
+# 2 x 196608, so two full-context requests did not fit. 0.58 uses 46.8GB and
+# gives a pool of 379988 tokens. That is 1.93x the context, so one request can
+# use the full 192k, and two can run together at 190k each.
+#
+# CAUTION: do not set --max-mamba-cache-size to concurrency x S (= 8).
+# That value crashed the scheduler twice on 2026-08-29:
+#   mamba_component.py:479  assert slot is not None, "Can not alloc mamba cache"
+# The assert came from cache_unfinished_req. extra_buffer_lazy keeps a state
+# slot for each cached prefix, not only for each running request. Logs showed
+# "mamba num: 6, mamba usage: 0.88" with 2 running requests. 16 slots give the
+# radix cache the headroom that 8 slots do not.
+#
+# A dead scheduler child makes the parent exit 0. Restart=on-failure does not
+# fire, so the unit stays inactive. Restart=always corrects this.
+#
+# Mamba ratio, per the cookbook:
 #   ratio = (S + D) x state_bytes / (L x kv_bytes_per_token)
-# where S = state slots/request (extra_buffer_lazy = 4), D = DSpark verify
-# slots = gamma+1 = 8, state_bytes = 78.4MB at bf16, kv_bytes_per_token =
-# 32.8KB at fp8, and L = avg total request length (input+output).
-# For L = 256k+1k: ratio = (4+8) x 78.4e6 / (263168 x 32.8e3) = 0.109.
+# S = 4 (extra_buffer_lazy), D = gamma+1 = 8, state_bytes = 78.4MB at bf16.
+# For L = 192k+1k: (4+8) x 78.4e6 / (197632 x 32.8e3) = 0.145. The pin
+# overrides this ratio, so the ratio only sets an upper bound.
 #
-# --mamba-full-memory-ratio was previously UNSET, so it defaulted to 0.9 --
-# the exact failure the docs warn about ("the default (0.9) over-provisions
-# the KV pool and silently clamps concurrency"). That default, plus
-# extra_buffer S=5 pinned at 80 slots, spent ~15.6GB on GDN state and left
-# only max_total_num_tokens=21714 -- i.e. the advertised 262144 context
-# rejected anything past ~21.7k tokens with HTTP 400.
-#
-# MEASURED at the prior 128k/concurrency-4 settings (mem-fraction 0.62):
-#   max_total_num_tokens=445052; mamba cache 4.1GB; 4x118k concurrent served
-#   with 0 errors, 0 retractions; 124k single prompt accepted.
-# The 256k/concurrency-2 settings below are derived from the same formula,
-# not measured -- check max_total_num_tokens after first boot.
-#
-# - extra_buffer_lazy lowers S from 5 to 4 "at no accuracy cost" (docs) and
-#   is the recommended lever when the state pool bounds concurrency.
-# - --max-mamba-cache-size = target_concurrency x S = 2 x 4 = 8. This pins
-#   the state pool and overrides the ratio; both are emitted per the docs.
-#   D is deliberately NOT folded in -- the engine sizes the verify buffer
-#   separately, so including it would over-provision.
-# - --context-length 262144 is the checkpoint's native limit; at concurrency
-#   2 the pool must cover 2x 256k -- verify max_total_num_tokens on boot.
-# - bf16 SSM state halves the state pool vs fp32 (78.4MB vs 153.9MB/slot).
-#   Docs flag this as an accuracy gate worth validating for the workload.
-#
-# Concurrency >4 is possible (~0.52 mem-fraction for 6, ~0.62 for 8 by the
-# same formula) but was not validated here; raise max-running-requests and
-# max-mamba-cache-size together (pin = concurrency x 4) if needed.
+# Keep --mamba-full-memory-ratio set. Unset, it defaults to 0.9, which
+# over-provisions the KV pool and clamps concurrency.
 {
   port ? 8000,
   username ? "m",
   model ? "RadixArk/Qwen3.8-27B-NVFP4",
   draftModel ? "RadixArk/Qwen3.8-27B-DSpark",
-  memFractionStatic ? "0.62",
-  # target_concurrency (2) x S (4, extra_buffer_lazy).
-  maxMambaCacheSize ? 8,
-  # Balanced ratio for L = 256k input + 1k output; see header.
-  mambaFullMemoryRatio ? "0.109",
+  # A ceiling, not a target: the engine uses 48.0GB of it.
+  memFractionStatic ? "0.58",
+  # Not concurrency x S. See the CAUTION in the header.
+  maxMambaCacheSize ? 16,
+  mambaFullMemoryRatio ? "0.145",
   maxRunningRequests ? 2,
-  contextLength ? 262144,
+  contextLength ? 196608,
 }:
 
 { config, lib, ... }:
@@ -64,21 +61,16 @@
     ports = [ "${toString port}:8000" ];
 
     volumes = [
-      # Host HuggingFace cache (NVFP4 model + DSpark draft are ~25GB total).
+      # The JIT caches make container rebuilds fast.
       "/home/${username}/.cache/huggingface:/root/.cache/huggingface"
-      # FlashInfer JIT kernels survive container rebuilds.
       "/home/${username}/.cache/flashinfer:/root/.cache/flashinfer"
-      # Triton JIT cache (GDN kernels) survives container rebuilds.
       "/home/${username}/.triton:/root/.triton"
     ];
 
     environment = {
-      # Parallelise JIT kernel compilation on first boot (mirrors the vllm
-      # container).
       MAX_JOBS = "4";
     };
 
-    # Image entrypoint is nvidia_entrypoint.sh; it execs this cmd.
     cmd = [
       "sglang"
       "serve"
@@ -115,8 +107,7 @@
       "qwen3"
       "--tool-call-parser"
       "qwen3_coder"
-      # Expose Prometheus /metrics on the API port. OFF by default in SGLang;
-      # without it the `sglang` scrape job on de-msa2 gets a 404.
+      # Without this flag the `sglang` scrape job on de-msa2 gets a 404.
       "--enable-metrics"
       "--host"
       "0.0.0.0"
@@ -129,30 +120,28 @@
       "--ipc=host"
     ];
 
-    # Experimental knob, intentionally OFF (not in the verified recipe). With
-    # extra_buffer_lazy (S=4) this would free one more slot for S=3, cutting
-    # the state pool further if concurrency needs to grow:
+    # To grow concurrency, this knob cuts S from 4 to 3. It is not part of
+    # the verified recipe:
     # environment = { SGLANG_OPT_MAMBA_SKIP_DECODE_LOCK = "1"; }
   };
 
-  # Podman refuses to start when a bind-mount source is missing
-  # ("Error: statfs ...: no such file or directory"), so create the JIT cache
-  # dirs declaratively. The huggingface cache is created by the download path.
+  # Podman stops with "Error: statfs ...: no such file or directory" when a
+  # bind-mount source is absent. Each new volume needs a rule here.
   systemd.tmpfiles.rules = [
     "d /home/${username}/.cache 0755 ${username} users -"
     "d /home/${username}/.cache/flashinfer 0755 ${username} users -"
     "d /home/${username}/.triton 0755 ${username} users -"
   ];
 
-  # GPU access via CDI: ensure the nvidia container toolkit is running.
   hardware.nvidia-container-toolkit.enable = true;
   systemd.services.podman-sglang-qwen3 = {
     after = [ "nvidia-container-toolkit-cdi-generator.service" ];
     requires = [ "nvidia-container-toolkit-cdi-generator.service" ];
-    # The first start pulls a ~65GB image (~17min). Without backoff, five
-    # instant restarts burn the start limit and leave the unit dead.
+    # The first start pulls a 65GB image and takes 17 minutes. Without
+    # backoff, five fast restarts burn the start limit and the unit dies.
     startLimitIntervalSec = 0;
     serviceConfig.RestartSec = "30s";
+    serviceConfig.Restart = lib.mkForce "always";
   };
 
   networking.firewall.allowedTCPPorts = [ port ];

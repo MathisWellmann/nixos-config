@@ -40,9 +40,9 @@ in {
       # module/provider names keep the "vllm" prefix for compatibility.
       vllmBaseUrl = "http://127.0.0.1:${toString const.qwen3_port}/v1";
       defaultModel = "vllm/${const.qwen3Model}";
-      # Must match --context-length in sglang_qwen3_container.nix: the server
-      # serves 256k, and rejects longer inputs with HTTP 400.
-      vllmContextWindow = 262144;
+      # Must match --context-length in sglang_qwen3_container.nix. The server
+      # rejects longer inputs with HTTP 400.
+      vllmContextWindow = 196608;
     })
     ./../../modules/k3s_server_follow.nix
     ./../../modules/k3s_nvidia.nix
@@ -56,8 +56,8 @@ in {
       enableAgentica = true;
       vllmBaseUrl = "http://127.0.0.1:${toString const.qwen3_port}/v1";
       vllmModels = [const.qwen3Model];
-      # Must match --context-length in sglang_qwen3_container.nix (see above).
-      vllmContextWindow = 262144;
+      # Must match --context-length in sglang_qwen3_container.nix.
+      vllmContextWindow = 196608;
     })
     (import ./../../modules/ai/llama-cpp.nix {
       models = const.localModels;
