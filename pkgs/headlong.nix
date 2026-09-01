@@ -41,21 +41,23 @@ stdenvNoCC.mkDerivation {
 
     # headlong-web runs `uv run --project <tree>/web`, which writes .venv next
     # to the project — impossible from the read-only store. So bin/headlong-web
-    # is a wrapper that re-runs the real script from a writable copy in
-    # $XDG_CACHE_HOME, re-copied whenever the store path changes.
+    # is a wrapper that re-runs the real script from ~/.headlong/app, headlong's
+    # own writable app-dir convention (auto-resolved by every tool, persistent,
+    # not a deletable cache), keeping the store tree as the pristine source and
+    # re-copying it whenever the store path changes (never touching user data).
     rm "$out/bin/headlong-web"
     cat > "$out/bin/headlong-web" <<'EOF'
 #!/usr/bin/env bash
 set -euo pipefail
 store="$(cd "$(dirname "$(realpath "''${BASH_SOURCE[0]}")")/../share/headlong" && pwd)"
-cache="''${XDG_CACHE_HOME:-$HOME/.cache}/headlong-web"
-if [[ "$(cat "$cache/.headlong-src" 2>/dev/null)" != "$store" ]]; then
-  mkdir -p "$cache"
-  cp -a "$store/." "$cache/"
-  chmod -R u+w "$cache"
-  echo "$store" > "$cache/.headlong-src"
+app="$HOME/.headlong/app"
+if [[ "$(cat "$app/.headlong-src" 2>/dev/null)" != "$store" ]]; then
+  mkdir -p "$app"
+  cp -a "$store/." "$app/"
+  chmod -R u+w "$app"
+  echo "$store" > "$app/.headlong-src"
 fi
-exec "$cache/tools/headlong-web" "$@"
+exec "$app/tools/headlong-web" "$@"
 EOF
     chmod 755 "$out/bin/headlong-web"
 
