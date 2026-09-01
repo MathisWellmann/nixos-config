@@ -1,4 +1,4 @@
-{pkgs, ...}: let
+{ pkgs, inputs, ... }: let
   my-python-packages = ps:
     with ps; [
       numpy
@@ -16,5 +16,9 @@ in {
   home.packages = with pkgs; [
     (python313.withPackages my-python-packages)
     uv # Python package manager
+
+    # "IPython is All You Need" blog post: ipython CLI + ipythonng, fastllm,
+    # safecmd/safepyrun, fastcore 2.x (see pkgs/ipython-shell.nix)
+    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.ipython-shell
   ];
 }

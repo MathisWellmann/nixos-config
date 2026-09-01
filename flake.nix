@@ -119,6 +119,9 @@
 
       # Headlong agent microharness (shellm & co.), see home/headlong.nix
       headlong = pkgs.callPackage ./pkgs/headlong.nix {};
+
+      # "IPython is All You Need" shell, see pkgs/ipython-shell.nix
+      ipython-shell = pkgs.callPackage ./pkgs/ipython-shell.nix {};
     };
 
     nixosConfigurations = {
