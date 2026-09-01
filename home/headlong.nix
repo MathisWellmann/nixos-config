@@ -22,10 +22,22 @@
   system = pkgs.stdenv.hostPlatform.system;
   desg0 = import ../hosts/desg0/constants.nix;
   headlongHome = "${config.home.homeDirectory}/.headlong";
+  # The live, writable headlong tree the `headlong-web` wrapper runs from (see
+  # pkgs/headlong.nix). Identities live here, so links must point into this
+  # tree — its `persona` resolves an identity from its own location.
+  headlongApp = "${config.home.homeDirectory}/.cache/headlong-web";
+  # Make an identity's name a command (`galt`, `galt stop`, ...) by symlinking it
+  # to the live tree's `persona` tool. headlong's own `headlong-init` does this
+  # per identity, but web-created identities skip it — so link the ones we want.
+  mkIdentityCmd = name: pkgs.runCommand "headlong-cmd-${name}" {} ''
+    mkdir -p $out/bin
+    ln -s ${headlongApp}/tools/persona $out/bin/${name}
+  '';
 in {
   home.packages = [
     inputs.self.packages.${system}.headlong
     pkgs.bun # headlong-web builds its viewer frontend with bun on first start
+    (mkIdentityCmd "galt") # new web identities: use `persona <name>`, or add another mkIdentityCmd
   ];
 
   home.activation.writeHeadlongEnv = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
