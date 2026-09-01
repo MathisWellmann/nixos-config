@@ -233,6 +233,9 @@
         };
       };
     };
+    hyprlock = {
+      enable = true;
+    };
     # looking-glass-client = {
     #   enable = true;
     #   settings = {
@@ -281,7 +284,7 @@
       settings = {
         listener = [
           {
-            timeout = 300;
+            timeout = 60;
             on-timeout = "hyprlock";
           }
           {
