@@ -116,6 +116,9 @@
 
       # Archify architecture diagram tool & agent skill CLI
       archify = pkgs.callPackage ./pkgs/archify.nix {};
+
+      # Headlong agent microharness (shellm & co.), see home/headlong.nix
+      headlong = pkgs.callPackage ./pkgs/headlong.nix {};
     };
 
     nixosConfigurations = {
