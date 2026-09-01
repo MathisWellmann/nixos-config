@@ -15,5 +15,6 @@
 in {
   home.packages = with pkgs; [
     (python313.withPackages my-python-packages)
+    uv # Python package manager
   ];
 }

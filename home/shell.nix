@@ -128,7 +128,8 @@
         $env.PATH = ($env.PATH | split row (char esep) |
           append ($env.HOME| path join .cargo/bin) |
           append ($env.HOME| path join .npm-global/bin) |
-          append ($env.HOME| path join .pub-cache/bin));
+          append ($env.HOME| path join .pub-cache/bin) |
+          append ($env.HOME| path join .local/bin));
 
         # Open `~/.env` and load the contained environment variables if it exists.
         let env_file = ($env.HOME | path join `.env`)
