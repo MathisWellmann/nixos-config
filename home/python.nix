@@ -1,4 +1,8 @@
-{ pkgs, inputs, ... }: let
+{
+  pkgs,
+  inputs,
+  ...
+}: let
   my-python-packages = ps:
     with ps; [
       numpy
@@ -21,4 +25,10 @@ in {
     # safecmd/safepyrun, fastcore 2.x (see pkgs/ipython-shell.nix)
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.ipython-shell
   ];
+
+  # "bash buddy": blog-post shell setup, auto-loaded on every `ipython` start.
+  # Inference provider points at the local sglang server (desg0:8000).
+  home.file = {
+    ".ipython/profile_default/startup/90-bash-buddy.py".source = ./bash-buddy.py;
+  };
 }

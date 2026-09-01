@@ -17,19 +17,18 @@
   # Pure-Python (or platform) wheel from PyPI, no build step.
   # ponytail: buildPythonPackage (not buildPythonApplication) so the env's
   # requiredPythonModules filter keeps them in site-packages.
-  pypi =
-    {
-      pname,
-      version,
-      url,
-      sha256,
-      deps ? [ ],
-      postInstall ? "",
-    }:
+  pypi = {
+    pname,
+    version,
+    url,
+    sha256,
+    deps ? [],
+    postInstall ? "",
+  }:
     python313Packages.buildPythonPackage {
       inherit pname version;
       format = "wheel";
-      src = fetchurl { inherit url sha256; };
+      src = fetchurl {inherit url sha256;};
       dependencies = deps;
       inherit postInstall;
     };
@@ -117,27 +116,28 @@
     };
 
     ipython-shell =
-      python313.withPackages (ps: with ps; [
-        # from nixpkgs
-        ipython
-        matplotlib
-        rich
-        pillow
-        httpx
-        httpx2
-        # from PyPI (see above)
-        fastcore
-        kittytgp
-        aidialog
-        fasttransport
-        fastaudit
-        shfmt-py
-        ipythonng
-        pyskills
-        safecmd
-        python-fastllm
-        safepyrun
-      ])
+      python313.withPackages (ps:
+        with ps; [
+          # from nixpkgs
+          ipython
+          matplotlib
+          rich
+          pillow
+          httpx
+          httpx2
+          # from PyPI (see above)
+          fastcore
+          kittytgp
+          aidialog
+          fasttransport
+          fastaudit
+          shfmt-py
+          ipythonng
+          pyskills
+          safecmd
+          python-fastllm
+          safepyrun
+        ])
       // {
         meta = {
           description = "IPython as your shell, per nathancooper.io's 'IPython is All You Need'";
@@ -165,4 +165,4 @@
       };
   };
 in
-pypiPkgs.ipython-shell
+  pypiPkgs.ipython-shell
