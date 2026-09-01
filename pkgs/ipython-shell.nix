@@ -146,22 +146,22 @@
           platforms = python313.meta.platforms;
           mainProgram = "ipython";
         };
-        # keep the individual PyPI builds reachable for debugging
-        passthru = {
-          inherit
-            fastcore
-            kittytgp
-            aidialog
-            fasttransport
-            fastaudit
-            shfmt-py
-            ipythonng
-            pyskills
-            safecmd
-            python-fastllm
-            safepyrun
-            ;
-        };
+        # Expose the individual PyPI builds at the top level so consumers can
+        # merge them into their own withPackages env — two withPackages envs
+        # in one buildEnv collide on the shared interpreter bins.
+        inherit
+          fastcore
+          kittytgp
+          aidialog
+          fasttransport
+          fastaudit
+          shfmt-py
+          ipythonng
+          pyskills
+          safecmd
+          python-fastllm
+          safepyrun
+          ;
       };
   };
 in
