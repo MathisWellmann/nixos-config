@@ -39,14 +39,17 @@ stdenvNoCC.mkDerivation {
       ln -s "$out/share/headlong/$tool" "$out/bin/$(basename "$tool")"
     done
 
-    # headlong-web runs `uv run --project <tree>/web`, which writes .venv next
-    # to the project — impossible from the read-only store. So bin/headlong-web
-    # is a wrapper that re-runs the real script from ~/.headlong/app, headlong's
-    # own writable app-dir convention (auto-resolved by every tool, persistent,
-    # not a deletable cache), keeping the store tree as the pristine source and
-    # re-copying it whenever the store path changes (never touching user data).
-    rm "$out/bin/headlong-web"
-    cat > "$out/bin/headlong-web" <<'EOF'
+    # Tools that write into their own tree can't run from the read-only store:
+    # headlong-web builds its viewer frontend (uv writes .venv next to web/),
+    # headlong-init creates identities under .identities/ plus the dash .venv.
+    # So both are wrappers that re-run the real script from ~/.headlong/app,
+    # headlong's own writable app-dir convention (auto-resolved by every tool,
+    # persistent, not a deletable cache), keeping the store tree as the
+    # pristine source and re-copying it whenever the store path changes
+    # (never touching user data).
+    for tool in headlong-web headlong-init; do
+      rm "$out/bin/$tool"
+      sed "s|tools/TOOL|tools/$tool|" <<'EOF' > "$out/bin/$tool"
 #!/usr/bin/env bash
 set -euo pipefail
 store="$(cd "$(dirname "$(realpath "''${BASH_SOURCE[0]}")")/../share/headlong" && pwd)"
@@ -57,9 +60,10 @@ if [[ "$(cat "$app/.headlong-src" 2>/dev/null)" != "$store" ]]; then
   chmod -R u+w "$app"
   echo "$store" > "$app/.headlong-src"
 fi
-exec "$app/tools/headlong-web" "$@"
+exec "$app/tools/TOOL" "$@"
 EOF
-    chmod 755 "$out/bin/headlong-web"
+      chmod 755 "$out/bin/$tool"
+    done
 
     runHook postInstall
   '';
