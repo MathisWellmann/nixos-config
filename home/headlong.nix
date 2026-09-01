@@ -25,6 +25,7 @@
 in {
   home.packages = [
     inputs.self.packages.${system}.headlong
+    pkgs.bun # headlong-web builds its viewer frontend with bun on first start
   ];
 
   home.activation.writeHeadlongEnv = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
