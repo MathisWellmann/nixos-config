@@ -98,6 +98,7 @@ in {
     hostId = "1840e132";
     firewall.allowedTCPPorts = [
       9000 # Local symbiont binary exposing `/metrics`
+      8081 # Headlong
     ];
   };
 
