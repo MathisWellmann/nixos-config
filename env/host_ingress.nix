@@ -11,6 +11,7 @@
 # the same way -- nothing else needed.
 _: let
   meshify_const = import ../hosts/meshify/constants.nix;
+  desg0_const = import ../hosts/desg0/constants.nix;
 
   # Each entry renders a Namespace + selector-less Service + EndpointSlice +
   # TLS Ingress. `name` is the app/k8s name, `host` the `*.k3s.lan` FQDN,
@@ -75,6 +76,15 @@ _: let
       group = "AI";
       icon = "mdi-robot";
       description = "llama.cpp inference server";
+    }
+    {
+      name = "headlong";
+      host = "headlong.k3s.lan";
+      port = desg0_const.headlong_web_port;
+      hostIp = "100.74.91.37"; # desg0 tailscale IP
+      group = "AI";
+      icon = "mdi-brain";
+      description = "Headlong agent web viewer";
     }
   ];
 

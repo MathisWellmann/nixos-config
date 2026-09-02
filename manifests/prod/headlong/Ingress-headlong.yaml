@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: Headlong agent web viewer
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
+    gethomepage.dev/group: AI
+    gethomepage.dev/icon: mdi-brain
+    gethomepage.dev/name: headlong
+    gethomepage.dev/siteMonitor: http://headlong.headlong.svc.cluster.local
+  name: headlong
+  namespace: headlong
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: headlong.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: headlong
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - headlong.k3s.lan
+      secretName: headlong-tls

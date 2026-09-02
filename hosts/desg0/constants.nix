@@ -9,6 +9,8 @@
   llama-cpp_port = 8001;
   nemotron_voicechat_port = 9000;
   minimax_music3_port = 8002;
+  # Headlong web viewer (systemd `headlong-web`, see headlong.nix).
+  headlong_web_port = 8081;
   localModels = [
     "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL"
     "unsloth/Qwen3.6-27B-GGUF:Q4_K_XL"

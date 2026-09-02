@@ -45,6 +45,7 @@ in {
       vllmContextWindow = 196608;
     })
     ./../../modules/k3s_server_follow.nix
+    ./headlong.nix
     ./../../modules/k3s_nvidia.nix
     # Make the runner's IOWeight actually enforceable: the NVMe uses the
     # `none` scheduler, so proportional io.weight needs blk-iocost (see the
@@ -98,7 +99,7 @@ in {
     hostId = "1840e132";
     firewall.allowedTCPPorts = [
       9000 # Local symbiont binary exposing `/metrics`
-      8081 # Headlong
+      const.headlong_web_port # Headlong web viewer (systemd `headlong-web`)
     ];
   };
 
