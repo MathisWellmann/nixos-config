@@ -25,7 +25,7 @@ in {
         "PATH=${lib.makeBinPath [pkgs.uv pkgs.bun pkgs.coreutils]}"
       ];
       # No ROOT argument: the wrapper serves its own app tree.
-      ExecStart = "${headlong}/bin/headlong-web --port ${toString const.headlong_web_port}";
+      ExecStart = "${headlong}/bin/headlong-web --host 0.0.0.0 --port ${toString const.headlong_web_port}";
     };
   };
 }
