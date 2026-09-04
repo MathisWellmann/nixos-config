@@ -90,6 +90,9 @@ in {
 
   hardware.brillo.enable = true; # Brightness adjustment, e.g.: `brillo -u 150000 -S 100`
 
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
+
   # Required for being able to download inside `nix build` environment, e.g rust dependencies pulling in data.
   nix.settings.sandbox = false;
 

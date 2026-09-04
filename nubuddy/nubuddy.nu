@@ -185,7 +185,7 @@ def ask [
     return
   }
 
-  let dir = ($env.NU_BUDDY_DIR | default (($env.HOME | path join ".config/nushell/nubuddy")))
+  let dir = ($env.NU_BUDDY_DIR? | default ($env.HOME | path join ".config/nushell/nubuddy"))
   if not ($dir | path exists) { mkdir $dir }
 
   let sfile = (($dir | path join "state.json"))
