@@ -5,6 +5,9 @@
 }: let
     system = pkgs.stdenv.hostPlatform.system;
     in {
+  imports = [
+    (import ./prime-agent.nix {})
+  ];
   environment.systemPackages = with pkgs; [
     # inputs.forgecode.packages.${pkgs.stdenv.hostPlatform.system}.forge
     # inputs.maki.packages.${system}.maki
