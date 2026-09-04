@@ -1,4 +1,13 @@
-{pkgs, ...}: {
+{
+  pkgs,
+  inputs,
+  ...
+}: let
+  # nubuddy: the "IPython is all you need" pattern for nushell, see nubuddy/README.md
+  nubuddy = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.nubuddy;
+in {
+  home.packages = [nubuddy];
+
   programs = {
     nushell = {
       enable = true;
@@ -136,6 +145,14 @@
         if ($env_file | path exists) {
           open $env_file | from toml | load-env
         }
+
+        # nubuddy: `ask "what am I working on?"` (LLM tool loop over this shell's
+        # history and a persistent state record), backed by the SGLang server on desg0.
+        # An existing NU_BUDDY_* (e.g. from ~/.env) wins over the defaults.
+        $env.NU_BUDDY_BASE_URL = ($env.NU_BUDDY_BASE_URL? | default "${nubuddy.effectiveBaseUrl}")
+        $env.NU_BUDDY_MODEL = ($env.NU_BUDDY_MODEL? | default "${nubuddy.effectiveModel}")
+        $env.NU_BUDDY_API_KEY = ($env.NU_BUDDY_API_KEY? | default "${nubuddy.apiKey}")
+        source ${nubuddy}/share/nubuddy/nubuddy.nu
       '';
     };
     # Terminal multiplexing

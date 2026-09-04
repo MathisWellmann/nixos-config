@@ -122,6 +122,9 @@
 
       # "IPython is All You Need" shell, see pkgs/ipython-shell.nix
       ipython-shell = pkgs.callPackage ./pkgs/ipython-shell.nix {};
+
+      # The same idea for nushell: `nubuddy "prompt"` or `ask` in the REPL, see pkgs/nubuddy.nix
+      nubuddy = pkgs.callPackage ./pkgs/nubuddy.nix {};
     };
 
     nixosConfigurations = {
