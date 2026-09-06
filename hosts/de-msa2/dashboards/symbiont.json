@@ -355,11 +355,22 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Mean wall-clock Runtime::evolve duration (including retries) per instance. Slow instances point at contended LLM backends or slow compile hosts.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "s", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 46 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 46 },
       "id": 14,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_evolve_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(symbiont_evolve_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
       "title": "Mean evolve duration by instance",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Lanes per hour whose agent spent its whole tool-call turn budget (DOC_TOOLS_MAX_TURNS) without producing code and finished the lane with its tools withdrawn (symbiont_evolve_tools_withdrawn_total). Before this counter existed such a lane was nudged with tools still on and kept looking things up, ten attempts of fifty turns each. A rising value is a documentation signal: the model keeps looking for a name the api_index does not carry (v0.28: `Position`, `Balances`).",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 46 },
+      "id": 120,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_evolve_tools_withdrawn_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "title": "Lanes that lost their tools / h by instance",
       "type": "timeseries"
     },
     {
