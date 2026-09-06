@@ -46,6 +46,7 @@ in {
     # Fonts
     terminus_font
     maple-mono.NF
+    hongdown
 
     # Misc
     viu # View images in the terminal, best with `kitty`
