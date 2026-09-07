@@ -17,7 +17,7 @@
     owner = "adithya-s-k";
     repo = "manim_skill";
     rev = "cef045011722d285692e3381d12d4d637da56e18";
-    hash = "sha256-eZUQ2OqGoPELvziz3ValJ7TQeLukplSPL9yNcCpzt1w=";
+    hash = "sha256-CESWKMHvCN6Dtc8Fk8V9pP2txQ6b0Y7180GawMciTWc=";
   };
 in {
   home.file.".agents/skills/simple-english".source = "${simpleEnglish}/skills/simple-english";
