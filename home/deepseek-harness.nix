@@ -352,6 +352,11 @@ in {
                 # (no --served-model-name, so /v1/models reports the path).
                 id = "RadixArk/Qwen3.8-27B-NVFP4";
                 name = "Qwen3.8 27B NVFP4";
+                # This checkpoint is image-text-to-text (Qwen3_5ForConditionalGeneration
+                # with a vision tower; SGLang serves it multimodally out of the box).
+                # Without this, the route resolves input to ["text"] and dsh refuses
+                # image content on it ("does not declare image input").
+                input = [ "text" "image" ];
               }
             ];
           };
