@@ -42,7 +42,7 @@ in {
       defaultModel = "vllm/${const.qwen3Model}";
       # Must match --context-length in sglang_qwen3_container.nix. The server
       # rejects longer inputs with HTTP 400.
-      vllmContextWindow = 196608;
+      vllmContextWindow = 262144;
     })
     ./../../modules/k3s_server_follow.nix
     ./headlong.nix
@@ -53,17 +53,23 @@ in {
     (import ./../../modules/blk_iocost.nix {devices = ["nvme0n1"];})
     (import ./../../modules/github_runner.nix {repos = ["symbiont"];})
     (import ./../../modules/ai/pi-agent.nix {
-      baseUrl = "http://127.0.0.1:${toString const.llama-cpp_port}/v1";
+      # Was llama-cpp_port; that module is disabled (sglang owns the GPU),
+      # so the default backend is the sglang server too.
+      baseUrl = "http://127.0.0.1:${toString const.qwen3_port}/v1";
       enableAgentica = true;
       vllmBaseUrl = "http://127.0.0.1:${toString const.qwen3_port}/v1";
       vllmModels = [const.qwen3Model];
       # Must match --context-length in sglang_qwen3_container.nix.
-      vllmContextWindow = 196608;
+      vllmContextWindow = 262144;
     })
-    (import ./../../modules/ai/llama-cpp.nix {
-      models = const.localModels;
-      port = const.llama-cpp_port;
-    })
+    # DISABLED 2026-09-10: sglang now takes the whole 96GB GPU
+    # (mem-fraction-static 0.93, ~95GB resident) so llama.cpp's ~20GB no
+    # longer fits. Re-enable this together with lowering memFractionStatic
+    # back to 0.58 on the sglang import below.
+    # (import ./../../modules/ai/llama-cpp.nix {
+    #   models = const.localModels;
+    #   port = const.llama-cpp_port;
+    # })
     # Qwen3.8 server: SGLang replaced vllm (2026-07) — vllm has no support
     # for the qwen3_5 hybrid GDN (mamba) architecture. The vllm 0.6 (~57GB)
     # and sglang (48GB) footprints do not coexist on the one GPU with
@@ -74,7 +80,33 @@ in {
       model = const.qwen3Model;
       draftModel = const.qwen3DraftModel;
       inherit (global_const) username;
+      # Full-GPU tuning (2026-09-10): llama-cpp is off, so this no longer
+      # shares the card. See the module header for the sizing.
+      memFractionStatic = "0.93";
+      # 24, not 16: measured 2026-09-10, it costs only 5% of the KV pool
+      # (1,072,169 -> 1,013,801) and buys +19% throughput (1166 -> 1390
+      # tok/s). Do NOT go to 32+: DSpark's intermediate mamba buffer scales
+      # with concurrency and eats the pool (32 -> 838k, 64 -> 138k, which
+      # cannot hold even ONE 200k request).
+      maxRunningRequests = 24;
+      # 1.5x the 24x4=96 running-request floor. The bare floor is what
+      # crashed the scheduler in 2026-08 via the radix-cache path
+      # (extra_buffer_lazy keeps a slot per cached prefix too), so it needs
+      # headroom. 144 costs 87k KV tokens (1,013,801 -> 926,249) and ran
+      # clean under sustained 24-way load with mamba usage 0.02-0.04.
+      maxMambaCacheSize = 144;
+      contextLength = 262144;
     })
+    # Qwen3.8-Flash-Next (Qwen4 preview, 176B/6B MoE) on port 8003. MUTUALLY
+    # EXCLUSIVE with the sglang import above and with llama-cpp: the
+    # checkpoint is 78GiB resident on the 96GB card even with the PLE table
+    # offloaded to host RAM. To use it, comment out the sglang_qwen3
+    # container and the llama-cpp import, then uncomment this.
+    # (import ./sglang_qwen38_flash_next_container.nix {
+    #   port = const.qwen38FlashNext_port;
+    #   model = const.qwen38FlashNextModel;
+    #   inherit (global_const) username;
+    # })
     # (import ./vllm_qwen3_container.nix {
     #   port = const.qwen3_port;
     #   model = "Qwen/Qwen3.8-27B-FP8";

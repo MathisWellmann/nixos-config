@@ -2,21 +2,62 @@
 #
 # SGLang supports the qwen3_5 hybrid GDN (mamba) architecture, vllm does not.
 #
-# Sizing: 192k context at concurrency 2, in a 48GB cap. llama-cpp gets the
-# other half of the 96GB RTX PRO 6000.
+# Sizing: FULL GPU since 2026-09-10. llama-cpp is commented out in
+# configuration.nix, so this owns all 96GB of the RTX PRO 6000. The call site
+# overrides the defaults below to 0.93 / 16 / 128 / 262144.
 #
-# VRAM model, measured 2026-08-29:
-#   total = 27.4GB fixed + 40.03KB/token of KV pool + 0.296GB/slot of mamba
-# The fixed part is weights 21.68 + draft 3.64 + CUDA graphs 1.6 + misc 0.5.
-# KV is 40.03KB/token, not the 32.8KB of the ratio formula, because SGLang
-# allocates two KV pools. 200k context needs 48.6GB and gets only 12 mamba
-# slots, so 192k is better.
+# CURRENT (2026-09-10): mem-fraction 0.93, conc 24, 144 mamba slots, 256k.
+#   max_total_num_tokens = 926,249   <- fp8 KV pool, shared by ALL requests
+#   available_gpu_mem 2.13GB after capture; 95594MiB of 97887MiB resident
+#
+# CONCURRENCY IS A KV-POOL TRADE, NOT A FREE KNOB.
+# DSpark's intermediate mamba buffer scales with concurrency x draft tokens
+# (per_req 74.8MB x (conc+1) x 8), so raising concurrency SHRINKS the KV
+# pool hard. Measured at mem-fraction 0.93, pin = conc x 4:
+#   conc 16 (pin 128): pool 1,072,169  free 2.55GB   1166 tok/s
+#   conc 24 (pin  96): pool 1,013,801  free 2.09GB   1390 tok/s
+#   conc 24 (pin 144): pool   926,249  free 2.13GB   <- CHOSEN
+#   conc 32 (pin 128): pool   838,697  free 1.81GB   1531 tok/s
+#   conc 64 (pin 256): pool   138,281  free 0.58GB   1656 tok/s
+# conc 64 wins on raw throughput (+42%) but its 138k pool cannot hold even
+# ONE 200k request, so it is useless for long-context agents. 24 is the knee.
+#
+# Sweep at the chosen config, 1k prompt / 1k output, ignore_eos, 0 errors:
+#   c=1 243.0 | c=4 793.7 | c=8 812.3 | c=16 1265.6 | c=24 1390.1 tok/s
+#
+# Validated against the real workload (0 errors, nothing crashed):
+#   4 agents x 200k ctx  -> all 4 complete, TTFT med 206s, max 274s
+#   16 agents x 100k ctx -> all 16 complete, TTFT med 196s, max 362s
+# The 16x100k case needs 1.6M tokens against a 926k pool. SGLang QUEUES and
+# preempts instead of failing; token usage peaked 0.91 with no retraction.
+# So oversubscribing the pool costs latency, never errors.
+#
+# Prefix caching is what makes this usable: a repeated 100k prompt goes
+# 24.3s -> 1.9s (12.8x). Agent turn 2+ hits the cache, so the ~200s TTFT is
+# a cold-start worst case, not the steady state.
+#
+# Over-length input is rejected cleanly at admission:
+#   260,052 tokens -> HTTP 200;  270,052 -> HTTP 400 "longer than the
+#   model's context length (262144 tokens)". Never a crash.
+#
+# WARNING: available_gpu_mem is only 2.13GB.
+#  - Do NOT raise mem-fraction-static past 0.93.
+#  - Do NOT raise --chunked-prefill-size past 2048. 8192 was tried and OOMed
+#    during prefill CUDA-graph capture ("markCaptureEnd called with no
+#    captures in progress" + CUDA out of memory).
 #
 # --mem-fraction-static is a ceiling on TOTAL GPU memory, not a target. It
-# bounds the KV pool. At 0.52 the pool held 267302 tokens, which is less than
-# 2 x 196608, so two full-context requests did not fit. 0.58 uses 46.8GB and
-# gives a pool of 379988 tokens. That is 1.93x the context, so one request can
-# use the full 192k, and two can run together at 190k each.
+# bounds the KV pool, so it must be raised together with context.
+#
+# An explicit --max-mamba-cache-size BYPASSES --mamba-full-memory-ratio:
+# kv_cache_configurator.py takes the "from_max_running_requests" branch and
+# gives the mamba pool exactly the pinned slot count, leaving everything else
+# to KV. The ratio only applies when the pin is absent, where it splits the
+# budget r/(1+r) toward mamba. So the 0.145 below is informational at the
+# current call site, not a constraint.
+#
+# Historic (llama-cpp era, 48GB cap): 0.58 / conc 2 / 192k gave a pool of
+# 379988 tokens and used 46.8GB. Restore those if llama-cpp comes back.
 #
 # CAUTION: do not set --max-mamba-cache-size to concurrency x S (= 8).
 # That value crashed the scheduler twice on 2026-08-29:

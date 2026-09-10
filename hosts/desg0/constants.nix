@@ -7,6 +7,10 @@
   qwen3Model = "RadixArk/Qwen3.8-27B-NVFP4";
   qwen3DraftModel = "RadixArk/Qwen3.8-27B-DSpark";
   llama-cpp_port = 8001;
+  # Qwen3.8-Flash-Next (Qwen4 preview) served by SGLang. Mutually exclusive
+  # with qwen3_port's server and llama-cpp: it needs the whole GPU.
+  qwen38FlashNext_port = 8003;
+  qwen38FlashNextModel = "nvidia/Qwen3.8-Flash-Next-NVFP4";
   nemotron_voicechat_port = 9000;
   minimax_music3_port = 8002;
   # Headlong web viewer (systemd `headlong-web`, see headlong.nix).
