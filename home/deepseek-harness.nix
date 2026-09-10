@@ -324,6 +324,17 @@
     cp -r ${./plugins/dsh-sidebar-archive}/. $out/
     chmod -R u+w $out
   '';
+
+  # dsh-tool-monty ships in this repository (home/plugins): a host-plane tool
+  # plugin that gives the model a `python_repl` tool backed by pydantic/monty,
+  # a sandboxed Python-subset interpreter in Rust. Each agent gets one REPL
+  # worker that persists for the agent's lifetime, so calls build on earlier
+  # variables and functions; the session workspace is mounted read-only at
+  # `/workspace`. The plugin needs `@pydantic/monty` with its napi addon and
+  # a `monty` worker binary; `pkgs/dsh-tool-monty.nix` vendors the npm deps
+  # and bakes the nix-built `monty-runtime` path into the bundle patch (the
+  # npm prebuilt worker carries a /lib64 interpreter that NixOS lacks).
+  toolMontyPlugin = pkgs.callPackage ../pkgs/dsh-tool-monty.nix {};
 in {
   options = {
     programs.deepseek-harness = with lib; {
@@ -496,6 +507,7 @@ in {
           "dsh-mermaid" = mermaidPlugin;
           "dsh-us-stocks" = usStocksPlugin;
           "dsh-sidebar-archive" = sidebarArchivePlugin;
+          "dsh-tool-monty" = toolMontyPlugin;
         };
         description = ''
           Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).

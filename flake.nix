@@ -114,6 +114,15 @@
           '';
         };
 
+      # pydantic/monty sandboxed Python interpreter, e.g. `nix run .#monty -- -c "1 + 1"`;
+      # also the worker binary behind the dsh `python_repl` tool (home/plugins/dsh-tool-monty)
+      monty = pkgs.callPackage ./pkgs/monty-runtime.nix {};
+
+      # The dsh plugin with its vendored npm deps, e.g. `nix build .#dsh-tool-monty`
+      dsh-tool-monty = pkgs.callPackage ./pkgs/dsh-tool-monty.nix {
+        monty-runtime = self.packages.${system}.monty;
+      };
+
       # Archify architecture diagram tool & agent skill CLI
       archify = pkgs.callPackage ./pkgs/archify.nix {};
 

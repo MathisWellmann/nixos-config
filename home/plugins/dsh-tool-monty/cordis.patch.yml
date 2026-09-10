@@ -1,0 +1,37 @@
+# dsh-tool-monty bundle patch.
+#
+# One host-plane tool row. `ctx.tools.register` from a plain plugin context
+# lands in the registry's global layer, which every agent preset sees (the
+# same layer third-party tool plugins such as dsh-us-stocks use), so the
+# `python_repl` tool joins the catalog of every session without editing the
+# shipped `config/agent-presets/*` trees. The REPL sessions themselves are
+# keyed by owning agent inside the plugin, so one host row serves every
+# session with its own interpreter state.
+#
+# `binaryPath` is the `monty` worker executable (`monty subprocess`). The
+# npm platform package's prebuilt binary carries a /lib64 ELF interpreter
+# that does not exist on NixOS, so `pkgs/dsh-tool-monty.nix` substitutes the
+# placeholder below with the nix-built `monty-runtime` store path at build
+# time. Outside Nix, point it at any `monty` 0.0.23 binary (`pip install
+# pydantic-monty-runtime` or `cargo install monty-runtime`), or delete the
+# key to let `@pydantic/monty` resolve it (`MONTY_BIN`, platform package,
+# `PATH`). Keep the worker and npm versions equal: the wire protocol is only
+# guaranteed compatible within one release.
+#
+# `maxDurationSecs: 0` disables Monty's cumulative in-sandbox execution
+# budget on purpose: it accumulates across the life of the session, so a
+# persistent REPL would eventually exhaust it. `requestTimeoutSecs` (the
+# per-call hard kill) is the limit that matters here.
+- insert:
+    - id: tool-monty
+      name: dsh-tool-monty
+      config:
+        binaryPath: monty
+        maxMemoryBytes: 268435456
+        requestTimeoutSecs: 60
+        maxDurationSecs: 0
+        maxSessions: 32
+        checkoutTimeoutSecs: 5
+        maxOutputChars: 20000
+        typeCheck: false
+        workspaceMount: read-only
