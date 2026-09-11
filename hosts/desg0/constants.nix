@@ -13,6 +13,8 @@
   qwen38FlashNextModel = "nvidia/Qwen3.8-Flash-Next-NVFP4";
   nemotron_voicechat_port = 9000;
   minimax_music3_port = 8002;
+  # Open WebUI frontend, inference -> sglang on qwen3_port.
+  open_webui_port = 8090;
   # Headlong web viewer (systemd `headlong-web`, see headlong.nix).
   headlong_web_port = 8081;
   localModels = [

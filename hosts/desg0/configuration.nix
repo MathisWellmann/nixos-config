@@ -62,6 +62,11 @@ in {
       # Must match --context-length in sglang_qwen3_container.nix.
       vllmContextWindow = 262144;
     })
+    # Web frontend for the sglang server.
+    (import ./open_webui.nix {
+      port = const.open_webui_port;
+      inferenceUrl = "http://host.docker.internal:${toString const.qwen3_port}/v1";
+    })
     # DISABLED 2026-09-10: sglang now takes the whole 96GB GPU
     # (mem-fraction-static 0.93, ~95GB resident) so llama.cpp's ~20GB no
     # longer fits. Re-enable this together with lowering memFractionStatic
