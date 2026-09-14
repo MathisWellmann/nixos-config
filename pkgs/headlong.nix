@@ -17,14 +17,14 @@
 stdenvNoCC.mkDerivation {
   pname = "headlong";
   # No releases or tags upstream; the rev pins the tree.
-  version = "24e7ce7";
+  version = "10fd7a9";
 
   src = fetchFromGitHub {
     owner = "laude-institute";
     repo = "headlong";
-    rev = "24e7ce77404357aef7b3fc87567e7be908258853";
+    rev = "10fd7a9e86a95c337bffa91446d5d88b206a3067";
     # fetchFromGitHub hashes the unpacked tree (narHash), not the tarball.
-    hash = "sha256-RfFmVz+LM8DV/8WrFOmGt7T2RVt2YzygJomc9+rF+Vo=";
+    hash = "sha256-YRivhp+fjhQomUKx3GUGZctC664Jrr3QfCvNTETrUHs=";
   };
 
   dontBuild = true;
