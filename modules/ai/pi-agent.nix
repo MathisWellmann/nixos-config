@@ -43,6 +43,10 @@
 
   # vLLM speaks OpenAI Chat Completions, but has no `developer` role and no
   # `reasoning_effort`; Qwen-style thinking is toggled via `chat_template_kwargs`.
+  # The RadixArk Qwen3.8 template additionally steers effort via a
+  # `reasoning_effort` kwarg: xhigh|medium|low, default xhigh, any other value
+  # is a 400. It is prompt-level steering (an injected instruction, no token
+  # budget). The generic chat-template format forwards pi levels through it.
   vllmProvider = lib.optionalAttrs (vllmBaseUrl != null) {
     vllm = {
       baseUrl = vllmBaseUrl;
@@ -53,7 +57,12 @@
       compat = {
         supportsDeveloperRole = false;
         supportsReasoningEffort = false;
-        thinkingFormat = "qwen-chat-template";
+        thinkingFormat = "chat-template";
+        chatTemplateKwargs = {
+          enable_thinking = { "$var" = "thinking.enabled"; };
+          reasoning_effort = { "$var" = "thinking.effort"; omitWhenOff = true; };
+          preserve_thinking = true;
+        };
       };
       models =
         map (id: {
@@ -62,6 +71,16 @@
           maxTokens = vllmMaxTokens;
           reasoning = true;
           input = [ "text" ] ++ lib.optionals vllmVision [ "image" ];
+          # Map pi levels onto the template's xhigh|medium|low. `off` needs no
+          # entry: enable_thinking=false already suppresses thinking.
+          thinkingLevelMap = {
+            minimal = "low";
+            low = "low";
+            medium = "medium";
+            high = "xhigh";
+            xhigh = "xhigh";
+            max = "xhigh";
+          };
         })
         vllmModels;
     };
@@ -93,6 +112,7 @@
                # Leave room for the prompt: vLLM rejects requests whose
                # prompt + max_tokens exceed `max_model_len`.
                maxTokens: ([$maxTokens, (((.max_model_len // $ctx) / 4) | floor)] | min),
+               thinkingLevelMap: { minimal: "low", low: "low", medium: "medium", high: "xhigh", xhigh: "xhigh", max: "xhigh" },
              }
            ]}}}' > "$models_json.tmp.$$" \
           && mv "$models_json.tmp.$$" "$models_json" \
