@@ -82,18 +82,18 @@
   maxMambaCacheSize ? 192,
   # NOT 262144: the KV pool cannot back it. See the header.
   contextLength ? 131072,
-}:
-
-{ config, lib, ... }:
-
-{
+}: {
+  config,
+  lib,
+  ...
+}: {
   virtualisation.oci-containers.backend = "podman";
 
   virtualisation.oci-containers.containers.sglang-qwen38-flash-next = {
     # Pinned: this build carries the #38121 MIXED_PRECISION loader that the
     # NVIDIA export needs. `qwen38flashnext` cannot load it.
     image = "docker.io/lmsysorg/sglang:dev-qwen38-next-local";
-    ports = [ "${toString port}:8000" ];
+    ports = ["${toString port}:8000"];
 
     volumes = [
       # The JIT caches make container rebuilds fast.
@@ -178,8 +178,8 @@
 
   hardware.nvidia-container-toolkit.enable = true;
   systemd.services.podman-sglang-qwen38-flash-next = {
-    after = [ "nvidia-container-toolkit-cdi-generator.service" ];
-    requires = [ "nvidia-container-toolkit-cdi-generator.service" ];
+    after = ["nvidia-container-toolkit-cdi-generator.service"];
+    requires = ["nvidia-container-toolkit-cdi-generator.service"];
     # The first start pulls a large image and a 78GiB checkpoint. Without
     # backoff, five fast restarts burn the start limit and the unit dies.
     startLimitIntervalSec = 0;
@@ -189,5 +189,5 @@
     serviceConfig.Restart = lib.mkForce "always";
   };
 
-  networking.firewall.allowedTCPPorts = [ port ];
+  networking.firewall.allowedTCPPorts = [port];
 }

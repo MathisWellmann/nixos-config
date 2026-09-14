@@ -63,23 +63,25 @@
   llama_cpp_consts = import ../desg0/constants.nix;
   llama_cpp_slug = id:
     builtins.replaceStrings ["/" ":" "."] ["-" "-" "-"] id;
-  llama_cpp_scrape_configs = map (model: {
-    job_name = "llama-cpp-${llama_cpp_slug model}";
-    inherit scrape_interval scrape_timeout;
-    params = {
-      model = [model];
-      autoload = ["false"];
-    };
-    static_configs = [
-      {
-        targets = ["desg0:${toString llama_cpp_consts.llama-cpp_port}"];
-        labels = {
-          always_on = "false";
-          model = model;
-        };
-      }
-    ];
-  }) llama_cpp_consts.localModels;
+  llama_cpp_scrape_configs =
+    map (model: {
+      job_name = "llama-cpp-${llama_cpp_slug model}";
+      inherit scrape_interval scrape_timeout;
+      params = {
+        model = [model];
+        autoload = ["false"];
+      };
+      static_configs = [
+        {
+          targets = ["desg0:${toString llama_cpp_consts.llama-cpp_port}"];
+          labels = {
+            always_on = "false";
+            model = model;
+          };
+        }
+      ];
+    })
+    llama_cpp_consts.localModels;
   # Scrapes the tikr pods running in the k3s cluster (deployments live in the
   # `nexus` repo, `env/prod.nix`). Pods are discovered through the Kubernetes
   # API: any pod annotated with `prometheus.io/scrape: "true"` is kept and

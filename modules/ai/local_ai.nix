@@ -3,8 +3,8 @@
   pkgs,
   ...
 }: let
-    system = pkgs.stdenv.hostPlatform.system;
-    in {
+  system = pkgs.stdenv.hostPlatform.system;
+in {
   imports = [
     (import ./prime-agent.nix {})
   ];

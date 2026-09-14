@@ -59,8 +59,11 @@
         supportsReasoningEffort = false;
         thinkingFormat = "chat-template";
         chatTemplateKwargs = {
-          enable_thinking = { "$var" = "thinking.enabled"; };
-          reasoning_effort = { "$var" = "thinking.effort"; omitWhenOff = true; };
+          enable_thinking = {"$var" = "thinking.enabled";};
+          reasoning_effort = {
+            "$var" = "thinking.effort";
+            omitWhenOff = true;
+          };
           preserve_thinking = true;
         };
       };
@@ -70,7 +73,7 @@
           contextWindow = vllmContextWindow;
           maxTokens = vllmMaxTokens;
           reasoning = true;
-          input = [ "text" ] ++ lib.optionals vllmVision [ "image" ];
+          input = ["text"] ++ lib.optionals vllmVision ["image"];
           # Map pi levels onto the template's xhigh|medium|low. `off` needs no
           # entry: enable_thinking=false already suppresses thinking.
           thinkingLevelMap = {
@@ -403,4 +406,3 @@ in {
     pi-wrapped
   ];
 }
-

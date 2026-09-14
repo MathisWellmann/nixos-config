@@ -367,7 +367,7 @@ in {
                 # with a vision tower; SGLang serves it multimodally out of the box).
                 # Without this, the route resolves input to ["text"] and dsh refuses
                 # image content on it ("does not declare image input").
-                input = [ "text" "image" ];
+                input = ["text" "image"];
               }
             ];
           };

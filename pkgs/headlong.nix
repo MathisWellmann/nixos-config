@@ -13,7 +13,6 @@
   fetchFromGitHub,
   stdenvNoCC,
 }:
-
 stdenvNoCC.mkDerivation {
   pname = "headlong";
   # No releases or tags upstream; the rev pins the tree.
@@ -30,42 +29,42 @@ stdenvNoCC.mkDerivation {
   dontBuild = true;
 
   installPhase = ''
-    runHook preInstall
+        runHook preInstall
 
-    mkdir -p "$out/share/headlong" "$out/bin"
-    cp -r . "$out/share/headlong/"
-    for tool in bin/* tools/*; do
-      [[ -f "$tool" && -x "$tool" ]] || continue
-      ln -s "$out/share/headlong/$tool" "$out/bin/$(basename "$tool")"
-    done
+        mkdir -p "$out/share/headlong" "$out/bin"
+        cp -r . "$out/share/headlong/"
+        for tool in bin/* tools/*; do
+          [[ -f "$tool" && -x "$tool" ]] || continue
+          ln -s "$out/share/headlong/$tool" "$out/bin/$(basename "$tool")"
+        done
 
-    # Tools that write into their own tree can't run from the read-only store:
-    # headlong-web builds its viewer frontend (uv writes .venv next to web/),
-    # headlong-init creates identities under .identities/ plus the dash .venv.
-    # So both are wrappers that re-run the real script from ~/.headlong/app,
-    # headlong's own writable app-dir convention (auto-resolved by every tool,
-    # persistent, not a deletable cache), keeping the store tree as the
-    # pristine source and re-copying it whenever the store path changes
-    # (never touching user data).
-    for tool in headlong-web headlong-init; do
-      rm "$out/bin/$tool"
-      sed "s|tools/TOOL|tools/$tool|" <<'EOF' > "$out/bin/$tool"
-#!/usr/bin/env bash
-set -euo pipefail
-store="$(cd "$(dirname "$(realpath "''${BASH_SOURCE[0]}")")/../share/headlong" && pwd)"
-app="$HOME/.headlong/app"
-if [[ "$(cat "$app/.headlong-src" 2>/dev/null)" != "$store" ]]; then
-  mkdir -p "$app"
-  cp -a "$store/." "$app/"
-  chmod -R u+w "$app"
-  echo "$store" > "$app/.headlong-src"
-fi
-exec "$app/tools/TOOL" "$@"
-EOF
-      chmod 755 "$out/bin/$tool"
-    done
+        # Tools that write into their own tree can't run from the read-only store:
+        # headlong-web builds its viewer frontend (uv writes .venv next to web/),
+        # headlong-init creates identities under .identities/ plus the dash .venv.
+        # So both are wrappers that re-run the real script from ~/.headlong/app,
+        # headlong's own writable app-dir convention (auto-resolved by every tool,
+        # persistent, not a deletable cache), keeping the store tree as the
+        # pristine source and re-copying it whenever the store path changes
+        # (never touching user data).
+        for tool in headlong-web headlong-init; do
+          rm "$out/bin/$tool"
+          sed "s|tools/TOOL|tools/$tool|" <<'EOF' > "$out/bin/$tool"
+    #!/usr/bin/env bash
+    set -euo pipefail
+    store="$(cd "$(dirname "$(realpath "''${BASH_SOURCE[0]}")")/../share/headlong" && pwd)"
+    app="$HOME/.headlong/app"
+    if [[ "$(cat "$app/.headlong-src" 2>/dev/null)" != "$store" ]]; then
+      mkdir -p "$app"
+      cp -a "$store/." "$app/"
+      chmod -R u+w "$app"
+      echo "$store" > "$app/.headlong-src"
+    fi
+    exec "$app/tools/TOOL" "$@"
+    EOF
+          chmod 755 "$out/bin/$tool"
+        done
 
-    runHook postInstall
+        runHook postInstall
   '';
 
   meta = {

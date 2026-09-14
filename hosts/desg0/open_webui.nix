@@ -8,11 +8,11 @@
 }: {
   virtualisation.oci-containers.containers.open-webui = {
     image = "ghcr.io/open-webui/open-webui:v0.11.3";
-    ports = [ "${toString port}:8080" ];
+    ports = ["${toString port}:8080"];
     # DB, auth and chats survive image updates.
-    volumes = [ "/var/lib/open-webui:/app/backend/data" ];
+    volumes = ["/var/lib/open-webui:/app/backend/data"];
     # nixpkgs's oci-containers has no extraHosts option; pass the flag raw.
-    extraOptions = [ "--add-host" "host.docker.internal:host-gateway" ];
+    extraOptions = ["--add-host" "host.docker.internal:host-gateway"];
     # Built-in OpenAI connection (open_webui/config.py reads these envs).
     environment = {
       OPENAI_API_BASE_URL = inferenceUrl;
@@ -23,7 +23,7 @@
   };
 
   # Podman fails with a statfs error when the bind source is missing.
-  systemd.tmpfiles.rules = [ "d /var/lib/open-webui 0755 root root -" ];
+  systemd.tmpfiles.rules = ["d /var/lib/open-webui 0755 root root -"];
 
-  networking.firewall.allowedTCPPorts = [ port ];
+  networking.firewall.allowedTCPPorts = [port];
 }

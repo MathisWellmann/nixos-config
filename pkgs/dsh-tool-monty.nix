@@ -36,7 +36,9 @@
         hash = "sha256-tqTdIlJEDpfBfAaoipBGG+eL4g2cyVDkXF6XfNqXROo=";
       };
     }
-    .${stdenv.hostPlatform.system}
+    .${
+      stdenv.hostPlatform.system
+    }
     or (throw "dsh-tool-monty: no @pydantic/monty platform package for ${stdenv.hostPlatform.system}");
 
   monty = fetchzip {

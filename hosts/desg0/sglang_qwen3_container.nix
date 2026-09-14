@@ -90,16 +90,16 @@
   mambaFullMemoryRatio ? "0.145",
   maxRunningRequests ? 2,
   contextLength ? 196608,
-}:
-
-{ config, lib, ... }:
-
-{
+}: {
+  config,
+  lib,
+  ...
+}: {
   virtualisation.oci-containers.backend = "podman";
 
   virtualisation.oci-containers.containers.sglang-qwen3 = {
     image = "docker.io/lmsysorg/sglang:qwen38-27b-cu129";
-    ports = [ "${toString port}:8000" ];
+    ports = ["${toString port}:8000"];
 
     volumes = [
       # The JIT caches make container rebuilds fast.
@@ -176,8 +176,8 @@
 
   hardware.nvidia-container-toolkit.enable = true;
   systemd.services.podman-sglang-qwen3 = {
-    after = [ "nvidia-container-toolkit-cdi-generator.service" ];
-    requires = [ "nvidia-container-toolkit-cdi-generator.service" ];
+    after = ["nvidia-container-toolkit-cdi-generator.service"];
+    requires = ["nvidia-container-toolkit-cdi-generator.service"];
     # The first start pulls a 65GB image and takes 17 minutes. Without
     # backoff, five fast restarts burn the start limit and the unit dies.
     startLimitIntervalSec = 0;
@@ -185,5 +185,5 @@
     serviceConfig.Restart = lib.mkForce "always";
   };
 
-  networking.firewall.allowedTCPPorts = [ port ];
+  networking.firewall.allowedTCPPorts = [port];
 }

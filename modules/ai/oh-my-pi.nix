@@ -71,7 +71,7 @@
       modelOverrides = lib.genAttrs effectiveModels (_: {
         reasoning = true;
         maxTokens = vllmMaxTokens;
-        input = [ "text" "image" ];
+        input = ["text" "image"];
       });
     };
   };
