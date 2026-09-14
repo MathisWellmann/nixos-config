@@ -83,7 +83,6 @@
   # NOT 262144: the KV pool cannot back it. See the header.
   contextLength ? 131072,
 }: {
-  config,
   lib,
   ...
 }: {

@@ -7,5 +7,5 @@ keys:
 creation_rules:
   - path_regex: sops_secrets.yaml$
     key_groups:
-    - pgp:
-      - *admin_mgw
+      - pgp:
+          - *admin_mgw

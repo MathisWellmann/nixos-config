@@ -91,7 +91,6 @@
   maxRunningRequests ? 2,
   contextLength ? 196608,
 }: {
-  config,
   lib,
   ...
 }: {

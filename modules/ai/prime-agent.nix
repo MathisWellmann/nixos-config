@@ -52,8 +52,8 @@
         map (id: {
           inherit id;
           reasoning = true;
-          contextWindow = contextWindow;
-          maxTokens = maxTokens;
+          inherit contextWindow;
+          inherit maxTokens;
         })
         effectiveModels;
     };

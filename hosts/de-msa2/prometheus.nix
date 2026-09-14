@@ -76,7 +76,7 @@
           targets = ["desg0:${toString llama_cpp_consts.llama-cpp_port}"];
           labels = {
             always_on = "false";
-            model = model;
+            inherit model;
           };
         }
       ];

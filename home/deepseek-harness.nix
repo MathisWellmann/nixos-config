@@ -199,12 +199,12 @@
       }
     ];
     clientPetsJson = builtins.toJSON (map (p: {
-        id = p.id;
-        name = p.name;
-        emoji = p.emoji;
-        personality = p.personality;
-        speedMul = p.speedMul;
-        catchphrases = p.catchphrases;
+        inherit (p) id;
+        inherit (p) name;
+        inherit (p) emoji;
+        inherit (p) personality;
+        inherit (p) speedMul;
+        inherit (p) catchphrases;
       })
       customPets);
     patchScript = pkgs.writeText "patch.js" ''
@@ -227,14 +227,14 @@
       ${lib.concatMapStringsSep "\n" (p: ''
           mkdir -p $out/packs/${p.id}
           cp ${pkgs.writeText "pet-${p.id}.json" (builtins.toJSON {
-            id = p.id;
-            displayName = p.displayName;
-            description = p.description;
+            inherit (p) id;
+            inherit (p) displayName;
+            inherit (p) description;
             spritesheetPath = "spritesheet.png";
           })} $out/packs/${p.id}/pet.json
           magick ${pkgs.fetchurl {
-            url = p.url;
-            hash = p.hash;
+            inherit (p) url;
+            inherit (p) hash;
           }} $out/packs/${p.id}/spritesheet.png
         '')
         customPets}
@@ -549,7 +549,7 @@ in {
             text = builtins.toJSON {
               name = "dsh-profile-web";
               private = true;
-              dependencies = lib.mapAttrs (name: pkg: "${pkg}") cfg.plugins;
+              dependencies = lib.mapAttrs (_name: pkg: "${pkg}") cfg.plugins;
               dsh.profile.bundles =
                 [
                   "@deepseek-ai/dsh-base"

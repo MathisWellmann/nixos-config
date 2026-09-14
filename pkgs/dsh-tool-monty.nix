@@ -47,7 +47,7 @@
   };
   montyPlatform = fetchzip {
     url = "https://registry.npmjs.org/@pydantic/monty-${platform.name}/-/monty-${platform.name}-${version}.tgz";
-    hash = platform.hash;
+    inherit (platform) hash;
   };
   otelApi = fetchzip {
     url = "https://registry.npmjs.org/@opentelemetry/api/-/api-1.9.1.tgz";

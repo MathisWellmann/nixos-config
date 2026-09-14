@@ -1,6 +1,5 @@
 {
   pkgs,
-  lib,
   ...
 }: let
   src = pkgs.fetchzip {
