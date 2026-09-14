@@ -112,12 +112,10 @@ in {
       cache = {
         allowPutVerb = true;
         databaseURL = "sqlite:/var/lib/ncps/db/db.sqlite";
-        dataPath = "/var/lib/ncps";
+        storage.local = "/var/lib/ncps";
         hostName = const.hostname;
         maxSize = "512G";
-      };
-      upstream = {
-        caches = [
+        upstream.urls = [
           "https://cache.nixos.org"
           "https://nix-community.cachix.org"
         ];

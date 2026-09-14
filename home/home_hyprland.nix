@@ -100,7 +100,9 @@
   # `GDBus.Error:org.freedesktop.DBus.Error.ServiceUnknown`.
   services.mako = {
     enable = true;
-    defaultTimeout = 5000; # 5s, quiet enough for terminal bells / exit notices
+    settings = {
+      default-timeout = 5000; # 5s, quiet enough for terminal bells / exit notices
+    };
   };
 
   # NOTE: Since Hyprland 0.55 the hyprlang `hyprland.conf` format is deprecated
@@ -331,7 +333,7 @@
         ];
       };
       workspaces = {
-        visibilityMode = "MonitorSpecific";
+        visibility_mode = "MonitorSpecific";
       };
     };
   };

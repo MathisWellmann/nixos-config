@@ -40,13 +40,13 @@ in {
     inputs.nixidy.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.hf # Hugging Face `hf` CLI
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.archify # Archify architecture diagram CLI
-    inputs.eilmeldung.packages.${pkgs.stdenv.hostPlatform.system}.default
     inputs.rustgrep.packages.${pkgs.stdenv.hostPlatform.system}.default
 
     # Fonts
     terminus_font
     maple-mono.NF
     hongdown
+    eilmeldung
 
     # Misc
     viu # View images in the terminal, best with `kitty`

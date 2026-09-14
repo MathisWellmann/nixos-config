@@ -23,7 +23,6 @@
     stochos.url = "github:museslabs/stochos";
     nixidy.url = "github:arnarg/nixidy";
     maki.url = "github:tontinton/maki";
-    eilmeldung.url = "github:christo-auer/eilmeldung";
     rustgrep.url = "git+https://radicle.dpc.pw/z3wPTYCEHukxHQNU2fQ2b3eASNw8a.git";
     # Helm charts packaged as nix derivations, used by nixidy applications.
     nixhelm = {
@@ -184,25 +183,25 @@
     apps = {
       "${system}" = rec {
         default = list_apps;
-        list_apps = inputs.flake-utils.lib.mkApp {
+        list_apps = (inputs.flake-utils.lib.mkApp {
           drv = (import ./scripts/list_apps.nix {inherit self pkgs system;}).script;
-        };
-        wake_on_lan = inputs.flake-utils.lib.mkApp {
+        }) // { meta.description = "List all applications in this flake"; };
+        wake_on_lan = (inputs.flake-utils.lib.mkApp {
           drv = import scripts/wake_on_lan.nix {inherit self pkgs;};
-        };
-        sync_starred_github_to_forgejo = inputs.flake-utils.lib.mkApp {
+        }) // { meta.description = "Send a wake-on-lan packet to a host"; };
+        sync_starred_github_to_forgejo = (inputs.flake-utils.lib.mkApp {
           drv = import scripts/sync_starred_github_to_forgejo.nix {inherit pkgs;};
-        };
-        llama_bench_matrix = inputs.flake-utils.lib.mkApp {
+        }) // { meta.description = "Sync starred GitHub repositories to Forgejo"; };
+        llama_bench_matrix = (inputs.flake-utils.lib.mkApp {
           drv = import scripts/llama_bench_matrix.nix {inherit pkgs;};
-        };
-        hf = inputs.flake-utils.lib.mkApp {
+        }) // { meta.description = "Run llama-bench over a matrix of models and parameters"; };
+        hf = (inputs.flake-utils.lib.mkApp {
           drv = self.packages.${system}.hf;
           name = "hf";
-        };
-        hf-stars = inputs.flake-utils.lib.mkApp {
+        }) // { meta.description = "Hugging Face CLI"; };
+        hf-stars = (inputs.flake-utils.lib.mkApp {
           drv = import scripts/hf_stars.nix {inherit pkgs;};
-        };
+        }) // { meta.description = "List starred Hugging Face repositories"; };
       };
     };
   };
