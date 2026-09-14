@@ -82,6 +82,13 @@
           ++ extraModules;
       };
     treefmtEval = inputs.treefmt-nix.lib.evalModule pkgs ./treefmt.nix;
+
+    # headlong's shellm sandbox: NixOS system + docker-importable rootfs
+    headlongSandbox = import ./images/headlong-sandbox.nix {
+      inherit system;
+      inherit nixpkgs-unstable;
+      flakeSrc = ./.;
+    };
   in {
     nixidyEnvs."${system}" = nixidy.lib.mkEnvs {
       inherit pkgs;
@@ -134,9 +141,16 @@
 
       # The same idea for nushell: `nubuddy "prompt"` or `ask` in the REPL, see pkgs/nubuddy.nix
       nubuddy = pkgs.callPackage ./pkgs/nubuddy.nix {};
+
+      # Docker image for headlong's sandbox (see home/headlong.nix and
+      # images/headlong-sandbox.nix, which also holds the NixOS system
+      # it is built from)
+      headlong-sandbox-image = headlongSandbox.image;
     };
 
     nixosConfigurations = {
+      # see images/headlong-sandbox.nix (rootfs of headlong-sandbox-image)
+      headlong-sandbox = headlongSandbox.sandbox;
       meshify = mkHost "meshify" [
         inputs.agenix.nixosModules.default
         inputs.sops-nix.nixosModules.sops

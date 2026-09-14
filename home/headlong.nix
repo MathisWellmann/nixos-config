@@ -30,10 +30,11 @@
   # Make an identity's name a command (`galt`, `galt stop`, ...) by symlinking it
   # to the live tree's `persona` tool. headlong's own `headlong-init` does this
   # per identity, but web-created identities skip it — so link the ones we want.
-  mkIdentityCmd = name: pkgs.runCommand "headlong-cmd-${name}" {} ''
-    mkdir -p $out/bin
-    ln -s ${headlongApp}/tools/persona $out/bin/${name}
-  '';
+  mkIdentityCmd = name:
+    pkgs.runCommand "headlong-cmd-${name}" {} ''
+      mkdir -p $out/bin
+      ln -s ${headlongApp}/tools/persona $out/bin/${name}
+    '';
 in {
   home.packages = [
     inputs.self.packages.${system}.headlong
@@ -42,7 +43,7 @@ in {
     (mkIdentityCmd "ada")
   ];
 
-  home.activation.writeHeadlongEnv = lib.hm.dag.entryAfter [ "writeBoundary" ] ''
+  home.activation.writeHeadlongEnv = lib.hm.dag.entryAfter ["writeBoundary"] ''
     # DRY_RUN is only *set* in dry-run mode (unset under `set -u` on live runs).
     if [[ -v DRY_RUN ]]; then
       echo "dry run: would write ${headlongHome}/.env"
@@ -52,6 +53,9 @@ in {
         printf 'LLM_PROVIDER=openai-compatible\n'
         printf 'SHELLM_API_URL=http://${desg0.hostname}:${toString desg0.qwen3_port}/v1/chat/completions\n'
         printf 'SHELLM_MODEL=${desg0.qwen3Model}\n'
+        # shellm's sandbox container: our NixOS image instead of ubuntu:latest,
+        # so the agent can `nix build` (image: scripts/headlong-sandbox-image.sh)
+        printf 'SHELLM_DOCKER_IMAGE=headlong-sandbox:latest\n'
       } > "${headlongHome}/.env"
       chmod 600 "${headlongHome}/.env"
     fi
