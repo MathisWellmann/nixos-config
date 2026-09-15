@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "SGLang serving RadixArk/Qwen3.8-27B-NVFP4 (+ DSpark draft) on desg0 (single engine, scraped at desg0:8000, job \"sglang\"). Engine limits it is read against (set in hosts/desg0/sglang_qwen3_container.nix): --max-running-requests 2, --context-length 262144, --mem-fraction-static 0.62, fp8 KV cache, bf16 mamba (GDN) SSM state, DSpark speculative decoding. SGLang exposes /metrics only when started with --enable-metrics (default OFF; set in the container config). All rates and histogram quantiles use the shared rate window via the \"Rate window\" variable (5m default, 30m option); means are rate(_sum)/rate(_count), restart-safe. Metric names are `sglang:*` (the `vllm:*` series ended when the engine was swapped, 2026-07). SGLang's /metrics registry carries no process_* / python_* series, so the former uptime/RSS/CPU panels are gone. SGLang also has no finished-reason label on completed requests (aborts are separate: sglang:num_aborted_requests_total).",
+  "description": "SGLang serving RadixArk/Qwen3.8-27B-NVFP4 (+ DSpark draft) on desg0 (single engine, scraped at desg0:8000, job \"sglang\"). Engine limits it is read against (set in hosts/desg0/sglang_qwen3_container.nix): --max-running-requests 24, --context-length 262144, --mem-fraction-static 0.93, fp8 KV cache, bf16 mamba (GDN) SSM state, DSpark speculative decoding. SGLang exposes /metrics only when started with --enable-metrics (default OFF; set in the container config). All rates and histogram quantiles use the shared rate window via the \"Rate window\" variable (5m default, 30m option); means are rate(_sum)/rate(_count), restart-safe. Metric names are `sglang:*` (the `vllm:*` series ended when the engine was swapped, 2026-07). SGLang's /metrics registry carries no process_* / python_* series, so the former uptime/RSS/CPU panels are gone. SGLang also has no finished-reason label on completed requests (aborts are separate: sglang:num_aborted_requests_total).",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -91,13 +91,13 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Requests currently in model execution batches. Hard cap is --max-running-requests 4; sitting at 4 with a non-empty queue means the engine is saturated.",
-      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "max": 4, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 3 }, { "color": "red", "value": 4 }] } }, "overrides": [] },
+      "description": "Requests currently in model execution batches. Hard cap is --max-running-requests 24; sitting at 24 with a non-empty queue means the engine is saturated.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "max": 24, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 23 }, { "color": "red", "value": 24 }] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
       "id": 3,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(sglang:num_running_reqs)", "legendFormat": "running", "refId": "A" }],
-      "title": "Running requests (max 4)",
+      "title": "Running requests (max 24)",
       "type": "stat"
     },
     {
@@ -113,7 +113,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "KV token-pool utilization (1 = full). Sized by --mem-fraction-static 0.62 with fp8 KV; long agent contexts (up to 262144 tokens) eat it fast. Sustained ~1 causes queueing and retractions.",
+      "description": "KV token-pool utilization (1 = full). Sized by --mem-fraction-static 0.93 with fp8 KV; long agent contexts (up to 262144 tokens) eat it fast. Sustained ~1 causes queueing and retractions.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "percentunit", "max": 1, "min": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 0.8 }, { "color": "red", "value": 0.95 }] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
       "id": 5,
@@ -134,8 +134,30 @@
       "type": "stat"
     },
     {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Cumulative input (prompt) tokens since the last engine start, summed over streaming modes. Raw Prometheus counter: resets to 0 on every restart (a downward step is an engine restart; cross-check Target up).",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "decimals": 1, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 5 },
+      "id": 25,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(sglang:prompt_tokens_total)", "legendFormat": "input tokens", "refId": "A" }],
+      "title": "Input tokens (total)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Cumulative output (generation) tokens since the last engine start, summed over streaming modes. Raw Prometheus counter: resets to 0 on every restart (a downward step is an engine restart; cross-check Target up).",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "decimals": 1, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 5 },
+      "id": 26,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(sglang:generation_tokens_total)", "legendFormat": "output tokens", "refId": "A" }],
+      "title": "Output tokens (total)",
+      "type": "stat"
+    },
+    {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 5 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
       "id": 101,
       "panels": [],
       "title": "Latency",
@@ -145,7 +167,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Time to first token: how long a client waits before the stream starts. = queue time + prefill. Histogram buckets top out at 400s, so quantiles are trustworthy across the whole expected range.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "s", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 6 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 10 },
       "id": 10,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -161,7 +183,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Inter-token latency: the gap between consecutive tokens of one stream, i.e. perceived typing speed (1 / ITL = tokens/s per client). Buckets top out at 8s; with DSpark speculative decoding the effective ITL is per verified batch, so this is smoother than vllm's was.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "s", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 6 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 10 },
       "id": 11,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -177,7 +199,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "End-to-end request latency (arrival to last token). For long agent generations this is mostly decode time, so it tracks output length rather than engine health -- compare with the per-stage breakdown to the right. Buckets top out at 2400s.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "s", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 14 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 18 },
       "id": 12,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -192,7 +214,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Mean seconds a request spends in each observed stage over the selected rate window (stage label: tokenize, request_process, prefill_forward, chunked_prefill, spec_draft, spec_verify, ...). Queue time is not a stage here -- see Queue time p95 in the Scheduler row.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "s", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 14 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 18 },
       "id": 13,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -203,7 +225,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 22 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 26 },
       "id": 102,
       "panels": [],
       "title": "Throughput & outcomes",
@@ -213,7 +235,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Prompt (prefill) vs generation (decode) tokens per second, smoothed over the selected rate window. Prompt spikes mark new agent conversations; with the radix cache, warm turns mostly re-use cached prefix (see Caching row).",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tok/s", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 23 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 27 },
       "id": 20,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -227,7 +249,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Completed requests per hour by streaming mode, plus aborts/h. SGLang does not label finished requests with a reason (vllm's finished_reason is gone); aborts (client disconnected / 4xx mid-stream) are the only failure signal and count separately.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "req/h", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 23 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 27 },
       "id": 21,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -241,7 +263,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "HTTP responses per hour by endpoint and status code (sglang:http_responses_total, the SGLang ASGI-middleware counterpart of vllm's http_requests_total). 4xx on /v1/chat/completions usually means a client sent something the server rejects (e.g. a prompt over --context-length); 5xx means the engine broke. Rejected requests never reach sglang:num_requests_total, so this is the only place they show up.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "resp/h", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 31 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 35 },
       "id": 22,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (endpoint, status_code) (rate(sglang:http_responses_total{job=\"sglang\"}[${l}])) * 3600", "legendFormat": "{{endpoint}} {{status_code}}", "refId": "A" }],
@@ -252,7 +274,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Engine-side generation throughput gauge (per scheduler), versus the request-side token rate panel to the left: they should track each other. Dips below the request-side rate indicate retracted/stalled decode work.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tok/s", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 31 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 35 },
       "id": 23,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -262,22 +284,8 @@
       "type": "timeseries"
     },
     {
-      "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Cumulative input (prompt) and output (generation) tokens since the last engine start -- the raw counters behind the Token rate panel above. They reset to 0 on each restart (the downward steps; cross-check Target up). For totals that survive restarts, use increase() over the time range instead.",
-      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 39 },
-      "id": 24,
-      "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(sglang:prompt_tokens_total)", "legendFormat": "input (cumulative)", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(sglang:generation_tokens_total)", "legendFormat": "output (cumulative)", "refId": "B" }
-      ],
-      "title": "Cumulative tokens (input / output)",
-      "type": "timeseries"
-    },
-    {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 47 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 51 },
       "id": 103,
       "panels": [],
       "title": "Scheduler & KV cache",
@@ -287,7 +295,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Retractions in the last 24h -- SGLang's equivalent of vllm preemptions. A retraction evicts a running request's KV (or mamba state) to make room for others and re-runs it; the clearest sign the pools are too small for the offered load (raise --max-running-requests together with --max-mamba-cache-size, or the memory fraction).",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "decimals": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "red", "value": 1 }] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 48 },
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 52 },
       "id": 30,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(sglang:num_retracted_requests_total[24h]))", "legendFormat": "retractions (24h)", "refId": "A" }],
@@ -298,7 +306,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "p95 time requests spent in the WAITING phase over the selected rate window. Non-trivial values mean requests are being admitted late, not served slowly.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "s", "decimals": 2, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 10 }] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 48 },
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 52 },
       "id": 32,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "histogram_quantile(0.95, sum by (le) (rate(sglang:queue_time_seconds_bucket[${l}])))", "legendFormat": "queue p95", "refId": "A" }],
@@ -309,7 +317,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Rejected/failed HTTP responses per hour (4xx + 5xx, all endpoints), smoothed over the selected rate window. Any sustained value means a client is misconfigured or the engine is erroring; break it down in the HTTP panel above.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "decimals": 1, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }, { "color": "yellow", "value": 1 }, { "color": "red", "value": 10 }] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 48 },
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 52 },
       "id": 33,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(sglang:http_responses_total{job=\"sglang\",status_code=~\"4..|5..\"}[${l}])) * 3600", "legendFormat": "errors/h", "refId": "A" }],
@@ -320,7 +328,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Output tokens per second as a single client experiences it (1 / mean inter-token latency). Independent of how many requests are in flight, unlike the aggregate generation tok/s.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "decimals": 1, "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 15 }, { "color": "green", "value": 25 }] } }, "overrides": [] },
-      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 48 },
+      "gridPos": { "h": 4, "w": 6, "x": 18, "y": 52 },
       "id": 34,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(sglang:inter_token_latency_seconds_count[${l}])) / sum(rate(sglang:inter_token_latency_seconds_sum[${l}]))", "legendFormat": "tok/s per stream", "refId": "A" }],
@@ -329,9 +337,9 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "KV token-pool utilization over time. Sawtooth = normal scheduling; a plateau near 1 together with waiting requests or retractions means the KV cache is the binding constraint. The GPU is shared with llama.cpp, so the ceiling cannot simply be raised.",
+      "description": "KV token-pool utilization over time. Sawtooth = normal scheduling; a plateau near 1 together with waiting requests or retractions means the KV cache is the binding constraint. SGLang owns the full 96GB card (llama-cpp off), so the ceiling can be raised via --mem-fraction-static if the pool keeps binding.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "percentunit", "max": 1, "min": 0, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 52 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 56 },
       "id": 36,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(sglang:token_usage)", "legendFormat": "kv cache usage", "refId": "A" }],
@@ -340,9 +348,9 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Mamba (GDN) SSM state-pool utilization -- the hybrid-architecture twin of the KV pool. Pinned by --max-mamba-cache-size 16 (= 4 requests x S=4 extra_buffer_lazy slots); the pool saturates at max-running-requests, not at context length. Sustained ~1 means a mamba retraction is one more request away.",
+      "description": "Mamba (GDN) SSM state-pool utilization -- the hybrid-architecture twin of the KV pool. Pinned by --max-mamba-cache-size 144 (1.5x the 24 x 4 running-request floor); the pool saturates at max-running-requests, not at context length. Sustained ~1 means a mamba retraction is one more request away.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "percentunit", "max": 1, "min": 0, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 52 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 56 },
       "id": 37,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(sglang:mamba_usage)", "legendFormat": "mamba state usage", "refId": "A" }],
@@ -351,9 +359,9 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Scheduler occupancy: running requests (capped at --max-running-requests 4) against the admission queue. running pinned at 4 with waiting > 0 = the engine is saturated for the offered load.",
+      "description": "Scheduler occupancy: running requests (capped at --max-running-requests 24) against the admission queue. running pinned at 24 with waiting > 0 = the engine is saturated for the offered load.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "requests", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 60 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 64 },
       "id": 38,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -365,9 +373,9 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "KV token-pool occupancy in absolute tokens: used = actively referenced by running requests, evictable = radix-cached (re-usable by the prefix cache), available = free. Pool size ~445052 tokens (see Engine config row).",
+      "description": "KV token-pool occupancy in absolute tokens: used = actively referenced by running requests, evictable = radix-cached (re-usable by the prefix cache), available = free. Pool size ~926249 tokens (see Engine config row).",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 60 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 64 },
       "id": 39,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -380,7 +388,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 68 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 72 },
       "id": 104,
       "panels": [],
       "title": "Request shape",
@@ -390,7 +398,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Prompt tokens per request. Explains prefill cost and TTFT. The default histogram buckets reach ~1.1M tokens, so quantiles stay trustworthy well beyond the 262144 context limit (vllm's saturated at 50k).",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 69 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 73 },
       "id": 40,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -405,7 +413,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Generation tokens per request. When it plateaus at the max_tokens clients asked for, answers are being truncated -- cross-check the HTTP panel and client configs.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 69 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 73 },
       "id": 41,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
@@ -418,7 +426,7 @@
     },
     {
       "collapsed": false,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 77 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 81 },
       "id": 105,
       "panels": [],
       "title": "Speculative decoding (DSpark)",
@@ -428,7 +436,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Mean acceptance length per verify step: accepted draft tokens + the bonus token. The verify window is gamma+1 = 8 slots, so 8 = every draft accepted; a sustained drop means the draft model is losing agreement with the target (e.g. on out-of-distribution inputs) and decode pays full-length verify cost.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "max": 8, "min": 0, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens/verify", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 78 },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 82 },
       "id": 50,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(sglang:spec_accept_length)", "legendFormat": "accept length", "refId": "A" }],
@@ -439,7 +447,7 @@
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
       "description": "Speculative acceptance rate (accepted drafts / proposed drafts per batch, 1 = perfect agreement). Track it next to the accept length: the length says how much work each verify saves, the rate says how reliable the draft model is.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "percentunit", "max": 1, "min": 0, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 78 },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 82 },
       "id": 51,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(sglang:spec_accept_rate)", "legendFormat": "accept rate", "refId": "A" }],
@@ -448,7 +456,7 @@
     },
     {
       "collapsed": true,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 86 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 90 },
       "id": 106,
       "title": "Caching (radix)",
       "type": "row",
@@ -457,7 +465,7 @@
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "description": "Radix-cache hit rate as reported by the scheduler (cached query tokens / queried tokens). Unlike vllm -- where prefix caching was hard-disabled for this hybrid GDN architecture and the series stayed at 0 -- SGLang's mamba-radix-cache (extra_buffer_lazy) can serve prompt prefixes from cache, so a non-trivial ratio here is expected on warm agent conversations.",
           "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "percentunit", "max": 1, "min": 0, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 87 },
+          "gridPos": { "h": 8, "w": 12, "x": 0, "y": 91 },
           "id": 60,
           "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
           "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(sglang:cache_hit_rate)", "legendFormat": "cache hit rate", "refId": "A" }],
@@ -468,7 +476,7 @@
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "description": "Prompt tokens per second served from the radix cache versus freshly computed. The cached side saves prefill compute and TTFT on warm turns; if cache tokens collapse to 0 while traffic continues, eviction is outpacing the workload (see KV token pool).",
           "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tok/s", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 87 },
+          "gridPos": { "h": 8, "w": 12, "x": 12, "y": 91 },
           "id": 61,
           "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
           "targets": [
@@ -482,7 +490,7 @@
     },
     {
       "collapsed": true,
-      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 95 },
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 99 },
       "id": 107,
       "title": "Engine config & target",
       "type": "row",
@@ -491,7 +499,7 @@
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "description": "Scrape health of desg0:8000. 0/no data means the container is down, restarting (model load takes minutes), or --enable-metrics got dropped -- check `systemctl status podman-sglang-qwen3` on desg0.",
           "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "max": 1, "min": 0, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 96 },
+          "gridPos": { "h": 8, "w": 8, "x": 0, "y": 100 },
           "id": 70,
           "options": { "legend": { "calcs": ["lastNotNull", "min"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
           "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "up{job=\"sglang\"}", "legendFormat": "up", "refId": "A" }],
@@ -500,9 +508,9 @@
         },
         {
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
-          "description": "GPU memory split at startup, reported by the engine: NVFP4 weights, fp8 KV pool, and CUDA-graph buffers. They should sum to roughly --mem-fraction-static 0.62 of the 96GB card (the rest is shared with llama.cpp). SGLang's /metrics carries no process_* series, so the former API-server RSS/CPU panels are gone.",
+          "description": "GPU memory split at startup, reported by the engine: NVFP4 weights, fp8 KV pool, and CUDA-graph buffers. They should sum to roughly --mem-fraction-static 0.93 of the 96GB card (llama-cpp is off, SGLang owns the card). SGLang's /metrics carries no process_* series, so the former API-server RSS/CPU panels are gone.",
           "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "decmulti:G", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 96 },
+          "gridPos": { "h": 8, "w": 8, "x": 8, "y": 100 },
           "id": 71,
           "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
           "targets": [
@@ -517,7 +525,7 @@
           "datasource": { "type": "prometheus", "uid": "${datasource}" },
           "description": "Engine configuration constants as emitted at startup: the advertised context length (--context-length 262144) and the total KV token pool (~445k at the current mem-fraction). A reset to 0/blank between up periods is a restart; the series is constant between restarts.",
           "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "tokens", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
-          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 96 },
+          "gridPos": { "h": 8, "w": 8, "x": 16, "y": 100 },
           "id": 72,
           "options": { "legend": { "calcs": ["lastNotNull"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
           "targets": [
