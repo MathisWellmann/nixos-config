@@ -35,6 +35,10 @@
     #   url = "path:/home/m/symbolica/agentica-framework";
     #   inputs.nixpkgs.follows = "nixpkgs-unstable";
     # };
+    monty-persona = {
+      url = "path:/home/m/MathisWellmann/monty-persona";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
   };
   # some CUDA packages require like 250GB of RAM to compile from scratch, so use binary caches.
   # Run with `--accept-flake-config`
@@ -169,6 +173,7 @@
       ];
       de-msa2 = mkHost "de-msa2" [
         inputs.agenix.nixosModules.default
+        inputs.monty-persona.nixosModules.default
         {_module.args = inputs;}
       ];
       de-n5 = mkHost "de-n5" [
