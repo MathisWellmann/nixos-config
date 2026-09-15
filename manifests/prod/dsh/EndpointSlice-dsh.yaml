@@ -1,0 +1,21 @@
+# Manual endpoint: `dsh web` runs on de-msa2 (this cluster's gateway host),
+# bound to 127.0.0.1:3080 -- the harness only accepts 127.0.0.1 or 0.0.0.0.
+# A socat forwarder on de-msa2 (systemd: dsh-web-proxy) exposes it on the
+# tailnet IP below. Keep in sync with hosts/de-msa2/dsh-web-proxy.nix.
+addressType: IPv4
+apiVersion: discovery.k8s.io/v1
+endpoints:
+  - addresses:
+      - 100.83.142.17
+    conditions:
+      ready: true
+kind: EndpointSlice
+metadata:
+  labels:
+    kubernetes.io/service-name: dsh
+  name: dsh
+  namespace: dsh
+ports:
+  - name: http
+    port: 3080
+    protocol: TCP

@@ -57,6 +57,7 @@ in {
     ./nexus_dbs.nix
     ./forgejo.nix
     ./bencher.nix
+    ./dsh-web-proxy.nix
     ./prometheus.nix
     ./alerting.nix
     ./zfs_pool.nix

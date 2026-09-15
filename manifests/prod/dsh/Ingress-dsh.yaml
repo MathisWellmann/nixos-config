@@ -1,0 +1,30 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: DeepSeek Harness web UI
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
+    gethomepage.dev/group: AI
+    gethomepage.dev/icon: mdi-robot
+    gethomepage.dev/name: dsh
+  name: dsh
+  namespace: dsh
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: dsh.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: dsh
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - dsh.k3s.lan
+      secretName: dsh-tls
