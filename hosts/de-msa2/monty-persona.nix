@@ -19,7 +19,10 @@ in {
       settings = {
         model.name = desg0_const.qwen3Model;
         model.base_url = "http://desg0:${toString desg0_const.qwen3_port}/v1";
-        tools.sh.enabled = true; # tier 3 `sh` in the bubblewrap jail
+        tools.sh = {
+          enabled = true; # tier 3 `sh` in the bubblewrap jail
+          network = true; # share host netns so git/HTTP work (jail would otherwise have no net)
+        };
       };
       ntfy = {
         enable = true;
