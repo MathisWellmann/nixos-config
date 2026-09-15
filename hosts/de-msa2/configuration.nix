@@ -98,7 +98,7 @@ in {
     # also pass inputs to home-manager modules
     extraSpecialArgs = {inherit inputs;};
     users = {
-      "${global_const.username}" = import ./../../home/home.nix;
+      "${global_const.username}" = import ./../../home/de-msa2.nix;
     };
   };
 
