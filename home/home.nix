@@ -7,7 +7,6 @@
 in {
   imports = [
     ./agent-skills.nix
-    ./headlong.nix
     ./helix.nix
     ./vcs.nix
     ./shell.nix
