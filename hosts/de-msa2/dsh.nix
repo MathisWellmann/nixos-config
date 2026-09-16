@@ -31,6 +31,15 @@ in
         # its state under /home/m/.dsh, so keep the sandboxing light.
         NoNewPrivileges = true;
         PrivateTmp = true;
+        # NixOS's default service PATH (coreutils/findutils/grep/sed/systemd
+        # store paths only) has no `bash` and no `bwrap`: under it the dsh
+        # bash tool cannot spawn a shell and both Linux sandbox backends
+        # probe unusable (the Landlock launcher's probe child is a bare
+        # name, too). Use the system environment plus bubblewrap, DSH's
+        # preferred Linux sandbox backend.
+        Environment = [
+          "PATH=/run/current-system/sw/bin:${pkgs.bubblewrap}/bin:${pkgs.systemd}/bin"
+        ];
       };
     };
 
