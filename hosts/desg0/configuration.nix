@@ -21,6 +21,19 @@
     # sharing the NVMe -- etcd fsync stalls were the other half of the
     # 2026-07-02 incident. Proportional, so CI keeps full speed on an idle disk.
     io_weight = "20";
+    runners = [
+      {
+        name = "default";
+        tokenFile = "/etc/secrets/forgejo_runner";
+        labels = [ "native:host" ];
+      }
+      {
+        name = "monty-persona";
+        runner_name = "desg0-monty";
+        tokenFile = "/etc/secrets/forgejo_runner_monty-persona";
+        labels = [ "native:host" ];
+      }
+    ];
   };
 in {
   imports = [
