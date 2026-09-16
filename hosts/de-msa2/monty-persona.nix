@@ -4,9 +4,18 @@
 # monty-persona group. The ntfy bridge talks to the local ntfy-sh on :9007
 # (see alerting.nix), so the persona is reachable from the phone app on topic
 # `jeff`.
-_: let
+{ pkgs, ... }: let
   global_const = import ../../global_constants.nix;
   desg0_const = import ../desg0/constants.nix;
+
+  # Jeff's nix: user-level store under his work dir (persistent, no daemon).
+  # The tier 3 jail mounts the work dir as /work, the service process sees it
+  # at its real path; nix reads $HOME/.config/nix/nix.conf in both, so one
+  # small conf per view, same store.
+  jeff = "/var/lib/monty-persona/jeff";
+  # ponytail: no nix build sandbox (sandbox=false) - the bwrap jail is the
+  # boundary already; nested bwrap buys nothing here.
+  jeffNixFlags = "experimental-features = flakes nix-command\\nsandbox = false";
 in {
   services.monty-persona = {
     enable = true;
@@ -32,13 +41,26 @@ in {
         enable = true;
         user = global_const.username;
       };
+      # bash registers the tier 3 `sh` tool (it refuses without it); nix on
+      # PATH lets jeff pull any dependency into his user store (see below).
+      extraPackages = [pkgs.bash pkgs.nix];
       # The service runs under ProtectHome; let it reach the shared sessions root.
       readWritePaths = ["/var/lib/monty-persona/sessions"];
     };
   };
 
   # Shared dsh sessions root: readable for m via the monty-persona group.
-  systemd.tmpfiles.rules = ["d /var/lib/monty-persona/sessions 0770 monty-persona monty-persona -"];
+  # nix.conf in both views of the work dir (jail: /work, service: ${jeff}/work);
+  # f+ rewrites on every boot, so config changes apply after a reboot.
+  systemd.tmpfiles.rules = [
+    "d /var/lib/monty-persona/sessions 0770 monty-persona monty-persona -"
+    "d ${jeff}/work/.config 0755 monty-persona monty-persona -"
+    "d ${jeff}/work/.config/nix 0755 monty-persona monty-persona -"
+    "f+ ${jeff}/work/.config/nix/nix.conf 0644 monty-persona monty-persona - store = /work/.nix-store\\n${jeffNixFlags}"
+    "d ${jeff}/.config 0755 monty-persona monty-persona -"
+    "d ${jeff}/.config/nix 0755 monty-persona monty-persona -"
+    "f+ ${jeff}/.config/nix/nix.conf 0644 monty-persona monty-persona - store = ${jeff}/work/.nix-store\\n${jeffNixFlags}"
+  ];
 
   users.users.${global_const.username}.extraGroups = ["monty-persona"];
 }
