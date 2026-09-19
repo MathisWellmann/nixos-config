@@ -56,6 +56,7 @@ in {
     # ./freshrss.nix
     ./nexus_dbs.nix
     ./forgejo.nix
+    ./clanker-bot.nix
     ./bencher.nix
     ./dsh.nix
     ./prometheus.nix

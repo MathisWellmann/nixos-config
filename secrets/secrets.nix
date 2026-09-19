@@ -20,6 +20,15 @@ in {
     ];
     armor = true;
   };
+  # API key of the `clanker` forgejo bot account (hosts/de-msa2/clanker-bot.nix);
+  # also used as its git push credential.
+  "clanker_forgejo.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
   # Bearer token of the `victoriametrics-scraper` ServiceAccount (created by
   # the `nexus` repo), used by victoriametrics for k8s pod discovery.
   "vm_k8s_token.age" = {
