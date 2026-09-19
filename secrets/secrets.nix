@@ -29,6 +29,15 @@ in {
     ];
     armor = true;
   };
+  # `ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64=...` for atticd's JWT signing
+  # (hosts/de-msa2/attic.nix). Regenerating it invalidates every issued token.
+  "attic-server-env.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
   # Bearer token of the `victoriametrics-scraper` ServiceAccount (created by
   # the `nexus` repo), used by victoriametrics for k8s pod discovery.
   "vm_k8s_token.age" = {

@@ -89,7 +89,8 @@ A curated set of self-hosted apps, each a NixOS module, fronted over HTTPS
 through the cluster ingress where it matters:
 
 **ntfy** (push notifications) · **forgejo** (git + actions + LFS) · **grafana**
-(dashboards) · **vikunja** (tasks) · **polaris** (music) · **calibre-web** (ebooks) ·
+(dashboards) · **vikunja** (tasks) · **attic** (nix binary cache) ·
+**polaris** (music) · **calibre-web** (ebooks) ·
 **mealie** (recipes) · **immich** (photos) · **searx** (search) · **readeck** ·
 **uptime-kuma** · and more.
 

@@ -61,6 +61,7 @@ in {
     ./prometheus.nix
     ./alerting.nix
     ./zfs_pool.nix
+    ./attic.nix
     ./monty-persona.nix
     # ./ups.nix
     searx
@@ -135,6 +136,7 @@ in {
         jellyfin = "jellyfin";
         zfs-replication = "zfs-replication";
         zfs-scrub = "zfs-scrub.timer";
+        attic = "atticd";
         k3s = "k3s";
         prometheus-node-exporter = "prometheus-node-exporter";
         victoriametrics = "victoriametrics";

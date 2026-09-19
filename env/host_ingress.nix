@@ -36,6 +36,14 @@ _: let
       description = "Git forge, CI & container registry";
     }
     {
+      name = "attic";
+      host = "attic.k3s.lan";
+      port = 3019; # const.attic_port
+      group = "DevOps";
+      icon = "nixos.svg";
+      description = "Nix binary cache";
+    }
+    {
       name = "grafana";
       host = "grafana.k3s.lan";
       port = 3001; # const.grafana_port

@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: Nix binary cache
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: nixos.svg
+    gethomepage.dev/name: attic
+    gethomepage.dev/siteMonitor: http://attic.attic.svc.cluster.local
+  name: attic
+  namespace: attic
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: attic.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: attic
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - attic.k3s.lan
+      secretName: attic-tls
