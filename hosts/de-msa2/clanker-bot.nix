@@ -17,7 +17,7 @@ in {
   # Create it once with:
   #   echo -n "<api-key>" | agenix encrypt clanker_forgejo > secrets/clanker_forgejo.age
   age.secrets.clanker_forgejo = {
-    file = ../secrets/clanker_forgejo.age;
+    file = ../../secrets/clanker_forgejo.age;
     owner = "m";
   };
 
@@ -27,8 +27,9 @@ in {
       Type = "oneshot";
       User = "m";
       # A pi session with a handful of tool calls easily outlives systemd's
-      # default 90s start timeout for oneshots.
-      TimeoutStartSec = "45min";
+      # default 90s start timeout for oneshots. 2h covers the first-ever run
+      # (nix closure + full workspace build); later runs are incremental.
+      TimeoutStartSec = "2h";
       Environment = "HOME=/home/m";
     };
     path = with pkgs; [
@@ -37,8 +38,14 @@ in {
       jq
       cargo
       cargo-edit
+      # The prompt runs `nix develop .#ci` to get cargo-upgrades and the
+      # workspace's pinned nightly toolchain (same as Forgejo CI).
+      nix
     ];
     environment = {
+      # Persistent cargo build dir: the clone is fresh every day, but compiled
+      # dependencies carry over, so post-bump checks are incremental.
+      CARGO_TARGET_DIR = "/home/m/.cache/clanker-bot/target";
       CLANKER_TOKEN_FILE = config.age.secrets.clanker_forgejo.path;
       FORGEJO_API = "${forgejo_url}/api/v1";
       NEXUS_REPO = "MathisWellmann/nexus";
@@ -65,10 +72,11 @@ in {
          "Authorization: token $CLANKER_TOKEN".
          If any open PR was created by a user with login "clanker", stop and say so
          (only one clanker PR in flight at a time).
-      2. Run 'cargo upgrades' in the nix dev shell (nix develop) to list outdated
-         dependencies. If nothing is outdated, stop and say so.
+      2. Run 'nix develop .#ci --command cargo upgrades' in the repo root to list
+         outdated dependencies. If nothing is outdated, stop and say so.
       3. For each outdated dependency create a separate git commit and ensure they compile
-         and overall make sense in the context of the dependency.
+         (cargo check --workspace inside the same dev shell) and overall make sense
+         in the context of the dependency.
       4. git checkout -b clanker/bump-<dep>      # replace <dep> with some fitting name.
       5. git config user.name "clanker"
          git config user.email "clanker@forgejo.k3s.lan"
@@ -89,7 +97,7 @@ in {
             # pi is on the system profile (modules/ai/pi-agent.nix), which is not on
             # the default PATH of a service; pin the model so the bot never depends
             # on whatever user m last selected interactively.
-            /run/current-system/sw/bin/pi -m "vllm/${desg0_const.qwen3Model}" -p "$pi_prompt"
+            /run/current-system/sw/bin/pi --model "vllm/${desg0_const.qwen3Model}" -p "$pi_prompt"
     '';
   };
 
