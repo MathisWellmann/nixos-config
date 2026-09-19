@@ -49,7 +49,6 @@ in {
     }) # Don't run much load on this host. TODO: move to desg0
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://meshify:8001/v1";
-      enableAgentica = true;
       vllmBaseUrl = "http://desg0:${toString desg0_const.qwen3_port}/v1";
       vllmModels = [desg0_const.qwen3Model];
     })

@@ -24,7 +24,6 @@ in {
     ./../../modules/k3s_server_follow.nix
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://desg0:${toString const_desg0.llama-cpp_port}/v1";
-      enableAgentica = true;
       vllmBaseUrl = "http://desg0:${toString const_desg0.qwen3_port}/v1";
       vllmModels = [const_desg0.qwen3Model];
     })

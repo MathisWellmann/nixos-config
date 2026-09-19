@@ -68,7 +68,6 @@ in {
       # Was llama-cpp_port; that module is disabled (sglang owns the GPU),
       # so the default backend is the sglang server too.
       baseUrl = "http://127.0.0.1:${toString const.qwen3_port}/v1";
-      enableAgentica = true;
       vllmBaseUrl = "http://127.0.0.1:${toString const.qwen3_port}/v1";
       vllmModels = [const.qwen3Model];
       # Must match --context-length in sglang_qwen3_container.nix.

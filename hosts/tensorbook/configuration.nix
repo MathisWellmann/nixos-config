@@ -26,7 +26,6 @@ in {
     })
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://desg0:${toString desg0_const.llama-cpp_port}/v1";
-      enableAgentica = true;
       vllmBaseUrl = "http://desg0:${toString desg0_const.qwen3_port}/v1";
       vllmModels = [desg0_const.qwen3Model];
     })

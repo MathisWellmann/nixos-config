@@ -31,10 +31,6 @@
     };
 
     # Local paths
-    # agentica-framework = {
-    #   url = "path:/home/m/symbolica/agentica-framework";
-    #   inputs.nixpkgs.follows = "nixpkgs-unstable";
-    # };
     monty-persona = {
       url = "path:/home/m/MathisWellmann/monty-persona";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
