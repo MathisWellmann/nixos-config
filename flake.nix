@@ -30,9 +30,10 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
 
-    # Local paths
+    # Self-hosted on de-msa2's forgejo (hosts/de-msa2/forgejo.nix); the
+    # `k3s.lan` name resolves over tailscale via modules/base_system.nix.
     monty-persona = {
-      url = "path:/home/m/MathisWellmann/monty-persona";
+      url = "git+https://forgejo.k3s.lan/MathisWellmann/monty-persona.git";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
   };
