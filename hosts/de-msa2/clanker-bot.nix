@@ -66,12 +66,6 @@ in {
             git clone -q --depth 1 "http://clanker:$CLANKER_TOKEN@localhost:${toString const.forgejo_port}/$NEXUS_REPO.git" nexus
             cd nexus
 
-            # Always reconcile both clusters on every run; nixidy and the
-            # .#prod/.#dev envs live in the nexus flake (same as the .#ci env
-            # used below).
-            nix run .#nixidy -- switch .#prod
-            nix run .#nixidy -- switch .#dev
-
             # Unquoted heredoc so the service env vars reach the prompt verbatim.
             # No backticks and no command substitutions inside.
             pi_prompt="$(cat <<PROMPT
@@ -114,6 +108,9 @@ in {
             # the default PATH of a service; pin the model so the bot never depends
             # on whatever user m last selected interactively.
             /run/current-system/sw/bin/pi --model "vllm/${desg0_const.qwen3Model}" -p "$pi_prompt"
+
+            nix run .#nixidy -- switch .#prod
+            nix run .#nixidy -- switch .#dev
     '';
   };
 

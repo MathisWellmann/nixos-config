@@ -801,8 +801,8 @@
         "rust-overlay": "rust-overlay_4"
       },
       "locked": {
-        "lastModified": 1789570762,
-        "narHash": "sha256-eyV/RUEENcQ+1ulAoFp18f7IADhrRtIneWfC5CJgUqM=",
+        "lastModified": 1789857242,
+        "narHash": "sha256-XRcdRaESgIoFmHbtEcTSpURvADodzRLPVGWUf5FFWq0=",
         "path": "/home/m/MathisWellmann/monty-persona",
         "type": "path"
       },
