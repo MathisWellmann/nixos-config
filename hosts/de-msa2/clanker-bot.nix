@@ -33,6 +33,8 @@ in {
       Environment = "HOME=/home/m";
     };
     path = with pkgs; [
+      # pi's bash tool needs a shell on PATH; `bash` provides both `bash` and `sh`.
+      bash
       gitMinimal
       curl
       jq
@@ -74,9 +76,12 @@ in {
          (only one clanker PR in flight at a time).
       2. Run 'nix develop .#ci --command cargo upgrades' in the repo root to list
          outdated dependencies. If nothing is outdated, stop and say so.
-      3. For each outdated dependency create a separate git commit and ensure they compile
-         (cargo check --workspace inside the same dev shell) and overall make sense
-         in the context of the dependency.
+      3. Pick exactly ONE outdated dependency to bump (one PR per run; see step 1).
+         Prefer a plain semver-compatible bump; skip tombstone/deprecated releases
+         (e.g. a release containing only a compile_error!) and say so instead.
+         Bump just that one, then ensure it compiles (cargo check --workspace
+         inside the same dev shell) and overall makes sense in the context of
+         the dependency.
       4. git checkout -b clanker/bump-<dep>      # replace <dep> with some fitting name.
       5. git config user.name "clanker"
          git config user.email "clanker@forgejo.k3s.lan"
@@ -86,8 +91,8 @@ in {
       6. Build a JSON payload with jq (so the body is escaped properly), then POST it
          to $FORGEJO_API/repos/$NEXUS_REPO/pulls with the headers "Authorization: token
          $CLANKER_TOKEN" and "Content-Type: application/json"; the payload needs head
-         ("clanker/bump-<dep>"), title ("chore(deps): bump <dep>") and a body
-         summarizing the old -> new version.
+         ("clanker/bump-<dep>"), base (the repo default branch, "dev"), title
+         ("chore(deps): bump <dep>") and a body summarizing the old -> new version.
          Verify the response is HTTP 201 and print the resulting PR url from the JSON.
 
       Do not push to the default branch.
