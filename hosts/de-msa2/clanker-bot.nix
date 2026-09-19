@@ -80,8 +80,11 @@ in {
 
       1. GET $FORGEJO_API/repos/$NEXUS_REPO/pulls?state=open with the header
          "Authorization: token $CLANKER_TOKEN".
-         If any open PR was created by a user with login "clanker", stop and say so
-         (only one clanker PR in flight at a time).
+         If any open PR was created by a user with login "clanker":
+         a) Rebase the PR branch on the latest base branch ('dev'): fetch origin, checkout the PR's head branch, rebase onto origin/dev, and force-push (`git push -f origin <branch>`).
+         b) Check for CI failures by requesting GET $FORGEJO_API/repos/$NEXUS_REPO/commits/<sha>/status or checking status checks on the PR branch.
+         c) If CI failed or rebase had conflicts/issues, fix the code/configuration failures, commit the fix, and force-push.
+         d) If an open clanker PR exists, focus ONLY on updating, rebasing, and resolving CI failures for that PR. Do not open a new PR. Stop when the existing PR is updated and clean.
       2. Run 'nix develop .#ci --command cargo upgrades' in the repo root to list
          outdated dependencies. If nothing is outdated, stop and say so.
       3. Pick exactly ONE outdated dependency to bump (one PR per run; see step 1).
@@ -103,7 +106,7 @@ in {
          ("chore(deps): bump <dep>") and a body summarizing the old -> new version.
          Verify the response is HTTP 201 and print the resulting PR url from the JSON.
 
-      Do not push to the default branch.
+      Do not push to default branch directly.
       PROMPT
             )"
 
