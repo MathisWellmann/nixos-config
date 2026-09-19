@@ -1,6 +1,8 @@
-# clanker bot: once a day, clone `nexus`, let `pi -p` pick one outdated cargo
-# dependency, bump it, and open a PR on Forgejo. The systemd unit only clones
-# and hands the repo to pi; the agent does the picking, git and API work.
+# clanker bot: once a day, clone `nexus`, reconcile the prod and dev clusters
+# via nixidy, then let `pi -p` pick one outdated cargo dependency, bump it, and
+# open a PR on Forgejo. The systemd unit clones, runs the two nixidy switches
+# (always, even when pi bumps nothing) and hands the repo to pi; the agent does
+# the picking, git and API work.
 # Forgejo actions have no `on: schedule` cron trigger, so the timer lives here
 # on the host that runs it (de-msa2: local clone URL, pi already configured
 # against the desg0 Qwen vLLM server).
@@ -63,6 +65,12 @@ in {
 
             git clone -q --depth 1 "http://clanker:$CLANKER_TOKEN@localhost:${toString const.forgejo_port}/$NEXUS_REPO.git" nexus
             cd nexus
+
+            # Always reconcile both clusters on every run; nixidy and the
+            # .#prod/.#dev envs live in the nexus flake (same as the .#ci env
+            # used below).
+            nix run .#nixidy -- switch .#prod
+            nix run .#nixidy -- switch .#dev
 
             # Unquoted heredoc so the service env vars reach the prompt verbatim.
             # No backticks and no command substitutions inside.
