@@ -63,6 +63,11 @@ production, development (prefixed `[dev]`), host, storage, and cluster alerts.
 ntfy topics are created on first publish, so they are not listed automatically
 in a new browser profile.
 
+![Monitoring & alerting — NixOS fleet + k3s cluster](docs/diagrams/monitoring-alerting.visual-check.2048x1320.dark.png)
+
+An explorable version with guided views is in
+[`docs/diagrams/monitoring-alerting.html`](docs/diagrams/monitoring-alerting.html).
+
 ### 🔐 Secrets managed with agenix
 
 Host-specific secrets (k3s token, grafana secret key, …) live encrypted in
