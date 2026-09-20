@@ -17,6 +17,11 @@
 #   ssh-keygen -t ed25519 -N "" -C nixos-cache-builder@desg0 -f /tmp/k
 #   (cd secrets && agenix -e nixos-config-deploy-key.age < /tmp/k); cat /tmp/k.pub
 #
+# Alongside, `attic watch-store` uploads every path that lands in this
+# host's store as it appears. desg0 is the remote builder for the laptops
+# (modules/remote_builder.nix), so whatever anyone builds through it, dev
+# shells and one-offs included, is in the cache too.
+#
 # Manual run / inspection:
 #   sudo systemctl start nixos-cache-builder.service
 #   journalctl -u nixos-cache-builder -f
@@ -36,6 +41,14 @@
   user = "nixos-cache-builder";
   state_dir = "/var/lib/${user}";
   ntfy_url = "https://ntfy.k3s.lan/cluster-alerts";
+  # Attic client config for both units: endpoint plus the push-only token,
+  # read at runtime so a rotated secret takes effect on the next start.
+  attic_config_dir = pkgs.writeTextDir "attic/config.toml" ''
+    default-server = "de-msa2"
+    [servers.de-msa2]
+    endpoint = "${attic_endpoint}"
+    token-file = "${config.age.secrets.attic-push-token.path}"
+  '';
 in {
   age.secrets = {
     attic-push-token = {
@@ -76,7 +89,7 @@ in {
     ];
     environment = {
       HOME = state_dir;
-      XDG_CONFIG_HOME = "${state_dir}/.config";
+      XDG_CONFIG_HOME = attic_config_dir;
       GIT_SSH_COMMAND = lib.concatStringsSep " " [
         "ssh"
         "-i ${config.age.secrets.nixos-config-deploy-key.path}"
@@ -105,17 +118,6 @@ in {
           -H "Priority: $1" -H "Tags: $2" -d "$3" ${ntfy_url} >/dev/null || true
       }
       trap 'notify high warning "failed at line $LINENO; see journalctl -u nixos-cache-builder"' ERR
-
-      # Attic client config: endpoint plus the push-only token, re-rendered
-      # every run so a rotated secret takes effect without manual steps.
-      mkdir -p "$XDG_CONFIG_HOME/attic"
-      cat > "$XDG_CONFIG_HOME/attic/config.toml" <<EOF
-      default-server = "de-msa2"
-      [servers.de-msa2]
-      endpoint = "${attic_endpoint}"
-      token-file = "${config.age.secrets.attic-push-token.path}"
-      EOF
-      chmod 600 "$XDG_CONFIG_HOME/attic/config.toml"
 
       workdir="$(mktemp -d)"
       trap 'rm -rf "$workdir"' EXIT
@@ -155,6 +157,23 @@ in {
       git push -q origin HEAD:${branch}
       notify low package "flake.lock updated to $(git rev-parse --short HEAD), ${toString (builtins.length hosts)} hosts pushed"
     '';
+  };
+
+  systemd.services.attic-watch-store = {
+    description = "Push every new /nix/store path to the attic cache";
+    wantedBy = ["multi-user.target"];
+    after = ["network-online.target" "nix-daemon.socket"];
+    wants = ["network-online.target"];
+    environment.XDG_CONFIG_HOME = attic_config_dir;
+    serviceConfig = {
+      User = user;
+      Group = user;
+      ExecStart = "${lib.getExe pkgs.attic-client} watch-store --jobs 4 ${cache}";
+      Restart = "always";
+      RestartSec = 30;
+      Nice = 15;
+      IOSchedulingClass = "idle";
+    };
   };
 
   systemd.timers.nixos-cache-builder = {
