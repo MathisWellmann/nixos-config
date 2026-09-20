@@ -83,6 +83,29 @@ node's tailscale IP through `networking.hosts` in `modules/base_system.nix`.
 `remote_builder.nix` module turns GPU hosts into distributed nix builders over
 SSH.
 
+### 📦 Fleet Nix binary cache (attic)
+
+The fleet's store paths live in [attic](https://github.com/zhaofengli/attic)
+on `de-msa2` (`hosts/de-msa2/attic.nix`), exposed at `https://attic.k3s.lan`
+through the cluster ingress. Every host lists it as its first substituter
+(`modules/base_system.nix`), with `cache.nixos.org` appended after; the
+`nixos` cache is public, so pulls need no token — only the per-cache
+signing key.
+
+`desg0` keeps it stocked: the `nixos-cache-builder` timer
+(`modules/nixos_cache_builder.nix`) runs daily at 04:00 — clone the repo,
+`nix flake update`, build every host's `system.build.toplevel`, `attic push`
+the results, and only then commit and push the new `flake.lock`. A lock that
+does not build is never committed. Alongside it, `attic-watch-store` uploads
+every new path that lands in `desg0`'s store, so remote builds from the
+laptops (via `modules/remote_builder.nix`) end up in the cache too.
+Retention is enforced by GC: every 12 hours, paths not pulled for 3 months go.
+
+![Nix binary cache — attic on de-msa2](docs/diagrams/nix-cache-attic.visual-check.2048x1320.dark.png)
+
+An explorable version with guided views is in
+[`docs/diagrams/nix-cache-attic.html`](docs/diagrams/nix-cache-attic.html).
+
 ### 🏠 Self-hosted services
 
 A curated set of self-hosted apps, each a NixOS module, fronted over HTTPS
