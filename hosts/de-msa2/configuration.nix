@@ -300,7 +300,7 @@ in {
         "/nvme_pool/habit_trove:/app/data"
       ];
       environmentFiles = [
-        /etc/secrets/habit_trove
+        "/etc/secrets/habit_trove"
       ];
     };
   };
