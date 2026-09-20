@@ -83,6 +83,11 @@ in {
     enable = true;
   };
 
+  # /tmp lives on the root partition on most hosts; the built-in timer
+  # runs "systemd-tmpfiles-clean" daily (ages /tmp at 10d, /var/tmp at 30d).
+  # Without it the timer is never enabled and /tmp fills up.
+  systemd.services."systemd-tmpfiles-clean.timer".enable = true;
+
   hardware.keyboard.qmk.enable = true;
 
   programs = {
