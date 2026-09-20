@@ -29,6 +29,26 @@ in {
     ];
     armor = true;
   };
+  # Private half of the GitHub deploy key (write access to
+  # MathisWellmann/nixos-config) the cache builder on desg0 uses to push the
+  # updated flake.lock (modules/nixos_cache_builder.nix).
+  "nixos-config-deploy-key.age" = {
+    publicKeys = [
+      user_desg0
+      system_desg0
+    ];
+    armor = true;
+  };
+  # attic JWT with push access to the `nixos` cache only, for the cache
+  # builder on desg0 (modules/nixos_cache_builder.nix). Mint a new one with
+  # `sudo atticd-atticadm make-token --sub cache-builder --validity 5y --push nixos`.
+  "attic-push-token.age" = {
+    publicKeys = [
+      user_desg0
+      system_desg0
+    ];
+    armor = true;
+  };
   # `ATTIC_SERVER_TOKEN_RS256_SECRET_BASE64=...` for atticd's JWT signing
   # (hosts/de-msa2/attic.nix). Regenerating it invalidates every issued token.
   "attic-server-env.age" = {

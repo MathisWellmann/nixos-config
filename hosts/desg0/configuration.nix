@@ -25,13 +25,13 @@
       {
         name = "default";
         tokenFile = "/etc/secrets/forgejo_runner";
-        labels = [ "native:host" ];
+        labels = ["native:host"];
       }
       {
         name = "monty-persona";
         runner_name = "desg0-monty";
         tokenFile = "/etc/secrets/forgejo_runner_monty-persona";
-        labels = [ "native:host" ];
+        labels = ["native:host"];
       }
     ];
   };
@@ -63,6 +63,10 @@ in {
     # module comment).
     (import ./../../modules/blk_iocost.nix {devices = ["nvme0n1"];})
     (import ./../../modules/github_runner.nix {repos = ["symbiont"];})
+    # Nightly: bump flake.lock, build every host, push to attic, commit the lock.
+    (import ./../../modules/nixos_cache_builder.nix {
+      hosts = ["de-msa2" "de-n5" "desg0" "meshify" "poweredge" "razerblade" "superserver" "tensorbook"];
+    })
     (import ./../../modules/ai/pi-agent.nix {
       # Was llama-cpp_port; that module is disabled (sglang owns the GPU),
       # so the default backend is the sglang server too.
@@ -182,6 +186,7 @@ in {
         restic-backups-home = "restic-backups-home";
         forgejo_runner = "gitea-runner-default";
         github_runner_symbiont = "github-runner-symbiont";
+        nixos_cache_builder = "nixos-cache-builder.timer";
       };
       uptime.prefix = "up";
     };
