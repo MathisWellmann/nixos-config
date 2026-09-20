@@ -58,6 +58,25 @@ in {
     experimental-features = ["nix-command" "flakes"];
     trusted-users = ["root" "${const.username}"];
     download-buffer-size = 500000000; # 500 MiB
+
+    # The fleet binary cache (atticd on de-msa2, hosts/de-msa2/attic.nix),
+    # filled by the cache builder with every host's system closure. The
+    # module appends the default cache.nixos.org after this, so attic is
+    # tried first; attic itself skips paths cache.nixos.org already has.
+    substituters = ["https://attic.k3s.lan/nixos"];
+    trusted-substituters = [
+      "https://nix-community.cachix.org"
+      "https://cache.nixos-cuda.org"
+    ];
+    trusted-public-keys = [
+      "nixos:pPhlDMvdiF4HkyCuSODwk9Xc442dGLGA8+HqUxo23OI="
+      "nix-community.cachix.org-1:mB9FSh9qf2dCimDSUo8Zy7bkq5CX+/rkCWyvRCYg3Fs="
+      "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
+    ];
+    # Laptops off the tailnet: give up on the cache quickly and build
+    # locally instead of failing.
+    fallback = true;
+    connect-timeout = 5;
   };
 
   system.switch = {

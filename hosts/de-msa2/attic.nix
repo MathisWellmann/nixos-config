@@ -1,5 +1,5 @@
 # attic (https://github.com/zhaofengli/attic): the fleet's nix binary cache.
-# Every host substitutes from it (modules/nix_binary_cache_client.nix); the
+# Every host substitutes from it (modules/base_system.nix); the
 # cache builder on desg0 (modules/nixos_cache_builder.nix) pushes freshly
 # built system closures into it. Public cache: pulls need no token, only the
 # per-cache signing key, which attic generates server-side.
@@ -19,7 +19,7 @@
 #     | (cd secrets && agenix -e attic-server-env.age)
 #   # After the first `nixos-rebuild switch`: an admin token, the cache and
 #   # its signing key. `attic cache info` prints the public key that goes
-#   # into modules/nix_binary_cache_client.nix.
+#   # into modules/base_system.nix and flake.nix.
 #   sudo atticd-atticadm make-token --sub admin --validity 10y \
 #     --pull '*' --push '*' --delete '*' --create-cache '*' \
 #     --configure-cache '*' --configure-cache-retention '*' --destroy-cache '*'

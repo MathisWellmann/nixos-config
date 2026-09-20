@@ -38,14 +38,18 @@
     };
   };
   # some CUDA packages require like 250GB of RAM to compile from scratch, so use binary caches.
-  # Run with `--accept-flake-config`
+  # Run with `--accept-flake-config`. The fleet cache comes first so plain
+  # `nix build` from a checkout hits it too (NixOS hosts already have it via
+  # modules/base_system.nix).
   nixConfig = {
     extra-substituters = [
+      "https://attic.k3s.lan/nixos"
       "https://cache.nixos-cuda.org"
       "https://cache.numtide.com"
       "https://kopuz.cachix.org"
     ];
     extra-trusted-public-keys = [
+      "nixos:pPhlDMvdiF4HkyCuSODwk9Xc442dGLGA8+HqUxo23OI="
       "cache.nixos-cuda.org:74DUi4Ye579gUqzH4ziL9IyiJBlDpMRn9MBN8oNan9M="
       "niks3.numtide.com-1:DTx8wZduET09hRmMtKdQDxNNthLQETkc/yaX7M4qK0g="
       "kopuz.cachix.org-1:WXMpGpamblLUiJtcoxBxGGGGwIcWxGPJBUxarLiqWmw="
@@ -185,25 +189,37 @@
     apps = {
       "${system}" = rec {
         default = list_apps;
-        list_apps = (inputs.flake-utils.lib.mkApp {
-          drv = (import ./scripts/list_apps.nix {inherit self pkgs system;}).script;
-        }) // { meta.description = "List all applications in this flake"; };
-        wake_on_lan = (inputs.flake-utils.lib.mkApp {
-          drv = import scripts/wake_on_lan.nix {inherit self pkgs;};
-        }) // { meta.description = "Send a wake-on-lan packet to a host"; };
-        sync_starred_github_to_forgejo = (inputs.flake-utils.lib.mkApp {
-          drv = import scripts/sync_starred_github_to_forgejo.nix {inherit pkgs;};
-        }) // { meta.description = "Sync starred GitHub repositories to Forgejo"; };
-        llama_bench_matrix = (inputs.flake-utils.lib.mkApp {
-          drv = import scripts/llama_bench_matrix.nix {inherit pkgs;};
-        }) // { meta.description = "Run llama-bench over a matrix of models and parameters"; };
-        hf = (inputs.flake-utils.lib.mkApp {
-          drv = self.packages.${system}.hf;
-          name = "hf";
-        }) // { meta.description = "Hugging Face CLI"; };
-        hf-stars = (inputs.flake-utils.lib.mkApp {
-          drv = import scripts/hf_stars.nix {inherit pkgs;};
-        }) // { meta.description = "List starred Hugging Face repositories"; };
+        list_apps =
+          (inputs.flake-utils.lib.mkApp {
+            drv = (import ./scripts/list_apps.nix {inherit self pkgs system;}).script;
+          })
+          // {meta.description = "List all applications in this flake";};
+        wake_on_lan =
+          (inputs.flake-utils.lib.mkApp {
+            drv = import scripts/wake_on_lan.nix {inherit self pkgs;};
+          })
+          // {meta.description = "Send a wake-on-lan packet to a host";};
+        sync_starred_github_to_forgejo =
+          (inputs.flake-utils.lib.mkApp {
+            drv = import scripts/sync_starred_github_to_forgejo.nix {inherit pkgs;};
+          })
+          // {meta.description = "Sync starred GitHub repositories to Forgejo";};
+        llama_bench_matrix =
+          (inputs.flake-utils.lib.mkApp {
+            drv = import scripts/llama_bench_matrix.nix {inherit pkgs;};
+          })
+          // {meta.description = "Run llama-bench over a matrix of models and parameters";};
+        hf =
+          (inputs.flake-utils.lib.mkApp {
+            drv = self.packages.${system}.hf;
+            name = "hf";
+          })
+          // {meta.description = "Hugging Face CLI";};
+        hf-stars =
+          (inputs.flake-utils.lib.mkApp {
+            drv = import scripts/hf_stars.nix {inherit pkgs;};
+          })
+          // {meta.description = "List starred Hugging Face repositories";};
       };
     };
   };

@@ -27,7 +27,6 @@ in {
     ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix
-    ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/oh-my-pi.nix {

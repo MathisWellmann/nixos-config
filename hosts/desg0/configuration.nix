@@ -46,7 +46,6 @@ in {
     ./../../modules/german_locale.nix
     ./../../modules/root_pkgs.nix
     ./../../modules/prometheus_exporter.nix
-    ./../../modules/nix_binary_cache_client.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/oh-my-pi.nix {
       # Served by the sglang container (see sglang_qwen3_container.nix);
