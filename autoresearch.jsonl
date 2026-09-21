@@ -1,0 +1,1 @@
+{"type":"config","name":"Ensure `nh os switch .` works on de-msa2","metricName":"switch_ok","metricUnit":"","bestDirection":"higher"}

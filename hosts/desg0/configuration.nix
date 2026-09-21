@@ -7,7 +7,7 @@
   ...
 }: let
   const = import ./constants.nix;
-  de-msa2_const = import ../../hosts/de-msa2/constants.nix {};
+  de-msa2_const = import ../../hosts/de-msa2/constants.nix;
   global_const = import ../../global_constants.nix;
   forgejo_runner = import ./../../modules/forgejo_runner.nix {
     forgejo_url = "http://de-msa2:${toString de-msa2_const.forgejo_port}";

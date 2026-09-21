@@ -5,7 +5,7 @@
 # through the k3s traefik ingress (see env/host_ingress.nix); fleet-trusted
 # `k3s-lan-ca` cert. The firewall ports stay open as a plain-HTTP fallback.
 {pkgs, ...}: let
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
 
   # Bencher API server config (https://bencher.dev/docs/reference/server-config).
   # Nix-managed: this template carries everything EXCEPT `security.secret_key`,

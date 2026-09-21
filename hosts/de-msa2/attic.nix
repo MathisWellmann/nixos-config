@@ -31,7 +31,7 @@
   pkgs,
   ...
 }: let
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
   storage_path = "/nvme_pool/attic";
 in {
   age.secrets.attic-server-env.file = ../../secrets/attic-server-env.age;

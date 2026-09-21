@@ -11,7 +11,7 @@
   config,
   ...
 }: let
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
   desg0_const = import ./../desg0/constants.nix;
   forgejo_url = "http://localhost:${toString const.forgejo_port}";
 in {

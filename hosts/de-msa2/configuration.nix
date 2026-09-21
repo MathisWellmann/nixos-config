@@ -7,7 +7,7 @@
   ...
 }: let
   global_const = import ../../global_constants.nix;
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
   desg0_const = import ./../desg0/constants.nix;
   searx = import ./../../modules/searx.nix {port = const.searx_port;};
   readeck = import ./readeck.nix {

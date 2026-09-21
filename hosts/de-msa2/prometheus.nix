@@ -1,5 +1,5 @@
 {config, ...}: let
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
 
   scrape_interval = "5s";
@@ -362,7 +362,6 @@
     node_scrape_configs
     ++ tikr_scrape_configs
     ++ iggy_k8s_scrape_configs
-    ++ greptimedb_k8s_scrape_configs
     ++ clickhouse_k8s_scrape_configs
     ++ cadvisor_scrape_configs
     ++ llama_cpp_scrape_configs

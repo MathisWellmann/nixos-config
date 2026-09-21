@@ -1,6 +1,6 @@
 # Rename to `nexus_infra.nix`
 _: let
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
 in {
   # TODO: bring into kubernetes cluster deployment in nexus.
   virtualisation.oci-containers.containers."dragonfly" = {

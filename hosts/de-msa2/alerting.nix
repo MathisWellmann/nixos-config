@@ -20,7 +20,7 @@
 # kube-state-metrics, see `kubernetes-pods` group) catches it once the failing
 # probe restarts the pod.
 _: let
-  const = import ./constants.nix {};
+  const = import ./constants.nix;
 
   vmUrl = "http://127.0.0.1:${toString const.victoriametrics_port}";
   alertmanagerUrl = "http://127.0.0.1:${toString const.alertmanager_port}";
