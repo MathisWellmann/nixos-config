@@ -30,7 +30,10 @@
   repo ? "git@github.com:MathisWellmann/nixos-config.git",
   branch ? "main",
   cache ? "nixos",
-  attic_endpoint ? "https://attic.k3s.lan",
+  # Direct, not through the attic.k3s.lan ingress: the proxy path is slow for
+  # bulk pushes (see modules/base_system.nix substituters). The push token is
+  # a signed JWT, so plain HTTP on the LAN is the same trust model as pulls.
+  attic_endpoint ? "http://de-msa2:3019",
   on_calendar ? "04:00",
 }: {
   config,

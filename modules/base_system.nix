@@ -65,7 +65,6 @@ in {
     # tried first; attic itself skips paths cache.nixos.org already has.
     substituters = ["http://de-msa2:3019/nixos"];
     trusted-substituters = [
-      "http://de-msa2:3019"
       "https://nix-community.cachix.org"
       "https://cache.nixos-cuda.org"
     ];

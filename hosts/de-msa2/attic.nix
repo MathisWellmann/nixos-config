@@ -6,8 +6,9 @@
 #
 # Exposed off-cluster at https://attic.k3s.lan through the k3s traefik
 # ingress (see env/host_ingress.nix); fleet-trusted `k3s-lan-ca` cert. The
-# firewall port stays open as a plain-HTTP fallback and as the direct path
-# for bulk pushes, which bypass the proxy.
+# proxy path turned out slow, so the fleet substitutes and the cache builder
+# pushes directly over plain HTTP on the firewall port; narinfos are signed,
+# so transport integrity does not matter.
 #
 # One-time setup:
 #   # Storage dataset. The cache is fully regenerable and churns on GC, so
