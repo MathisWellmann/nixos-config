@@ -99,28 +99,50 @@ desg0 192c/512G), substrate `main` and ax `main` as of 2026-09-21.
       Secret) and CA (`servicedns-ca` ClusterTrustBundle-derived);
       `ATENET_ROUTER_ADDR=atenet-router.ate-system.svc.cluster.local:80`.
 
-## Phase 1: Cluster prerequisites
+## Phase 1: Cluster prerequisites -- config done 2026-09-21, deploy pending
 
-- [ ] `hosts/de-msa2`: `zfs create nvme_pool/rustfs` (manual, like the other
-      datasets), `services.rustfs` with `RUSTFS_VOLUMES=/nvme_pool/rustfs`,
-      `RUSTFS_ADDRESS=:9000`, console off or bound to localhost, port
-      `rustfs_port` in `hosts/de-msa2/constants.nix`, firewall open on LAN.
-- [ ] agenix: `secrets/rustfs_env.age` (`RUSTFS_ACCESS_KEY`,
-      `RUSTFS_SECRET_KEY`) for de-msa2's host key; wire
-      `services.rustfs.environmentFile`. Rekey on de-msa2.
-- [ ] Add `s3.k3s.lan` (and later `ax.k3s.lan`) to `networking.hosts` in
-      `modules/base_system.nix`; expose rustfs via `env/host_ingress.nix`.
-- [ ] k3s feature gates from Phase 0 in both k3s modules; roll de-msa2,
-      desg0, de-n5 one at a time; verify
-      `kubectl api-resources | grep podcertificate`.
-- [ ] Create bucket `ate-snapshots` in rustfs (aws-cli or rustfs console).
-- [ ] agenix -> k8s Secret for the S3 credentials in `ate-system`
-      (`AWS_ACCESS_KEY_ID`, `AWS_SECRET_ACCESS_KEY`); the upstream kind
-      overlay hardcodes them, we mount from a Secret instead.
-- [ ] Forgejo: create an org/repo path for images + a token; `ko login`.
-- [ ] Build and push Substrate images with `ko` to Forgejo:
-      `ateapi`, `atecontroller`, `atelet`, `atenet`, `ateom-gvisor`,
-      `podcertcontroller`. Record digests + upstream commit here.
+Config (one jj revision each):
+- [x] `hosts/de-msa2/rustfs.nix`: `services.rustfs` on `/nvme_pool/rustfs`,
+      S3 API on `constants.rustfs_port` (9000), console off, firewall open.
+- [x] agenix `secrets/rustfs_env.age` (`RUSTFS_ACCESS_KEY`/`RUSTFS_SECRET_KEY`,
+      recipients de-msa2 user + host) wired into
+      `services.rustfs.environmentFile`. Generated on meshify with `age`
+      (public keys only; de-msa2 decrypts).
+- [x] `s3.k3s.lan` in `modules/base_system.nix` + `env/host_ingress.nix`
+      entry; `manifests/prod/s3/` rendered.
+- [x] `modules/k3s_pod_certificates.nix` (feature gates + v1beta1
+      runtime-config, kubelet gates), imported by both k3s server modules.
+      Gate names verified against k8s release-1.36 source.
+- [x] agenix -> k8s bridge: oneshot `rustfs-k8s-secret` on de-msa2 creates
+      `ate-system/rustfs-s3-credentials` (`ATE_STORAGE_BACKEND`, `AWS_*`,
+      endpoint `http://192.168.0.14:9000`) for `envFrom`.
+- [x] `pkgs/agent-substrate.nix`: `buildGo127Module` of substrate (vendored
+      deps) -> `.#agent-substrate` (binaries incl. `kubectl-ate`) and
+      `.#agent-substrate-push-images` (skopeo push of per-component OCI
+      images to `de-msa2:2999/mathiswellmann/<name>:<short-rev>`). No `ko`.
+
+Deploy steps, in order (need hands on the hosts):
+- [ ] de-msa2: `sudo zfs create -o com.sun:auto-snapshot=false nvme_pool/rustfs`
+- [ ] de-msa2: `nixos-rebuild switch` (rustfs, secret bridge, k3s gates);
+      check `systemctl status rustfs rustfs-k8s-secret` and
+      `sudo k3s kubectl -n ate-system get secret rustfs-s3-credentials`.
+- [ ] desg0, then de-n5: `nixos-rebuild switch` (k3s gates). Roll one at a
+      time; etcd quorum needs 2 of 3 up. Then verify
+      `sudo k3s kubectl api-resources | grep -E 'podcertificate|clustertrust'`.
+- [ ] Create bucket: `AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
+      nix run nixpkgs#awscli2 -- --endpoint-url http://de-msa2:9000 s3 mb s3://ate-snapshots`
+      (creds: `sudo cat /run/agenix/rustfs_env` on de-msa2).
+- [ ] Forgejo: create a token with `package:write`;
+      `skopeo login --tls-verify=false de-msa2:2999`; then
+      `nix run .#agent-substrate-push-images`. Record the digests below.
+- [ ] Add `agent-substrate` (kubectl-ate) to `home/meshify.nix`.
+
+Known drift found on the way (not fixed, not ours): `manifests/prod/dsh`
+and `manifests/prod/headlong` have no source in `env/`, and the argocd /
+cert-manager charts moved with the automated flake.lock bumps. A full
+`nixidy switch .#prod` will delete the two apps and upgrade both charts.
+Add `dsh`/`headlong` entries to `env/host_ingress.nix` before the next
+full switch.
 
 ## Phase 2: Agent Substrate (`env/substrate.nix`, namespace `ate-system`)
 
@@ -226,5 +248,5 @@ desg0 192c/512G), substrate `main` and ax `main` as of 2026-09-21.
 
 | Component | Upstream commit | Image digest |
 |-----------|-----------------|--------------|
-| substrate | | |
+| substrate | `dc1f263076d1575c0562c71d763edd0a0342fd68` (2026-09-21), tag `dc1f263076d1` | not pushed yet |
 | ax        | | |
