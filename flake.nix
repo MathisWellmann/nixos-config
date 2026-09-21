@@ -130,6 +130,12 @@
       # Archify architecture diagram tool & agent skill CLI
       archify = pkgs.callPackage ./pkgs/archify.nix {};
 
+      # Agent Substrate (docs/ax_stack_todo.md): `kubectl-ate` + the control
+      # plane binaries, and a script that pushes their OCI images to Forgejo,
+      # e.g. `nix run .#agent-substrate-push-images`
+      agent-substrate = (pkgs.callPackage ./pkgs/agent-substrate.nix {}).substrate;
+      agent-substrate-push-images = (pkgs.callPackage ./pkgs/agent-substrate.nix {}).push;
+
       # "IPython is All You Need" shell, see pkgs/ipython-shell.nix
       ipython-shell = pkgs.callPackage ./pkgs/ipython-shell.nix {};
 
