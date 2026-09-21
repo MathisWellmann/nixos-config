@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: rustfs S3 object store (Agent Substrate snapshots)
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
+    gethomepage.dev/group: DevOps
+    gethomepage.dev/icon: mdi-database
+    gethomepage.dev/name: s3
+    gethomepage.dev/siteMonitor: http://s3.s3.svc.cluster.local
+  name: s3
+  namespace: s3
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: s3.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: s3
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - s3.k3s.lan
+      secretName: s3-tls

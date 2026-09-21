@@ -43,6 +43,7 @@ in {
     "ntfy.k3s.lan"
     "forgejo.k3s.lan"
     "attic.k3s.lan"
+    "s3.k3s.lan"
     "grafana.k3s.lan"
     "vikunja.k3s.lan"
     "bencher.k3s.lan"

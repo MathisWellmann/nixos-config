@@ -44,6 +44,14 @@ _: let
       description = "Nix binary cache";
     }
     {
+      name = "s3";
+      host = "s3.k3s.lan";
+      port = 9000; # const.rustfs_port
+      group = "DevOps";
+      icon = "mdi-database";
+      description = "rustfs S3 object store (Agent Substrate snapshots)";
+    }
+    {
       name = "grafana";
       host = "grafana.k3s.lan";
       port = 3001; # const.grafana_port
