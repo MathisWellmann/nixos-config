@@ -9,19 +9,21 @@
 # dsh-web starts after home-manager-m.service because the home activation
 # writes $DSH_HOME/.env (see home/deepseek-harness.nix `dotenv`) and the
 # ~/.dsh/sessions -> /var/lib/monty-persona/sessions symlink.
-{ inputs, pkgs, ... }:
-let
+{
+  inputs,
+  pkgs,
+  ...
+}: let
   # Same package the user profile installs: the llm-agents `dsh` with
   # NODE_PATH wrapped, so plugin bundles resolve their core deps.
   dsh = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.deepseek-harness;
-in
-{
+in {
   systemd.services = {
     dsh-web = {
       description = "DeepSeek Harness web UI (dsh web)";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network-online.target" "tailscaled.service" "home-manager-m.service" ];
-      wants = [ "network-online.target" "home-manager-m.service" ];
+      wantedBy = ["multi-user.target"];
+      after = ["network-online.target" "tailscaled.service" "home-manager-m.service"];
+      wants = ["network-online.target" "home-manager-m.service"];
       serviceConfig = {
         User = "m";
         ExecStart = "${dsh}/bin/dsh web --no-open --trusted-host dsh.k3s.lan";
@@ -45,12 +47,11 @@ in
 
     dsh-web-proxy = {
       description = "Forward 100.83.142.17:3080 -> 127.0.0.1:3080 (dsh web)";
-      wantedBy = [ "multi-user.target" ];
-      after = [ "network-online.target" "tailscaled.service" ];
-      wants = [ "network-online.target" ];
+      wantedBy = ["multi-user.target"];
+      after = ["network-online.target" "tailscaled.service"];
+      wants = ["network-online.target"];
       serviceConfig = {
-        ExecStart =
-          "${pkgs.socat}/bin/socat TCP-LISTEN:3080,bind=100.83.142.17,reuseaddr,fork TCP:127.0.0.1:3080";
+        ExecStart = "${pkgs.socat}/bin/socat TCP-LISTEN:3080,bind=100.83.142.17,reuseaddr,fork TCP:127.0.0.1:3080";
         NoNewPrivileges = true;
         ProtectSystem = "full";
         ProtectHome = true;
@@ -62,5 +63,5 @@ in
 
   # The socat socket only binds the tailnet IP, so nothing answers on the LAN
   # -- the hole just covers tailnet -> 100.83.142.17:3080.
-  networking.firewall.allowedTCPPorts = [ 3080 ];
+  networking.firewall.allowedTCPPorts = [3080];
 }

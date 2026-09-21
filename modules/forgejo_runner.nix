@@ -36,7 +36,7 @@
     {
       name = "default";
       tokenFile = "/etc/secrets/forgejo_runner";
-      labels = [ "native:host" ];
+      labels = ["native:host"];
     }
   ],
 }: {
@@ -83,7 +83,8 @@ in {
           host.workdir_parent = state_dir;
         };
       };
-    }) runners
+    })
+    runners
   );
 
   # Per-instance cgroup/user overrides, applied to every runner unit. Unit
@@ -121,7 +122,8 @@ in {
           // lib.optionalAttrs (io_weight != "") {
             IOWeight = io_weight;
           };
-      }) runners
+      })
+      runners
     )
     // {
       # Bound the persistent cargo CI cache so it cannot grow without limit and

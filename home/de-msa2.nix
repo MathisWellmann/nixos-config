@@ -1,5 +1,5 @@
 # de-msa2 home: the shared home plus the DeepSeek Harness CLI.
-{ lib, ... }: {
+{lib, ...}: {
   imports = [
     ./home.nix
     ./deepseek-harness.nix

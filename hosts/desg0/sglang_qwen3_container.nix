@@ -90,10 +90,7 @@
   mambaFullMemoryRatio ? "0.145",
   maxRunningRequests ? 2,
   contextLength ? 196608,
-}: {
-  lib,
-  ...
-}: {
+}: {lib, ...}: {
   virtualisation.oci-containers.backend = "podman";
 
   virtualisation.oci-containers.containers.sglang-qwen3 = {

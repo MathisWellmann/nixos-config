@@ -4,7 +4,7 @@
 # monty-persona group. The ntfy bridge talks to the local ntfy-sh on :9007
 # (see alerting.nix), so the persona is reachable from the phone app on topic
 # `jeff`.
-{ pkgs, ... }: let
+{pkgs, ...}: let
   global_const = import ../../global_constants.nix;
   desg0_const = import ../desg0/constants.nix;
 

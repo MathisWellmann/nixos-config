@@ -82,10 +82,7 @@
   maxMambaCacheSize ? 192,
   # NOT 262144: the KV pool cannot back it. See the header.
   contextLength ? 131072,
-}: {
-  lib,
-  ...
-}: {
+}: {lib, ...}: {
   virtualisation.oci-containers.backend = "podman";
 
   virtualisation.oci-containers.containers.sglang-qwen38-flash-next = {
