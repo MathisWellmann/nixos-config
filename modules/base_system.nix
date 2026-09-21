@@ -63,8 +63,9 @@ in {
     # filled by the cache builder with every host's system closure. The
     # module appends the default cache.nixos.org after this, so attic is
     # tried first; attic itself skips paths cache.nixos.org already has.
-    substituters = ["https://attic.k3s.lan/nixos"];
+    substituters = ["http://de-msa2:3019/nixos"];
     trusted-substituters = [
+      "http://de-msa2:3019"
       "https://nix-community.cachix.org"
       "https://cache.nixos-cuda.org"
     ];

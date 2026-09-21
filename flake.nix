@@ -43,7 +43,7 @@
   # modules/base_system.nix).
   nixConfig = {
     extra-substituters = [
-      "https://attic.k3s.lan/nixos"
+      "http://de-msa2:3019/nixos"
       "https://cache.nixos-cuda.org"
       "https://cache.numtide.com"
       "https://kopuz.cachix.org"
