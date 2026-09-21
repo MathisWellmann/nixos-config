@@ -162,6 +162,7 @@ in {
         calibre-web = "calibre-web";
         mealie = "mealie";
         immich = "immich-server";
+        rustfs = "rustfs";
       };
     };
   };
