@@ -15,11 +15,10 @@
 #     "$(head -c 400 /dev/urandom | tr -dc A-Z0-9 | head -c 20)" \
 #     "$(head -c 400 /dev/urandom | tr -dc A-Za-z0-9 | head -c 40)" \
 #     | (cd secrets && agenix -e rustfs_env.age)
-#   # After the first `nixos-rebuild switch`, create the Substrate bucket:
-#   AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
-#     aws --endpoint-url http://de-msa2:3020 s3 mb s3://ate-snapshots
+# Buckets are declared in `buckets` below and created by a oneshot.
 {
   config,
+  lib,
   pkgs,
   ...
 }: let
@@ -29,6 +28,10 @@
   # Kubernetes Secret that hands the same credentials to Agent Substrate.
   k8s_namespace = "ate-system";
   k8s_secret = "rustfs-s3-credentials";
+  # Buckets that must exist. Adding a name here creates it on the next switch.
+  buckets = [
+    "ate-snapshots" # Agent Substrate actor snapshots (atelet / ate-api-server)
+  ];
 in {
   age.secrets.rustfs_env.file = ../../secrets/rustfs_env.age;
 
@@ -45,6 +48,43 @@ in {
   };
 
   networking.firewall.allowedTCPPorts = [const.rustfs_port];
+
+  # Bucket bootstrap. rustfs has no declarative bucket config, so a oneshot
+  # creates the missing ones over the S3 API on localhost with the root
+  # credentials. s5cmd rather than awscli2: a single small Go binary instead
+  # of a Python closure. `s5cmd ls` lists buckets, `mb` is skipped for the
+  # ones already present, so the unit is idempotent.
+  systemd.services.rustfs-buckets = {
+    description = "Create the declared rustfs buckets";
+    wantedBy = ["multi-user.target"];
+    after = ["rustfs.service"];
+    requires = ["rustfs.service"];
+    serviceConfig = {
+      Type = "oneshot";
+      RemainAfterExit = true;
+      EnvironmentFile = config.age.secrets.rustfs_env.path;
+    };
+    script = ''
+      export AWS_ACCESS_KEY_ID="$RUSTFS_ACCESS_KEY"
+      export AWS_SECRET_ACCESS_KEY="$RUSTFS_SECRET_KEY"
+      export AWS_REGION=us-east-1
+      s5cmd() {
+        ${pkgs.s5cmd}/bin/s5cmd --endpoint-url http://127.0.0.1:${toString const.rustfs_port} "$@"
+      }
+      # Retry: rustfs notifies readiness before the S3 listener answers.
+      for i in $(seq 1 30); do
+        existing=$(s5cmd ls 2>/dev/null) && break
+        sleep 1
+      done
+      for bucket in ${lib.concatStringsSep " " buckets}; do
+        if grep -q " s3://$bucket$" <<<"$existing"; then
+          echo "bucket $bucket exists"
+        else
+          s5cmd mb "s3://$bucket"
+        fi
+      done
+    '';
+  };
 
   # agenix -> Kubernetes bridge. There is no in-cluster secret manager; this
   # host runs the k3s control plane and holds the decrypted env file, so a
