@@ -123,14 +123,15 @@ Config (one jj revision each):
       images to `de-msa2:2999/mathiswellmann/<name>:<short-rev>`). No `ko`.
 
 Deploy steps, in order (need hands on the hosts):
-- [ ] de-msa2: `sudo zfs create -o com.sun:auto-snapshot=false nvme_pool/rustfs`
-- [ ] de-msa2: `nixos-rebuild switch` (rustfs, secret bridge, k3s gates);
+- [x] de-msa2: `sudo zfs create -o com.sun:auto-snapshot=false nvme_pool/rustfs`
+- [x] de-msa2: `nixos-rebuild switch` (rustfs, secret bridge, k3s gates);
       check `systemctl status rustfs rustfs-k8s-secret` and
       `sudo k3s kubectl -n ate-system get secret rustfs-s3-credentials`.
-- [ ] desg0, then de-n5: `nixos-rebuild switch` (k3s gates). Roll one at a
+- [ ] desg0, then de-n5: `nixos-rebuild switch` (k3s gates). **Still on the
+      old flags as of 2026-09-21** (de-msa2's apiserver already serves v1beta1). Roll one at a
       time; etcd quorum needs 2 of 3 up. Then verify
       `sudo k3s kubectl api-resources | grep -E 'podcertificate|clustertrust'`.
-- [ ] Create bucket: `AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
+- [x] Create bucket (done 2026-09-21, `make_bucket: ate-snapshots`): `AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
       nix run nixpkgs#awscli2 -- --endpoint-url http://de-msa2:3020 s3 mb s3://ate-snapshots`
       (creds: `sudo cat /run/agenix/rustfs_env` on de-msa2).
 - [ ] Forgejo: create a token with `package:write`;
