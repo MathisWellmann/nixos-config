@@ -103,7 +103,8 @@ desg0 192c/512G), substrate `main` and ax `main` as of 2026-09-21.
 
 Config (one jj revision each):
 - [x] `hosts/de-msa2/rustfs.nix`: `services.rustfs` on `/nvme_pool/rustfs`,
-      S3 API on `constants.rustfs_port` (9000), console off, firewall open.
+      S3 API on `constants.rustfs_port` (3020; 9000 is ClickHouse via k3s
+      servicelb on every node), console off, firewall open.
 - [x] agenix `secrets/rustfs_env.age` (`RUSTFS_ACCESS_KEY`/`RUSTFS_SECRET_KEY`,
       recipients de-msa2 user + host) wired into
       `services.rustfs.environmentFile`. Generated on meshify with `age`
@@ -115,7 +116,7 @@ Config (one jj revision each):
       Gate names verified against k8s release-1.36 source.
 - [x] agenix -> k8s bridge: oneshot `rustfs-k8s-secret` on de-msa2 creates
       `ate-system/rustfs-s3-credentials` (`ATE_STORAGE_BACKEND`, `AWS_*`,
-      endpoint `http://192.168.0.14:9000`) for `envFrom`.
+      endpoint `http://192.168.0.14:3020`) for `envFrom`.
 - [x] `pkgs/agent-substrate.nix`: `buildGo127Module` of substrate (vendored
       deps) -> `.#agent-substrate` (binaries incl. `kubectl-ate`) and
       `.#agent-substrate-push-images` (skopeo push of per-component OCI
@@ -130,7 +131,7 @@ Deploy steps, in order (need hands on the hosts):
       time; etcd quorum needs 2 of 3 up. Then verify
       `sudo k3s kubectl api-resources | grep -E 'podcertificate|clustertrust'`.
 - [ ] Create bucket: `AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
-      nix run nixpkgs#awscli2 -- --endpoint-url http://de-msa2:9000 s3 mb s3://ate-snapshots`
+      nix run nixpkgs#awscli2 -- --endpoint-url http://de-msa2:3020 s3 mb s3://ate-snapshots`
       (creds: `sudo cat /run/agenix/rustfs_env` on de-msa2).
 - [ ] Forgejo: create a token with `package:write`;
       `skopeo login --tls-verify=false de-msa2:2999`; then

@@ -13,5 +13,5 @@ metadata:
   namespace: s3
 ports:
   - name: http
-    port: 9000
+    port: 3020
     protocol: TCP

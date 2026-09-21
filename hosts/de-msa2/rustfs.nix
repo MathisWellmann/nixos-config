@@ -17,7 +17,7 @@
 #     | (cd secrets && agenix -e rustfs_env.age)
 #   # After the first `nixos-rebuild switch`, create the Substrate bucket:
 #   AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
-#     aws --endpoint-url http://de-msa2:9000 s3 mb s3://ate-snapshots
+#     aws --endpoint-url http://de-msa2:3020 s3 mb s3://ate-snapshots
 {
   config,
   pkgs,

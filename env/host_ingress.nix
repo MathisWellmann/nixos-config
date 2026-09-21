@@ -46,7 +46,7 @@ _: let
     {
       name = "s3";
       host = "s3.k3s.lan";
-      port = 9000; # const.rustfs_port
+      port = 3020; # const.rustfs_port
       group = "DevOps";
       icon = "mdi-database";
       description = "rustfs S3 object store (Agent Substrate snapshots)";
