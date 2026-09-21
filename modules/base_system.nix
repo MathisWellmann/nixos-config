@@ -79,6 +79,12 @@ in {
     connect-timeout = 5;
   };
 
+  nix.gc = {
+    automatic = true;
+    dates = [ "daily" ];
+    options = [ "--delete-older-than" "14d" ];
+  };
+
   system.switch = {
     enable = true;
   };
