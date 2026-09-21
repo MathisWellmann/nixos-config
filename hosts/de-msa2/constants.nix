@@ -21,6 +21,8 @@ in {
   mealie_port = 3017;
   immich_port = 3018;
   attic_port = 3019;
+  # rustfs S3 API (rustfs.nix); Agent Substrate snapshot store.
+  rustfs_port = 9000;
   greptimedb_http_port = 4000;
   clickhouse_prometheus_port = 9363;
   iperf_port = shared.iperf;

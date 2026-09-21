@@ -62,6 +62,7 @@ in {
     ./alerting.nix
     ./zfs_pool.nix
     ./attic.nix
+    ./rustfs.nix
     ./monty-persona.nix
     ./grafana.nix
     # ./ups.nix

@@ -58,6 +58,17 @@ in {
     ];
     armor = true;
   };
+  # `RUSTFS_ACCESS_KEY=...` / `RUSTFS_SECRET_KEY=...` root credentials of the
+  # rustfs object store (hosts/de-msa2/rustfs.nix). The same pair is what
+  # Agent Substrate's atelet/ate-api-server use as AWS_ACCESS_KEY_ID /
+  # AWS_SECRET_ACCESS_KEY.
+  "rustfs_env.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
   # Bearer token of the `victoriametrics-scraper` ServiceAccount (created by
   # the `nexus` repo), used by victoriametrics for k8s pod discovery.
   "vm_k8s_token.age" = {
