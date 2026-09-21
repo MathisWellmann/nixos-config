@@ -85,7 +85,7 @@ in {
       enable = true;
       settings = {
         banner = {
-          color = "black";
+          color = "white";
           command = "${pkgs.fastfetch}/bin/fastfetch";
         };
         filesystems = {
