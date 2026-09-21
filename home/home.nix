@@ -147,6 +147,7 @@ in {
     cargo-wizard
     cargo-nextest
     devenv
+    skopeo # work with the image registry of forgejo
 
     # Cryptography
     # sequoia-sq
