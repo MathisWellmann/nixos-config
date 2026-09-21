@@ -1,5 +1,12 @@
-{ pkgs, config, ... }: {
-  imports = [./k3s_registries.nix];
+{
+  pkgs,
+  config,
+  ...
+}: {
+  imports = [
+    ./k3s_registries.nix
+    ./k3s_pod_certificates.nix
+  ];
   age.secrets.k3s_token.file = ../secrets/k3s_token.age;
   services.k3s = {
     enable = true;
