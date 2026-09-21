@@ -127,17 +127,59 @@ Deploy steps, in order (need hands on the hosts):
 - [x] de-msa2: `nixos-rebuild switch` (rustfs, secret bridge, k3s gates);
       check `systemctl status rustfs rustfs-k8s-secret` and
       `sudo k3s kubectl -n ate-system get secret rustfs-s3-credentials`.
-- [ ] desg0, then de-n5: `nixos-rebuild switch` (k3s gates). **Still on the
-      old flags as of 2026-09-21** (de-msa2's apiserver already serves v1beta1). Roll one at a
-      time; etcd quorum needs 2 of 3 up. Then verify
-      `sudo k3s kubectl api-resources | grep -E 'podcertificate|clustertrust'`.
-- [x] Create bucket (done 2026-09-21, `make_bucket: ate-snapshots`): `AWS_ACCESS_KEY_ID=... AWS_SECRET_ACCESS_KEY=... \
-      nix run nixpkgs#awscli2 -- --endpoint-url http://de-msa2:3020 s3 mb s3://ate-snapshots`
-      (creds: `sudo cat /run/agenix/rustfs_env` on de-msa2).
-- [ ] Forgejo: create a token with `package:write`;
-      `skopeo login --tls-verify=false de-msa2:2999`; then
-      `nix run .#agent-substrate-push-images`. Record the digests below.
-- [ ] Add `agent-substrate` (kubectl-ate) to `home/meshify.nix`.
+- [x] Create bucket `ate-snapshots` (done by hand 2026-09-21 with awscli2;
+      now declarative: `buckets` list in `hosts/de-msa2/rustfs.nix`, created
+      by the `rustfs-buckets` oneshot. Re-switch de-msa2 once to activate it;
+      it will report `bucket ate-snapshots exists`).
+
+### NEXT SESSION: pick up here
+
+1. **Roll the k3s gates to the other two servers.** desg0 and de-n5 still
+   run the old k3s flags (checked 2026-09-21: `ps -o args= -C k3s` has no
+   `PodCertificateRequest`). Their kubelets cannot mount `podCertificate`
+   volumes until this is done, so Substrate pods would only ever work on
+   de-msa2.
+   ```
+   # one at a time; k3s restarts, etcd needs 2 of 3 members up
+   ssh desg0  'bash -lc "cd ~/nixos-config && git pull && sudo nixos-rebuild switch --flake .#desg0"'
+   ssh de-n5  'bash -lc "cd ~/nixos-config && git pull && sudo nixos-rebuild switch --flake .#de-n5"'
+   # verify on each: gate present in the process args, API served
+   ssh desg0 'bash -lc "ps -o args= -C k3s | grep -c PodCertificateRequest; sudo k3s kubectl api-resources | grep -E podcertificate\\|clustertrust"'
+   ```
+   (Adjust the checkout path per host; de-n5's is `/home/m/nixos-config`,
+   see the repo_checkouts memory note. Remote shell is nushell, hence the
+   `bash -lc` wrapper.)
+
+2. **Push the Substrate images to Forgejo.** The images are built by Nix
+   (`pkgs/agent-substrate.nix`); only the push needs credentials.
+   1. Forgejo (https://forgejo.k3s.lan) -> Settings -> Applications ->
+      Generate token, scope `package: write` (read+write), any name, e.g.
+      `skopeo-meshify`. Copy the token.
+   2. On meshify:
+      ```
+      skopeo login --tls-verify=false de-msa2:2999   # skopeo is in home/meshify.nix
+      #   username: MathisWellmann   password: <the token>
+      # writes ~/.config/containers/auth.json (or $XDG_RUNTIME_DIR/containers/auth.json)
+      nix run .#agent-substrate-push-images
+      ```
+      This pushes `de-msa2:2999/mathiswellmann/{ateapi,atecontroller,atelet,atenet,ateom-gvisor,podcertcontroller}:dc1f263076d1`
+      (tag = short upstream rev, set in `pkgs/agent-substrate.nix`).
+   3. Verify a pull works from a node and record the digests in the table
+      at the bottom of this file:
+      ```
+      ssh de-msa2 'bash -lc "sudo k3s crictl pull de-msa2:2999/mathiswellmann/atelet:dc1f263076d1 && sudo k3s crictl inspecti --output go-template --template {{.status.repoDigests}} de-msa2:2999/mathiswellmann/atelet:dc1f263076d1"'
+      ```
+      If the push is rejected with 401 despite the login, the Forgejo
+      package registry may want the token as the *password* with the
+      *username* of the account, not `token`/`<token>`; if it is 403, the
+      token lacks the package scope.
+   4. Note: the registry is plain HTTP, hence `--tls-verify=false` on login
+      and `--dest-tls-verify=false` inside the push script.
+
+3. **Then start Phase 2** (`env/substrate.nix`). Inputs are all in place:
+   Secret `ate-system/rustfs-s3-credentials`, bucket, images, gates.
+   Also add `agent-substrate` (kubectl-ate) to `home/meshify.nix` when the
+   first actor is to be created.
 
 Known drift found on the way (not fixed, not ours): `manifests/prod/dsh`
 and `manifests/prod/headlong` have no source in `env/`, and the argocd /
