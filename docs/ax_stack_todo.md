@@ -291,9 +291,14 @@ Smoke test **passed 2026-09-22** (counter demo): template golden snapshot ->
 - [ ] After the Zen-4 pinning is pushed: recreate template `demo/counter`
       (its golden snapshot may have been taken on de-msa2) and delete
       `demo/my-counter` once it is CRASHED.
-- [ ] Add `ate-system` pods to Prometheus scrape targets / alerts in
-      `hosts/de-msa2/prometheus.nix` (atelet/ateapi/atenet expose :9090
-      `/metrics`, annotated `prometheus.io/scrape`).
+- [x] Prometheus (VictoriaMetrics on de-msa2, `hosts/de-msa2/prometheus.nix`
+      `substrate_scrape_configs`): k8s pod SD in `ate-system` keyed on the
+      upstream `prometheus.io/scrape` annotation -> jobs `atelet` (one target
+      per node, `node` label), `ate-api-server`, `atenet-router` on :9090,
+      plus job `ate-controller` (controller-runtime `/metrics` :8080, no
+      annotation). Workers export OTLP only; Postgres has no exporter. The
+      existing `ScrapeTargetDown` alert covers all of them. Needs a de-msa2
+      switch; verify at http://de-msa2:9003/targets (or `up{job=~"ate.*|atelet|atenet-router"}`).
 
 ## Phase 3: AX control plane (`env/ax.nix`, namespace `ax-system`)
 

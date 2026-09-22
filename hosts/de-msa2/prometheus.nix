@@ -358,6 +358,104 @@
       ];
     }
   ];
+  # Agent Substrate control plane (env/substrate.nix, namespace `ate-system`;
+  # docs/ax_stack_todo.md). atelet, ate-api-server and atenet-router carry
+  # upstream's `prometheus.io/scrape: "true"` / `prometheus.io/port: "9090"`
+  # annotations, so they are discovered the same way as the tikr pods; the
+  # `app` pod label becomes the job (`atelet`, `ate-api-server`,
+  # `atenet-router`), `node` tells the three atelet DaemonSet pods apart.
+  # ate-controller (controller-runtime) serves `/metrics` on its `metrics`
+  # port without an annotation and gets its own job below. Worker pods
+  # (ateom) export over OTLP only, Postgres has no exporter. `ScrapeTargetDown`
+  # (alerting.nix) covers any of these going down.
+  substrate_scrape_configs = [
+    {
+      job_name = "substrate-k8s-pods";
+      inherit scrape_interval scrape_timeout;
+      kubernetes_sd_configs = [
+        {
+          role = "pod";
+          api_server = "https://127.0.0.1:6443";
+          namespaces.names = ["ate-system"];
+          bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+          tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
+        }
+      ];
+      relabel_configs = [
+        {
+          source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"];
+          action = "keep";
+          regex = "true";
+        }
+        # These pods expose several named ports (grpc, xds, ...); SD emits one
+        # target per port. Keep only the metrics port (named `prometheus` on
+        # atelet/ate-api-server, `metrics` on atenet-router) so the rewrite
+        # below does not produce duplicate targets. (RE2 has no backreference
+        # to compare the port number with the annotation directly.)
+        {
+          source_labels = ["__meta_kubernetes_pod_container_port_name"];
+          action = "keep";
+          regex = "prometheus|metrics";
+        }
+        {
+          source_labels = ["__address__" "__meta_kubernetes_pod_annotation_prometheus_io_port"];
+          action = "replace";
+          regex = "([^:]+)(?::\\d+)?;(\\d+)";
+          replacement = "$1:$2";
+          target_label = "__address__";
+        }
+        {
+          source_labels = ["__meta_kubernetes_pod_label_app"];
+          target_label = "job";
+        }
+        {
+          source_labels = ["__meta_kubernetes_pod_name"];
+          target_label = "pod";
+        }
+        {
+          source_labels = ["__meta_kubernetes_pod_node_name"];
+          target_label = "node";
+        }
+        {
+          source_labels = ["__meta_kubernetes_namespace"];
+          target_label = "namespace";
+        }
+      ];
+    }
+    {
+      job_name = "ate-controller";
+      inherit scrape_interval scrape_timeout;
+      kubernetes_sd_configs = [
+        {
+          role = "pod";
+          api_server = "https://127.0.0.1:6443";
+          namespaces.names = ["ate-system"];
+          bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+          tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
+        }
+      ];
+      relabel_configs = [
+        {
+          source_labels = ["__meta_kubernetes_pod_label_app"];
+          action = "keep";
+          regex = "ate-controller";
+        }
+        {
+          source_labels = ["__meta_kubernetes_pod_container_port_name"];
+          action = "keep";
+          regex = "metrics";
+        }
+        {
+          source_labels = ["__meta_kubernetes_pod_name"];
+          target_label = "pod";
+        }
+        {
+          source_labels = ["__meta_kubernetes_namespace"];
+          target_label = "namespace";
+        }
+      ];
+    }
+  ];
   scrapeConfigs =
     node_scrape_configs
     ++ tikr_scrape_configs
@@ -365,6 +463,7 @@
     ++ clickhouse_k8s_scrape_configs
     ++ cadvisor_scrape_configs
     ++ llama_cpp_scrape_configs
+    ++ substrate_scrape_configs
     ++ [
       {
         job_name = "zfs";
