@@ -22,6 +22,8 @@ in {
     # k3s cluster (~/.kube/config, copy of de-msa2:/etc/rancher/k3s/k3s.yaml
     # with the server set to https://192.168.0.14:6443).
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.agent-substrate
+    # `ax` CLI; finds ax-server through the kube context (tunnel) or $AX_SERVER.
+    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.ax
   ];
 
   wayland.windowManager.hyprland = {

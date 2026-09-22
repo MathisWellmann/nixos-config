@@ -1,0 +1,17 @@
+diff --git a/internal/substrate/client.go b/internal/substrate/client.go
+index bacb078..aaebfa6 100644
+--- a/internal/substrate/client.go
++++ b/internal/substrate/client.go
+@@ -215,7 +215,11 @@ func BuildActorTemplate(atespace, name, image string, envMap map[string]string,
+ 		atespace = "default"
+ 	}
+ 	if image == "" {
+-		image = v1alpha1.DefaultTaskImage
++		if envImage := os.Getenv("AX_DEFAULT_TASK_IMAGE"); envImage != "" {
++			image = envImage
++		} else {
++			image = v1alpha1.DefaultTaskImage
++		}
+ 	}
+ 	if len(command) == 0 {
+ 		command = []string{DefaultGuestCommand}

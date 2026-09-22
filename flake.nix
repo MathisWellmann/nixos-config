@@ -136,6 +136,11 @@
       agent-substrate = (pkgs.callPackage ./pkgs/agent-substrate.nix {}).substrate;
       agent-substrate-push-images = (pkgs.callPackage ./pkgs/agent-substrate.nix {}).push;
 
+      # google/ax on top of it: the `ax` CLI (also ax-server/-controller/
+      # -task-runner binaries) and the image push, e.g. `nix run .#ax-push-images`
+      ax = (pkgs.callPackage ./pkgs/ax {}).ax;
+      ax-push-images = (pkgs.callPackage ./pkgs/ax {}).push;
+
       # "IPython is All You Need" shell, see pkgs/ipython-shell.nix
       ipython-shell = pkgs.callPackage ./pkgs/ipython-shell.nix {};
 
