@@ -1,0 +1,32 @@
+# Smoke-test Task: clones the monty-persona workspace, asks SGLang on desg0
+# for its model list and writes it to the durable /workspace volume, so a
+# suspend/resume round trip can be checked by reading the file back.
+#
+# `image` is omitted on purpose: the controller then uses
+# AX_DEFAULT_TASK_IMAGE (the Nix-built task runner, see pkgs/ax/).
+# `debug: true` enables the guest services that `ax ssh` needs.
+#
+#   scripts/ax_apply.sh manifests/ax/task-smoke-lan-llm.yaml
+#   ax watch task smoke-lan-llm
+#   ax ssh smoke-lan-llm -- cat /workspace/models.json
+apiVersion: ax.io/v1alpha1
+kind: Task
+metadata:
+  name: smoke-lan-llm
+  atespace: default
+spec:
+  command:
+    - bash
+    - -c
+    - |
+      set -x
+      git log -1 --oneline
+      curl -sS -m 30 "$OPENAI_BASE_URL/models" | tee /workspace/models.json
+  env:
+    - name: OPENAI_BASE_URL
+      value: "http://192.168.0.13:8000/v1"
+  workspaces:
+    - name: monty-persona
+  gateway:
+    name: lan-llm
+  debug: true
