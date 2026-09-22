@@ -5,6 +5,7 @@
     ./host_ingress.nix
     ./homepage.nix
     ./substrate.nix
+    ./ax.nix
   ];
 
   # Where should the generated manifests be stored?
