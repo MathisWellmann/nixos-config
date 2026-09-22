@@ -5,6 +5,13 @@ data:
       name regex (.*)\.actors\.resources\.substrate\.ate\.dev\.? atenet-router.ate-system.svc.cluster.local.
       answer auto
     }
+  substrate-registry.server: |
+    forgejo.k3s.lan:53 {
+      errors
+      hosts {
+        192.168.0.14 forgejo.k3s.lan
+      }
+    }
 kind: ConfigMap
 metadata:
   name: coredns-custom

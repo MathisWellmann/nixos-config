@@ -50,9 +50,11 @@ spec:
             - name: OTEL_RESOURCE_ATTRIBUTES
               value: k8s.namespace.name=$(POD_NAMESPACE),k8s.pod.name=$(POD_NAME),k8s.pod.uid=$(POD_UID),k8s.node.name=$(NODE_NAME),service.instance.id=$(POD_UID)
           envFrom:
+            - configMapRef:
+                name: ate-otel-config
             - secretRef:
                 name: rustfs-s3-credentials
-          image: de-msa2:2999/mathiswellmann/atelet:dc1f263076d1
+          image: de-msa2:2999/mathiswellmann/atelet:dc1f263076d1@sha256:c6df5a6d071d4362db65bbc193635d300a24d0324f9f2f369497f21546f1c8e0
           livenessProbe:
             httpGet:
               path: /healthz

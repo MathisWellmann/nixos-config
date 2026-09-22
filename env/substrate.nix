@@ -9,7 +9,7 @@
 # references and the `${SUBSTRATE_VERSION*}` placeholders are substituted at
 # build time, and a small kustomize overlay (below) applies the fleet
 # specifics on top, the way the kind overlay does for kind:
-#   - images from the Forgejo registry, tag = upstream short rev
+#   - images from the Forgejo registry, pinned by digest (tag = upstream short rev)
 #   - S3 snapshot storage on rustfs (de-msa2) via the
 #     `ate-system/rustfs-s3-credentials` Secret (hosts/de-msa2/rustfs.nix)
 #   - no telemetry collector: traces sampled off, metrics pushed rarely
@@ -33,6 +33,7 @@
 }: let
   substrate = pkgs.callPackage ../pkgs/agent-substrate.nix {};
   inherit (substrate) tag registry;
+  ips = import ../modules/static_ips.nix;
 
   # Upstream tree with the build-time substitutions applied, under the
   # overlay directory: kustomize refuses to load resources from outside the
@@ -41,10 +42,15 @@
     mkdir -p $out/prod
     cp -r ${substrate.src}/manifests/ate-install $out/prod/upstream
     chmod -R u+w $out/prod/upstream
+    # Images pinned by digest (like `ko resolve` does upstream): the tag is
+    # mutable and nodes would otherwise keep whatever they cached first.
     find $out/prod/upstream -name '*.yaml' -print0 | xargs -0 sed -i -E \
-      -e 's#ko://github\.com/agent-substrate/substrate/cmd/([a-z-]+)#${registry}/\1:${tag}#g' \
+      ${lib.concatMapStringsSep " \\\n      " (name: "-e 's#ko://github\\.com/agent-substrate/substrate/cmd/${name}$#${substrate.refs.${name}}#'") (lib.attrNames substrate.refs)} \
       -e 's#atelet-\$\{SUBSTRATE_VERSION_SUFFIX\}#atelet#g' \
       -e 's#"\$\{SUBSTRATE_VERSION\}"#"${tag}"#g'
+    if grep -rn 'ko://' $out/prod/upstream/*.yaml; then
+      echo "unresolved ko:// image reference" >&2; exit 1
+    fi
     cp ${kustomization} $out/prod/kustomization.yaml
     cp ${fleet} $out/prod/fleet.yaml
   '';
@@ -68,7 +74,8 @@
       - fleet.yaml
     patches:
       # atelet: every node, S3 snapshots, no GCP registry auth. `env` beats
-      # `envFrom`, so the gcs default has to be overridden in place.
+      # `envFrom`, so the gcs default has to be overridden in place. `envFrom`
+      # has no merge key, so a patch replaces the whole list: restate it.
       - target:
           kind: DaemonSet
           name: atelet
@@ -99,6 +106,8 @@
                       - name: ATE_STORAGE_BACKEND
                         value: s3
                     envFrom:
+                      - configMapRef:
+                          name: ate-otel-config
                       - secretRef:
                           name: rustfs-s3-credentials
       # ate-api-server: S3 snapshots; no egress gateway deployed, so drop
@@ -135,6 +144,12 @@
                       - name: ATE_STORAGE_BACKEND
                         value: s3
                     envFrom:
+                      - configMapRef:
+                          name: ate-otel-config
+                      - configMapRef:
+                          name: ate-api-server-envvars
+                      - secretRef:
+                          name: ate-api-server-secret-envvars
                       - secretRef:
                           name: rustfs-s3-credentials
       # Postgres: upstream sizes it for GKE (500Gi, 2-16 CPU). The state is
@@ -227,6 +242,19 @@
           name regex (.*)\.actors\.resources\.substrate\.ate\.dev\.? atenet-router.ate-system.svc.cluster.local.
           answer auto
         }
+      # atelet pulls actor images from the Forgejo registry through the
+      # forgejo.k3s.lan ingress (see pkgs/agent-substrate.nix); *.k3s.lan
+      # only exists in the hosts' /etc/hosts, so give pods the LAN address
+      # of de-msa2, where traefik's servicelb listens too. Its own server
+      # block (`.server` key): `hosts` may appear only once per block and
+      # k3s's main block already has one for NodeHosts.
+      substrate-registry.server: |
+        forgejo.k3s.lan:53 {
+          errors
+          hosts {
+            ${ips.de-msa2_ip} forgejo.k3s.lan
+          }
+        }
     ---
     # One gVisor pool for ax's task sandboxes. Per-worker limits are the
     # per-actor ceiling (workerCapacity reads limits), requests are what the
@@ -246,7 +274,7 @@
     spec:
       replicas: 3
       sandboxClass: gvisor
-      workerImage: ${registry}/ateom-gvisor:${tag}
+      workerImage: ${substrate.refs.ateom-gvisor}
       template:
         resources:
           requests:
@@ -264,6 +292,11 @@ in {
     createNamespace = false;
     # The CRDs' schemas are too large for client-side apply.
     syncPolicy.syncOptions.serverSideApply = true;
+    # ArgoCD's bundled Kubernetes schema predates the `podCertificate`
+    # projected volume source (beta in 1.36); without a server-side diff the
+    # comparison fails with "field not declared in schema" and the app sits
+    # in Unknown/Degraded although everything is applied.
+    compareOptions.serverSideDiff = true;
 
     kustomize.applications.substrate = {
       # nixidy writes this into the kustomization's `namespace:`, which would

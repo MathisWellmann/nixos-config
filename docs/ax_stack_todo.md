@@ -226,25 +226,54 @@ non-CR objects pass `kubectl apply --server-side --dry-run=server`.
 - [x] Images rebuilt with `/ko-app/<name>` (upstream `command:` paths) and
       the `demos/counter` smoke-test image; re-pushed, digests below.
 
-Deploy (in order):
-1. Commit + push (`env/substrate.nix`, `hosts/de-msa2/substrate.nix`,
-   `manifests/prod/substrate/`, `manifests/prod/apps/Application-substrate.yaml`).
-2. de-msa2: `nixos-rebuild switch`; `systemctl status substrate-bootstrap`
-   must show the four pools created; `kubectl -n ate-system get secret`.
-3. ArgoCD syncs `substrate`. Expected order of readiness:
-   podcertificate-controller -> ClusterTrustBundles
-   (`kubectl get clustertrustbundles`) -> postgres -> ate-api-server ->
-   ate-controller / atenet-router / atelet -> WorkerPool workers
-   (`kubectl -n ate-system get workerpool gvisor`).
-4. Smoke test from meshify (`kubectl ate ...`, `manifests/ax/` later):
-   - `kubectl ate create atespace demo`
-   - ActorTemplate from upstream `demos/counter/counter-template.yaml.tmpl`
-     with image `de-msa2:2999/mathiswellmann/counter:dc1f263076d1`,
-     `workerSelector.matchLabels.workload: gvisor`,
-     `storageLocation: gs://ate-snapshots/demo/` (scheme is ignored, the
-     host is the bucket), `configName: gvisor-default`.
-   - create actor, hit it, `suspend`, `resume`, check the count continued
-     and `s5cmd ls s3://ate-snapshots/demo/` on de-msa2 shows the snapshot.
+Deployed 2026-09-22 (first rollout). Control plane, atelet on all nodes,
+router and 3 workers came up on the first sync; the golden-snapshot boot
+of the smoke-test template then exposed four problems, all fixed in git:
+- `envFrom` has no merge key: the S3 strategic-merge patch replaced the list
+  and dropped `ate-otel-config` + the Postgres DSN refs; ate-api-server
+  crash-looped with "--postgres-connection-string is required".
+- ArgoCD's bundled schema predates `podCertificate` projected volumes ->
+  "field not declared in schema", app Unknown/Degraded. Fixed with
+  `compareOptions.serverSideDiff = true`.
+- atelet pulls actor images itself (go-containerregistry): plain HTTP only
+  for localhost / RFC1918 registries, and Forgejo sends the token realm at
+  its ROOT_URL. Actor images are therefore referenced as
+  `forgejo.k3s.lan/mathiswellmann/<name>@sha256:...` (ateapi requires a
+  digest pin), the fleet CA is in the image bundle, and pods resolve
+  `forgejo.k3s.lan` -> de-msa2 via a `coredns-custom` `.server` block
+  (`hosts` may appear once per server block; k3s's main block has one).
+- The Nix images had no `/tmp`; runsc boot chroots into `/tmp`, so every
+  sandbox died with "waiting for sandbox to start: EOF" (visible only with
+  `debugRunsc = true` in `pkgs/agent-substrate.nix`, which uncomments
+  ateom's `runsc -debug` flags; logs under
+  `/var/lib/ateom-gvisor/actors/<uid>/runsc-debug-logs/`). And because the
+  WorkerPool controller creates worker pods with the default pull policy,
+  nodes kept the first image they cached under the mutable tag. Images are
+  now **pinned by digest**: the package converts each archive to an OCI
+  layout at build time (`refs`/`digests`, IFD), pushes from that layout so
+  the registry digest is identical, and the manifests reference
+  `<registry>/<name>:<tag>@sha256:...`. Any image change = manifest diff.
+
+Redeploy after a rebuild: `nix run .#agent-substrate-push-images` (prints
+pushed vs expected digests), `nix run .#nixidy -- build .#prod`, copy
+`result/substrate` + `result/apps/Application-substrate.yaml` into
+`manifests/prod/`, push. ArgoCD self-heal reverts any live `kubectl apply`
+that differs from `main` within minutes, so live patching is only for
+experiments (untracked objects, e.g. a `gvisor-debug` WorkerPool, survive).
+
+Smoke test state: atespace `demo` exists; template `counter`
+(`/tmp/ate/counter-template.yaml` on meshify: image
+`forgejo.k3s.lan/mathiswellmann/counter@<digest>`, `workload: gvisor`,
+`gs://ate-snapshots/demo/`, `gvisor-default`). kubectl-ate from meshify
+needs `KUBECONFIG=~/.kube/k3s.yaml` (k3s admin config, server
+`https://100.83.142.17:6443`, `tls-server-name: 192.168.0.14` because the
+API cert has no tailnet SAN); it port-forwards to ate-api-server itself.
+- [ ] After the push lands: workers must show the pinned digest
+      (`kubectl -n ate-system get pods -o jsonpath` imageID), then recreate
+      the template with the current counter digest (`skopeo inspect
+      docker://forgejo.k3s.lan/mathiswellmann/counter:dc1f263076d1`), wait
+      for GOLDEN TAG, create an actor, hit it, `suspend`, `resume`, verify
+      the count continued and `s5cmd ls s3://ate-snapshots/demo/` on de-msa2.
 - [ ] Add `ate-system` pods to Prometheus scrape targets / alerts in
       `hosts/de-msa2/prometheus.nix` (atelet/ateapi/atenet expose :9090
       `/metrics`, annotated `prometheus.io/scrape`).
@@ -319,18 +348,10 @@ Deploy (in order):
 | Component | Upstream commit | Image digest |
 |-----------|-----------------|--------------|
 | substrate | `dc1f263076d1575c0562c71d763edd0a0342fd68` (2026-09-21), tag `dc1f263076d1` | see below |
-
-Substrate images, `de-msa2:2999/mathiswellmann/<name>:dc1f263076d1`, re-pushed
-2026-09-22 after adding `/ko-app/<name>` and the counter demo (the first
-push of the day had different digests; tags were overwritten):
-
-| Image | sha256 |
-|-------|--------|
-| ateapi | `b4956a712dd3ddf55c8342299e14fff6f51df899d01c4b93e2e917a33e3a51c7` |
-| atecontroller | `7584a3688dcee4c8e653e4ac497e123e7f4630ae017bb1239a17fc94b02252d2` |
-| atelet | `28ac23e3b64e65cfa26e500eb216553cd2dcd9f2e9aca9e27f6c2dd43f3bedab` |
-| atenet | `36936e2acbb6114c45d1df600259587cb352bb3109d3315edc9524241e30d1f2` |
-| ateom-gvisor | `962e66b054d106a268cdb211175433ef4b23f08d87f75af0e0be2a8dd5a3f700` |
-| podcertcontroller | `642e12f75fba9721f37afa476ef4ed3b1e432380eff3d8f1e16cb3ceb407295c` |
-| counter (demo) | `efd521a53515f065b4ed1c9eae44fe8c0e5ceeea08bf6049e7256e4a4457a272` |
 | ax        | | |
+
+Substrate image digests are pinned in the rendered manifests
+(`grep -h 'image:\|workerImage:' manifests/prod/substrate/*.yaml`) and computed
+by `pkgs/agent-substrate.nix` (`refs`); the push script prints pushed vs
+expected. Actor images (`counter`, later ax's task runner) are referenced
+through `forgejo.k3s.lan/...@sha256:...` in ActorTemplates.

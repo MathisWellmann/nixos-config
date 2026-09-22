@@ -54,7 +54,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: ate-otel-config
-          image: de-msa2:2999/mathiswellmann/atenet:dc1f263076d1
+          image: de-msa2:2999/mathiswellmann/atenet:dc1f263076d1@sha256:7753120c7e15693e435d3e417a34a6180bb77d7d9f0af81f8899cc5c65a54c19
           livenessProbe:
             httpGet:
               path: /healthz
