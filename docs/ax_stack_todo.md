@@ -352,20 +352,60 @@ same day.
 
 ## Phase 4: AX objects (not GitOps-managed; live in ax's Redis)
 
-- [ ] Create `manifests/ax/` for `Task`/`Workspace`/`Gateway` YAML
-      (no `Model` until Phase 5).
-- [ ] `Gateway lan-llm`: egress allowlist with the SGLang endpoint by IP
-      (`192.168.0.13:<qwen3_port>`; pods cannot resolve `*.k3s.lan` or
-      Tailscale names), plus git hosts (`192.168.0.14:2999` Forgejo,
-      github.com:443).
-- [ ] `Workspace` pointing at a Forgejo repo (`http://de-msa2:2999/...`).
-- [ ] First `Task` with `debug: true` and
-      `env: [{name: OPENAI_BASE_URL, value: http://192.168.0.13:<qwen3_port>/v1}]`;
-      verify `ax ssh`, a `curl $OPENAI_BASE_URL/models` from inside the
-      sandbox, `ax suspend`, `ax resume`.
-- [ ] Decide how to (re)apply these after a Redis flush: a script in
-      `scripts/` run from meshify, or a post-sync Job in `env/ax.nix` that
-      runs `ax apply -f`.
+Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
+
+- [x] `manifests/ax/`: one file per object, `gateway-*`, `workspace-*`,
+      `task-*` (no `Model` until Phase 5). ArgoCD only renders
+      `manifests/prod/`, so these are not picked up by GitOps.
+- [x] `Gateway lan-llm` (`manifests/ax/gateway-lan-llm.yaml`): SGLang
+      `192.168.0.13/32`, Forgejo `192.168.0.14/32` + `forgejo.k3s.lan`,
+      `github.com`, `*.githubusercontent.com`. **Recorded, not enforced**:
+      ax drops `port` (only host patterns/CIDRs reach Substrate's
+      EgressPolicy), and Substrate only enforces EgressPolicy through an
+      egress gateway (`--egress-gateway-address` + atenet-egress), which the
+      fleet does not deploy. Sandbox egress is allow-all. Bare IPs must be
+      written as CIDRs (`/32`); Substrate validates hostname patterns as DNS
+      names. `listeners` are display-only.
+- [x] `Workspace monty-persona`: `https://forgejo.k3s.lan/MathisWellmann/monty-persona.git`
+      (pods resolve `forgejo.k3s.lan` via coredns-custom, fleet CA in the
+      runner image; `de-msa2` does not resolve in pods). `dir: "."` clones
+      into the workspace root; the default is `<path>/<repo name>`, i.e.
+      `/workspace/monty-persona/monty-persona`.
+- [x] `Task smoke-lan-llm`: `debug: true`, `OPENAI_BASE_URL=http://192.168.0.13:8000/v1`,
+      Gateway `lan-llm`, Workspace `monty-persona`. Verified: controller ->
+      Substrate (custom ActorTemplate, actor resumed on a worker),
+      `WorkspaceReady`, `ax ssh`, `git log` in the clone, `curl
+      $OPENAI_BASE_URL/models` from inside the sandbox (returns
+      `RadixArk/Qwen3.8-27B-NVFP4`), `ax suspend` + `ax resume` (resumed on a
+      different worker; `/workspace` survived, `/tmp` did not: suspend sends
+      SIGTERM to PID 1 and only the durable `/workspace` is restored into a
+      fresh process tree, unlike the raw Substrate counter demo). Left
+      suspended.
+- [x] Re-apply after a Redis flush: `nix run .#ax_apply` (`scripts/ax_apply.nix`)
+      applies Gateways, Models, Workspaces from a store copy of
+      `manifests/ax/` in dependency order; `ax_apply FILE...` applies
+      explicit files (Tasks). Chosen over a post-sync Job: tasks are
+      one-offs, and the script needs nothing in-cluster. It needs a fleet
+      kubeconfig + `kubectl` (ax tunnels via `kubectl port-forward`); when
+      `KUBECONFIG` is unset it uses `/etc/rancher/k3s/k3s.yaml`, so on a k3s
+      node run it as root. Used from de-msa2 for everything above (built
+      on meshify, `nix copy --to ssh://de-msa2`).
+- [ ] **Deploy the reconciler patch.** Tasks without `spec.image` failed with
+      "must be pinned by digest": `reconciler.go` sets `spec.image` to
+      upstream's unpinned GCR default before `BuildActorTemplate` sees it, so
+      the old `AX_DEFAULT_TASK_IMAGE` patch never fired. Fixed in
+      `pkgs/ax/default-task-image-env.patch` (`substrate.DefaultImage()` in
+      both places) and `manifests/prod/ax/` re-rendered (all three ax image
+      digests change). Still needed: `skopeo login --tls-verify=false
+      de-msa2:2999`, `nix run .#ax-push-images`, push `main`. Until then the
+      smoke test ran with `spec.image` set to the live runner digest (not
+      committed; the committed Task omits `image` on purpose). After the
+      deploy: `ax delete task smoke-lan-llm` and re-apply the committed
+      file to confirm the default image path.
+- [ ] meshify access: no fleet kubeconfig and no `kubectl` on meshify, so
+      `ax ctx`/`ax ssh` only work on the k3s nodes for now. Copy the k3s
+      admin config to `~/.kube/k3s.yaml` (server `https://100.83.142.17:6443`,
+      `tls-server-name: 192.168.0.14`) and add `kubectl` to `home/meshify.nix`.
 
 ## Phase 5: Local-model integration
 
