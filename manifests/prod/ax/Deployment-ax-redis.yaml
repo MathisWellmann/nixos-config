@@ -11,13 +11,21 @@ spec:
   selector:
     matchLabels:
       app.kubernetes.io/name: ax-redis
+  strategy:
+    type: Recreate
   template:
     metadata:
       labels:
         app.kubernetes.io/name: ax-redis
     spec:
       containers:
-        - image: redis:7-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
+        - args:
+            - redis-server
+            - --appendonly
+            - "yes"
+            - --appendfsync
+            - everysec
+          image: redis:7-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499
           name: redis
           ports:
             - containerPort: 6379
@@ -33,5 +41,6 @@ spec:
             - mountPath: /data
               name: data
       volumes:
-        - emptyDir: {}
-          name: data
+        - name: data
+          persistentVolumeClaim:
+            claimName: ax-redis-data

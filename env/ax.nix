@@ -14,10 +14,11 @@
 #     `$AX_SERVER`. The `ax.k3s.lan` Ingress exists for the homepage entry
 #     and health probe; traefik speaks h2c to the backend so gRPC through
 #     it works too when a client trusts the fleet CA.
-#   - Redis: upstream's `redis:7-alpine`, pinned. Ephemeral (emptyDir):
-#     Tasks/Workspaces/Gateways live here and are re-applied from
-#     `manifests/ax/` (Phase 4) after a loss; actors themselves persist in
-#     Substrate/Postgres.
+#   - Redis: upstream's `redis:7-alpine`, pinned. Upstream runs it on an
+#     emptyDir; here it has a local-path PVC with AOF (`appendonly yes`),
+#     because Tasks/Workspaces/Gateways live only in Redis. After a real
+#     loss, re-apply them from `manifests/ax/` (Phase 4); actors themselves
+#     persist in Substrate/Postgres.
 # ax objects (Task, Workspace, Gateway) are not Kubernetes resources; they are
 # applied with `ax apply -f` (Phase 4), not through ArgoCD.
 {pkgs, ...}: let
@@ -45,6 +46,9 @@ in {
             app.kubernetes.io/part-of: ax
         spec:
           replicas: 1
+          # RWO local-path volume: never run two pods on it.
+          strategy:
+            type: Recreate
           selector:
             matchLabels:
               app.kubernetes.io/name: ax-redis
@@ -56,6 +60,12 @@ in {
               containers:
                 - name: redis
                   image: ${redisImage}
+                  args:
+                    - redis-server
+                    - --appendonly
+                    - "yes"
+                    - --appendfsync
+                    - everysec
                   ports:
                     - containerPort: 6379
                       name: redis
@@ -71,7 +81,25 @@ in {
                       mountPath: /data
               volumes:
                 - name: data
-                  emptyDir: {}
+                  persistentVolumeClaim:
+                    claimName: ax-redis-data
+      ''
+      ''
+        apiVersion: v1
+        kind: PersistentVolumeClaim
+        metadata:
+          name: ax-redis-data
+          namespace: ${ns}
+          labels:
+            app.kubernetes.io/name: ax-redis
+            app.kubernetes.io/part-of: ax
+        spec:
+          accessModes:
+            - ReadWriteOnce
+          storageClassName: local-path
+          resources:
+            requests:
+              storage: 1Gi
       ''
       ''
         apiVersion: v1
