@@ -215,7 +215,8 @@ non-CR objects pass `kubectl apply --server-side --dry-run=server`.
       build verified in Phase 0) + ValidatingAdmissionPolicy. Annotated
       `SkipDryRunOnMissingResource=true` (CRD ships in the same app).
 - [x] `WorkerPool ate-system/gvisor`: 3 replicas, 1-4 CPU / 4Gi per worker,
-      `workerImage` ateom-gvisor, label `workload: gvisor`; no node pinning.
+      `workerImage` ateom-gvisor (digest-pinned), label `workload: gvisor`,
+      Zen 4 nodes only (see smoke-test findings below).
 - [x] Bootstrap oneshot `substrate-bootstrap` in `hosts/de-msa2/substrate.nix`:
       creates the namespaces and, if missing, the four generated pools with
       `kubectl-ate admin make-ca-pool/make-jwt-pool`
@@ -261,19 +262,35 @@ pushed vs expected digests), `nix run .#nixidy -- build .#prod`, copy
 that differs from `main` within minutes, so live patching is only for
 experiments (untracked objects, e.g. a `gvisor-debug` WorkerPool, survive).
 
-Smoke test state: atespace `demo` exists; template `counter`
-(`/tmp/ate/counter-template.yaml` on meshify: image
-`forgejo.k3s.lan/mathiswellmann/counter@<digest>`, `workload: gvisor`,
-`gs://ate-snapshots/demo/`, `gvisor-default`). kubectl-ate from meshify
-needs `KUBECONFIG=~/.kube/k3s.yaml` (k3s admin config, server
-`https://100.83.142.17:6443`, `tls-server-name: 192.168.0.14` because the
-API cert has no tailnet SAN); it port-forwards to ate-api-server itself.
-- [ ] After the push lands: workers must show the pinned digest
-      (`kubectl -n ate-system get pods -o jsonpath` imageID), then recreate
-      the template with the current counter digest (`skopeo inspect
-      docker://forgejo.k3s.lan/mathiswellmann/counter:dc1f263076d1`), wait
-      for GOLDEN TAG, create an actor, hit it, `suspend`, `resume`, verify
-      the count continued and `s5cmd ls s3://ate-snapshots/demo/` on de-msa2.
+Smoke test **passed 2026-09-22** (counter demo): template golden snapshot ->
+`create actor` (starts SUSPENDED) -> `resume` -> HTTP via the router ->
+`suspend` (checkpoint + pages + durable dir land in
+`s3://ate-snapshots/<prefix>/atespaces/demo/actors/<uid>/snapshots/<id>/`)
+-> `resume` -> both the in-memory and the on-disk counter continued (3 -> 4,
+5, 6). Findings:
+- **Snapshots are CPU-feature-bound.** de-msa2 is Zen 5, desg0/de-n5 are
+  Zen 4; a snapshot taken on de-msa2 fails to restore elsewhere with
+  "incompatible FeatureSet: missing features: tsc_adjust movdiri movdir64b
+  avx512_vp2intersect". The `gvisor` WorkerPool is therefore pinned to
+  `hostname NotIn [de-msa2]` (nodeAffinity in the template). A new worker
+  node must be Zen 4-compatible or get its own pool + selector label.
+- The router routes HTTP on the header `ate-target-actor: <atespace>/<actor>`
+  (`curl -H ate-target-actor:demo/c1 http://atenet-router.ate-system.svc/`
+  from a pod); the `<actor>.<atespace>.actors.resources.substrate.ate.dev`
+  hostname is for CONNECT tunnels (what ax uses). The first request after a
+  resume can time out while the tunnel warms up.
+- An actor whose `runsc restore` fails is left in `ACTOR_STATE_RESUMING`
+  and cannot be deleted/reverted (`demo/my-counter`, the cross-CPU victim;
+  should flip to CRASHED once its worker pod is gone). Upstream gap.
+- kubectl-ate from meshify: `KUBECONFIG=~/.kube/k3s.yaml` (k3s admin config,
+  server `https://100.83.142.17:6443`, `tls-server-name: 192.168.0.14`
+  because the API cert has no tailnet SAN); it port-forwards itself.
+  Template used: `/tmp/ate/counter-template.yaml` on meshify (image
+  `forgejo.k3s.lan/mathiswellmann/counter@<digest>`, `workload: gvisor`,
+  `gs://ate-snapshots/demo/`, `gvisor-default`).
+- [ ] After the Zen-4 pinning is pushed: recreate template `demo/counter`
+      (its golden snapshot may have been taken on de-msa2) and delete
+      `demo/my-counter` once it is CRASHED.
 - [ ] Add `ate-system` pods to Prometheus scrape targets / alerts in
       `hosts/de-msa2/prometheus.nix` (atelet/ateapi/atenet expose :9090
       `/metrics`, annotated `prometheus.io/scrape`).

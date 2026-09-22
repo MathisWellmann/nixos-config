@@ -258,8 +258,15 @@
     ---
     # One gVisor pool for ax's task sandboxes. Per-worker limits are the
     # per-actor ceiling (workerCapacity reads limits), requests are what the
-    # scheduler packs by; an actor occupies a whole worker. All three nodes
-    # passed the runsc checkpoint/restore test, so no node pinning.
+    # scheduler packs by; an actor occupies a whole worker.
+    #
+    # A gVisor snapshot records the CPU feature set it was taken with and
+    # only restores on a host that has every one of those features. de-msa2
+    # (Zen 5) has movdiri/movdir64b/avx512_vp2intersect/tsc_adjust that
+    # desg0 and de-n5 (Zen 4) lack, so a snapshot made there cannot resume
+    # anywhere else ("incompatible FeatureSet: missing features"). Keep the
+    # pool CPU-homogeneous: Zen 4 only. A new node must match, or get its
+    # own pool + workerSelector label.
     apiVersion: ate.dev/v1alpha1
     kind: WorkerPool
     metadata:
@@ -276,6 +283,13 @@
       sandboxClass: gvisor
       workerImage: ${substrate.refs.ateom-gvisor}
       template:
+        nodeAffinity:
+          requiredDuringSchedulingIgnoredDuringExecution:
+            nodeSelectorTerms:
+              - matchExpressions:
+                  - key: kubernetes.io/hostname
+                    operator: NotIn
+                    values: [de-msa2]
         resources:
           requests:
             cpu: "1"

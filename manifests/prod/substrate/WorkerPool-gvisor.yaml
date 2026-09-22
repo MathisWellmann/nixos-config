@@ -11,6 +11,14 @@ spec:
   replicas: 3
   sandboxClass: gvisor
   template:
+    nodeAffinity:
+      requiredDuringSchedulingIgnoredDuringExecution:
+        nodeSelectorTerms:
+          - matchExpressions:
+              - key: kubernetes.io/hostname
+                operator: NotIn
+                values:
+                  - de-msa2
     resources:
       limits:
         cpu: "4"
