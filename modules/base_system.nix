@@ -51,7 +51,6 @@ in {
     "llama.k3s.lan"
     "llmkube.k3s.lan"
     "symbiont.k3s.lan"
-    "headlong.k3s.lan"
     "dsh.k3s.lan"
   ];
 

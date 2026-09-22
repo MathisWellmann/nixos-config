@@ -2,13 +2,24 @@
 #
 # `dsh web` hard-binds to 127.0.0.1:3080 -- its config schema only accepts
 # 127.0.0.1 or 0.0.0.0. The dsh-web-proxy forwarder exposes it on the tailnet
-# IP below, and the k3s traefik ingress routes dsh.k3s.lan to it
-# (manifests/prod/dsh/). Keep the tailnet IP in sync with
-# EndpointSlice-dsh.yaml.
+# IP below, and the k3s traefik ingress routes dsh.k3s.lan to it (the `dsh`
+# entry in env/host_ingress.nix; its `hostIp` default is this tailnet IP).
 #
 # dsh-web starts after home-manager-m.service because the home activation
 # writes $DSH_HOME/.env (see home/deepseek-harness.nix `dotenv`) and the
 # ~/.dsh/sessions -> /var/lib/monty-persona/sessions symlink.
+#
+# That shared sessions root is also written by the monty-persona service. At
+# boot dsh enumerates every session dir and reads the first zstd frame of the
+# newest `session*.jsonl.zstd`; it must be exactly one header line, or dsh
+# dies with "corrupt Zstandard session log" and the unit crash-loops (traefik
+# then answers 502). Early monty-persona logs (unversioned
+# `session.jsonl.zstd`, Sept 2026) were rewritten as a single frame and trip
+# this. Fix: move the offending session dir out of the root, e.g. into
+# /var/lib/monty-persona/sessions-quarantine/ (done 2026-09-22 for four
+# `jeff-17894*`/`jeff-1789560491603` dirs), then `systemctl restart dsh-web`.
+# Find offenders with `journalctl -u dsh-web` (the path is not logged; use
+# `zstd -l` frame counts: a legacy log with 1 frame is always bad).
 {
   inputs,
   pkgs,

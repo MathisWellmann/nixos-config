@@ -19,6 +19,7 @@ Legend: `[ ]` open, `[x]` done, `[-]` dropped.
 
 Checked against k3s v1.36.4+k3s1 (de-msa2 32c/128G, de-n5 16c/128G,
 desg0 192c/512G), substrate `main` and ax `main` as of 2026-09-21.
+All items closed 2026-09-22.
 
 - [x] `PodCertificateRequest` API. **Not served today**: `certificates.k8s.io`
       only exposes `v1`; no `podcertificaterequests`/`clustertrustbundles`.
@@ -43,10 +44,20 @@ desg0 192c/512G), substrate `main` and ax `main` as of 2026-09-21.
 - [x] Privileged pods: k3s has no PodSecurity admission config; RuntimeClasses
       present are `crun nvidia spin wasm*` -- no gVisor class needed, `runsc`
       runs inside the worker pod (`/var/lib/ateom-gvisor` hostPath).
-- [ ] `runsc` systrap on kernels 6.18.39 (de-msa2/de-n5) and 7.1.6 (desg0):
-      not yet tested; verify with the counter demo in Phase 2. Note the
-      traefik-on-desg0 kernel 7.1.6 gotcha in `modules/k3s_init.nix`; pin the
-      first WorkerPool to de-msa2/de-n5 if gVisor misbehaves there.
+- [x] `runsc` systrap on kernels 6.18.39 (de-msa2/de-n5) and 7.2.6 (desg0):
+      tested 2026-09-22 with the exact build Substrate's `SandboxConfig`
+      fetches (`gs://gvisor/releases/nightly/2026-09-02/x86_64/gvisor.tar.zstd`,
+      `runsc release-20260824.0-120-g727c8c389c36`). On every node, as root,
+      `--platform=systrap --network=none`: `runsc do` runs a shell,
+      and an OCI bundle (host `/` read-only rootfs) goes through `create`,
+      `start`, `checkpoint --image-path`, `delete`, `create`, `restore
+      --detach` back to `running`. No kernel-specific issues, so the first
+      WorkerPool does not need a de-msa2/de-n5 nodeSelector. Gotchas when
+      testing by hand: NixOS has no `/bin/sleep` inside the sandbox (set
+      `PATH=/run/current-system/sw/bin`), `runsc restore` without `--detach`
+      blocks until the container exits, and `--root` leaves a `null-netns`
+      bind mount behind that must be `umount`ed before `rm -rf`. Do not
+      pipe the test script into `bash -s`: the sandbox eats stdin.
 - [x] Registry: `http://de-msa2:2999/v2/` answers 401 (Forgejo registry, auth
       required); k3s already trusts it (`modules/k3s_registries.nix`).
       `ko` 0.19.1 is in nixpkgs (not installed on meshify). Login with a
@@ -132,61 +143,37 @@ Deploy steps, in order (need hands on the hosts):
       by the `rustfs-buckets` oneshot. Re-switch de-msa2 once to activate it;
       it will report `bucket ate-snapshots exists`).
 
-### NEXT SESSION: pick up here
+### Fleet rollout -- DONE 2026-09-22
 
-1. **Roll the k3s gates to the other two servers.** desg0 and de-n5 still
-   run the old k3s flags (checked 2026-09-21: `ps -o args= -C k3s` has no
-   `PodCertificateRequest`). Their kubelets cannot mount `podCertificate`
-   volumes until this is done, so Substrate pods would only ever work on
-   de-msa2.
-   ```
-   # one at a time; k3s restarts, etcd needs 2 of 3 members up
-   ssh desg0  'bash -lc "cd ~/nixos-config && git pull && sudo nixos-rebuild switch --flake .#desg0"'
-   ssh de-n5  'bash -lc "cd ~/nixos-config && git pull && sudo nixos-rebuild switch --flake .#de-n5"'
-   # verify on each: gate present in the process args, API served
-   ssh desg0 'bash -lc "ps -o args= -C k3s | grep -c PodCertificateRequest; sudo k3s kubectl api-resources | grep -E podcertificate\\|clustertrust"'
-   ```
-   (Adjust the checkout path per host; de-n5's is `/home/m/nixos-config`,
-   see the repo_checkouts memory note. Remote shell is nushell, hence the
-   `bash -lc` wrapper.)
+- [x] k3s gates on all three servers (k3s restarted 12:42/12:47/12:49 CEST).
+      Verified with `systemctl cat k3s | grep -oE '(kube-apiserver|kubelet)-arg=[^ ]*feature-gates[^ ]*'`
+      and `sudo k3s kubectl api-resources | grep -E 'podcertificate|clustertrust'`
+      (both `certificates.k8s.io/v1beta1`). Do **not** use
+      `ps -o args= -C k3s | grep -c ...`: k3s re-execs and `ps -C` matches
+      the wrong process, it prints 0 even where the gates are on.
+- [x] de-msa2 re-switched; `rustfs`, `rustfs-buckets` (`bucket
+      ate-snapshots exists`), `rustfs-k8s-secret` all active.
+- [x] Substrate images pushed to Forgejo (`skopeo login --tls-verify=false
+      de-msa2:2999` with a `package: write` token, `nix run
+      .#agent-substrate-push-images`) and pulled from de-msa2 with
+      `k3s crictl`; digests in the table at the bottom.
 
-2. **Push the Substrate images to Forgejo.** The images are built by Nix
-   (`pkgs/agent-substrate.nix`); only the push needs credentials.
-   1. Forgejo (https://forgejo.k3s.lan) -> Settings -> Applications ->
-      Generate token, scope `package: write` (read+write), any name, e.g.
-      `skopeo-meshify`. Copy the token.
-   2. On meshify:
-      ```
-      skopeo login --tls-verify=false de-msa2:2999   # skopeo is in home/meshify.nix
-      #   username: MathisWellmann   password: <the token>
-      # writes ~/.config/containers/auth.json (or $XDG_RUNTIME_DIR/containers/auth.json)
-      nix run .#agent-substrate-push-images
-      ```
-      This pushes `de-msa2:2999/mathiswellmann/{ateapi,atecontroller,atelet,atenet,ateom-gvisor,podcertcontroller}:dc1f263076d1`
-      (tag = short upstream rev, set in `pkgs/agent-substrate.nix`).
-   3. Verify a pull works from a node and record the digests in the table
-      at the bottom of this file:
-      ```
-      ssh de-msa2 'bash -lc "sudo k3s crictl pull de-msa2:2999/mathiswellmann/atelet:dc1f263076d1 && sudo k3s crictl inspecti --output go-template --template {{.status.repoDigests}} de-msa2:2999/mathiswellmann/atelet:dc1f263076d1"'
-      ```
-      If the push is rejected with 401 despite the login, the Forgejo
-      package registry may want the token as the *password* with the
-      *username* of the account, not `token`/`<token>`; if it is 403, the
-      token lacks the package scope.
-   4. Note: the registry is plain HTTP, hence `--tls-verify=false` on login
-      and `--dest-tls-verify=false` inside the push script.
+Remote shell on the hosts is nushell, hence `bash -lc "..."` wrappers; the
+checkout is `~/nixos-config` (de-n5: `/home/m/nixos-config`).
 
-3. **Then start Phase 2** (`env/substrate.nix`). Inputs are all in place:
-   Secret `ate-system/rustfs-s3-credentials`, bucket, images, gates.
-   Also add `agent-substrate` (kubectl-ate) to `home/meshify.nix` when the
-   first actor is to be created.
+**Next:** Phase 2 (`env/substrate.nix`). Inputs are all in place: Secret
+`ate-system/rustfs-s3-credentials`, bucket, images, gates. Add
+`agent-substrate` (kubectl-ate) to `home/meshify.nix` when the first actor
+is to be created.
 
-Known drift found on the way (not fixed, not ours): `manifests/prod/dsh`
-and `manifests/prod/headlong` have no source in `env/`, and the argocd /
-cert-manager charts moved with the automated flake.lock bumps. A full
-`nixidy switch .#prod` will delete the two apps and upgrade both charts.
-Add `dsh`/`headlong` entries to `env/host_ingress.nix` before the next
-full switch.
+Known drift found on the way: `manifests/prod/dsh` and
+`manifests/prod/headlong` had no source in `env/`. Fixed 2026-09-22: `dsh`
+is now an entry in `env/host_ingress.nix` (rendered output synced), headlong
+was removed everywhere (it was already gone from the cluster). Still open,
+not ours: the argocd / cert-manager charts moved with the automated
+flake.lock bumps, so the next full `nixidy switch .#prod` upgrades both.
+Review those two diffs (`nix run .#nixidy -- build .#prod && diff -r
+manifests/prod result`) before pushing.
 
 ## Phase 2: Agent Substrate (`env/substrate.nix`, namespace `ate-system`)
 
@@ -209,11 +196,13 @@ full switch.
 - [ ] `atenet-router` Deployment + Service; CoreDNS hook for
       `*.actors.resources.substrate.ate.dev`.
 - [ ] `sandboxconfig-validation.yaml` + `SandboxConfig gvisor-default`
-      (upstream `gs://gvisor/releases/release/<date>/x86_64/gvisor.tar.bz2`).
+      (upstream pins `gs://gvisor/releases/nightly/2026-09-02/<arch>/gvisor.tar.zstd`
+      in `manifests/ate-install/sandboxconfig-gvisor.yaml`; keep that exact
+      URL, it is the build verified in Phase 0).
 - [ ] `WorkerPool` (gvisor class, `replicas: 2-4`, cpu/mem requests sized
       for the nodes). No GPU pool: desg0's GPU is fully used by SGLang.
-      Start with a nodeSelector for de-msa2/de-n5 until gVisor is proven on
-      desg0's 7.1.6 kernel.
+      All three kernels passed the gVisor checkpoint/restore test, so no
+      nodeSelector is needed.
 - [ ] `git add` the new env file (flake eval needs it tracked), run
       `nixidy build .#prod`, push, let ArgoCD sync.
 - [ ] Package `kubectl-ate` in `pkgs/kubectl-ate` (buildGoModule) and add
@@ -292,5 +281,17 @@ full switch.
 
 | Component | Upstream commit | Image digest |
 |-----------|-----------------|--------------|
-| substrate | `dc1f263076d1575c0562c71d763edd0a0342fd68` (2026-09-21), tag `dc1f263076d1` | not pushed yet |
+| substrate | `dc1f263076d1575c0562c71d763edd0a0342fd68` (2026-09-21), tag `dc1f263076d1` | see below |
+
+Substrate images, `de-msa2:2999/mathiswellmann/<name>:dc1f263076d1`, pushed
+2026-09-22 (pulled with `k3s crictl` on de-msa2):
+
+| Image | sha256 |
+|-------|--------|
+| ateapi | `120bf301a0aa693d02861ae427f89bd0e7818e825bafceba31e0d99ed8cb168e` |
+| atecontroller | `1e9a061d097c308b39e8ba9f26e525ac5cb2ca41f9280204ce7b13ee13c7dd56` |
+| atelet | `84fda7fd69e06431999f9e96e2e4a878582e1648dcdd52fa8ee844cfe6405757` |
+| atenet | `7dfb5757da222462cada0f47c2b8965699e40624c8bf84ee71e9b793dc6ba1ff` |
+| ateom-gvisor | `15b42117bed4f57c91a1a9b9e0a82334435e239b3a86c42d11ca66115dc78f25` |
+| podcertcontroller | `8bbcaba4c12bb101e8cf1d3f02fb688ede71391c911dca3af614fd92ac9f6025` |
 | ax        | | |

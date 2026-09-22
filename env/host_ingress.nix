@@ -84,6 +84,14 @@ _: let
       description = "Bencher API";
     }
     {
+      name = "dsh";
+      host = "dsh.k3s.lan";
+      port = 3080; # `dsh web` via the dsh-web-proxy socat forwarder, hosts/de-msa2/dsh.nix
+      group = "AI";
+      icon = "mdi-robot";
+      description = "DeepSeek Harness web UI";
+    }
+    {
       name = "llama";
       host = "llama.k3s.lan";
       port = meshify_const.llama-cpp_port;

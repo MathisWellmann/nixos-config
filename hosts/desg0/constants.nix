@@ -15,8 +15,6 @@
   minimax_music3_port = 8002;
   # Open WebUI frontend, inference -> sglang on qwen3_port.
   open_webui_port = 8090;
-  # Headlong web viewer (systemd `headlong-web`, see headlong.nix).
-  headlong_web_port = 8081;
   localModels = [
     "unsloth/Qwen3.6-35B-A3B-MTP-GGUF:UD-Q4_K_XL"
     "unsloth/Qwen3.6-27B-GGUF:Q4_K_XL"

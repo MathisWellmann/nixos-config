@@ -9,6 +9,7 @@ metadata:
     gethomepage.dev/group: AI
     gethomepage.dev/icon: mdi-robot
     gethomepage.dev/name: dsh
+    gethomepage.dev/siteMonitor: http://dsh.dsh.svc.cluster.local
   name: dsh
   namespace: dsh
 spec:
