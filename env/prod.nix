@@ -6,6 +6,7 @@
     ./homepage.nix
     ./substrate.nix
     ./ax.nix
+    ./cluster_access.nix
   ];
 
   # Where should the generated manifests be stored?
