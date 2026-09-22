@@ -1,0 +1,39 @@
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: ate-api-server
+rules:
+  - apiGroups:
+      - ""
+    resources:
+      - pods
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - ate.dev
+    resources:
+      - workerpools
+      - sandboxconfigs
+      - csidriverconfigs
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - ate.dev
+    resources:
+      - workerpools
+    verbs:
+      - get
+      - watch
+      - list
+  - apiGroups:
+      - storage.k8s.io
+    resources:
+      - storageclasses
+    verbs:
+      - get
+      - watch
+      - list

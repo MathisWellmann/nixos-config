@@ -1,0 +1,18 @@
+apiVersion: ate.dev/v1alpha1
+kind: SandboxConfig
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  name: gvisor-default
+spec:
+  assets:
+    amd64:
+      gvisor:
+        sha256: d547d81401461fd1c679c5c4fa0a6c2b8ef7dc3c22ce23c9e25dcc4c69cfd06f
+        url: gs://gvisor/releases/nightly/2026-09-02/x86_64/gvisor.tar.zstd
+    arm64:
+      gvisor:
+        sha256: a64916f9813ce7e4841a30480a599337f7dda07b421c6bf0123db2212aa7d1df
+        url: gs://gvisor/releases/nightly/2026-09-02/aarch64/gvisor.tar.zstd
+  pauseImage: registry.k8s.io/pause:3.10.2@sha256:f548e0e8e3dc1896ca956272154dde3314e8cc4fde0a57577ee9fa1c63f5baf4
+  sandboxClass: gvisor

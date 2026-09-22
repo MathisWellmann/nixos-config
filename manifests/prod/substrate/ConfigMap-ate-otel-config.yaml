@@ -1,0 +1,8 @@
+apiVersion: v1
+data:
+  OTEL_METRIC_EXPORT_INTERVAL: "3600000"
+  OTEL_TRACES_SAMPLER: always_off
+kind: ConfigMap
+metadata:
+  name: ate-otel-config
+  namespace: ate-system

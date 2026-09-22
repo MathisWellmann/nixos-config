@@ -63,6 +63,7 @@ in {
     ./zfs_pool.nix
     ./attic.nix
     ./rustfs.nix
+    ./substrate.nix
     ./monty-persona.nix
     ./grafana.nix
     # ./ups.nix

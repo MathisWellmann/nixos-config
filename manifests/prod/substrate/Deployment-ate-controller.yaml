@@ -1,0 +1,69 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ate-controller
+  namespace: ate-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ate-controller
+  template:
+    metadata:
+      labels:
+        app: ate-controller
+    spec:
+      containers:
+        - args:
+            - --ateapi-ca-file=/run/servicedns-ca/trust-bundle.pem
+            - --ateapi-client-cert=/run/podidentity.podcert.ate.dev/credential-bundle.pem
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: k8s.namespace.name=$(POD_NAMESPACE),k8s.pod.name=$(POD_NAME),k8s.pod.uid=$(POD_UID),service.instance.id=$(POD_UID)
+          envFrom:
+            - configMapRef:
+                name: ate-otel-config
+          image: de-msa2:2999/mathiswellmann/atecontroller:dc1f263076d1
+          name: ate-controller
+          ports:
+            - containerPort: 8080
+              name: metrics
+              protocol: TCP
+            - containerPort: 8081
+              name: healthz
+              protocol: TCP
+          volumeMounts:
+            - mountPath: /run/podidentity.podcert.ate.dev
+              name: podidentity
+            - mountPath: /run/servicedns-ca
+              name: servicedns-ca
+      serviceAccountName: ate-controller
+      volumes:
+        - name: podidentity
+          projected:
+            sources:
+              - podCertificate:
+                  credentialBundlePath: credential-bundle.pem
+                  keyType: ECDSAP256
+                  signerName: podidentity.podcert.ate.dev/identity
+        - name: servicedns-ca
+          projected:
+            sources:
+              - clusterTrustBundle:
+                  labelSelector:
+                    matchLabels:
+                      podcert.ate.dev/canarying: live
+                  path: trust-bundle.pem
+                  signerName: servicedns.podcert.ate.dev/identity

@@ -1,0 +1,11 @@
+apiVersion: v1
+data:
+  substrate-actors.override: |
+    rewrite stop {
+      name regex (.*)\.actors\.resources\.substrate\.ate\.dev\.? atenet-router.ate-system.svc.cluster.local.
+      answer auto
+    }
+kind: ConfigMap
+metadata:
+  name: coredns-custom
+  namespace: kube-system

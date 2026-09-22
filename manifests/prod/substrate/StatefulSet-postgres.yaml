@@ -1,0 +1,143 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: postgres
+  namespace: ate-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: postgres
+  serviceName: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      containers:
+        - args:
+            - -c
+            - config_file=/etc/postgresql/postgresql.conf
+          env:
+            - name: POSTGRES_DB
+              value: atepg
+            - name: POSTGRES_HOST_AUTH_METHOD
+              value: trust
+            - name: PGDATA
+              value: /var/lib/postgresql/data/pgdata
+          image: postgres:18-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15
+          lifecycle:
+            postStart:
+              exec:
+                command:
+                  - /bin/sh
+                  - -ec
+                  - |
+                    until psql -U postgres -d postgres -Atc 'SELECT 1' >/dev/null 2>&1; do
+                      sleep 1
+                    done
+                    if ! psql -U postgres -d postgres -Atc \
+                      "SELECT 1 FROM pg_database WHERE datname = 'atepg'" | grep -qx 1; then
+                      createdb -U postgres atepg
+                    fi
+          livenessProbe:
+            exec:
+              command:
+                - pg_isready
+                - -U
+                - postgres
+                - -d
+                - postgres
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          name: postgres
+          ports:
+            - containerPort: 5432
+              name: postgres
+          readinessProbe:
+            exec:
+              command:
+                - /bin/sh
+                - -ec
+                - psql -U postgres -d atepg -Atc 'SELECT 1' >/dev/null
+            initialDelaySeconds: 2
+            periodSeconds: 2
+          resources:
+            limits:
+              cpu: "4"
+              memory: 2Gi
+            requests:
+              cpu: 250m
+              memory: 512Mi
+          volumeMounts:
+            - mountPath: /etc/postgresql
+              name: config
+            - mountPath: /run/servicedns.podcert.ate.dev
+              name: servicedns
+              readOnly: true
+            - mountPath: /run/podidentity.podcert.ate.dev
+              name: podidentity-ca
+              readOnly: true
+            - mountPath: /var/run/postgresql
+              name: socket
+            - mountPath: /var/lib/postgresql/data
+              name: data
+      initContainers:
+        - command:
+            - /bin/sh
+            - /etc/postgresql/reload-tls.sh
+          image: postgres:18-alpine@sha256:9a8afca54e7861fd90fab5fdf4c42477a6b1cb7d293595148e674e0a3181de15
+          name: tls-reloader
+          resources:
+            requests:
+              cpu: 10m
+              memory: 32Mi
+          restartPolicy: Always
+          securityContext:
+            runAsUser: 70
+          volumeMounts:
+            - mountPath: /etc/postgresql
+              name: config
+            - mountPath: /run/servicedns.podcert.ate.dev
+              name: servicedns
+              readOnly: true
+            - mountPath: /run/podidentity.podcert.ate.dev
+              name: podidentity-ca
+              readOnly: true
+            - mountPath: /var/run/postgresql
+              name: socket
+      securityContext:
+        fsGroup: 70
+        fsGroupChangePolicy: OnRootMismatch
+      volumes:
+        - configMap:
+            name: postgres-config
+          name: config
+        - name: servicedns
+          projected:
+            defaultMode: 384
+            sources:
+              - podCertificate:
+                  credentialBundlePath: credential-bundle.pem
+                  keyType: ECDSAP256
+                  signerName: servicedns.podcert.ate.dev/identity
+        - emptyDir: {}
+          name: socket
+        - name: podidentity-ca
+          projected:
+            sources:
+              - clusterTrustBundle:
+                  labelSelector:
+                    matchLabels:
+                      podcert.ate.dev/canarying: live
+                  path: trust-bundle.pem
+                  signerName: podidentity.podcert.ate.dev/identity
+  volumeClaimTemplates:
+    - metadata:
+        name: data
+      spec:
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 20Gi

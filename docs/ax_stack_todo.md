@@ -177,40 +177,77 @@ manifests/prod result`) before pushing.
 
 ## Phase 2: Agent Substrate (`env/substrate.nix`, namespace `ate-system`)
 
-- [ ] New nixidy app `applications.substrate` imported from `env/prod.nix`.
-      Follow the `env/homepage.nix` style: pinned images, inline YAML.
-      Source of truth: `manifests/ate-install/` rendered once with
-      `kubectl kustomize manifests/ate-install/kind` + `ko resolve`, then
-      de-kind-ified (drop rustfs/otel-collector/prometheus, swap S3 env).
-- [ ] CRDs from `manifests/ate-install/generated/` (`workerpools`,
-      `sandboxconfigs`, `csidriverconfigs`) + `role.yaml`.
-- [ ] `ate-otel-config` ConfigMap (can point at nothing / a no-op endpoint).
-- [ ] Postgres StatefulSet from `manifests/ate-install/postgres/` on a
-      local-path PVC (or a hostPath on `nvme_pool` if pinned to de-msa2).
-- [ ] `pod-certificate-controller` Deployment + RBAC.
-- [ ] `ate-api-server` Deployment + Service `api.ate-system.svc.cluster.local:443`
-      (this exact name is ax's in-cluster default), S3 env from the Secret.
-- [ ] `ate-controller` Deployment + RBAC.
-- [ ] `atelet` DaemonSet on all 3 nodes, S3 env from the Secret,
+Config done 2026-09-22, deploy pending. Instead of hand-inlined YAML the app
+is a nixidy `kustomize.applications` entry: the pinned upstream
+`manifests/ate-install/` tree (same source as the images) gets `ko://` and
+`${SUBSTRATE_VERSION*}` substituted at build time, then a small kustomize
+overlay applies the fleet patches; `fleet.yaml` holds what upstream creates
+imperatively. Rendered to `manifests/prod/substrate/` (48 objects), all
+non-CR objects pass `kubectl apply --server-side --dry-run=server`.
+
+- [x] `applications.substrate` in `env/substrate.nix`, imported from
+      `env/prod.nix`. `syncOptions.serverSideApply` (CRD schemas too large
+      for client-side apply). nixidy gotcha: `kustomize.applications.<n>.namespace`
+      is written into the kustomization's `namespace:`; set it to `""`
+      or every object is moved into `ate-system`.
+- [x] CRDs (`workerpools`, `sandboxconfigs`, `csidriverconfigs`) + `role.yaml`.
+- [x] `ate-otel-config`: no collector; `OTEL_TRACES_SAMPLER=always_off`,
+      `OTEL_METRIC_EXPORT_INTERVAL=3600000`. Exports are hard-wired to
+      `localhost:4317` and fail quietly. Phase 6: a collector -> Prometheus.
+- [x] Postgres StatefulSet, local-path PVC 20Gi, 250m/512Mi requests. TLS
+      via pod certs; the DSN "Secret" `ate-api-server-secret-envvars` has
+      no password (clientcert auth), so it lives in git.
+- [x] `pod-certificate-controller` (ns `podcertificate-controller-system`).
+- [x] `ate-api-server` + headless Service `api.ate-system.svc:443`, S3 env
+      via `envFrom rustfs-s3-credentials`; `--egress-gateway-address`
+      dropped (no atenet-egress deployed => egress allow-all). Auth config
+      `ate-api-authentication`: issuer
+      `https://kubernetes.default.svc.cluster.local`, audience `api.ate-system.svc`.
+- [x] `ate-controller`.
+- [x] `atelet` DaemonSet named `atelet` (upstream `atelet-<version>` keyed by
+      an `ate.dev/substrate-version` node label for blue/green; dropped, ArgoCD
+      rolls it), hostPorts 8085/9090 (free on all nodes), S3 env,
       `--gcp-auth-for-image-pulls=false`.
-- [ ] `atenet-router` Deployment + Service; CoreDNS hook for
-      `*.actors.resources.substrate.ate.dev`.
-- [ ] `sandboxconfig-validation.yaml` + `SandboxConfig gvisor-default`
-      (upstream pins `gs://gvisor/releases/nightly/2026-09-02/<arch>/gvisor.tar.zstd`
-      in `manifests/ate-install/sandboxconfig-gvisor.yaml`; keep that exact
-      URL, it is the build verified in Phase 0).
-- [ ] `WorkerPool` (gvisor class, `replicas: 2-4`, cpu/mem requests sized
-      for the nodes). No GPU pool: desg0's GPU is fully used by SGLang.
-      All three kernels passed the gVisor checkpoint/restore test, so no
-      nodeSelector is needed.
-- [ ] `git add` the new env file (flake eval needs it tracked), run
-      `nixidy build .#prod`, push, let ArgoCD sync.
-- [ ] Package `kubectl-ate` in `pkgs/kubectl-ate` (buildGoModule) and add
-      it to `home/meshify.nix`.
-- [ ] Smoke test: `kubectl ate create atespace demo`, create the counter
-      demo actor, suspend, resume, confirm the snapshot lands in rustfs.
+- [x] `atenet-router` (+ envoy sidecar) and CoreDNS rewrite of
+      `*.actors.resources.substrate.ate.dev` -> `atenet-router.ate-system.svc`
+      via k3s's `kube-system/coredns-custom` ConfigMap (`.override` key).
+- [x] `SandboxConfig gvisor-default` (upstream nightly 2026-09-02 tarball, the
+      build verified in Phase 0) + ValidatingAdmissionPolicy. Annotated
+      `SkipDryRunOnMissingResource=true` (CRD ships in the same app).
+- [x] `WorkerPool ate-system/gvisor`: 3 replicas, 1-4 CPU / 4Gi per worker,
+      `workerImage` ateom-gvisor, label `workload: gvisor`; no node pinning.
+- [x] Bootstrap oneshot `substrate-bootstrap` in `hosts/de-msa2/substrate.nix`:
+      creates the namespaces and, if missing, the four generated pools with
+      `kubectl-ate admin make-ca-pool/make-jwt-pool`
+      (`podcertificate-controller-system/{service-dns,pod-identity}-ca-pool`,
+      `ate-system/{actor-id-ca-pool,actor-id-jwt-pool}`). Never rotates.
+- [x] `kubectl-ate`: part of `.#agent-substrate`, added to `home/meshify.nix`
+      (`~/.kube/config` exists on meshify).
+- [x] Images rebuilt with `/ko-app/<name>` (upstream `command:` paths) and
+      the `demos/counter` smoke-test image; re-pushed, digests below.
+
+Deploy (in order):
+1. Commit + push (`env/substrate.nix`, `hosts/de-msa2/substrate.nix`,
+   `manifests/prod/substrate/`, `manifests/prod/apps/Application-substrate.yaml`).
+2. de-msa2: `nixos-rebuild switch`; `systemctl status substrate-bootstrap`
+   must show the four pools created; `kubectl -n ate-system get secret`.
+3. ArgoCD syncs `substrate`. Expected order of readiness:
+   podcertificate-controller -> ClusterTrustBundles
+   (`kubectl get clustertrustbundles`) -> postgres -> ate-api-server ->
+   ate-controller / atenet-router / atelet -> WorkerPool workers
+   (`kubectl -n ate-system get workerpool gvisor`).
+4. Smoke test from meshify (`kubectl ate ...`, `manifests/ax/` later):
+   - `kubectl ate create atespace demo`
+   - ActorTemplate from upstream `demos/counter/counter-template.yaml.tmpl`
+     with image `de-msa2:2999/mathiswellmann/counter:dc1f263076d1`,
+     `workerSelector.matchLabels.workload: gvisor`,
+     `storageLocation: gs://ate-snapshots/demo/` (scheme is ignored, the
+     host is the bucket), `configName: gvisor-default`.
+   - create actor, hit it, `suspend`, `resume`, check the count continued
+     and `s5cmd ls s3://ate-snapshots/demo/` on de-msa2 shows the snapshot.
 - [ ] Add `ate-system` pods to Prometheus scrape targets / alerts in
-      `hosts/de-msa2/prometheus.nix` if they expose metrics.
+      `hosts/de-msa2/prometheus.nix` (atelet/ateapi/atenet expose :9090
+      `/metrics`, annotated `prometheus.io/scrape`).
 
 ## Phase 3: AX control plane (`env/ax.nix`, namespace `ax-system`)
 
@@ -283,15 +320,17 @@ manifests/prod result`) before pushing.
 |-----------|-----------------|--------------|
 | substrate | `dc1f263076d1575c0562c71d763edd0a0342fd68` (2026-09-21), tag `dc1f263076d1` | see below |
 
-Substrate images, `de-msa2:2999/mathiswellmann/<name>:dc1f263076d1`, pushed
-2026-09-22 (pulled with `k3s crictl` on de-msa2):
+Substrate images, `de-msa2:2999/mathiswellmann/<name>:dc1f263076d1`, re-pushed
+2026-09-22 after adding `/ko-app/<name>` and the counter demo (the first
+push of the day had different digests; tags were overwritten):
 
 | Image | sha256 |
 |-------|--------|
-| ateapi | `120bf301a0aa693d02861ae427f89bd0e7818e825bafceba31e0d99ed8cb168e` |
-| atecontroller | `1e9a061d097c308b39e8ba9f26e525ac5cb2ca41f9280204ce7b13ee13c7dd56` |
-| atelet | `84fda7fd69e06431999f9e96e2e4a878582e1648dcdd52fa8ee844cfe6405757` |
-| atenet | `7dfb5757da222462cada0f47c2b8965699e40624c8bf84ee71e9b793dc6ba1ff` |
-| ateom-gvisor | `15b42117bed4f57c91a1a9b9e0a82334435e239b3a86c42d11ca66115dc78f25` |
-| podcertcontroller | `8bbcaba4c12bb101e8cf1d3f02fb688ede71391c911dca3af614fd92ac9f6025` |
+| ateapi | `b4956a712dd3ddf55c8342299e14fff6f51df899d01c4b93e2e917a33e3a51c7` |
+| atecontroller | `7584a3688dcee4c8e653e4ac497e123e7f4630ae017bb1239a17fc94b02252d2` |
+| atelet | `28ac23e3b64e65cfa26e500eb216553cd2dcd9f2e9aca9e27f6c2dd43f3bedab` |
+| atenet | `36936e2acbb6114c45d1df600259587cb352bb3109d3315edc9524241e30d1f2` |
+| ateom-gvisor | `962e66b054d106a268cdb211175433ef4b23f08d87f75af0e0be2a8dd5a3f700` |
+| podcertcontroller | `642e12f75fba9721f37afa476ef4ed3b1e432380eff3d8f1e16cb3ceb407295c` |
+| counter (demo) | `efd521a53515f065b4ed1c9eae44fe8c0e5ceeea08bf6049e7256e4a4457a272` |
 | ax        | | |

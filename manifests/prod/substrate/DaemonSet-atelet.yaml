@@ -1,0 +1,148 @@
+apiVersion: apps/v1
+kind: DaemonSet
+metadata:
+  labels:
+    app: atelet
+    ate.dev/substrate-version: dc1f263076d1
+  name: atelet
+  namespace: ate-system
+spec:
+  selector:
+    matchLabels:
+      app: atelet
+      ate.dev/substrate-version: dc1f263076d1
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9090"
+        prometheus.io/scrape: "true"
+      labels:
+        app: atelet
+        ate.dev/substrate-version: dc1f263076d1
+    spec:
+      containers:
+        - args:
+            - --gcp-auth-for-image-pulls=false
+            - --grpc-server-cred-bundle=/run/podidentity.podcert.ate.dev/credential-bundle.pem
+            - --client-ca-certs=/run/podidentity.podcert.ate.dev/trust-bundle.pem
+            - --ateapi-ca-file=/run/servicedns.podcert.ate.dev/trust-bundle.pem
+            - --drain-delay=0s
+            - --drain-timeout=5m
+          env:
+            - name: ATE_STORAGE_BACKEND
+              value: s3
+            - name: NODE_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: spec.nodeName
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: k8s.namespace.name=$(POD_NAMESPACE),k8s.pod.name=$(POD_NAME),k8s.pod.uid=$(POD_UID),k8s.node.name=$(NODE_NAME),service.instance.id=$(POD_UID)
+          envFrom:
+            - secretRef:
+                name: rustfs-s3-credentials
+          image: de-msa2:2999/mathiswellmann/atelet:dc1f263076d1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          name: atelet
+          ports:
+            - containerPort: 8085
+              hostPort: 8085
+              name: grpc
+            - containerPort: 9090
+              hostPort: 9090
+              name: prometheus
+              protocol: TCP
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readyz
+              port: 9090
+            initialDelaySeconds: 5
+            periodSeconds: 2
+          resources:
+            requests:
+              cpu: 50m
+              memory: 128Mi
+          securityContext:
+            capabilities:
+              drop:
+                - ALL
+            runAsGroup: 0
+            runAsUser: 0
+          volumeMounts:
+            - mountPath: /var/lib/ateom-gvisor
+              name: run-ateom
+            - mountPath: /run/podidentity.podcert.ate.dev
+              name: podidentity
+            - mountPath: /run/servicedns.podcert.ate.dev
+              name: servicedns-ca
+              readOnly: true
+            - mountPath: /var/lib/kubelet/plugins
+              name: kubelet-plugins
+            - mountPath: /var/lib/kubelet/device-plugins
+              name: device-plugins
+            - mountPath: /host/dev
+              name: host-dev
+              readOnly: true
+      priorityClassName: ate-node-critical
+      serviceAccountName: atelet
+      terminationGracePeriodSeconds: 330
+      tolerations:
+        - effect: NoSchedule
+          key: ate.dev/sandboxClass
+          operator: Exists
+      volumes:
+        - hostPath:
+            path: /var/lib/ateom-gvisor
+            type: DirectoryOrCreate
+          name: run-ateom
+        - hostPath:
+            path: /var/lib/kubelet/plugins
+            type: DirectoryOrCreate
+          name: kubelet-plugins
+        - hostPath:
+            path: /var/lib/kubelet/device-plugins
+            type: DirectoryOrCreate
+          name: device-plugins
+        - hostPath:
+            path: /dev
+            type: Directory
+          name: host-dev
+        - name: podidentity
+          projected:
+            sources:
+              - podCertificate:
+                  credentialBundlePath: credential-bundle.pem
+                  keyType: ECDSAP256
+                  signerName: podidentity.podcert.ate.dev/identity
+              - clusterTrustBundle:
+                  labelSelector:
+                    matchLabels:
+                      podcert.ate.dev/canarying: live
+                  path: trust-bundle.pem
+                  signerName: podidentity.podcert.ate.dev/identity
+        - name: servicedns-ca
+          projected:
+            sources:
+              - clusterTrustBundle:
+                  labelSelector:
+                    matchLabels:
+                      podcert.ate.dev/canarying: live
+                  path: trust-bundle.pem
+                  signerName: servicedns.podcert.ate.dev/identity

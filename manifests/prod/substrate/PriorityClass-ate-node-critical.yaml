@@ -1,0 +1,7 @@
+apiVersion: scheduling.k8s.io/v1
+description: Node-local ate components that every actor activation depends on.
+globalDefault: false
+kind: PriorityClass
+metadata:
+  name: ate-node-critical
+value: 1000000000

@@ -47,13 +47,17 @@
     "podcertcontroller"
     "kubectl-ate"
   ];
+  # Upstream's smoke-test actor (demos/counter): an HTTP counter whose
+  # in-memory and on-disk counts must survive suspend/resume. Small, and the
+  # only way to prove the gVisor + snapshot path end to end without ax.
+  demos = ["counter"];
 
   substrate = buildGo127Module {
     pname = "agent-substrate";
     inherit version src;
     # Deps are vendored upstream (vendor/modules.txt); Go uses them as-is.
     vendorHash = null;
-    subPackages = map (c: "cmd/${c}") components;
+    subPackages = map (c: "cmd/${c}") components ++ map (d: "demos/${d}") demos;
     env.CGO_ENABLED = 0;
     ldflags = ["-s" "-w"];
     # Upstream runs e2e suites against a kind cluster; unit tests need network
@@ -70,18 +74,24 @@
   # Tag = short rev so a manifest pin is unambiguous and a bump is a diff.
   tag = builtins.substring 0 12 rev;
 
+  # ko puts the binary at /ko-app/<name>; upstream manifests and demo
+  # ActorTemplates hardcode that path in `command`, so keep it as a symlink.
   mkImage = name:
     dockerTools.buildLayeredImage {
       name = "${registry}/${name}";
       inherit tag;
       contents = [cacert tzdata];
+      extraCommands = ''
+        mkdir -p ko-app
+        ln -s ${substrate}/bin/${name} ko-app/${name}
+      '';
       config = {
-        Entrypoint = ["${substrate}/bin/${name}"];
+        Entrypoint = ["/ko-app/${name}"];
         Env = ["SSL_CERT_FILE=${cacert}/etc/ssl/certs/ca-bundle.crt"];
       };
     };
 
-  imageNames = lib.filter (c: c != "kubectl-ate") components;
+  imageNames = lib.filter (c: c != "kubectl-ate") components ++ demos;
   images = lib.genAttrs imageNames mkImage;
 
   push = writeShellApplication {
@@ -100,5 +110,5 @@
     '';
   };
 in {
-  inherit substrate images push tag;
+  inherit substrate images push tag registry src;
 }

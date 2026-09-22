@@ -1,0 +1,21 @@
+apiVersion: ate.dev/v1alpha1
+kind: WorkerPool
+metadata:
+  annotations:
+    argocd.argoproj.io/sync-options: SkipDryRunOnMissingResource=true
+  labels:
+    workload: gvisor
+  name: gvisor
+  namespace: ate-system
+spec:
+  replicas: 3
+  sandboxClass: gvisor
+  template:
+    resources:
+      limits:
+        cpu: "4"
+        memory: 4Gi
+      requests:
+        cpu: "1"
+        memory: 4Gi
+  workerImage: de-msa2:2999/mathiswellmann/ateom-gvisor:dc1f263076d1

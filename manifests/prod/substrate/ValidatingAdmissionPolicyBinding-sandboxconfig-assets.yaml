@@ -1,0 +1,8 @@
+apiVersion: admissionregistration.k8s.io/v1
+kind: ValidatingAdmissionPolicyBinding
+metadata:
+  name: sandboxconfig-assets
+spec:
+  policyName: sandboxconfig-assets
+  validationActions:
+    - Deny

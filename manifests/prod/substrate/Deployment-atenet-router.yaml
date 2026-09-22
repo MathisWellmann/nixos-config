@@ -1,0 +1,160 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  labels:
+    app: atenet-router
+  name: atenet-router
+  namespace: ate-system
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: atenet-router
+  template:
+    metadata:
+      annotations:
+        prometheus.io/port: "9090"
+        prometheus.io/scrape: "true"
+      labels:
+        app: atenet-router
+    spec:
+      containers:
+        - args:
+            - router
+            - --mode=ingress
+            - --namespace=ate-system
+            - --port-http=8080
+            - --port-xds=18000
+            - --port-extproc=50051
+            - --extproc-address=127.0.0.1
+            - --status-port=4040
+            - --port-https=8443
+            - --envoy-cert-path=/run/servicedns.podcert.ate.dev/credential-bundle.pem
+            - --port-connect=8081
+            - --port-connect-tls=8444
+            - --ateapi-address=k8s:///api.ate-system.svc:443
+            - --ateapi-ca-file=/run/servicedns-ca/trust-bundle.pem
+            - --ateapi-client-cert=/run/podidentity.podcert.ate.dev/credential-bundle.pem
+            - --drain-delay=13s
+          env:
+            - name: POD_NAME
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.name
+            - name: POD_NAMESPACE
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.namespace
+            - name: POD_UID
+              valueFrom:
+                fieldRef:
+                  fieldPath: metadata.uid
+            - name: OTEL_RESOURCE_ATTRIBUTES
+              value: k8s.namespace.name=$(POD_NAMESPACE),k8s.pod.name=$(POD_NAME),k8s.pod.uid=$(POD_UID),service.instance.id=$(POD_UID)
+          envFrom:
+            - configMapRef:
+                name: ate-otel-config
+          image: de-msa2:2999/mathiswellmann/atenet:dc1f263076d1
+          livenessProbe:
+            httpGet:
+              path: /healthz
+              port: 9090
+            initialDelaySeconds: 10
+            periodSeconds: 10
+          name: atenet-router
+          ports:
+            - containerPort: 18000
+              name: xds
+            - containerPort: 50051
+              name: extproc
+            - containerPort: 4040
+              name: status
+            - containerPort: 9090
+              name: metrics
+          readinessProbe:
+            failureThreshold: 3
+            httpGet:
+              path: /readyz
+              port: 9090
+            initialDelaySeconds: 5
+            periodSeconds: 2
+          volumeMounts:
+            - mountPath: /run/podidentity.podcert.ate.dev
+              name: podidentity
+            - mountPath: /run/servicedns-ca
+              name: servicedns-ca
+            - mountPath: /var/run/atenet
+              name: drain-signal
+        - command:
+            - /usr/local/bin/envoy
+            - -c
+            - /etc/envoy/envoy.yaml
+            - --component-log-level
+            - upstream:debug,router:debug,ext_proc:debug
+          image: envoyproxy/envoy:v1.39-latest@sha256:57e14a549d7bd43c8d3f6d03e8cfa653e037d4b38e133acd9b54f38c524401b4
+          lifecycle:
+            preStop:
+              exec:
+                command:
+                  - sh
+                  - -c
+                  - while [ ! -f /var/run/atenet/drain-complete ]; do sleep 0.5; done
+          name: envoy
+          ports:
+            - containerPort: 8080
+              name: http
+            - containerPort: 8443
+              name: https
+            - containerPort: 8081
+              name: connect
+            - containerPort: 8444
+              name: connect-tls
+            - containerPort: 9901
+              name: admin
+          volumeMounts:
+            - mountPath: /etc/envoy
+              name: envoy-config
+            - mountPath: /run/servicedns.podcert.ate.dev
+              name: servicedns
+            - mountPath: /run/podidentity.podcert.ate.dev
+              name: podidentity
+            - mountPath: /var/run/atenet
+              name: drain-signal
+              readOnly: true
+      serviceAccountName: atenet-router
+      terminationGracePeriodSeconds: 60
+      volumes:
+        - configMap:
+            name: atenet-router-envoy-config
+          name: envoy-config
+        - emptyDir: {}
+          name: drain-signal
+        - name: servicedns
+          projected:
+            sources:
+              - podCertificate:
+                  credentialBundlePath: credential-bundle.pem
+                  keyType: ECDSAP256
+                  signerName: servicedns.podcert.ate.dev/identity
+        - name: podidentity
+          projected:
+            sources:
+              - podCertificate:
+                  credentialBundlePath: credential-bundle.pem
+                  keyType: ECDSAP256
+                  signerName: podidentity.podcert.ate.dev/identity
+              - clusterTrustBundle:
+                  labelSelector:
+                    matchLabels:
+                      podcert.ate.dev/canarying: live
+                  path: trust-bundle.pem
+                  signerName: podidentity.podcert.ate.dev/identity
+        - name: servicedns-ca
+          projected:
+            sources:
+              - clusterTrustBundle:
+                  labelSelector:
+                    matchLabels:
+                      podcert.ate.dev/canarying: live
+                  path: trust-bundle.pem
+                  signerName: servicedns.podcert.ate.dev/identity

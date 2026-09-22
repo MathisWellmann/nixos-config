@@ -1,0 +1,58 @@
+apiVersion: v1
+data:
+  pg_hba.conf: |
+    # Local socket access is limited to processes in this pod and is used by
+    # health checks, the workload's idempotent database bootstrap, and the
+    # tls-reloader sidecar's configuration reloads.
+    local all all trust
+    # PostgreSQL verifies client certificates against the pod-identity CA. It
+    # does not need its own serving CA because it never verifies its server certificate.
+    hostssl all all all trust clientcert=verify-ca
+  postgresql.conf: |
+    listen_addresses = '*'
+    ssl = on
+    ssl_cert_file = '/run/servicedns.podcert.ate.dev/credential-bundle.pem'
+    ssl_key_file = '/run/servicedns.podcert.ate.dev/credential-bundle.pem'
+    ssl_ca_file = '/run/podidentity.podcert.ate.dev/trust-bundle.pem'
+    hba_file = '/etc/postgresql/pg_hba.conf'
+  reload-tls.sh: |
+    # PostgreSQL opens ssl_cert_file, ssl_key_file and ssl_ca_file at startup
+    # and on SIGHUP, and nowhere else. The kubelet replaces the projected pod
+    # certificate in place about 30 minutes before it expires, so without this
+    # loop the server keeps presenting the certificate it booted with until it
+    # expires about a day later and every client stops trusting it.
+    set -eu
+
+    # As PID 1 this shell only sees SIGTERM if a handler is installed, and only
+    # acts on it between commands, so the sleep below runs in the background
+    # and is waited on. Without both halves the pod takes the full termination
+    # grace period to go away.
+    trap 'exit 0' TERM INT
+
+    CERT=/run/servicedns.podcert.ate.dev/credential-bundle.pem
+    CA=/run/podidentity.podcert.ate.dev/trust-bundle.pem
+
+    # Comfortably inside the 30m headroom (notAfter - beginRefreshAt) that
+    # cmd/podcertcontroller/internal/servicednssigner/servicednssigner.go
+    # leaves; hashing two small files costs nothing.
+    INTERVAL=60
+
+    reloaded=""
+    while true; do
+      current="$(sha256sum "${CERT}" "${CA}")"
+      # Reloading fails until the server is accepting connections, which is
+      # where every pod starts out, so only record a hash once it has worked.
+      # Starting empty also means a restart of this container costs one
+      # redundant reload rather than a missed one.
+      if [ "${current}" != "${reloaded}" ] \
+        && psql -U postgres -d postgres -Atc 'SELECT pg_reload_conf()' >/dev/null 2>&1; then
+        reloaded="${current}"
+        echo "$(date -u +%FT%TZ) reloaded TLS configuration"
+      fi
+      sleep "${INTERVAL}" &
+      wait $!
+    done
+kind: ConfigMap
+metadata:
+  name: postgres-config
+  namespace: ate-system

@@ -1,4 +1,9 @@
-{lib, ...}: let
+{
+  inputs,
+  lib,
+  pkgs,
+  ...
+}: let
   global_const = import ../global_constants.nix;
   wallpaper = "~/wallpaper_vertical_animated_1080_1920_25fps_orange_blue.mp4";
 in {
@@ -10,6 +15,14 @@ in {
 
   # DeepSeek Harness (`dsh`), pointed at the vLLM server on `desg0`.
   programs.deepseek-harness.enable = true;
+
+  home.packages = [
+    # Agent Substrate operator CLI (`kubectl-ate`, docs/ax_stack_todo.md).
+    # It port-forwards to ate-api-server itself; needs a kubeconfig for the
+    # k3s cluster (~/.kube/config, copy of de-msa2:/etc/rancher/k3s/k3s.yaml
+    # with the server set to https://192.168.0.14:6443).
+    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.agent-substrate
+  ];
 
   wayland.windowManager.hyprland = {
     settings = {
