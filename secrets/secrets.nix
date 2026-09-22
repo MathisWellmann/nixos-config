@@ -9,6 +9,9 @@ let
   # It has no per-user key pair, so only the host key is a recipient; rekey
   # from de-msa2 or desg0, which do hold user identities.
   system_de_n5 = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIO8Ea4zf+zxU0JZVppnFFLofPlQnzM6W039msFPiSPu+";
+
+  user_meshify = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTrWy6E9iG8lVS1LjISAczHxRHN34mdT9bF1zg6Yh6p";
+  system_meshify = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEhdjm6ONHJT5jXHXz04e6AMEXgsTZmTN7W3VleQObkj";
 in {
   "k3s_token.age" = {
     publicKeys = [
@@ -75,6 +78,17 @@ in {
     publicKeys = [
       user_de_msa2
       system_de_msa2
+    ];
+    armor = true;
+  };
+  # Bearer token of the `meshify-admin` ServiceAccount (env/cluster_access.nix),
+  # read by meshify's ~/.kube/k3s.yaml via `tokenFile`. de-msa2's user key is a
+  # recipient so it can rekey like every other secret.
+  "k3s_meshify_admin_token.age" = {
+    publicKeys = [
+      user_meshify
+      system_meshify
+      user_de_msa2
     ];
     armor = true;
   };

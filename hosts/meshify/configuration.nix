@@ -52,7 +52,19 @@ in {
   };
   systemd.services."modprobe@".serviceConfig.ExecStart = lib.mkForce "-${pkgs.kmod}/sbin/modprobe -abq %i";
 
-  age.identityPaths = ["/home/${global_const.username}/.ssh/magewe_meshify"];
+  age = {
+    # agenix skips identities that are not present.
+    identityPaths = [
+      "/etc/ssh/ssh_host_ed25519_key"
+      "/home/${global_const.username}/.ssh/magewe_meshify"
+    ];
+    # Token for ~/.kube/k3s.yaml (home/meshify.nix, env/cluster_access.nix).
+    secrets.k3s_meshify_admin_token = {
+      file = ../../secrets/k3s_meshify_admin_token.age;
+      owner = global_const.username;
+      mode = "0400";
+    };
+  };
 
   networking = {
     hostName = "${hostname}";
