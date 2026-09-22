@@ -214,6 +214,14 @@
             drv = import scripts/hf_stars.nix {inherit pkgs;};
           })
           // {meta.description = "List starred Hugging Face repositories";};
+        ax_apply =
+          (inputs.flake-utils.lib.mkApp {
+            drv = import scripts/ax_apply.nix {
+              inherit pkgs;
+              inherit (self.packages.${system}) ax;
+            };
+          })
+          // {meta.description = "Apply ax Gateways/Workspaces/Tasks from manifests/ax";};
       };
     };
   };
