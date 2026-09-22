@@ -1,0 +1,24 @@
+# Workspace backed by a repo on the fleet's Forgejo (de-msa2).
+#
+# The clone URL goes through traefik (fleet CA is baked into the task-runner
+# image) because pods resolve forgejo.k3s.lan via the coredns-custom
+# `.server` block; `de-msa2` and other *.k3s.lan names do not resolve in pods.
+# Fallback if DNS inside the sandbox ever breaks:
+# http://192.168.0.14:2999/MathisWellmann/monty-persona.git
+#
+# No `goal`, no MCP/skills registries: those need Gemini / Google registries
+# (Phase 0 decision, see docs/ax_stack_todo.md).
+apiVersion: ax.io/v1alpha1
+kind: Workspace
+metadata:
+  name: monty-persona
+  atespace: default
+spec:
+  git:
+    - name: origin
+      repo: "https://forgejo.k3s.lan/MathisWellmann/monty-persona.git"
+      branch: "main"
+      # Clone into the workspace root (= the Task command's working dir).
+      # Default is <workspace path>/<repo name>, i.e.
+      # /workspace/monty-persona/monty-persona.
+      dir: "."
