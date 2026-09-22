@@ -40,6 +40,12 @@ in {
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.hf # Hugging Face `hf` CLI
     inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.archify # Archify architecture diagram CLI
     inputs.rustgrep.packages.${pkgs.stdenv.hostPlatform.system}.default
+    # Agent Substrate operator CLI (`kubectl-ate`, docs/ax_stack_todo.md).
+    # It port-forwards to ate-api-server itself with the fleet kubeconfig:
+    # `KUBECONFIG=~/.kube/k3s.yaml kubectl ate ...`.
+    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.agent-substrate
+    # `ax` CLI; finds ax-server through the kube context (tunnel) or $AX_SERVER.
+    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.ax
 
     # Fonts
     terminus_font

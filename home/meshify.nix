@@ -50,15 +50,6 @@ in {
   # DeepSeek Harness (`dsh`), pointed at the vLLM server on `desg0`.
   programs.deepseek-harness.enable = true;
 
-  home.packages = [
-    # Agent Substrate operator CLI (`kubectl-ate`, docs/ax_stack_todo.md).
-    # It port-forwards to ate-api-server itself with the fleet kubeconfig:
-    # `KUBECONFIG=~/.kube/k3s.yaml kubectl ate ...`.
-    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.agent-substrate
-    # `ax` CLI; finds ax-server through the kube context (tunnel) or $AX_SERVER.
-    inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.ax
-  ];
-
   home.file.".kube/k3s.yaml".source = k3sKubeconfig;
 
   wayland.windowManager.hyprland = {
