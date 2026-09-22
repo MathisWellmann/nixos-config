@@ -300,9 +300,10 @@ Smoke test **passed 2026-09-22** (counter demo): template golden snapshot ->
       existing `ScrapeTargetDown` alert covers all of them. Needs a de-msa2
       switch; verify at http://de-msa2:9003/targets (or `up{job=~"ate.*|atelet|atenet-router"}`).
 
-## Phase 3: AX control plane (`env/ax.nix`, namespace `ax-system`)
+## Phase 3: AX control plane (`env/ax.nix`, namespace `ax-system`) -- DONE 2026-09-22
 
-Config done 2026-09-22 (upstream `d8ed0fe38bce`, 2026-09-19), deploy pending.
+Config done 2026-09-22 (upstream `d8ed0fe38bce`, 2026-09-19), deployed the
+same day.
 
 - [x] `pkgs/ax/default.nix`: buildGoModule of `cmd/{ax,ax-server,ax-controller,ax-task-runner}`
       (`vendorHash`, deps not vendored), images + OCI layouts + digests +
@@ -332,10 +333,22 @@ Config done 2026-09-22 (upstream `d8ed0fe38bce`, 2026-09-19), deploy pending.
       `ax.k3s.lan` in `modules/base_system.nix` hosts. The CLI itself uses
       its kubectl tunnel (`ax ctx`) or `$AX_SERVER`.
 - [x] `ax` CLI in `home/meshify.nix`.
-- [ ] Deploy: push, ArgoCD syncs `ax`; check `kubectl -n ax-system get pods`,
-      ax-controller log shows it connected to Substrate (no TLS/auth errors).
-- [ ] Smoke test from meshify: `KUBECONFIG=~/.kube/k3s.yaml ax ctx`,
-      `ax get tasks`.
+- [x] Deploy: ArgoCD `ax` Synced/Healthy; `ax-server`, `ax-controller`,
+      `ax-redis` Running on desg0 with 0 restarts. The controller logs one
+      Redis "connection refused" at startup (it starts before Redis), then
+      reconnects and blocks in `XREADGROUP` on the task stream. It only
+      talks to Substrate when a Task is reconciled, so the first Phase 4
+      Task is what proves that path.
+- [x] Smoke test: `ax get tasks|gateways|workspaces|models` all answer
+      (empty). meshify was not ready for the planned `ax ctx` path: `ax` not
+      on PATH (home-manager not switched), no fleet kubeconfig
+      (`~/.kube/config` is only a local k3d cluster, `~/.kube/k3s.yaml`
+      does not exist), and `ax.k3s.lan` does not resolve (meshify not
+      switched). Tested through an SSH tunnel to the ax-server ClusterIP
+      instead: `ssh -f -N -L 18080:<clusterIP>:8080 de-msa2` +
+      `AX_SERVER=localhost:18080 ax get tasks`. The ax CLI needs `kubectl`
+      on PATH for its own tunnels (`ax ctx`, and `ax ssh` port-forwards
+      `svc/atenet-router`), so Phase 4 drives it from de-msa2.
 
 ## Phase 4: AX objects (not GitOps-managed; live in ax's Redis)
 
