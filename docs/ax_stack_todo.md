@@ -302,23 +302,40 @@ Smoke test **passed 2026-09-22** (counter demo): template golden snapshot ->
 
 ## Phase 3: AX control plane (`env/ax.nix`, namespace `ax-system`)
 
-- [ ] Build and push `ax-server`, `ax-controller` and the `ax-task-runner`
-      image with `ko` to Forgejo. Record digests + upstream commit.
-- [ ] New nixidy app `applications.ax` imported from `env/prod.nix`.
-- [ ] Redis Deployment + Service (from `deploy/redis.yaml`).
-- [ ] `ax-server` Deployment + Service (gRPC :8080, `/healthz`), configured
-      with the Substrate address `api.ate-system.svc.cluster.local:443`.
-- [ ] `ax-controller` Deployment + RBAC, with the Substrate bearer token
-      (`ate-token` Secret) and CA (`servicedns-ca`) mounted as in
-      `deploy/ax-controller.yaml`, `ATENET_ROUTER_ADDR` set.
+Config done 2026-09-22 (upstream `d8ed0fe38bce`, 2026-09-19), deploy pending.
+
+- [x] `pkgs/ax/default.nix`: buildGoModule of `cmd/{ax,ax-server,ax-controller,ax-task-runner}`
+      (`vendorHash`, deps not vendored), images + OCI layouts + digests +
+      `refs` like agent-substrate; `.#ax` (CLI), `.#ax-push-images`.
+      Patch `default-task-image-env.patch`: `AX_DEFAULT_TASK_IMAGE` env
+      overrides upstream's hardcoded GCR runner image (candidate upstream PR).
+- [x] Task-runner image without Antigravity/Python (no `goal` support, see
+      Phase 0): git, ssh, curl, bash, coreutils, fleet CA, `/usr/local/bin/ax-task-runner`,
+      `/workspace`, `/tmp`. Referenced as
+      `forgejo.k3s.lan/mathiswellmann/ax-task-runner@sha256:...` (atelet pull
+      path, see Phase 2). Phase 5 replaces it with a dsh/pi image.
+- [x] `applications.ax` in `env/prod.nix`; `compareOptions.serverSideDiff`
+      (clusterTrustBundle volume). Rendered to `manifests/prod/ax/`.
+- [x] Redis Deployment + Service (`redis:7-alpine` pinned, emptyDir).
+- [x] `ax-server` Deployment + Service :8080.
+- [x] `ax-controller` Deployment + RBAC as upstream (`ate-token` projected SA
+      token, audience `api.ate-system.svc`; `servicedns-ca` trust bundle;
+      `ATENET_ROUTER_ADDR`), plus `AX_SNAPSHOTS_BUCKET=gs://ate-snapshots/ax/`
+      and `AX_DEFAULT_TASK_IMAGE`. ate-api-server does not enforce authz yet
+      (TODOs in `controlapi/actor.go`), so the SA token is accepted.
+      The controller creates atespaces itself; per-task ActorTemplates carry
+      no `workerSelector` (= any worker) and no resource limits.
 - [-] `gemini-api-secret`: not needed (Phase 0 decision: no Gemini, no
       `goal`). Revisit only if Phase 5's OpenAI-compatible provider lands.
-- [ ] Ingress `ax.k3s.lan` -> ax-server with the fleet `k3s-lan-ca` cert,
-      annotated for the homepage dashboard (`gethomepage.dev/*`).
-- [ ] Package the `ax` CLI in `pkgs/ax` (buildGoModule of `cmd/ax`) and
-      expose it as `packages.x86_64-linux.ax` in `flake.nix`; add to
-      `home/meshify.nix`.
-- [ ] Smoke test from meshify: `ax ctx`, `ax get tasks`.
+- [x] Ingress `ax.k3s.lan` -> ax-server (traefik `serversscheme: h2c`,
+      fleet cert, homepage annotations + `/healthz` siteMonitor);
+      `ax.k3s.lan` in `modules/base_system.nix` hosts. The CLI itself uses
+      its kubectl tunnel (`ax ctx`) or `$AX_SERVER`.
+- [x] `ax` CLI in `home/meshify.nix`.
+- [ ] Deploy: push, ArgoCD syncs `ax`; check `kubectl -n ax-system get pods`,
+      ax-controller log shows it connected to Substrate (no TLS/auth errors).
+- [ ] Smoke test from meshify: `KUBECONFIG=~/.kube/k3s.yaml ax ctx`,
+      `ax get tasks`.
 
 ## Phase 4: AX objects (not GitOps-managed; live in ax's Redis)
 
@@ -379,7 +396,7 @@ Smoke test **passed 2026-09-22** (counter demo): template golden snapshot ->
 | Component | Upstream commit | Image digest |
 |-----------|-----------------|--------------|
 | substrate | `dc1f263076d1575c0562c71d763edd0a0342fd68` (2026-09-21), tag `dc1f263076d1` | see below |
-| ax        | | |
+| ax        | `d8ed0fe38bceb7842d3c47817d53d16ccdfcb601` (2026-09-19), tag `d8ed0fe38bce` | pinned in `manifests/prod/ax/*.yaml` |
 
 Substrate image digests are pinned in the rendered manifests
 (`grep -h 'image:\|workerImage:' manifests/prod/substrate/*.yaml`) and computed
