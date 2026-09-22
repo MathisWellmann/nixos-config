@@ -31,8 +31,8 @@ spec:
             - name: AX_SNAPSHOTS_BUCKET
               value: gs://ate-snapshots/ax/
             - name: AX_DEFAULT_TASK_IMAGE
-              value: forgejo.k3s.lan/mathiswellmann/ax-task-runner@sha256:0400c973991c1e6b1d29649a734f9778122da76713cae8c8f8ebd2aae18585eb
-          image: de-msa2:2999/mathiswellmann/ax-controller:d8ed0fe38bce@sha256:bc35625c054ad63d6d3bab3fa68abbad293907925125e449291f93abf5bdb89b
+              value: forgejo.k3s.lan/mathiswellmann/ax-task-runner@sha256:1e2c8379cff632b01844f31d26d6bf3c33b9607fe1803a657726e9170e10252f
+          image: de-msa2:2999/mathiswellmann/ax-controller:d8ed0fe38bce@sha256:048cce3548d0ad174892a87aa66c5b0f2f128d185e87bb6c2d88f15dd5dfc31c
           name: controller
           resources:
             limits:

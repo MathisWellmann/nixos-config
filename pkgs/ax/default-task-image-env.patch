@@ -1,17 +1,41 @@
+diff --git a/internal/controller/reconciler.go b/internal/controller/reconciler.go
+index 31c399b..40dcbbc 100644
+--- a/internal/controller/reconciler.go
++++ b/internal/controller/reconciler.go
+@@ -108,7 +108,7 @@ func (r *TaskReconciler) Reconcile(ctx context.Context, task *v1alpha1.Task, gat
+ 		task.Spec = &v1alpha1.TaskSpec{}
+ 	}
+ 	if task.Spec.Image == "" {
+-		task.Spec.Image = v1alpha1.DefaultTaskImage
++		task.Spec.Image = substrate.DefaultImage()
+ 	}
+ 
+ 	slog.Info("reconciling task", "name", task.Metadata.Name, "atespace", atespace, "image", task.Spec.Image)
 diff --git a/internal/substrate/client.go b/internal/substrate/client.go
-index bacb078..aaebfa6 100644
+index bacb078..a4add7f 100644
 --- a/internal/substrate/client.go
 +++ b/internal/substrate/client.go
-@@ -215,7 +215,11 @@ func BuildActorTemplate(atespace, name, image string, envMap map[string]string,
+@@ -209,13 +209,22 @@ const (
+ 	DefaultSnapshotsBucket = "gs://snapshot-substrate-test-ax-substrate/ate-env/"
+ )
+ 
++// DefaultImage returns the task image used when a Task sets no spec.image:
++// $AX_DEFAULT_TASK_IMAGE if set, otherwise v1alpha1.DefaultTaskImage.
++func DefaultImage() string {
++	if image := os.Getenv("AX_DEFAULT_TASK_IMAGE"); image != "" {
++		return image
++	}
++	return v1alpha1.DefaultTaskImage
++}
++
+ // BuildActorTemplate constructs a Substrate ActorTemplate based on the standard ate-env specification.
+ func BuildActorTemplate(atespace, name, image string, envMap map[string]string, command []string, snapshotsBucket string) *ateapipb.ActorTemplate {
+ 	if atespace == "" {
  		atespace = "default"
  	}
  	if image == "" {
 -		image = v1alpha1.DefaultTaskImage
-+		if envImage := os.Getenv("AX_DEFAULT_TASK_IMAGE"); envImage != "" {
-+			image = envImage
-+		} else {
-+			image = v1alpha1.DefaultTaskImage
-+		}
++		image = DefaultImage()
  	}
  	if len(command) == 0 {
  		command = []string{DefaultGuestCommand}
