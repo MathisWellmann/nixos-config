@@ -73,6 +73,7 @@ in {
     ipmitool
     nvme-cli
     cloudflared
+    kubectl # Also what `ax`/`kubectl-ate` tunnel through; fleet config on meshify: `KUBECONFIG=~/.kube/k3s.yaml`
     jjui # terminal user interface for working with jujutsu VSC
     typespeed
     sequoia-sq # `sq` re-implementation of gpg
