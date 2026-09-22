@@ -1,0 +1,41 @@
+# Egress allowlist for tasks that talk to the self-hosted LLM.
+#
+# These are ax API objects, not Kubernetes objects: they live in ax's Redis
+# and are applied with `ax apply -f` (see scripts/ax_apply.sh). ArgoCD only
+# renders manifests/prod/, so nothing here is picked up by GitOps.
+#
+# Caveats (ax d8ed0fe38bce, substrate dc1f263076d1):
+# - ax drops `port`: only host patterns and CIDRs reach Substrate's
+#   EgressPolicy (internal/substrate/client.go:ApplyEgressPolicy).
+# - Substrate only enforces EgressPolicy through an egress gateway
+#   (`--egress-gateway-address` on ate-api-server + atenet-egress). The fleet
+#   deploys neither, so this list is recorded but NOT enforced yet: egress
+#   from the sandbox is allow-all.
+# - Pods cannot resolve *.k3s.lan (except forgejo.k3s.lan, via coredns-custom)
+#   or Tailscale names, so LAN services are listed by IP.
+# - `listeners` are informational only (shown by `ax describe gateway`).
+apiVersion: ax.io/v1alpha1
+kind: Gateway
+metadata:
+  name: lan-llm
+  atespace: default
+spec:
+  listeners:
+    - name: runner
+      port: 80
+      protocol: HTTP
+  egress:
+    allowlist:
+      hosts:
+        # desg0: SGLang on qwen3_port (hosts/desg0/constants.nix).
+        - host: "192.168.0.13/32"
+          port: 8000
+        # de-msa2: Forgejo HTTP (2999) and traefik ingress (443).
+        - host: "192.168.0.14/32"
+          port: 2999
+        - host: "forgejo.k3s.lan"
+          port: 443
+        - host: "github.com"
+          port: 443
+        - host: "*.githubusercontent.com"
+          port: 443
