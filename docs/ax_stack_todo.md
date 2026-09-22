@@ -360,6 +360,15 @@ Smoke test **passed 2026-09-22** (counter demo): template golden snapshot ->
       bucket as ephemeral.
 - [ ] Resource limits and WorkerPool size tuned after the first real load.
 - [ ] Alert on `ate-system` / `ax-system` pods down (Prometheus).
+      (`ate-system` is covered by `ScrapeTargetDown` since the Phase 2 scrape
+      jobs; `ax-system` once Phase 3 adds its jobs.)
+- [ ] Reproducible Grafana dashboard for the stack (provisioned from this
+      repo like the other dashboards in `hosts/de-msa2/grafana.nix`, not
+      clicked together in the UI): atelet per node (sandbox count, image
+      cache, snapshot durations), ate-api-server RPC rates/errors,
+      atenet-router requests + resume latency, ate-controller reconcile
+      errors, worker pool capacity vs. use, rustfs bucket size; later ax
+      task counts/states. Metric names: `docs/metrics/` upstream.
 - [ ] Update `README.md` service table and the homepage dashboard entries.
 - [ ] Save gotchas found along the way to the maki memory notes.
 
