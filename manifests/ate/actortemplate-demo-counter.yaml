@@ -1,0 +1,37 @@
+metadata:
+  atespace: demo
+  name: counter
+containers:
+- command:
+  - /ko-app/counter
+  image: forgejo.k3s.lan/mathiswellmann/counter@sha256:6625a85c7cbbf2233d745957b11382fa9dc0eedf8e5ab184177e39f3b29c799c
+  name: counter
+  readyz:
+    httpGet:
+      path: /readyz
+      port: 80
+    timeoutSeconds: 30
+  volumeMounts:
+  - mountPath: /home/counter
+    name: data
+resources:
+  limits:
+  - name: cpu
+    quantity: "1"
+  - name: memory
+    quantity: 512Mi
+sandboxConfig:
+  configName: gvisor-default
+  sandboxClass: SANDBOX_CLASS_GVISOR
+snapshotsConfig:
+  onCommit: SNAPSHOT_CONTENT_SCOPE_FULL
+  onPause: SNAPSHOT_CONTENT_SCOPE_FULL
+  onResume:
+    fromData: RESUME_SOURCE_COLD_BOOT
+  storageLocation: gs://ate-snapshots/demo/
+volumes:
+- durableDir: {}
+  name: data
+workerSelector:
+  matchLabels:
+    workload: gvisor

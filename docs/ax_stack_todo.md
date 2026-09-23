@@ -282,15 +282,17 @@ Smoke test **passed 2026-09-22** (counter demo): template golden snapshot ->
 - An actor whose `runsc restore` fails is left in `ACTOR_STATE_RESUMING`
   and cannot be deleted/reverted (`demo/my-counter`, the cross-CPU victim;
   should flip to CRASHED once its worker pod is gone). Upstream gap.
-- kubectl-ate from meshify: `KUBECONFIG=~/.kube/k3s.yaml` (k3s admin config,
-  server `https://100.83.142.17:6443`, `tls-server-name: 192.168.0.14`
-  because the API cert has no tailnet SAN); it port-forwards itself.
-  Template used: `/tmp/ate/counter-template.yaml` on meshify (image
-  `forgejo.k3s.lan/mathiswellmann/counter@<digest>`, `workload: gvisor`,
-  `gs://ate-snapshots/demo/`, `gvisor-default`).
-- [ ] After the Zen-4 pinning is pushed: recreate template `demo/counter`
-      (its golden snapshot may have been taken on de-msa2) and delete
-      `demo/my-counter` once it is CRASHED.
+- kubectl-ate: as m on de-msa2 (`~/.kube/config`) or meshify
+  (`KUBECONFIG=~/.kube/k3s.yaml`); it port-forwards itself.
+  Template: `manifests/ate/actortemplate-demo-counter.yaml` (not
+  GitOps-managed; `kubectl ate create actor-template -f FILE`). Round trip:
+  `kubectl ate create actor my-counter -a demo --template counter`,
+  `kubectl ate resume actor my-counter -a demo`, then through a
+  port-forward of `svc/atenet-router` :80:
+  `curl -H 'ate-target-actor: demo/my-counter' http://127.0.0.1:PORT/`.
+- [x] Recreated template `demo/counter` on the Zen-4-only pool and replaced
+      the CRASHED `demo/my-counter` (2026-09-23). Checked: 3 hits, then
+      suspend -> resume -> memory and file counters continued (3 -> 4).
 - [x] Prometheus (VictoriaMetrics on de-msa2, `hosts/de-msa2/prometheus.nix`
       `substrate_scrape_configs`): k8s pod SD in `ate-system` keyed on the
       upstream `prometheus.io/scrape` annotation -> jobs `atelet` (one target
