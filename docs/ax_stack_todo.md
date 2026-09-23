@@ -316,7 +316,7 @@ same day.
       Phase 0): git, ssh, curl, bash, coreutils, fleet CA, `/usr/local/bin/ax-task-runner`,
       `/workspace`, `/tmp`. Referenced as
       `forgejo.k3s.lan/mathiswellmann/ax-task-runner@sha256:...` (atelet pull
-      path, see Phase 2). Phase 5 replaces it with a dsh/pi image.
+      path, see Phase 2). Phase 5 added `pi` to it (dsh follows).
 - [x] `applications.ax` in `env/prod.nix`; `compareOptions.serverSideDiff`
       (clusterTrustBundle volume). Rendered to `manifests/prod/ax/`.
 - [x] Redis Deployment + Service (`redis:7-alpine` pinned, emptyDir; a
@@ -444,8 +444,8 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
 
 ## Phase 5: Local-model integration
 
-- [ ] Task runner image with `pi` (config done 2026-09-23; needs image push,
-      push `main`, smoke Task). The default runner (`pkgs/ax`) now ships
+- [x] Task runner image with `pi` (deployed 2026-09-23, runner digest
+      `3ffa731d...`). The default runner (`pkgs/ax`) now ships
       `pi` with `/root/.pi/agent/{models,settings}.json`: provider `sglang`
       -> `http://<desg0_ip>:<qwen3_port>/v1`, default model `qwen3Model`
       (`hosts/desg0/constants.nix`), thinking `medium`. Provider compat
@@ -458,7 +458,11 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       de-msa2 (`pi --list-models` shows only sglang; a prompt round trip
       works). The flake builds `pkgs/ax` once (`axBundle`, passed to nixidy
       via `extraSpecialArgs`), so the pushed digest always equals the pin.
-      Smoke Task: `manifests/ax/task-smoke-pi.yaml`.
+      Smoke Task: `manifests/ax/task-smoke-pi.yaml`. Verified on the cluster:
+      pi read the cloned monty-persona repo with its tools and wrote a
+      correct 3-bullet `/workspace/summary.md`. The Task working directory
+      is the cloned repo. ArgoCD polls every 3 min; to sync at once, run
+      `kubectl -n argocd annotate app ax argocd.argoproj.io/refresh=hard --overwrite`.
 - [ ] dsh in the runner image (follow-up; `dsh --profile headless "<task>"`,
       ~500 MB closure, providers via a baked `cordis.patch.yml` like
       `home/deepseek-harness.nix`).

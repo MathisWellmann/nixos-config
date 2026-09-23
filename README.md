@@ -88,6 +88,93 @@ node's tailscale IP through `networking.hosts` in `modules/base_system.nix`.
 `remote_builder.nix` module turns GPU hosts into distributed nix builders over
 SSH.
 
+### 🧪 Sandboxed agent tasks (ax + Agent Substrate)
+
+The cluster runs [google/ax](https://github.com/google/ax) as the task API on
+top of [Agent Substrate](https://github.com/agent-substrate/substrate), which
+runs each task in a gVisor sandbox. A task can be suspended into a snapshot
+and resumed later. Both projects are pre-alpha: every image is built with Nix
+and pinned by digest. Build notes and open items are in
+[`docs/ax_stack_todo.md`](docs/ax_stack_todo.md).
+
+How it fits together:
+
+- **Substrate** (`env/substrate.nix`, `hosts/de-msa2/substrate.nix`): API
+  server, controller, `atelet` and the gVisor worker pool. Workers run only on
+  the Zen-4 nodes (`desg0`, `de-n5`), because golden snapshots must not move
+  between CPU generations. Snapshots go to rustfs (S3).
+- **ax** (`env/ax.nix`, `pkgs/ax/`): `ax-server` (gRPC API), `ax-controller`
+  and Redis in `ax-system`. The API is at `ax.k3s.lan:80` (plaintext h2c
+  through traefik). It is also on the homepage under *AI*.
+- **Default task image**: tasks without `spec.image` run the Nix-built
+  `ax-task-runner`. It ships `git`, `curl`, the fleet CA and the
+  [`pi`](https://pi.dev) coding agent, which is preconfigured for Qwen3.8 on
+  desg0's SGLang (`OPENAI_BASE_URL=http://192.168.0.13:8000/v1`).
+- **ax objects** (`manifests/ax/`): Gateways, Workspaces and Tasks live in
+  ax's Redis, not in Kubernetes. ArgoCD does not apply them. Use `ax_apply`.
+
+#### Client-side usage
+
+Every Home Manager host has the `ax` and `kubectl-ate` CLIs (`home/home.nix`).
+There are two ways to reach the server:
+
+| Where | How ax connects | What works |
+| --- | --- | --- |
+| tensorbook (no fleet kubeconfig) | `AX_SERVER=ax.k3s.lan:80`, set in nushell | `apply`, `get`, `describe`, `watch`, `suspend`, `resume`, `delete` |
+| de-msa2, meshify (as `m`) | port-forward through the fleet kubeconfig (`home/k3s_kubeconfig.nix`) | everything, including `ax ssh` and `kubectl ate` |
+
+`ax ssh` and `kubectl ate` always need a kubeconfig, because they tunnel to
+`atenet-router`. Do not run `ax` with `sudo`: sudo keeps `HOME` and leaves
+root-owned `~/.kube` and `~/.ax` behind. In a shell other than nushell on
+tensorbook, export `AX_SERVER=ax.k3s.lan:80` first.
+
+Apply the shared objects (Gateways, Models, Workspaces), then a Task:
+
+```sh
+nix run .#ax_apply                                    # everything shared in manifests/ax/
+nix run .#ax_apply -- manifests/ax/task-smoke-pi.yaml # one Task
+```
+
+A minimal Task that lets pi work on a cloned repo:
+
+```yaml
+apiVersion: ax.io/v1alpha1
+kind: Task
+metadata:
+  name: smoke-pi
+  atespace: default
+spec:
+  command: [bash, -c, 'pi -p --no-session "Summarize this repo into /workspace/summary.md"']
+  workspaces:
+    - name: monty-persona # cloned into /workspace, the working directory
+  gateway:
+    name: lan-llm         # egress to desg0 (SGLang) and Forgejo
+  debug: true             # needed for `ax ssh`
+```
+
+Watch and inspect it:
+
+```sh
+ax get tasks
+ax watch task smoke-pi        # "Running" is reported as final; check the result with ax ssh
+ax ssh smoke-pi -- cat /workspace/summary.md
+ax suspend task smoke-pi      # snapshot; `ax resume task smoke-pi` continues
+ax delete task smoke-pi       # also removes the Substrate actor
+```
+
+Gotchas:
+
+- Delete a Task before you re-apply it under the same name. Otherwise
+  Substrate resumes the old actor, with its old image and snapshot.
+- The Gateway egress allowlist is recorded but not enforced yet (no egress
+  gateway is deployed), so sandbox egress is allow-all.
+- Pods can't resolve `*.k3s.lan` names except `forgejo.k3s.lan`. Use LAN IPs
+  for other services.
+- To ship a new runner image, run `nix run .#ax-push-images` (after
+  `skopeo login --tls-verify=false de-msa2:2999`) **before** you push the
+  re-rendered manifests. Otherwise the controller points at a digest that is
+  not in the registry yet.
+
 ### 📦 Fleet Nix binary cache (attic)
 
 The fleet's store paths live in [attic](https://github.com/zhaofengli/attic)
@@ -143,7 +230,7 @@ and per-host home configs (`home/<host>.nix`).
 hosts/        one dir per machine — its configuration.nix + host-local services
 modules/      reusable NixOS modules (base system, k3s, AI, networking, desktop)
 home/         Home Manager configs (shell, editors, Hyprland, per-host tweaks)
-env/          nixidy cluster environment: argocd, cert-manager, host_ingress, homepage
+env/          nixidy cluster environment: argocd, cert-manager, host_ingress, homepage, substrate, ax
 manifests/    rendered k8s YAML (auto-generated, committed for ArgoCD)
 secrets/      agenix-encrypted secrets
 scripts/      small nix scripts (wake-on-lan, forgejo starred sync, app list)
