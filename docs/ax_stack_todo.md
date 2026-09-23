@@ -402,18 +402,20 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       m); only as root does it fall back to `/etc/rancher/k3s/k3s.yaml`.
       Do not use sudo: it keeps HOME, so ax leaves root-owned `~/.kube`
       and `~/.ax` behind (this broke `ax` for m on de-msa2).
-- [ ] **Deploy the reconciler patch.** Tasks without `spec.image` failed with
-      "must be pinned by digest": `reconciler.go` sets `spec.image` to
-      upstream's unpinned GCR default before `BuildActorTemplate` sees it, so
-      the old `AX_DEFAULT_TASK_IMAGE` patch never fired. Fixed in
-      `pkgs/ax/default-task-image-env.patch` (`substrate.DefaultImage()` in
-      both places) and `manifests/prod/ax/` re-rendered (all three ax image
-      digests change). Still needed: `skopeo login --tls-verify=false
-      de-msa2:2999`, `nix run .#ax-push-images`, push `main`. Until then the
-      smoke test ran with `spec.image` set to the live runner digest (not
-      committed; the committed Task omits `image` on purpose). After the
-      deploy: `ax delete task smoke-lan-llm` and re-apply the committed
-      file to confirm the default image path.
+- [x] **Deploy the reconciler patch** (verified 2026-09-23). Tasks without
+      `spec.image` failed with "must be pinned by digest": `reconciler.go`
+      sets `spec.image` to upstream's unpinned GCR default before
+      `BuildActorTemplate` sees it, so the old `AX_DEFAULT_TASK_IMAGE` patch
+      never fired. Fixed in `pkgs/ax/default-task-image-env.patch`
+      (`substrate.DefaultImage()` in both places). The committed smoke Task
+      (no `image`) now gets an ActorTemplate with the AX_DEFAULT_TASK_IMAGE
+      runner digest, and writes `/workspace/models.json` from SGLang.
+      Gotcha: Substrate actors outlive ax's Redis. After the Redis wipe, a
+      re-applied Task with the same name resumed the orphaned actor with its
+      OLD template and snapshot (ax created the new template but did not
+      switch the actor to it). Use `ax delete task X` (removes actor and
+      templates) and re-apply for a clean run; check
+      `kubectl ate get actors -a default` for leftovers after a Redis loss.
 - [x] meshify access (config 2026-09-23, needs push + meshify switch):
       `env/cluster_access.nix` (nixidy app `cluster-access`) declares
       ServiceAccount `kube-system/meshify-admin` (cluster-admin) and a
