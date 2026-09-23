@@ -1,5 +1,5 @@
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
+apiVersion: networking.k8s.io/v1
+kind: NetworkPolicy
 metadata:
   labels:
     app.kubernetes.io/component: notifications-controller
@@ -11,11 +11,15 @@ metadata:
     helm.sh/chart: argo-cd-10.9.2
   name: argocd-notifications-controller
   namespace: argocd
-roleRef:
-  apiGroup: rbac.authorization.k8s.io
-  kind: Role
-  name: argocd-notifications-controller
-subjects:
-  - kind: ServiceAccount
-    name: argocd-notifications-controller
-    namespace: argocd
+spec:
+  ingress:
+    - from:
+        - namespaceSelector: {}
+      ports:
+        - port: metrics
+  podSelector:
+    matchLabels:
+      app.kubernetes.io/instance: argocd
+      app.kubernetes.io/name: argocd-notifications-controller
+  policyTypes:
+    - Ingress

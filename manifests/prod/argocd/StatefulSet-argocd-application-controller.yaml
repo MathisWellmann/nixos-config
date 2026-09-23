@@ -7,8 +7,8 @@ metadata:
     app.kubernetes.io/managed-by: Helm
     app.kubernetes.io/name: argocd-application-controller
     app.kubernetes.io/part-of: argocd
-    app.kubernetes.io/version: v3.4.3
-    helm.sh/chart: argo-cd-9.5.20
+    app.kubernetes.io/version: v3.5.3
+    helm.sh/chart: argo-cd-10.9.2
   name: argocd-application-controller
   namespace: argocd
 spec:
@@ -22,16 +22,16 @@ spec:
   template:
     metadata:
       annotations:
-        checksum/cm: abd0029668c0003d90bab76d9fb3382d6af18fcd3d1fdbe9dba91d8ac323d926
-        checksum/cmd-params: f80dbddb9bc256303673bba34fc29ac980ea7c8d441cba98d3bcf230ebd71242
+        checksum/cm: 1ce57d1ab318eabbf15a7526a65e4fdb058d681a424d10413e42089aa1b14cfd
+        checksum/cmd-params: 6c9cb851053d64535cbf9958b67194aecbad6753d94613a10c6762a67ada7c4c
       labels:
         app.kubernetes.io/component: application-controller
         app.kubernetes.io/instance: argocd
         app.kubernetes.io/managed-by: Helm
         app.kubernetes.io/name: argocd-application-controller
         app.kubernetes.io/part-of: argocd
-        app.kubernetes.io/version: v3.4.3
-        helm.sh/chart: argo-cd-9.5.20
+        app.kubernetes.io/version: v3.5.3
+        helm.sh/chart: argo-cd-10.9.2
     spec:
       affinity:
         podAntiAffinity:
@@ -48,6 +48,12 @@ spec:
             - /usr/local/bin/argocd-application-controller
             - --metrics-port=8082
           env:
+            - name: GRPC_ENABLE_TXT_SERVICE_CONFIG
+              valueFrom:
+                configMapKeyRef:
+                  key: controller.grpc.enable.txt.service.config
+                  name: argocd-cmd-params-cm
+                  optional: true
             - name: ARGOCD_CONTROLLER_REPLICAS
               value: "1"
             - name: ARGOCD_APPLICATION_CONTROLLER_NAME
@@ -330,7 +336,7 @@ spec:
                   optional: true
             - name: KUBECACHEDIR
               value: /tmp/kubecache
-          image: quay.io/argoproj/argocd:v3.4.3
+          image: quay.io/argoproj/argocd:v3.5.3
           imagePullPolicy: IfNotPresent
           name: application-controller
           ports:
