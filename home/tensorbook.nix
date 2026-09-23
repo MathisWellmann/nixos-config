@@ -12,6 +12,10 @@ in {
   # DeepSeek Harness (`dsh`), pointed at the SGLang server on `desg0`.
   programs.deepseek-harness.enable = true;
 
+  # `ax` without a fleet kubeconfig (~/.kube/config is minikube): straight to
+  # ax-server through the traefik h2c ingress (env/ax.nix).
+  programs.nushell.environmentVariables.AX_SERVER = "ax.k3s.lan:80";
+
   wayland.windowManager.hyprland = {
     settings = {
       # Replaces the old `exec-once`.
