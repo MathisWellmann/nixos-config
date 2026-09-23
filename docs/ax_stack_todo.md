@@ -444,9 +444,24 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
 
 ## Phase 5: Local-model integration
 
-- [ ] Task runner image: build an image that ships `dsh` and/or `pi` with
-      `OPENAI_BASE_URL` pointed at the SGLang endpoint (see
-      `hosts/desg0/constants.nix` for the model id and port).
+- [ ] Task runner image with `pi` (config done 2026-09-23; needs image push,
+      push `main`, smoke Task). The default runner (`pkgs/ax`) now ships
+      `pi` with `/root/.pi/agent/{models,settings}.json`: provider `sglang`
+      -> `http://<desg0_ip>:<qwen3_port>/v1`, default model `qwen3Model`
+      (`hosts/desg0/constants.nix`), thinking `medium`. Provider compat
+      settings are shared with the workstation pi
+      (`modules/ai/pi-sglang-provider.nix`). Env: `OPENAI_BASE_URL`,
+      `PI_OFFLINE=1` (no pi.dev catalog refresh; egress is blocked anyway).
+      No `OPENAI_API_KEY`: pi would then offer its whole OpenAI catalog.
+      Usage in a Task: `pi -p --no-session "<prompt>"`; the Task needs a
+      Gateway that allows desg0 (`lan-llm`). Tested locally with podman on
+      de-msa2 (`pi --list-models` shows only sglang; a prompt round trip
+      works). The flake builds `pkgs/ax` once (`axBundle`, passed to nixidy
+      via `extraSpecialArgs`), so the pushed digest always equals the pin.
+      Smoke Task: `manifests/ax/task-smoke-pi.yaml`.
+- [ ] dsh in the runner image (follow-up; `dsh --profile headless "<task>"`,
+      ~500 MB closure, providers via a baked `cordis.patch.yml` like
+      `home/deepseek-harness.nix`).
 - [ ] Optional: patch ax `internal/model/client.go` (only `google` is
       implemented) to add an OpenAI-compatible provider so
       `spec.workspaces[].goal` can use SGLang. The runner's

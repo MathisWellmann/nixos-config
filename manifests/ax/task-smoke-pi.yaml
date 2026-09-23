@@ -1,0 +1,31 @@
+# Smoke-test Task for Phase 5: the default runner image ships `pi`,
+# preconfigured for Qwen3.8 on desg0 (SGLang, pkgs/ax). pi reads the cloned
+# workspace with its tools and writes a file, so the durable /workspace
+# volume shows whether the agent actually ran.
+#
+# `image` is omitted on purpose (AX_DEFAULT_TASK_IMAGE). The `lan-llm`
+# Gateway allows egress to desg0.
+#
+#   ax_apply manifests/ax/task-smoke-pi.yaml
+#   ax watch task smoke-pi
+#   ax ssh smoke-pi -- cat /workspace/pi.log /workspace/summary.md
+apiVersion: ax.io/v1alpha1
+kind: Task
+metadata:
+  name: smoke-pi
+  atespace: default
+spec:
+  command:
+    - bash
+    - -c
+    - |
+      set -x
+      pwd
+      pi -p --no-session --thinking low \
+        "Look at flake.nix and the docs/ directory in the current directory. Write what this repository is, in at most three bullet points, to /workspace/summary.md. Then reply with the single word: done" \
+        2>&1 | tee /workspace/pi.log
+  workspaces:
+    - name: monty-persona
+  gateway:
+    name: lan-llm
+  debug: true

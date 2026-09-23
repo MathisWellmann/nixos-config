@@ -66,6 +66,11 @@
   } @ inputs: let
     system = "x86_64-linux";
     pkgs = import nixpkgs-unstable {inherit system;};
+    # google/ax, built once: the push script and the nixidy env (image digest
+    # pins in manifests/prod/ax) must see the same derivation.
+    axBundle = pkgs.callPackage ./pkgs/ax {
+      inherit (inputs.llm-agents.packages.${system}) pi;
+    };
     # Build a NixOS configuration for a host in `hosts/<name>/`.
     # `home-manager` is always wired in here so individual host
     # `configuration.nix` files don't each re-import it. `extraModules`
@@ -89,6 +94,9 @@
   in {
     nixidyEnvs."${system}" = nixidy.lib.mkEnvs {
       inherit pkgs;
+
+      # Module argument for env/ax.nix.
+      extraSpecialArgs = {inherit axBundle;};
 
       # Makes helm charts available to applications as the `charts` module argument.
       charts = inputs.nixhelm.chartsDerivations.${system};
@@ -138,8 +146,8 @@
 
       # google/ax on top of it: the `ax` CLI (also ax-server/-controller/
       # -task-runner binaries) and the image push, e.g. `nix run .#ax-push-images`
-      ax = (pkgs.callPackage ./pkgs/ax {}).ax;
-      ax-push-images = (pkgs.callPackage ./pkgs/ax {}).push;
+      ax = axBundle.ax;
+      ax-push-images = axBundle.push;
 
       # "IPython is All You Need" shell, see pkgs/ipython-shell.nix
       ipython-shell = pkgs.callPackage ./pkgs/ipython-shell.nix {};

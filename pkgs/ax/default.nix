@@ -31,9 +31,14 @@
   openssh,
   procps,
   writeShellApplication,
+  writeText,
   runCommand,
   skopeo,
   jq,
+  # pi coding agent (llm-agents flake input). No default on purpose: the
+  # flake builds this package once (`axBundle`) for both the push script and
+  # the nixidy env, so the pushed runner digest always equals the pinned one.
+  pi,
   registry ? "de-msa2:2999/mathiswellmann",
 }: let
   rev = "d8ed0fe38bceb7842d3c47817d53d16ccdfcb601";
@@ -69,6 +74,25 @@
 
   tag = builtins.substring 0 12 rev;
 
+  # Local model for agents inside Tasks: Qwen3.8 on desg0 (SGLang). A Task
+  # reaches it only through a Gateway that allows the desg0 IP (lan-llm).
+  desg0 = import ../../hosts/desg0/constants.nix;
+  inherit (import ../../modules/static_ips.nix) desg0_ip;
+  llmBaseUrl = "http://${desg0_ip}:${toString desg0.qwen3_port}/v1";
+  llmModel = desg0.qwen3Model;
+  json = lib.generators.toJSON {};
+  piModels = writeText "pi-models.json" (json {
+    providers.sglang = import ../../modules/ai/pi-sglang-provider.nix {
+      baseUrl = llmBaseUrl;
+      models = [llmModel];
+    };
+  });
+  piSettings = writeText "pi-settings.json" (json {
+    defaultProvider = "sglang";
+    defaultModel = llmModel;
+    defaultThinkingLevel = "medium";
+  });
+
   # Fleet CA in the bundle: the controller talks to ate-api-server with the
   # Substrate CA it mounts, but the task runner clones from
   # https://forgejo.k3s.lan and any sandboxed tool may call the fleet's
@@ -99,8 +123,13 @@
   # python:3.12-slim + git/curl/ssh/procps/bash + `pip install
   # google-antigravity`). The Antigravity agent is only used for
   # `workspaces[].goal`, which this fleet does not use (no Gemini key, see
-  # docs/ax_stack_todo.md Phase 0), so no Python here; Phase 5 adds an image
-  # with dsh/pi. Paths the runner and ax hardcode: `/usr/local/bin/ax-task-runner`
+  # docs/ax_stack_todo.md Phase 0), so no Python here. Instead it ships `pi`
+  # (Phase 5), preconfigured for the SGLang server on desg0:
+  #   pi -p --no-session "<prompt>"
+  # Its config is copied (not linked) into /root/.pi/agent because pi
+  # rewrites settings.json. PI_OFFLINE stops catalog refreshes from pi.dev,
+  # which the Gateway egress rules would block anyway (slow timeouts).
+  # Paths the runner and ax hardcode: `/usr/local/bin/ax-task-runner`
   # (DefaultGuestCommand), `/workspace` (durable volume mount), `git` and
   # `ssh` on PATH, `/bin/sh` for Task commands. Runs as root inside gVisor.
   taskRunnerImage = dockerTools.buildLayeredImage {
@@ -121,13 +150,17 @@
       curl
       openssh
       procps
+      pi
       dockerTools.usrBinEnv
       dockerTools.binSh
       dockerTools.fakeNss
     ];
     extraCommands = ''
-      mkdir -p usr/local/bin workspace root
+      mkdir -p usr/local/bin workspace root/.pi/agent
       ln -s ${ax}/bin/ax-task-runner usr/local/bin/ax-task-runner
+      cp ${piModels} root/.pi/agent/models.json
+      cp ${piSettings} root/.pi/agent/settings.json
+      chmod 644 root/.pi/agent/*.json
       mkdir -m 1777 tmp
     '';
     config = {
@@ -138,6 +171,10 @@
         "HOME=/root"
         "SSL_CERT_FILE=${ca-bundle}/etc/ssl/certs/ca-bundle.crt"
         "GIT_SSL_CAINFO=${ca-bundle}/etc/ssl/certs/ca-bundle.crt"
+        # For other OpenAI-compatible clients a Task command may run. No
+        # OPENAI_API_KEY: pi would then offer its whole OpenAI catalog.
+        "OPENAI_BASE_URL=${llmBaseUrl}"
+        "PI_OFFLINE=1"
       ];
     };
   };

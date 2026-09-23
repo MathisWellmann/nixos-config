@@ -39,51 +39,14 @@
     then llamaServerUrl
     else lib.removeSuffix "/v1" baseUrl;
 
-  # vLLM speaks OpenAI Chat Completions, but has no `developer` role and no
-  # `reasoning_effort`; Qwen-style thinking is toggled via `chat_template_kwargs`.
-  # The RadixArk Qwen3.8 template additionally steers effort via a
-  # `reasoning_effort` kwarg: xhigh|medium|low, default xhigh, any other value
-  # is a 400. It is prompt-level steering (an injected instruction, no token
-  # budget). The generic chat-template format forwards pi levels through it.
+  # Compat settings and thinking-level mapping: see pi-sglang-provider.nix.
   vllmProvider = lib.optionalAttrs (vllmBaseUrl != null) {
-    vllm = {
+    vllm = import ./pi-sglang-provider.nix {
       baseUrl = vllmBaseUrl;
-      api = "openai-completions";
-      # Placeholder: vLLM is started without `--api-key`, but pi hides models
-      # that have no auth configured.
-      apiKey = "vllm";
-      compat = {
-        supportsDeveloperRole = false;
-        supportsReasoningEffort = false;
-        thinkingFormat = "chat-template";
-        chatTemplateKwargs = {
-          enable_thinking = {"$var" = "thinking.enabled";};
-          reasoning_effort = {
-            "$var" = "thinking.effort";
-            omitWhenOff = true;
-          };
-          preserve_thinking = true;
-        };
-      };
-      models =
-        map (id: {
-          inherit id;
-          contextWindow = vllmContextWindow;
-          maxTokens = vllmMaxTokens;
-          reasoning = true;
-          input = ["text"] ++ lib.optionals vllmVision ["image"];
-          # Map pi levels onto the template's xhigh|medium|low. `off` needs no
-          # entry: enable_thinking=false already suppresses thinking.
-          thinkingLevelMap = {
-            minimal = "low";
-            low = "low";
-            medium = "medium";
-            high = "xhigh";
-            xhigh = "xhigh";
-            max = "xhigh";
-          };
-        })
-        vllmModels;
+      models = vllmModels;
+      contextWindow = vllmContextWindow;
+      maxTokens = vllmMaxTokens;
+      vision = vllmVision;
     };
   };
 

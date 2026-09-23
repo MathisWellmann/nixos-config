@@ -24,9 +24,8 @@
 #     persist in Substrate/Postgres.
 # ax objects (Task, Workspace, Gateway) are not Kubernetes resources; they are
 # applied with `ax apply -f` (Phase 4), not through ArgoCD.
-{pkgs, ...}: let
-  ax = pkgs.callPackage ../pkgs/ax {};
-  inherit (ax) refs;
+{axBundle, ...}: let
+  inherit (axBundle) refs;
   ns = "ax-system";
   redisImage = "redis:7-alpine@sha256:858f009f9709ce576febc734aa78b8f6d624b82571f9ddb6bda4377c833b3499";
 in {
