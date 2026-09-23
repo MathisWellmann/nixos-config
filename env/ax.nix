@@ -11,9 +11,12 @@
 #     here via AX_DEFAULT_TASK_IMAGE (patched in, see pkgs/ax).
 #   - ax-server: gRPC :8080 (h2c) + `/healthz`. The `ax` CLI reaches it
 #     through a kubectl port-forward tunnel it manages itself (`ax ctx`), or
-#     `$AX_SERVER`. The `ax.k3s.lan` Ingress exists for the homepage entry
-#     and health probe; traefik speaks h2c to the backend so gRPC through
-#     it works too when a client trusts the fleet CA.
+#     `$AX_SERVER`. The `ax.k3s.lan` Ingress serves the homepage entry and
+#     health probe, and gRPC: the CLI only dials plaintext h2c, so
+#     `AX_SERVER=ax.k3s.lan:80 ax ...` works without a kubeconfig. traefik
+#     reads `service.serversscheme: h2c` from the Service only (on the
+#     Ingress it is ignored, traefik sends HTTP/1.1 and ax-server answers
+#     gRPC with 404).
 #   - Redis: upstream's `redis:7-alpine`, pinned. Upstream runs it on an
 #     emptyDir; here it has a local-path PVC with AOF (`appendonly yes`),
 #     because Tasks/Workspaces/Gateways live only in Redis. After a real
@@ -176,6 +179,9 @@ in {
           labels:
             app.kubernetes.io/name: ax-server
             app.kubernetes.io/part-of: ax
+          annotations:
+            # gRPC backend without TLS: traefik must talk HTTP/2 cleartext.
+            traefik.ingress.kubernetes.io/service.serversscheme: h2c
         spec:
           ports:
             - port: 8080
@@ -192,8 +198,6 @@ in {
           namespace: ${ns}
           annotations:
             cert-manager.io/cluster-issuer: k3s-lan-ca
-            # gRPC backend without TLS: traefik must talk HTTP/2 cleartext.
-            traefik.ingress.kubernetes.io/service.serversscheme: h2c
             gethomepage.dev/enabled: "true"
             gethomepage.dev/name: ax
             gethomepage.dev/group: AI

@@ -12,10 +12,11 @@ pkgs.writeShellApplication {
     #                            Gateways, Models, Workspaces (in that order)
     #   ax_apply FILE...         apply exactly these files (e.g. a Task)
     #
-    # ax reaches ax-server through a `kubectl port-forward`, so a kubeconfig
-    # for the fleet is required. On a k3s node run it as root; the k3s admin
-    # config is picked up when KUBECONFIG is unset.
-    if [[ -z "''${KUBECONFIG:-}" && -r /etc/rancher/k3s/k3s.yaml ]]; then
+    # ax reaches ax-server through `$AX_SERVER` or a `kubectl port-forward`
+    # with the current kubeconfig (de-msa2 and meshify ship one for m, see
+    # home/k3s_kubeconfig.nix). Run it as m, not via sudo: ax writes its
+    # tunnel state to ~/.ax and sudo keeps HOME, leaving root-owned files.
+    if [[ $EUID -eq 0 && -z "''${KUBECONFIG:-}" && -r /etc/rancher/k3s/k3s.yaml ]]; then
       export KUBECONFIG=/etc/rancher/k3s/k3s.yaml
     fi
 

@@ -97,6 +97,15 @@ in {
     };
   };
 
+  # Token for m's ~/.kube/config (home/de-msa2.nix, env/cluster_access.nix):
+  # /etc/rancher/k3s/k3s.yaml is root-only, and running `ax` via sudo leaves
+  # root-owned ~/.kube and ~/.ax behind.
+  age.secrets.k3s_meshify_admin_token = {
+    file = ../../secrets/k3s_meshify_admin_token.age;
+    owner = global_const.username;
+    mode = "0400";
+  };
+
   # Home manger can silently fail to do its job, so check with `systemctl status home-manager-m`
   home-manager = {
     # also pass inputs to home-manager modules

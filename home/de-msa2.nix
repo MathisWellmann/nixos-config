@@ -1,5 +1,10 @@
 # de-msa2 home: the shared home plus the DeepSeek Harness CLI.
-{lib, ...}: {
+{
+  lib,
+  pkgs,
+  osConfig,
+  ...
+}: {
   imports = [
     ./home.nix
     ./deepseek-harness.nix
@@ -7,6 +12,14 @@
 
   # DeepSeek Harness (`dsh`), pointed at the vLLM server on `desg0`.
   programs.deepseek-harness.enable = true;
+
+  # Fleet k3s API for kubectl, `ax` and `kubectl-ate` as m (the default
+  # kubeconfig; there is no other cluster here). Loopback is in the API cert.
+  home.file.".kube/config".source = import ./k3s_kubeconfig.nix {
+    inherit pkgs;
+    server = "https://127.0.0.1:6443";
+    tokenFile = osConfig.age.secrets.k3s_meshify_admin_token.path;
+  };
 
   # Jeff's life log writes to /var/lib/monty-persona/sessions (the persona
   # service cannot write into /home/m, which is 0700). Expose it as the

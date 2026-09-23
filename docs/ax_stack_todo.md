@@ -331,8 +331,12 @@ same day.
       `goal`). Revisit only if Phase 5's OpenAI-compatible provider lands.
 - [x] Ingress `ax.k3s.lan` -> ax-server (traefik `serversscheme: h2c`,
       fleet cert, homepage annotations + `/healthz` siteMonitor);
-      `ax.k3s.lan` in `modules/base_system.nix` hosts. The CLI itself uses
-      its kubectl tunnel (`ax ctx`) or `$AX_SERVER`.
+      `ax.k3s.lan` in `modules/base_system.nix` hosts. The CLI uses its
+      kubectl tunnel (`ax ctx`) or `$AX_SERVER`. Fix 2026-09-23: the h2c
+      annotation must be on the Service (it was on the Ingress, so gRPC got
+      404 from ax-server over HTTP/1.1). After the sync,
+      `AX_SERVER=ax.k3s.lan:80 ax get tasks` works from any fleet host
+      without a kubeconfig (plaintext, unauthenticated, LAN/tailnet only).
 - [x] `ax` CLI in `home/meshify.nix`.
 - [x] Deploy: ArgoCD `ax` Synced/Healthy; `ax-server`, `ax-controller`,
       `ax-redis` Running on desg0 with 0 restarts. The controller logs one
@@ -393,10 +397,11 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       `manifests/ax/` in dependency order; `ax_apply FILE...` applies
       explicit files (Tasks). Chosen over a post-sync Job: tasks are
       one-offs, and the script needs nothing in-cluster. It needs a fleet
-      kubeconfig + `kubectl` (ax tunnels via `kubectl port-forward`); when
-      `KUBECONFIG` is unset it uses `/etc/rancher/k3s/k3s.yaml`, so on a k3s
-      node run it as root. Used from de-msa2 for everything above (built
-      on meshify, `nix copy --to ssh://de-msa2`).
+      kubeconfig + `kubectl` (ax tunnels via `kubectl port-forward`) or
+      `$AX_SERVER`. Run it as m (de-msa2 and meshify have a kubeconfig for
+      m); only as root does it fall back to `/etc/rancher/k3s/k3s.yaml`.
+      Do not use sudo: it keeps HOME, so ax leaves root-owned `~/.kube`
+      and `~/.ax` behind (this broke `ax` for m on de-msa2).
 - [ ] **Deploy the reconciler patch.** Tasks without `spec.image` failed with
       "must be pinned by digest": `reconciler.go` sets `spec.image` to
       upstream's unpinned GCR default before `BuildActorTemplate` sees it, so

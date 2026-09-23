@@ -82,13 +82,14 @@ in {
     armor = true;
   };
   # Bearer token of the `meshify-admin` ServiceAccount (env/cluster_access.nix),
-  # read by meshify's ~/.kube/k3s.yaml via `tokenFile`. de-msa2's user key is a
-  # recipient so it can rekey like every other secret.
+  # read via `tokenFile` by meshify's ~/.kube/k3s.yaml and de-msa2's
+  # ~/.kube/config (home/k3s_kubeconfig.nix).
   "k3s_meshify_admin_token.age" = {
     publicKeys = [
       user_meshify
       system_meshify
       user_de_msa2
+      system_de_msa2
     ];
     armor = true;
   };

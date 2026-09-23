@@ -9,7 +9,6 @@ metadata:
     gethomepage.dev/icon: mdi-robot-industrial
     gethomepage.dev/name: ax
     gethomepage.dev/siteMonitor: http://ax-server.ax-system.svc.cluster.local:8080/healthz
-    traefik.ingress.kubernetes.io/service.serversscheme: h2c
   name: ax-server
   namespace: ax-system
 spec:

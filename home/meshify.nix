@@ -10,34 +10,10 @@
   # Not the default kubeconfig (~/.kube/config is a local k3d cluster):
   # `KUBECONFIG=~/.kube/k3s.yaml kubectl ...`. The API cert has a `de-msa2`
   # SAN, and de-msa2 is pinned to its tailnet IP (modules/mullvad_tailscale.nix).
-  k3sKubeconfig = (pkgs.formats.yaml {}).generate "k3s.yaml" {
-    apiVersion = "v1";
-    kind = "Config";
-    clusters = [
-      {
-        name = "k3s";
-        cluster = {
-          server = "https://de-msa2:6443";
-          certificate-authority = "${../modules/k3s-server-ca.crt}";
-        };
-      }
-    ];
-    users = [
-      {
-        name = "meshify-admin";
-        user.tokenFile = osConfig.age.secrets.k3s_meshify_admin_token.path;
-      }
-    ];
-    contexts = [
-      {
-        name = "k3s";
-        context = {
-          cluster = "k3s";
-          user = "meshify-admin";
-        };
-      }
-    ];
-    current-context = "k3s";
+  k3sKubeconfig = import ./k3s_kubeconfig.nix {
+    inherit pkgs;
+    server = "https://de-msa2:6443";
+    tokenFile = osConfig.age.secrets.k3s_meshify_admin_token.path;
   };
   wallpaper = "~/wallpaper_vertical_animated_1080_1920_25fps_orange_blue.mp4";
 in {

@@ -2,9 +2,9 @@
 #
 # `meshify-admin`: ServiceAccount bound to cluster-admin, with a long-lived
 # (non-expiring, legacy) token Secret that the token controller fills in.
-# meshify's `~/.kube/k3s.yaml` (home/meshify.nix) reads the token from the
-# agenix secret `secrets/k3s_meshify_admin_token.age`, decrypted to
-# /run/agenix on meshify. cluster-admin because kubectl-ate/ax need
+# meshify's `~/.kube/k3s.yaml` and de-msa2's `~/.kube/config`
+# (home/k3s_kubeconfig.nix) read the token from the agenix secret
+# `secrets/k3s_meshify_admin_token.age`, decrypted to /run/agenix. cluster-admin because kubectl-ate/ax need
 # port-forwards into ate-system/ax-system plus admin RPCs, and meshify is the
 # main workstation.
 #
