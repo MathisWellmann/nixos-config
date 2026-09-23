@@ -493,8 +493,11 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       atenet-router requests + resume latency, ate-controller reconcile
       errors, worker pool capacity vs. use, rustfs bucket size; later ax
       task counts/states. Metric names: `docs/metrics/` upstream.
-- [ ] Update `README.md` service table and the homepage dashboard entries.
-- [ ] Save gotchas found along the way to the maki memory notes.
+- [x] Update `README.md` and the homepage dashboard entries (2026-09-23:
+      README section "Sandboxed agent tasks"; homepage entry `ax` in group
+      *AI* via the `ax.k3s.lan` Ingress annotations in `env/ax.nix`).
+- [x] Save gotchas found along the way to the maki memory notes
+      (tag `ax_stack`: `ax-cli-access.md`, `ax-runner-pi.md`).
 
 ---
 

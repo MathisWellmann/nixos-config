@@ -295,6 +295,39 @@ _: let
           };
         }
         {
+          alert = "KubeDaemonSetNotReady";
+          # Fewer Ready pods than nodes that should run one, or pods on nodes
+          # that should not (e.g. atelet in ate-system on a node that lost its
+          # label). The pod rules miss a DaemonSet pod that is never created.
+          expr = ''
+            kube_daemonset_status_number_ready
+              < kube_daemonset_status_desired_number_scheduled
+            or
+            kube_daemonset_status_number_misscheduled > 0
+          '';
+          for = "15m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''DaemonSet {{ $labels.namespace }}/{{ $labels.daemonset }} not ready on all nodes'';
+            description = ''Ready DaemonSet pods have not matched the desired node count (or pods run on nodes they should not) for 15m. Check `kubectl -n {{ $labels.namespace }} describe ds {{ $labels.daemonset }}`.'';
+          };
+        }
+        {
+          alert = "KubeStatefulSetReplicasMismatch";
+          # StatefulSet counterpart of DeploymentReplicasMismatch (e.g. the
+          # Substrate postgres in ate-system).
+          expr = ''
+            kube_statefulset_status_replicas_ready
+              != kube_statefulset_replicas
+          '';
+          for = "15m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''StatefulSet {{ $labels.namespace }}/{{ $labels.statefulset }} has unready replicas'';
+            description = ''Ready replicas have not matched the desired count for 15m -- a stuck rollout or a pod that cannot start (volume, scheduling).'';
+          };
+        }
+        {
           alert = "K3sNodeReadyFlapping";
           # Ready < 90% of the time over 15m -- catches a node OSCILLATING
           # NotReady<->Ready, which K3sNodeNotReady structurally cannot: its
