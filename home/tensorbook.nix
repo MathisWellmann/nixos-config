@@ -32,7 +32,7 @@ in {
           ];
         }
       ];
-      # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
+      # Top left corner is 0x0 is x and y. increasing y means physically a lower position.
       monitor = [
         # London
         {
@@ -51,7 +51,7 @@ in {
         }
         {
           output = "eDP-1";
-          mode = "1920x1200@60";
+          mode = "1920x1080@144";
           position = "4320x2760";
           scale = 1;
         }
