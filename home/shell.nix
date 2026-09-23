@@ -5,8 +5,21 @@
 }: let
   # nubuddy: the "IPython is all you need" pattern for nushell, see nubuddy/README.md
   nubuddy = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.nubuddy;
+
+  # hx-pr: review a Gitea/Forgejo PR in helix with git-diff highlighting.
+  # Gitea/Forgejo expose pull requests as git refs (refs/pull/<N>/head),
+  # like GitHub. Run `hx-pr <pr> [base-branch]` inside a clone of the repo:
+  # it fetches the PR ref, builds a throwaway worktree at the base branch
+  # with the PR applied as *uncommitted* changes, and opens helix there —
+  # built-in git decorations highlight the diff, the file picker navigates
+  # the real tree, ;g;f jumps between changed files, and LSP still works.
+  # The main checkout is never touched; the script prints its own cleanup.
+  # The script body lives in a plain file (Nix strings cannot escape shell
+  # `${...}` expansion in indented strings); writeShellScriptBin adds the
+  # shebang and runs `bash -n` on it at build time.
+  hxPr = pkgs.writeShellScriptBin "hx-pr" (builtins.readFile ./hx-pr.sh);
 in {
-  home.packages = [nubuddy];
+  home.packages = [nubuddy hxPr];
 
   programs = {
     nushell = {
