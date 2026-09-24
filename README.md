@@ -95,7 +95,8 @@ top of [Agent Substrate](https://github.com/agent-substrate/substrate), which
 runs each task in a gVisor sandbox. A task can be suspended into a snapshot
 and resumed later. Both projects are pre-alpha: every image is built with Nix
 and pinned by digest. Build notes and open items are in
-[`docs/ax_stack_todo.md`](docs/ax_stack_todo.md).
+[`docs/ax_stack_todo.md`](docs/ax_stack_todo.md). The full guide to writing,
+deploying and operating Tasks is [`docs/ax_usage.md`](docs/ax_usage.md).
 
 How it fits together:
 

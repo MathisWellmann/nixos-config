@@ -463,9 +463,6 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       correct 3-bullet `/workspace/summary.md`. The Task working directory
       is the cloned repo. ArgoCD polls every 3 min; to sync at once, run
       `kubectl -n argocd annotate app ax argocd.argoproj.io/refresh=hard --overwrite`.
-- [ ] dsh in the runner image (follow-up; `dsh --profile headless "<task>"`,
-      ~500 MB closure, providers via a baked `cordis.patch.yml` like
-      `home/deepseek-harness.nix`).
 - [ ] Optional: patch ax `internal/model/client.go` (only `google` is
       implemented) to add an OpenAI-compatible provider so
       `spec.workspaces[].goal` can use SGLang. The runner's
