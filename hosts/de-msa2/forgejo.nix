@@ -21,6 +21,10 @@ in {
           HTTP_PORT = const.forgejo_port;
         };
         service.DISABLE_REGISTRATION = true; # Only my user for now
+        # Webhooks may target this host too: the monty-persona webhook bridge
+        # listens on 127.0.0.1 (monty-persona.nix). The default, `external`,
+        # refuses loopback targets.
+        webhook.ALLOWED_HOST_LIST = "external,loopback";
         actions = {
           ENABLED = true;
           DEFAULT_ACTIONS_URL = "github";

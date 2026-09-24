@@ -24,6 +24,9 @@ in {
   # rustfs S3 API (rustfs.nix); Agent Substrate snapshot store.
   # NOT 9000: the k3s servicelb binds ClickHouse's native port there on every node.
   rustfs_port = 3020;
+  # monty-persona webhook bridge (monty-persona.nix); loopback only, Forgejo
+  # posts to it from the same host.
+  monty_persona_webhook_port = 3021;
   greptimedb_http_port = 4000;
   clickhouse_prometheus_port = 9363;
   iperf_port = shared.iperf;

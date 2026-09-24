@@ -32,6 +32,17 @@ in {
     ];
     armor = true;
   };
+  # HMAC secret of the Forgejo webhook that wakes the `jeff` monty-persona
+  # (hosts/de-msa2/monty-persona.nix). Paste the same value into the webhook's
+  # "Secret" field in Forgejo; read it on de-msa2 with
+  # `agenix -d monty_persona_webhook.age`.
+  "monty_persona_webhook.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
   # Private half of the GitHub deploy key (write access to
   # MathisWellmann/nixos-config) the cache builder on desg0 uses to push the
   # updated flake.lock (modules/nixos_cache_builder.nix).
