@@ -146,6 +146,11 @@
       "qwen3_coder"
       # Without this flag the `sglang` scrape job on de-msa2 gets a 404.
       "--enable-metrics"
+      # Report the radix-cache hits of each request in
+      # `usage.prompt_tokens_details.cached_tokens`. Without it the clients
+      # (agent-symbiont's traces and DSH exports) record 0 cached tokens
+      # while the server serves ~97% of prompt tokens from the cache.
+      "--enable-cache-report"
       "--host"
       "0.0.0.0"
       "--port"
