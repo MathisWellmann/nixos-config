@@ -7,6 +7,7 @@
 {pkgs, ...}: let
   global_const = import ../../global_constants.nix;
   desg0_const = import ../desg0/constants.nix;
+  const = import ./constants.nix;
 
   # Jeff's nix: user-level store under his work dir (persistent, no daemon).
   # The tier 3 jail mounts the work dir as /work, the service process sees it
@@ -36,6 +37,11 @@ in {
           enabled = true; # tier 3 `sh` in the bubblewrap jail
           network = true; # share host netns so git/HTTP work (jail would otherwise have no net)
         };
+        # ci_status / ci_log against the local forgejo (forgejo.nix). Plain
+        # HTTP on purpose: the persona's rustls only trusts webpki roots, not
+        # the fleet's k3s-lan-ca behind https://forgejo.k3s.lan. No token:
+        # job logs are only served anonymously (web route, public repos).
+        tools.forgejo.base_url = "http://localhost:${toString const.forgejo_port}";
       };
       ntfy = {
         enable = true;
