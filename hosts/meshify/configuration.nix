@@ -23,7 +23,7 @@ in {
     ./../../modules/base_system.nix
     ./../../modules/desktop_nvidia.nix
     ./../../modules/mullvad_tailscale.nix
-    (import ./../../modules/remote_builder.nix {})
+    ./../../modules/remote_builder.nix
     ./../../modules/mount_remote_nfs_exports.nix
     ./../../modules/prometheus_exporter.nix
     ./../../modules/yubi_key.nix

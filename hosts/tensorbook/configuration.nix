@@ -29,7 +29,7 @@ in {
       vllmBaseUrl = "http://desg0:${toString desg0_const.qwen3_port}/v1";
       vllmModels = [desg0_const.qwen3Model];
     })
-    (import ./../../modules/remote_builder.nix {})
+    ./../../modules/remote_builder.nix
     # ./../../modules/mount_external_drives.nix
     # ./../../modules/prometheus_exporter.nix
   ];
