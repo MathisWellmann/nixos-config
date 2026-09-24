@@ -5,7 +5,8 @@ in {
   forgejo_port = 2999;
   grafana_port = 3001;
   freshrss_port = 3002;
-  uptime_kuma_port = 3003;
+  # NOT 3003: immich-machine-learning binds localhost:3003 (immich default ML port).
+  uptime_kuma_port = 3022;
   bitmagnet_port = 3004;
   vikunja_port = 3005;
   searx_port = 3006;
