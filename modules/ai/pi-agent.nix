@@ -90,8 +90,8 @@
 
   # Token-rate pi extension — downloaded from npm at build time
   tokenRateSrc = pkgs.fetchzip {
-    url = "https://registry.npmjs.org/token-rate-pi/-/token-rate-pi-1.0.2.tgz";
-    sha256 = "sha256-dTe4f8kBZxvADJhLpPtlnJ/y3ebNFG77ws/oGliAQJA=";
+    url = "https://registry.npmjs.org/token-rate-pi/-/token-rate-pi-1.0.5.tgz";
+    sha256 = "sha256-iIENju/4nGFch/3qLpUE1Ko/Q6eSVQJuJiX9oVXFlMM=";
   };
   tokenRateExt = pkgs.runCommand "pi-token-rate" {} ''
     mkdir -p $out
