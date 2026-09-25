@@ -201,6 +201,7 @@ in {
     # `echo "use flake" >> .envrc && direnv allow`
     direnv = {
       enable = true;
+      silent = true;
       enableNushellIntegration = true;
       config = {
         global = {
