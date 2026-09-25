@@ -12,7 +12,7 @@
 # npm platform package's prebuilt binary carries a /lib64 ELF interpreter
 # that does not exist on NixOS, so `pkgs/dsh-tool-monty.nix` substitutes the
 # placeholder below with the nix-built `monty-runtime` store path at build
-# time. Outside Nix, point it at any `monty` 0.0.23 binary (`pip install
+# time. Outside Nix, point it at any `monty` 1.0.0 binary (`pip install
 # pydantic-monty-runtime` or `cargo install monty-runtime`), or delete the
 # key to let `@pydantic/monty` resolve it (`MONTY_BIN`, platform package,
 # `PATH`). Keep the worker and npm versions equal: the wire protocol is only

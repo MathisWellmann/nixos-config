@@ -16,14 +16,14 @@
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "monty-runtime";
-  version = "0.0.23";
+  version = "1.0.0";
 
   src = fetchCrate {
     inherit (finalAttrs) pname version;
-    hash = "sha256-VjCVr9x9AtO4lRhlW0jb7/wyvKYzfgN7MwX2s+zOlv4=";
+    hash = "sha256-lhuKFrOdgwHiNTalFEdk0rDYee2xnJ4r4hNGrJSoWOI=";
   };
 
-  cargoHash = "sha256-xJD7N5dOPEC5hu6Rxo0bV0x06NEd+5E1H6EuNC71WGM=";
+  cargoHash = "sha256-X/Ydb9nZ11ll+sctIs6r24t87XkN3jssmK9igYT0DMU=";
 
   # The crate's tests spawn the built binary through tempfiles; not needed
   # for a runtime package and they lengthen the build considerably.

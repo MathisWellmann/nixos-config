@@ -21,7 +21,7 @@
     "@deepseek-ai/schemastery": "^3.18.1"
   },
   "dependencies": {
-    "@pydantic/monty": "0.0.23"
+    "@pydantic/monty": "1.0.0"
   },
   "scripts": {
     "test": "node test/repr.test.mjs"
