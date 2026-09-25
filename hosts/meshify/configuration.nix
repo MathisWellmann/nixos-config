@@ -52,6 +52,15 @@ in {
   };
   systemd.services."modprobe@".serviceConfig.ExecStart = lib.mkForce "-${pkgs.kmod}/sbin/modprobe -abq %i";
 
+  # /dev/dri/cardN numbering is not stable (boot simple-framebuffer + amdgpu/nvidia
+  # probe order), so a hardcoded card1 can point Hyprland at the AMD iGPU, which has
+  # no monitors connected -> headless fallback / black screen. All monitors are on
+  # the RTX 3090. by-path names can't be used since aquamarine splits on ':'.
+  services.udev.extraRules = ''
+    SUBSYSTEM=="drm", KERNEL=="card[0-9]*", DRIVERS=="nvidia", SYMLINK+="dri/nvidia-card"
+  '';
+  environment.sessionVariables.AQ_DRM_DEVICES = "/dev/dri/nvidia-card";
+
   age = {
     # agenix skips identities that are not present.
     identityPaths = [
