@@ -100,8 +100,8 @@
 
   # Pinned npm package; Pi loads its extension from the package manifest.
   piLlamaCppSrc = pkgs.fetchzip {
-    url = "https://registry.npmjs.org/pi-llama-cpp/-/pi-llama-cpp-0.9.1.tgz";
-    sha256 = "sha256-dIXXkjcavmN8P3YFP1rXpnB4tNEDsR10vw6zn+YBQVA=";
+    url = "https://registry.npmjs.org/pi-llama-cpp/-/pi-llama-cpp-0.14.0.tgz";
+    sha256 = "sha256-8iNOP7y91fFygstEtIGDUHzOkePjT4Er/xhiwnX4vJw=";
   };
 
   # ponytail — lazy-senior-dev pi package (extension + skills)
