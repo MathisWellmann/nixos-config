@@ -105,10 +105,10 @@
   };
 
   # ponytail — lazy-senior-dev pi package (extension + skills)
-  # Pinned to commit 45f7d2f (2026-06-17). Update the ref + hash to upgrade.
+  # Pinned to commit e3ba2aa (2026-09-14). Update the ref + hash to upgrade.
   ponytailSrc = pkgs.fetchzip {
-    url = "https://github.com/DietrichGebert/ponytail/archive/45f7d2f83fb430a65fd512a98ad7b14d79e06636.tar.gz";
-    sha256 = "sha256-BAwav7tf6RuHZ/A7TF/1k1TXWhYAdshlsYB3LbdgUD8=";
+    url = "https://github.com/DietrichGebert/ponytail/archive/e3ba2aa6f1e6f0bc4d69eb09c9f0d0a93af56156.tar.gz";
+    sha256 = "sha256-PES5XrSYx0VBXWVHEDRykGy0SAmJfV/luzy8Gfg0aAQ=";
   };
 
   # pi-rlm — replaces the toolset with a single `execute` tool that runs
