@@ -108,6 +108,15 @@ _: let
       icon = "mdi-robot";
       description = "llama.cpp inference server";
     }
+    {
+      name = "kev";
+      host = "kev.k3s.lan";
+      port = meshify_const.kev_port;
+      hostIp = "100.94.190.65"; # meshify tailscale IP
+      group = "AI";
+      icon = "mdi-robot";
+      description = "Kev decision model (Jev-like, System One API)";
+    }
   ];
 
   mkApp = {

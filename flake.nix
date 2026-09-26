@@ -138,6 +138,9 @@
       # Archify architecture diagram tool & agent skill CLI
       archify = pkgs.callPackage ./pkgs/archify.nix {};
 
+      # Kev decision-model bundle (source + uv venv, see pkgs/kev.nix)
+      kev = pkgs.callPackage ./pkgs/kev.nix {};
+
       # Agent Substrate (docs/ax_stack_todo.md): `kubectl-ate` + the control
       # plane binaries, and a script that pushes their OCI images to Forgejo,
       # e.g. `nix run .#agent-substrate-push-images`

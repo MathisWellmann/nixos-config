@@ -29,6 +29,10 @@ in {
     ./../../modules/yubi_key.nix
     ./../../modules/ai/qwen_code.nix
     ./../../modules/ai/local_ai.nix
+    (import ./../../modules/ai/kev.nix {
+      model = const.kevModel;
+      port = const.kev_port;
+    })
     (import ./../../modules/ai/oh-my-pi.nix {
       defaultModel = "vllm/${const_desg0.qwen3Model}";
     })

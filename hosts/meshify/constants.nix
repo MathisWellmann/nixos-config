@@ -1,4 +1,8 @@
 {
+  # Kev decision-model server (modules/ai/kev.nix)
+  kev_port = 8009;
+  kevModel = "jaredpalmer/kev-4b";
+
   llama-cpp_port = 8001;
   localModel = "unsloth/gemma-4-31B-it-GGUF:UD-Q4_K_XL";
   localModels = [
