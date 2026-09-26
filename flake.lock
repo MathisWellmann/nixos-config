@@ -801,11 +801,11 @@
         "rust-overlay": "rust-overlay_4"
       },
       "locked": {
-        "lastModified": 1790313223,
-        "narHash": "sha256-eNHng2pmbo0DTdcFhV2OZHfTqFMRVC7TvdvD/M5T2JA=",
+        "lastModified": 1790439339,
+        "narHash": "sha256-VMH07PqPSnfOpqvvSR2SIO3r7ZKkJipa5e8VAZRo0Hg=",
         "ref": "refs/heads/main",
-        "rev": "29f852bed714f29330ddd8b09330b5311462c58e",
-        "revCount": 79,
+        "rev": "fdfe93c753c646805d4213cbf161a1e1d8884605",
+        "revCount": 87,
         "type": "git",
         "url": "https://forgejo.k3s.lan/MathisWellmann/monty-persona.git"
       },

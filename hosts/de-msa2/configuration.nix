@@ -180,7 +180,7 @@ in {
         bencher-ui = "podman-bencher-ui";
         ntfy = "ntfy-sh";
         attic-postgres = "postgresql";
-        monty = "monty-persona-jeff";
+        monty-persona-jeff = "monty-persona-jeff";
         dsh = "dsh-web";
       };
     };
