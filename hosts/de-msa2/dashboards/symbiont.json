@@ -38,15 +38,16 @@
       {
         "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
         "datasource": { "type": "prometheus", "uid": "${datasource}" },
-        "definition": "label_values(symbiont_revisions_loaded, model)",
+        "definition": "label_values(symbiont_revisions_loaded, crate_name)",
+        "description": "Which symbiont binary: agent-symbiont-eval (desg0 host process, job symbiont) or agent-symbiont-sliding (k3s pods, job symbiont-k8s).",
         "hide": 0,
         "includeAll": true,
-        "label": "Model",
+        "label": "Binary",
         "multi": true,
-        "name": "model",
+        "name": "crate_name",
         "options": [],
         "query": {
-          "query": "label_values(symbiont_revisions_loaded, model)",
+          "query": "label_values(symbiont_revisions_loaded, crate_name)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -57,7 +58,26 @@
       {
         "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
         "datasource": { "type": "prometheus", "uid": "${datasource}" },
-        "definition": "label_values(symbiont_revisions_loaded{model=~\"$model\"}, instance)",
+        "definition": "label_values(symbiont_revisions_loaded{crate_name=~\"$crate_name\"}, model)",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Model",
+        "multi": true,
+        "name": "model",
+        "options": [],
+        "query": {
+          "query": "label_values(symbiont_revisions_loaded{crate_name=~\"$crate_name\"}, model)",
+          "refId": "StandardVariableQuery"
+        },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "prometheus", "uid": "${datasource}" },
+        "definition": "label_values(symbiont_revisions_loaded{crate_name=~\"$crate_name\",model=~\"$model\"}, instance)",
         "hide": 0,
         "includeAll": true,
         "label": "Instance",
@@ -65,7 +85,7 @@
         "name": "instance",
         "options": [],
         "query": {
-          "query": "label_values(symbiont_revisions_loaded{model=~\"$model\"}, instance)",
+          "query": "label_values(symbiont_revisions_loaded{crate_name=~\"$crate_name\",model=~\"$model\"}, instance)",
           "refId": "StandardVariableQuery"
         },
         "refresh": 2,
@@ -80,7 +100,7 @@
   "timezone": "",
   "title": "symbiont",
   "uid": "symbiont-fleet",
-  "version": 8,
+  "version": 9,
   "weekStart": "",
   "panels": [
     {
@@ -98,7 +118,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 0, "y": 1 },
       "id": 1,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(symbiont_revisions_loaded{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "instances", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "count(symbiont_revisions_loaded{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "instances", "refId": "A" } ],
       "title": "Instances",
       "type": "stat"
     },
@@ -109,7 +129,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 1 },
       "id": 2,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_runs_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "runs/h", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_runs_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "runs/h", "refId": "A" } ],
       "title": "LLM runs / h",
       "type": "stat"
     },
@@ -120,7 +140,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 1 },
       "id": 3,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_revision_activations_total{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_evolve_attempts_sum{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "success ratio", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_revision_activations_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_evolve_attempts_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "success ratio", "refId": "A" } ],
       "title": "Attempt success ratio",
       "type": "stat"
     },
@@ -131,7 +151,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 12, "y": 1 },
       "id": 4,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_evolve_failures_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "failures/h", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_evolve_failures_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "failures/h", "refId": "A" } ],
       "title": "Evolve failures / h",
       "type": "stat"
     },
@@ -142,7 +162,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 1 },
       "id": 5,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_evolve_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_evolve_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "mean evolve", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_evolve_duration_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_evolve_duration_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "mean evolve", "refId": "A" } ],
       "title": "Mean evolve duration",
       "type": "stat"
     },
@@ -153,7 +173,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
       "id": 6,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_llm_tokens_total{kind=\"output\",model=~\"$model\",instance=~\"$instance\"}[24h]))", "legendFormat": "output tokens (24h)", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_llm_tokens_total{kind=\"output\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[24h]))", "legendFormat": "output tokens (24h)", "refId": "A" } ],
       "title": "Output tokens (24h)",
       "type": "stat"
     },
@@ -164,7 +184,7 @@
       "gridPos": {"h": 3, "w": 8, "x": 0, "y": 5},
       "id": 7,
       "options": {"colorMode": "background", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max(sum by (instance) (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=~\"compile|load\",model=~\"$model\",instance=~\"$instance\"}[30m])))", "legendFormat": "build slot", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max(sum by (instance) (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=~\"compile|load\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])))", "legendFormat": "build slot", "refId": "A"}],
       "title": "Compile bottleneck?",
       "type": "stat"
     },
@@ -175,7 +195,7 @@
       "gridPos": {"h": 3, "w": 8, "x": 8, "y": 5},
       "id": 8,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max(sum by (instance) (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=~\"compile|load\",model=~\"$model\",instance=~\"$instance\"}[30m])))", "legendFormat": "build slot", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max(sum by (instance) (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=~\"compile|load\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])))", "legendFormat": "build slot", "refId": "A"}],
       "title": "Build slot utilization (worst instance)",
       "type": "stat"
     },
@@ -186,7 +206,7 @@
       "gridPos": {"h": 3, "w": 8, "x": 16, "y": 5},
       "id": 9,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(avg_over_time(symbiont_inference_in_flight{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(avg_over_time(symbiont_inference_gate_capacity{model=~\"$model\",instance=~\"$instance\"}[30m]) > 0)", "legendFormat": "saturation", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(avg_over_time(symbiont_inference_in_flight{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(avg_over_time(symbiont_inference_gate_capacity{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]) > 0)", "legendFormat": "saturation", "refId": "A"}],
       "title": "Inference saturation",
       "type": "stat"
     },
@@ -205,7 +225,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 0, "y": 9 },
       "id": 112,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_inference_errors_total{reason!~\"max_turns|cancelled|tool\",model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "CompletionError", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_inference_errors_total{reason!~\"max_turns|cancelled|tool\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "CompletionError", "refId": "A" } ],
       "title": "CompletionError (range)",
       "type": "stat"
     },
@@ -216,7 +236,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 9 },
       "id": 113,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_inference_errors_total{reason!~\"max_turns|cancelled|tool\",model=~\"$model\",instance=~\"$instance\"}[$__range])) / sum(increase(symbiont_llm_runs_total{model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "CompletionError / runs", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_inference_errors_total{reason!~\"max_turns|cancelled|tool\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range])) / sum(increase(symbiont_llm_runs_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "CompletionError / runs", "refId": "A" } ],
       "title": "CompletionError ratio (range)",
       "type": "stat"
     },
@@ -227,7 +247,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 9 },
       "id": 114,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_inference_errors_total{reason!~\"max_turns|cancelled|tool\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "CompletionError/h", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_inference_errors_total{reason!~\"max_turns|cancelled|tool\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "CompletionError/h", "refId": "A" } ],
       "title": "CompletionError / h",
       "type": "stat"
     },
@@ -238,7 +258,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 12, "y": 9 },
       "id": 115,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_inference_errors_total{model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "errors", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_inference_errors_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "errors", "refId": "A" } ],
       "title": "All inference errors (range)",
       "type": "stat"
     },
@@ -249,7 +269,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 9 },
       "id": 116,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_inference_errors_total{model=~\"$model\",instance=~\"$instance\"}[$__range])) / sum(increase(symbiont_llm_runs_total{model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "errors / runs", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_inference_errors_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range])) / sum(increase(symbiont_llm_runs_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "errors / runs", "refId": "A" } ],
       "title": "Inference error ratio (range)",
       "type": "stat"
     },
@@ -260,7 +280,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 20, "y": 9 },
       "id": 117,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_llm_transient_retries_total{model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "retries", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_llm_transient_retries_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "retries", "refId": "A" } ],
       "title": "Transient retries (range)",
       "type": "stat"
     },
@@ -271,7 +291,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 13 },
       "id": 118,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (reason) (rate(symbiont_inference_errors_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{reason}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (reason) (rate(symbiont_inference_errors_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{reason}}", "refId": "A" } ],
       "title": "Inference errors / h by reason",
       "type": "timeseries"
     },
@@ -282,7 +302,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 13 },
       "id": 119,
       "options": { "displayMode": "gradient", "orientation": "horizontal", "showUnfilled": true, "valueMode": "color", "namePlacement": "left", "sizing": "auto", "minVizHeight": 16, "minVizWidth": 8, "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "legend": { "showLegend": false } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sort_desc(sum by (reason) (increase(symbiont_inference_errors_total{model=~\"$model\",instance=~\"$instance\"}[$__range])))", "legendFormat": "{{reason}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sort_desc(sum by (reason) (increase(symbiont_inference_errors_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range])))", "legendFormat": "{{reason}}", "refId": "A" } ],
       "title": "Inference errors by reason (range)",
       "type": "bargauge"
     },
@@ -294,7 +314,7 @@
       "id": 34,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (reason) (rate(symbiont_inference_errors_total{model=~\"$model\",instance=~\"$instance\"}[30m])) / ignoring (reason) sum (rate(symbiont_llm_runs_total{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{reason}}", "refId": "A" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (reason) (rate(symbiont_inference_errors_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / ignoring (reason) sum (rate(symbiont_llm_runs_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{reason}}", "refId": "A" }
       ],
       "title": "Inference error ratio by category",
       "type": "timeseries"
@@ -314,7 +334,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 30 },
       "id": 10,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (rate(symbiont_evolve_failures_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{kind}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (rate(symbiont_evolve_failures_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{kind}}", "refId": "A" } ],
       "title": "Evolve failures / h by kind",
       "type": "timeseries"
     },
@@ -325,7 +345,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 30 },
       "id": 11,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_revision_activations_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_revision_activations_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{instance}}", "refId": "A" } ],
       "title": "Revision activations / h by instance",
       "type": "timeseries"
     },
@@ -336,7 +356,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 38 },
       "id": 12,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_evolve_attempts_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(symbiont_evolve_attempts_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_evolve_attempts_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(symbiont_evolve_attempts_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
       "title": "Mean attempts per evolve by instance",
       "type": "timeseries"
     },
@@ -347,7 +367,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 38 },
       "id": 13,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (stage) (rate(symbiont_pipeline_stage_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (stage) (rate(symbiont_pipeline_stage_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{stage}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (stage) (rate(symbiont_pipeline_stage_duration_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (stage) (rate(symbiont_pipeline_stage_duration_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{stage}}", "refId": "A" } ],
       "title": "Mean stage duration",
       "type": "timeseries"
     },
@@ -358,7 +378,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 46 },
       "id": 14,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_evolve_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(symbiont_evolve_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_evolve_duration_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(symbiont_evolve_duration_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
       "title": "Mean evolve duration by instance",
       "type": "timeseries"
     },
@@ -369,7 +389,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 46 },
       "id": 120,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_evolve_tools_withdrawn_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_evolve_tools_withdrawn_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{instance}}", "refId": "A" } ],
       "title": "Lanes that lost their tools / h by instance",
       "type": "timeseries"
     },
@@ -388,7 +408,7 @@
       "gridPos": {"h": 4, "w": 6, "x": 0, "y": 55},
       "id": 80,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_compile_autofixes_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "autofixes/h", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_compile_autofixes_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "autofixes/h", "refId": "A"}],
       "title": "Autofixes / h",
       "type": "stat"
     },
@@ -399,7 +419,7 @@
       "gridPos": {"h": 4, "w": 6, "x": 6, "y": 55},
       "id": 81,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_compile_autofixes_total{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_evolve_attempts_sum{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "autofixes/attempt", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_compile_autofixes_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_evolve_attempts_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "autofixes/attempt", "refId": "A"}],
       "title": "Autofixes per attempt",
       "type": "stat"
     },
@@ -410,7 +430,7 @@
       "gridPos": {"h": 4, "w": 6, "x": 12, "y": 55},
       "id": 82,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_evolve_edits_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "edits/h", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_evolve_edits_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "edits/h", "refId": "A"}],
       "title": "Edits / h",
       "type": "stat"
     },
@@ -421,7 +441,7 @@
       "gridPos": {"h": 4, "w": 6, "x": 18, "y": 55},
       "id": 83,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_evolve_failures_total{kind=\"edit\",model=~\"$model\",instance=~\"$instance\"}[30m])) / (sum(rate(symbiont_evolve_edits_total{model=~\"$model\",instance=~\"$instance\"}[30m])) + sum(rate(symbiont_evolve_failures_total{kind=\"edit\",model=~\"$model\",instance=~\"$instance\"}[30m])))", "legendFormat": "rejected", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_evolve_failures_total{kind=\"edit\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / (sum(rate(symbiont_evolve_edits_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) + sum(rate(symbiont_evolve_failures_total{kind=\"edit\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])))", "legendFormat": "rejected", "refId": "A"}],
       "title": "Edit rejection ratio",
       "type": "stat"
     },
@@ -432,7 +452,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 59},
       "id": 84,
       "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_compile_autofixes_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "autofix {{instance}}", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_evolve_edits_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "edit {{instance}}", "refId": "B"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_compile_autofixes_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "autofix {{instance}}", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_evolve_edits_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "edit {{instance}}", "refId": "B"}],
       "title": "Autofixes & edits / h by instance",
       "type": "timeseries"
     },
@@ -443,7 +463,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 59},
       "id": 85,
       "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_compile_autofixes_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "autofixes applied", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_evolve_failures_total{kind=\"compile\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "to model (compile failures)", "refId": "B"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_compile_autofixes_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "autofixes applied", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_evolve_failures_total{kind=\"compile\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "to model (compile failures)", "refId": "B"}],
       "title": "Compile failures: autofixed vs sent to the model",
       "type": "timeseries"
     },
@@ -454,7 +474,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 67},
       "id": 86,
       "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_evolve_edits_total{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_evolve_failures_total{kind=\"compile\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "edits per compile nudge", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_evolve_edits_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_evolve_failures_total{kind=\"compile\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "edits per compile nudge", "refId": "A"}],
       "title": "Edits per compile nudge",
       "type": "timeseries"
     },
@@ -465,7 +485,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 67},
       "id": 87,
       "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_evolve_failures_total{kind=\"edit\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{instance}}", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_evolve_failures_total{kind=\"edit\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{instance}}", "refId": "A"}],
       "title": "Edit rejections / h by instance",
       "type": "timeseries"
     },
@@ -484,7 +504,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 0, "y": 76},
       "id": 70,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max(symbiont_inference_gate_capacity{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "limit", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max(symbiont_inference_gate_capacity{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "limit", "refId": "A"}],
       "title": "Slot limit (max_in_flight)",
       "type": "stat"
     },
@@ -495,7 +515,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 4, "y": 76},
       "id": 71,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(avg_over_time(symbiont_inference_in_flight{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "in-flight", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(avg_over_time(symbiont_inference_in_flight{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "in-flight", "refId": "A"}],
       "title": "In-flight (mean 30m)",
       "type": "stat"
     },
@@ -506,7 +526,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 8, "y": 76},
       "id": 72,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(avg_over_time(symbiont_inference_gate_capacity{model=~\"$model\",instance=~\"$instance\"}[30m]) > 0) - sum(avg_over_time(symbiont_inference_in_flight{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "idle", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(avg_over_time(symbiont_inference_gate_capacity{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]) > 0) - sum(avg_over_time(symbiont_inference_in_flight{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "idle", "refId": "A"}],
       "title": "Idle slots (mean 30m)",
       "type": "stat"
     },
@@ -517,7 +537,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 12, "y": 76},
       "id": 73,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(avg_over_time(symbiont_inference_gate_queued{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "queued", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(avg_over_time(symbiont_inference_gate_queued{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "queued", "refId": "A"}],
       "title": "Queued for a slot (mean 30m)",
       "type": "stat"
     },
@@ -528,7 +548,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 16, "y": 76},
       "id": 74,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_inference_gate_wait_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_inference_gate_wait_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "wait", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_inference_gate_wait_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_inference_gate_wait_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "wait", "refId": "A"}],
       "title": "Mean slot wait",
       "type": "stat"
     },
@@ -539,7 +559,7 @@
       "gridPos": {"h": 4, "w": 4, "x": 20, "y": 76},
       "id": 75,
       "options": {"colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": {"calcs": ["lastNotNull"], "fields": "", "values": false}, "textMode": "auto"},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum (rate(symbiont_build_slot_wait_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum (rate(symbiont_build_slot_wait_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "build wait", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum (rate(symbiont_build_slot_wait_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum (rate(symbiont_build_slot_wait_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "build wait", "refId": "A"}],
       "title": "Mean build slot wait",
       "type": "stat"
     },
@@ -550,7 +570,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 80},
       "id": 76,
       "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max by (instance) (symbiont_inference_gate_capacity{model=~\"$model\",instance=~\"$instance\"} > 0)", "legendFormat": "{{instance}} limit", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (symbiont_inference_in_flight{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "{{instance}} in-flight", "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (symbiont_inference_gate_queued{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "{{instance}} queued", "refId": "C"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max by (instance) (symbiont_inference_gate_capacity{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"} > 0)", "legendFormat": "{{instance}} limit", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (symbiont_inference_in_flight{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "{{instance}} in-flight", "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (symbiont_inference_gate_queued{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "{{instance}} queued", "refId": "C"}],
       "title": "Inference slots: limit vs in-flight vs queued",
       "type": "timeseries"
     },
@@ -561,7 +581,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 80},
       "id": 77,
       "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_inference_gate_wait_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_inference_gate_wait_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "mean", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max by (instance) (symbiont_inference_gate_wait_seconds{quantile=\"0.99\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "{{instance}} p99", "refId": "B"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_inference_gate_wait_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_inference_gate_wait_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "mean", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "max by (instance) (symbiont_inference_gate_wait_seconds{quantile=\"0.99\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "{{instance}} p99", "refId": "B"}],
       "title": "Inference slot wait",
       "type": "timeseries"
     },
@@ -572,7 +592,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 0, "y": 88},
       "id": 78,
       "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=~\"compile|load\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=~\"compile|load\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A"}],
       "title": "Build slot utilization by instance",
       "type": "timeseries"
     },
@@ -583,7 +603,7 @@
       "gridPos": {"h": 8, "w": 12, "x": 12, "y": 88},
       "id": 79,
       "options": {"legend": {"calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true}, "tooltip": {"mode": "multi", "sort": "desc"}},
-      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (stage) (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=~\"llm|compile\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (stage) (rate(symbiont_pipeline_stage_duration_seconds_count{stage=~\"llm|compile\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{stage}}", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "(sum (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=\"llm\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum (rate(symbiont_pipeline_stage_duration_seconds_count{stage=\"llm\",model=~\"$model\",instance=~\"$instance\"}[30m]))) / max(symbiont_inference_gate_capacity{model=~\"$model\",instance=~\"$instance\"} > 0)", "legendFormat": "break-even (llm / limit)", "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_build_slot_wait_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(symbiont_build_slot_wait_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} build slot wait", "refId": "C"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_inference_gate_wait_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_inference_gate_wait_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "inference slot wait", "refId": "D"}],
+      "targets": [{"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (stage) (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=~\"llm|compile\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (stage) (rate(symbiont_pipeline_stage_duration_seconds_count{stage=~\"llm|compile\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{stage}}", "refId": "A"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "(sum (rate(symbiont_pipeline_stage_duration_seconds_sum{stage=\"llm\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum (rate(symbiont_pipeline_stage_duration_seconds_count{stage=\"llm\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))) / max(symbiont_inference_gate_capacity{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"} > 0)", "legendFormat": "break-even (llm / limit)", "refId": "B"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum by (instance) (rate(symbiont_build_slot_wait_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(symbiont_build_slot_wait_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}} build slot wait", "refId": "C"}, {"datasource": {"type": "prometheus", "uid": "${datasource}"}, "expr": "sum(rate(symbiont_inference_gate_wait_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_inference_gate_wait_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "inference slot wait", "refId": "D"}],
       "title": "Where lane time goes: llm vs compile vs queues",
       "type": "timeseries"
     },
@@ -602,7 +622,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 97 },
       "id": 20,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (rate(symbiont_llm_tokens_total{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{kind}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (rate(symbiont_llm_tokens_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{kind}}", "refId": "A" } ],
       "title": "Token rate by kind",
       "type": "timeseries"
     },
@@ -613,7 +633,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 97 },
       "id": 21,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_llm_tokens_total{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(symbiont_llm_tokens_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
       "title": "Token rate by instance",
       "type": "timeseries"
     },
@@ -625,9 +645,9 @@
       "id": 22,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_run_input_tokens_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_input_tokens_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "input tokens/run", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_run_output_tokens_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_output_tokens_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "output tokens/run", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_run_messages_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_messages_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "messages/run", "refId": "C" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_run_input_tokens_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_input_tokens_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "input tokens/run", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_run_output_tokens_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_output_tokens_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "output tokens/run", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_run_messages_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_messages_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "messages/run", "refId": "C" }
       ],
       "title": "Mean tokens & messages per run",
       "type": "timeseries"
@@ -640,8 +660,8 @@
       "id": 23,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (outcome) (rate(symbiont_llm_runs_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{outcome}}", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_transient_retries_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "transient retries/h", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (outcome) (rate(symbiont_llm_runs_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{outcome}}", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_transient_retries_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "transient retries/h", "refId": "B" }
       ],
       "title": "LLM runs / h by outcome",
       "type": "timeseries"
@@ -661,7 +681,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 0, "y": 114 },
       "id": 24,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "quantile_over_time(0.99, (symbiont_llm_run_input_tokens{quantile=\"1\",model=~\"$model\",instance=~\"$instance\"} != 0)[$__range:30s])", "legendFormat": "{{model}} {{exported_instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "quantile_over_time(0.99, (symbiont_llm_run_input_tokens{quantile=\"1\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"} != 0)[$__range:30s])", "legendFormat": "{{model}} {{exported_instance}}", "refId": "A" } ],
       "title": "P99 prompt size (range)",
       "type": "stat"
     },
@@ -672,7 +692,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 6, "y": 114 },
       "id": 25,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max_over_time(symbiont_llm_run_input_tokens{quantile=\"1\",model=~\"$model\",instance=~\"$instance\"}[$__range])", "legendFormat": "{{model}} {{exported_instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max_over_time(symbiont_llm_run_input_tokens{quantile=\"1\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range])", "legendFormat": "{{model}} {{exported_instance}}", "refId": "A" } ],
       "title": "Peak prompt size (range)",
       "type": "stat"
     },
@@ -683,7 +703,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 12, "y": 114 },
       "id": 26,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max_over_time(symbiont_llm_run_input_tokens{quantile=\"1\",model=~\"$model\",instance=~\"$instance\"}[$__range]) / 262144", "legendFormat": "{{model}} {{exported_instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max_over_time(symbiont_llm_run_input_tokens{quantile=\"1\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range]) / 262144", "legendFormat": "{{model}} {{exported_instance}}", "refId": "A" } ],
       "title": "Peak context usage vs 256k",
       "type": "stat"
     },
@@ -694,7 +714,7 @@
       "gridPos": { "h": 4, "w": 6, "x": 18, "y": 114 },
       "id": 27,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_evolve_context_window_resets_total{model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "context resets", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(increase(symbiont_evolve_context_window_resets_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[$__range]))", "legendFormat": "context resets", "refId": "A" } ],
       "title": "Context window overflows (range)",
       "type": "stat"
     },
@@ -705,7 +725,7 @@
       "gridPos": { "h": 9, "w": 12, "x": 0, "y": 118 },
       "id": 28,
       "options": { "bucketOffset": 0, "bucketSize": 4096, "combine": true, "legend": { "calcs": [], "displayMode": "list", "placement": "bottom", "showLegend": true } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_llm_run_input_tokens{quantile=\"1\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "input tokens/run", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_llm_run_input_tokens{quantile=\"1\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "input tokens/run", "refId": "A" } ],
       "title": "Prompt size distribution (input tokens per run)",
       "type": "histogram"
     },
@@ -717,9 +737,9 @@
       "id": 29,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_llm_run_input_tokens{quantile=\"1\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "peak input {{exported_instance}}", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_run_input_tokens_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_input_tokens_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "mean input", "refId": "B" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "(symbiont_llm_run_input_tokens{quantile=\"1\",model=~\"$model\",instance=~\"$instance\"} != 0) + (symbiont_llm_run_output_tokens{quantile=\"1\",model=~\"$model\",instance=~\"$instance\"} != 0)", "legendFormat": "peak input + output {{exported_instance}}", "refId": "C" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_llm_run_input_tokens{quantile=\"1\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "peak input {{exported_instance}}", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_run_input_tokens_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_input_tokens_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "mean input", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "(symbiont_llm_run_input_tokens{quantile=\"1\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"} != 0) + (symbiont_llm_run_output_tokens{quantile=\"1\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"} != 0)", "legendFormat": "peak input + output {{exported_instance}}", "refId": "C" }
       ],
       "title": "Prompt size per run vs context window",
       "type": "timeseries"
@@ -732,8 +752,8 @@
       "id": 32,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_llm_request_body_bytes{quantile=\"1\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "peak payload {{exported_instance}}", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_request_body_bytes_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_request_body_bytes_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "mean payload", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_llm_request_body_bytes{quantile=\"1\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"} != 0", "legendFormat": "peak payload {{exported_instance}}", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_request_body_bytes_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_request_body_bytes_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "mean payload", "refId": "B" }
       ],
       "title": "Request payload size per request",
       "type": "timeseries"
@@ -746,8 +766,8 @@
       "id": 33,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_request_body_bytes_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_input_tokens_sum{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "bytes per input token", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_request_body_bytes_count{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_runs_total{outcome=\"ok\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "requests per run", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_request_body_bytes_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_run_input_tokens_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "bytes per input token", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_llm_request_body_bytes_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_llm_runs_total{outcome=\"ok\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "requests per run", "refId": "B" }
       ],
       "title": "Payload calibration: bytes per token & requests per run",
       "type": "timeseries"
@@ -768,8 +788,8 @@
       "id": 30,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_revisions_loaded{model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{instance}} loaded", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_revision_active{model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{instance}} active id", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_revisions_loaded{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{instance}} loaded", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "symbiont_revision_active{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}", "legendFormat": "{{instance}} active id", "refId": "B" }
       ],
       "title": "Revisions loaded & active id by instance",
       "type": "timeseries"
@@ -782,8 +802,8 @@
       "id": 31,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
       "targets": [
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_dylib_source_bytes_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_dylib_source_bytes_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "source bytes/revision", "refId": "A" },
-        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_dylib_size_bytes_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_dylib_size_bytes_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "dylib bytes/revision", "refId": "B" }
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_dylib_source_bytes_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_dylib_source_bytes_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "source bytes/revision", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(symbiont_dylib_size_bytes_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(symbiont_dylib_size_bytes_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "dylib bytes/revision", "refId": "B" }
       ],
       "title": "Mean artifact size per revision",
       "type": "timeseries"
@@ -803,7 +823,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 0, "y": 145 },
       "id": 40,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_backtests_total{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "backtests/s", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_backtests_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "backtests/s", "refId": "A" } ],
       "title": "Backtests / s",
       "type": "stat"
     },
@@ -814,7 +834,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 4, "y": 145 },
       "id": 41,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_backtest_panics_total{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(agent_symbiont_backtests_total{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "panic ratio", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_backtest_panics_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(agent_symbiont_backtests_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "panic ratio", "refId": "A" } ],
       "title": "Backtest panic ratio",
       "type": "stat"
     },
@@ -825,7 +845,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 8, "y": 145 },
       "id": 42,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_refinement_rounds_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "rounds/h", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_refinement_rounds_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "rounds/h", "refId": "A" } ],
       "title": "Rounds / h",
       "type": "stat"
     },
@@ -836,7 +856,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 12, "y": 145 },
       "id": 43,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_refinement_rounds_total{outcome=\"ok\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(agent_symbiont_refinement_rounds_total{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "success ratio", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(agent_symbiont_refinement_rounds_total{outcome=\"ok\",crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum(rate(agent_symbiont_refinement_rounds_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "success ratio", "refId": "A" } ],
       "title": "Round success ratio",
       "type": "stat"
     },
@@ -847,7 +867,7 @@
       "gridPos": { "h": 4, "w": 4, "x": 16, "y": 145 },
       "id": 45,
       "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "time() - max(agent_symbiont_last_train_success_timestamp_seconds{model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "staleness", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "time() - max(agent_symbiont_last_train_success_timestamp_seconds{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"})", "legendFormat": "staleness", "refId": "A" } ],
       "title": "Since last successful train",
       "type": "stat"
     },
@@ -858,7 +878,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 149 },
       "id": 50,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_backtests_total{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{split}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_backtests_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{split}}", "refId": "A" } ],
       "title": "Backtests / s by split",
       "type": "timeseries"
     },
@@ -869,7 +889,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 149 },
       "id": 51,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_backtest_panics_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{split}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_backtest_panics_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{split}}", "refId": "A" } ],
       "title": "Backtest panics / h by split",
       "type": "timeseries"
     },
@@ -880,7 +900,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 157 },
       "id": 52,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_evaluation_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (split) (rate(agent_symbiont_evaluation_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{split}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (split) (rate(agent_symbiont_evaluation_duration_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (split) (rate(agent_symbiont_evaluation_duration_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{split}}", "refId": "A" } ],
       "title": "Mean evaluation duration by split",
       "type": "timeseries"
     },
@@ -891,7 +911,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 157 },
       "id": 53,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(agent_symbiont_round_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(agent_symbiont_round_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (instance) (rate(agent_symbiont_round_duration_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (instance) (rate(agent_symbiont_round_duration_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{instance}}", "refId": "A" } ],
       "title": "Mean round duration by instance",
       "type": "timeseries"
     },
@@ -910,7 +930,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 166 },
       "id": 56,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (outcome) (rate(agent_symbiont_refinement_rounds_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{outcome}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (outcome) (rate(agent_symbiont_refinement_rounds_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{outcome}}", "refId": "A" } ],
       "title": "Rounds / h by outcome",
       "type": "timeseries"
     },
@@ -921,7 +941,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 166 },
       "id": 57,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (verdict) (rate(agent_symbiont_frontier_verdicts_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{verdict}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (verdict) (rate(agent_symbiont_frontier_verdicts_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{verdict}}", "refId": "A" } ],
       "title": "Frontier verdicts / h by verdict",
       "type": "timeseries"
     },
@@ -932,7 +952,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 174 },
       "id": 61,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (population, outcome) (rate(agent_symbiont_population_outcomes_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{population}} / {{outcome}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (population, outcome) (rate(agent_symbiont_population_outcomes_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{population}} / {{outcome}}", "refId": "A" } ],
       "title": "Population outcomes / h by outcome",
       "type": "timeseries"
     },
@@ -943,7 +963,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 174 },
       "id": 62,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (population) (rate(agent_symbiont_population_outcomes_total{model=~\"$model\",instance=~\"$instance\",retained=\"true\"}[30m])) / sum by (population) (rate(agent_symbiont_population_outcomes_total{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{population}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (population) (rate(agent_symbiont_population_outcomes_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\",retained=\"true\"}[30m])) / sum by (population) (rate(agent_symbiont_population_outcomes_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{population}}", "refId": "A" } ],
       "title": "Retention rate by population",
       "type": "timeseries"
     },
@@ -954,7 +974,7 @@
       "gridPos": { "h": 8, "w": 24, "x": 0, "y": 182 },
       "id": 60,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (criterion) (rate(agent_symbiont_quality_gate_failures_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{criterion}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (criterion) (rate(agent_symbiont_quality_gate_failures_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{criterion}}", "refId": "A" } ],
       "title": "Quality gate failures / h by criterion",
       "type": "timeseries"
     },
@@ -980,7 +1000,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 0, "y": 195 },
       "id": 58,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_duration_seconds_sum{model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (store) (rate(agent_symbiont_persist_duration_seconds_count{model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{store}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_duration_seconds_sum{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) / sum by (store) (rate(agent_symbiont_persist_duration_seconds_count{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m]))", "legendFormat": "{{store}}", "refId": "A" } ],
       "title": "Mean insert duration by store",
       "type": "timeseries"
     },
@@ -991,7 +1011,7 @@
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 195 },
       "id": 59,
       "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
-      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_failures_total{model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{store}}", "refId": "A" } ],
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_failures_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{store}}", "refId": "A" } ],
       "title": "Insert failures / h by store",
       "type": "timeseries"
     }

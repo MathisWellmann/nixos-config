@@ -502,6 +502,62 @@
           {targets = ["desg0:9001"];}
         ];
       }
+      # The `agent-symbiont-sliding` deployments in the k3s cluster (namespace
+      # `agent-symbiont`, managed by the `nexus` repo). Same binary family and
+      # metric names as the `symbiont` job above, told apart by the exposed
+      # `crate_name` label (`agent-symbiont-sliding` vs `agent-symbiont-eval`),
+      # which the symbiont dashboard's `Binary` variable filters on. Pods opt in
+      # via `prometheus.io/scrape`/`prometheus.io/port` annotations; the
+      # sliding dashboard pod in the same namespace is not annotated and is
+      # dropped. `honor_labels` for the same reason as the `symbiont` job: the
+      # binary's own `instance` label (derived from the pod name) must win.
+      {
+        job_name = "symbiont-k8s";
+        inherit scrape_interval scrape_timeout;
+        honor_labels = true;
+        kubernetes_sd_configs = [
+          {
+            role = "pod";
+            api_server = "https://127.0.0.1:6443";
+            namespaces.names = ["agent-symbiont"];
+            bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+            tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
+          }
+        ];
+        relabel_configs = [
+          {
+            source_labels = ["__meta_kubernetes_pod_annotation_prometheus_io_scrape"];
+            action = "keep";
+            regex = "true";
+          }
+          # The pods declare `health` (9001) and `metrics` (9000) ports; keep
+          # one target per pod.
+          {
+            source_labels = ["__meta_kubernetes_pod_container_port_name"];
+            action = "keep";
+            regex = "metrics";
+          }
+          {
+            source_labels = ["__address__" "__meta_kubernetes_pod_annotation_prometheus_io_port"];
+            action = "replace";
+            regex = "([^:]+)(?::\\d+)?;(\\d+)";
+            replacement = "$1:$2";
+            target_label = "__address__";
+          }
+          {
+            source_labels = ["__meta_kubernetes_pod_name"];
+            target_label = "pod";
+          }
+          {
+            source_labels = ["__meta_kubernetes_namespace"];
+            target_label = "namespace";
+          }
+          {
+            source_labels = ["__meta_kubernetes_pod_node_name"];
+            target_label = "node";
+          }
+        ];
+      }
       # SGLang OpenAI server on desg0 (podman container, see
       # hosts/desg0/sglang_qwen3_container.nix; SGLang replaced vllm in
       # 2026-07). Serves `/metrics` on its API port only because the container
