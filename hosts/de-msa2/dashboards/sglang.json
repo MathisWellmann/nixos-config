@@ -156,6 +156,17 @@
       "type": "stat"
     },
     {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Estimated API cost of the cumulative tokens since the last engine start, if billed at OpenRouter's market-weighted prices for qwen/qwen3.8-27b (openrouter.ai/qwen/qwen3.8-27b/providers, checked 2026-09-26). Input and cache-read are provider list prices weighted by 1d token share: $0.208/M uncached input, $0.095/M cached input (cache read). Output is OpenRouter's Weighted Avg Output Price: $3.436/M. The page's Weighted Avg Input Price ($0.1344) is NOT used because it already includes providers' cache hit rates. Using it here would count the cache discount twice. Uncached input = sglang:prompt_tokens_total - sglang:cached_tokens_total (radix-cache hits). Resets to 0 with the counters on every engine restart. Individual providers on OpenRouter can be cheaper or more expensive; update the constants in the query if prices change.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "currencyUSD", "decimals": 2, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 5 },
+      "id": 27,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [{ "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "((sum(sglang:prompt_tokens_total) - sum(sglang:cached_tokens_total)) * 0.208 + sum(sglang:cached_tokens_total) * 0.095 + sum(sglang:generation_tokens_total) * 3.436) / 1e6", "legendFormat": "est. cost", "refId": "A" }],
+      "title": "Est. API cost (OpenRouter)",
+      "type": "stat"
+    },
+    {
       "collapsed": false,
       "gridPos": { "h": 1, "w": 24, "x": 0, "y": 9 },
       "id": 101,
