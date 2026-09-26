@@ -67,15 +67,15 @@ in {
 
   services.gitea-actions-runner.instances = lib.listToAttrs (
     map (runner: {
-      name = runner.name;
+      inherit (runner) name;
       value = {
         enable = true;
         name = runner.runner_name or config.networking.hostName;
         url = forgejo_url;
         # tokenFile should be in format TOKEN=<secret>, since it's EnvironmentFile for systemd
-        tokenFile = runner.tokenFile;
-        labels = runner.labels;
-        hostPackages = hostPackages;
+        inherit (runner) tokenFile;
+        inherit (runner) labels;
+        inherit hostPackages;
         settings = {
           # Execute this many tasks concurrently at the same time.
           runner.capacity = runner_capacity;

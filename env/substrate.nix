@@ -32,7 +32,7 @@
   ...
 }: let
   substrate = pkgs.callPackage ../pkgs/agent-substrate.nix {};
-  inherit (substrate) tag registry;
+  inherit (substrate) tag;
   ips = import ../modules/static_ips.nix;
 
   # Upstream tree with the build-time substitutions applied, under the

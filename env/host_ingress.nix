@@ -84,6 +84,14 @@ _: let
       description = "Bencher API";
     }
     {
+      name = "immich";
+      host = "immich.k3s.lan";
+      port = 3018; # const.immich_port
+      group = "Media";
+      icon = "mdi-camera";
+      description = "Photo & video management";
+    }
+    {
       name = "dsh";
       host = "dsh.k3s.lan";
       port = 3080; # `dsh web` via the dsh-web-proxy socat forwarder, hosts/de-msa2/dsh.nix

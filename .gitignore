@@ -1,4 +1,8 @@
 nixos.qcow2
 result
+result-bin
 cheatsheet.pdf
 .dirge/
+qr-code.png
+qr-code.svg
+.cache/

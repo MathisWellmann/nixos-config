@@ -146,7 +146,7 @@
 
       # google/ax on top of it: the `ax` CLI (also ax-server/-controller/
       # -task-runner binaries) and the image push, e.g. `nix run .#ax-push-images`
-      ax = axBundle.ax;
+      inherit (axBundle) ax;
       ax-push-images = axBundle.push;
 
       # "IPython is All You Need" shell, see pkgs/ipython-shell.nix

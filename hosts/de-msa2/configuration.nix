@@ -248,6 +248,11 @@ in {
       mediaLocation = "/nvme_pool/immich";
       openFirewall = true;
       port = const.immich_port;
+      # Exposed off-cluster at https://immich.k3s.lan through the k3s traefik
+      # ingress (see env/host_ingress.nix); fleet-trusted `k3s-lan-ca` cert.
+      # 0.0.0.0/0: traefik's pod source IP is NAT-dependent, and the service
+      # is already LAN-open, so this only fixes logged client IPs.
+      environment = {IMMICH_TRUSTED_PROXIES = "0.0.0.0/0";};
     };
   };
 

@@ -54,6 +54,7 @@ in {
     "symbiont-eval.k3s.lan"
     "dsh.k3s.lan"
     "ax.k3s.lan"
+    "immich.k3s.lan"
   ];
 
   nix.settings = {
