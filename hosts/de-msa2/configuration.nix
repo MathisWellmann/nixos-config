@@ -173,6 +173,15 @@ in {
         mealie = "mealie";
         immich = "immich-server";
         rustfs = "rustfs";
+        forgejo = "forgejo";
+        grafana = "grafana";
+        vikunja = "vikunja";
+        bencher-api = "podman-bencher-api";
+        bencher-ui = "podman-bencher-ui";
+        ntfy = "ntfy-sh";
+        attic-postgres = "postgresql";
+        monty = "monty-persona-jeff";
+        dsh = "dsh-web";
       };
     };
   };
