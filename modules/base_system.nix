@@ -51,6 +51,7 @@ in {
     "llama.k3s.lan"
     "llmkube.k3s.lan"
     "symbiont.k3s.lan"
+    "symbiont-eval.k3s.lan"
     "dsh.k3s.lan"
     "ax.k3s.lan"
   ];
