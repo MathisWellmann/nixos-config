@@ -189,7 +189,18 @@ signing key.
 (`modules/nixos_cache_builder.nix`) runs daily at 04:00 — clone the repo,
 `nix flake update`, build every host's `system.build.toplevel`, `attic push`
 the results, and only then commit and push the new `flake.lock`. A lock that
-does not build is never committed. Alongside it, `attic-watch-store` uploads
+does not build is never committed.
+
+Since it updates the lock on every run, that timer is also the fleet's canary
+for upstream nixpkgs changes — it breaks the day nixpkgs marks a package we
+install as insecure, renames an option or drops a package. A failing host no
+longer aborts the run: the other hosts are still built and pushed, then a `pi`
+agent gets the build log, diagnoses the breakage, patches it, checks that every
+host still evaluates and pushes a `cache-mechanic/fix-*` branch for review
+(same pattern as `hosts/de-msa2/clanker-bot.nix`). It never pushes to `main`,
+so no unreviewed LLM edit can reach a host's next rebuild.
+
+Alongside it, `attic-watch-store` uploads
 every new path that lands in `desg0`'s store, so remote builds from the
 laptops (via `modules/remote_builder.nix`) end up in the cache too.
 Retention is enforced by GC: every 12 hours, paths not pulled for 3 months go.

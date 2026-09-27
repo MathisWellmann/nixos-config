@@ -66,6 +66,9 @@ in {
     # Nightly: bump flake.lock, build every host, push to attic, commit the lock.
     (import ./../../modules/nixos_cache_builder.nix {
       hosts = ["de-msa2" "de-n5" "desg0" "meshify" "poweredge" "razerblade" "superserver" "tensorbook"];
+      # The repair agent runs against the local sglang server configured just
+      # below, so a broken build is diagnosed without leaving the host.
+      agent_model = "vllm/${const.qwen3Model}";
     })
     (import ./../../modules/ai/pi-agent.nix {
       # Was llama-cpp_port; that module is disabled (sglang owns the GPU),
