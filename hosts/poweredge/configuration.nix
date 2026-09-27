@@ -146,7 +146,6 @@ in {
   # };
   environment.systemPackages = with pkgs; [
     restic
-    radicle-node
   ];
 
   # Decentralized git protocol
