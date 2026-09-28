@@ -8,9 +8,9 @@ endpoints:
 kind: EndpointSlice
 metadata:
   labels:
-    kubernetes.io/service-name: s3-console
-  name: s3-console
-  namespace: s3-console
+    kubernetes.io/service-name: rustfs
+  name: rustfs
+  namespace: rustfs
 ports:
   - name: http
     port: 9001

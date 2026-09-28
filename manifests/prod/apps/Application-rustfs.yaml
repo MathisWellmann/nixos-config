@@ -1,15 +1,15 @@
 apiVersion: argoproj.io/v1alpha1
 kind: Application
 metadata:
-  name: s3-console
+  name: rustfs
   namespace: argocd
 spec:
   destination:
-    namespace: s3-console
+    namespace: rustfs
     server: https://kubernetes.default.svc
   project: default
   source:
-    path: ./manifests/prod/s3-console
+    path: ./manifests/prod/rustfs
     repoURL: https://github.com/MathisWellmann/nixos-config.git
     targetRevision: main
   syncPolicy:

@@ -43,7 +43,7 @@ in {
       RUSTFS_ADDRESS = ":${toString const.rustfs_port}";
       # The web console is a second listener on :9001 serving the UI at the
       # /rustfs/console/ path prefix; login is the root credentials above.
-      # Fronted as s3-console.k3s.lan (env/host_ingress.nix).
+      # Fronted as rustfs.k3s.lan (env/host_ingress.nix).
       RUSTFS_CONSOLE_ENABLE = "true";
     };
   };

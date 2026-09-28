@@ -8,24 +8,24 @@ metadata:
     gethomepage.dev/external: "true"
     gethomepage.dev/group: DevOps
     gethomepage.dev/icon: mdi-database
-    gethomepage.dev/name: s3-console
-    gethomepage.dev/siteMonitor: http://s3-console.s3-console.svc.cluster.local/rustfs/console
-  name: s3-console
-  namespace: s3-console
+    gethomepage.dev/name: rustfs
+    gethomepage.dev/siteMonitor: http://rustfs.rustfs.svc.cluster.local/rustfs/console
+  name: rustfs
+  namespace: rustfs
 spec:
   ingressClassName: traefik
   rules:
-    - host: s3-console.k3s.lan
+    - host: rustfs.k3s.lan
       http:
         paths:
           - backend:
               service:
-                name: s3-console
+                name: rustfs
                 port:
                   number: 80
             path: /
             pathType: Prefix
   tls:
     - hosts:
-        - s3-console.k3s.lan
-      secretName: s3-console-tls
+        - rustfs.k3s.lan
+      secretName: rustfs-tls

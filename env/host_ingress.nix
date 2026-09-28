@@ -55,13 +55,13 @@ _: let
       # rustfs web console: a second listener next to the S3 API, serving the
       # UI at the /rustfs/console/ path prefix (so the Service root is 403 and
       # the health check must target the console path itself).
-      name = "s3-console";
-      host = "s3-console.k3s.lan";
+      name = "rustfs";
+      host = "rustfs.k3s.lan";
       port = 9001; # rustfs default console port
       group = "DevOps";
       icon = "mdi-database";
       description = "rustfs web console";
-      monitor = "http://s3-console.s3-console.svc.cluster.local/rustfs/console";
+      monitor = "http://rustfs.rustfs.svc.cluster.local/rustfs/console";
     }
     {
       name = "grafana";
