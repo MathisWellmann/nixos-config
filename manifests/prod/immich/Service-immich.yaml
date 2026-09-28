@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: immich
+  namespace: immich
+spec:
+  ports:
+    - name: http
+      port: 80
+      targetPort: 3018
+  type: ClusterIP

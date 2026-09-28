@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: Photo & video management
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
+    gethomepage.dev/group: Media
+    gethomepage.dev/icon: mdi-camera
+    gethomepage.dev/name: immich
+    gethomepage.dev/siteMonitor: http://immich.immich.svc.cluster.local
+  name: immich
+  namespace: immich
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: immich.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: immich
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - immich.k3s.lan
+      secretName: immich-tls

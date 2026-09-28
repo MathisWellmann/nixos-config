@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: Kev decision model (Jev-like, System One API)
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
+    gethomepage.dev/group: AI
+    gethomepage.dev/icon: mdi-robot
+    gethomepage.dev/name: kev
+    gethomepage.dev/siteMonitor: http://kev.kev.svc.cluster.local
+  name: kev
+  namespace: kev
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: kev.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: kev
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - kev.k3s.lan
+      secretName: kev-tls
