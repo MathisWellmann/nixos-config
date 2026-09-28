@@ -52,19 +52,19 @@ in {
       # Top left corner is 0x0 is x and y. increasing y means physically a lower position.                                                                                                      │
       monitor = [
         {
-          output = "DP-3";
+          output = "DP-6";
           mode = "1920x1080@60";
           position = "6480x1679";
           scale = 1;
         }
         {
-          output = "DP-2";
+          output = "DP-5";
           mode = "1920x1080@60";
           position = "6480x2759";
           scale = 1;
         }
         {
-          output = "DP-1";
+          output = "DP-4";
           mode = "3840x2160@144";
           position = "4320x0";
           scale = 1;

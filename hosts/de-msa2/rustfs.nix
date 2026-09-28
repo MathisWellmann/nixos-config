@@ -43,7 +43,7 @@ in {
       RUSTFS_ADDRESS = ":${toString const.rustfs_port}";
       # The web console is a second listener with its own auth surface; the
       # bucket is only ever driven by API clients, so leave it off.
-      RUSTFS_CONSOLE_ENABLE = "false";
+      RUSTFS_CONSOLE_ENABLE = "true";
     };
   };
 
