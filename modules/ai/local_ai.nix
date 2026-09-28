@@ -15,8 +15,6 @@ in {
     inputs.llm-agents.packages.${system}.prime-agent
     # inputs.autolith.packages.${system}.default
     # mistral-rs
-    claude-code
-    codex
     lmstudio
     # stable-diffusion-cpp-cuda
   ];
