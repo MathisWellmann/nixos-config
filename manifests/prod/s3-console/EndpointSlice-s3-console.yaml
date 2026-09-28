@@ -1,0 +1,17 @@
+addressType: IPv4
+apiVersion: discovery.k8s.io/v1
+endpoints:
+  - addresses:
+      - 100.83.142.17
+    conditions:
+      ready: true
+kind: EndpointSlice
+metadata:
+  labels:
+    kubernetes.io/service-name: s3-console
+  name: s3-console
+  namespace: s3-console
+ports:
+  - name: http
+    port: 9001
+    protocol: TCP

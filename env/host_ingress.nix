@@ -52,6 +52,18 @@ _: let
       description = "rustfs S3 object store (Agent Substrate snapshots)";
     }
     {
+      # rustfs web console: a second listener next to the S3 API, serving the
+      # UI at the /rustfs/console/ path prefix (so the Service root is 403 and
+      # the health check must target the console path itself).
+      name = "s3-console";
+      host = "s3-console.k3s.lan";
+      port = 9001; # rustfs default console port
+      group = "DevOps";
+      icon = "mdi-database";
+      description = "rustfs web console";
+      monitor = "http://s3-console.s3-console.svc.cluster.local/rustfs/console";
+    }
+    {
       name = "grafana";
       host = "grafana.k3s.lan";
       port = 3001; # const.grafana_port
@@ -127,6 +139,7 @@ _: let
     group ? "Services",
     icon ? "mdi-web",
     description ? name,
+    monitor ? "http://${name}.${name}.svc.cluster.local",
   }: {
     inherit name;
     namespace = name;
@@ -190,7 +203,7 @@ _: let
             # health check through the in-cluster Service (the same
             # Service -> EndpointSlice -> host path traefik uses).
             gethomepage.dev/external: "true"
-            gethomepage.dev/siteMonitor: http://${name}.${name}.svc.cluster.local
+            gethomepage.dev/siteMonitor: ${monitor}
         spec:
           ingressClassName: traefik
           rules:

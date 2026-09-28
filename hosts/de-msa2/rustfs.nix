@@ -41,8 +41,9 @@ in {
     settings = {
       RUSTFS_VOLUMES = storage_path;
       RUSTFS_ADDRESS = ":${toString const.rustfs_port}";
-      # The web console is a second listener with its own auth surface; the
-      # bucket is only ever driven by API clients, so leave it off.
+      # The web console is a second listener on :9001 serving the UI at the
+      # /rustfs/console/ path prefix; login is the root credentials above.
+      # Fronted as s3-console.k3s.lan (env/host_ingress.nix).
       RUSTFS_CONSOLE_ENABLE = "true";
     };
   };
