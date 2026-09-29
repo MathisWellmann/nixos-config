@@ -114,7 +114,27 @@
 
       # DeepSeek Harness agent CLI, e.g. `nix run .#deepseek-harness -- web`
       deepseek-harness = let
-        dsh = inputs.llm-agents.packages.${system}.dsh;
+        # dsh >= 0.1.7 dsh-app-boot reaches Node's `internal/modules/*` only via
+        # the `node-addon-require-builtin` addon, whose machine-code probe only
+        # recognizes official nodejs.org builds and fails on nixpkgs' source-built
+        # node ("Unsupported/no-getter", deepseek-harness discussions #752/#1873).
+        # llm-agents already launches node with `--expose-internals`, so use the
+        # plain require for those ids, like cordis-plugin-loader already does.
+        # `--replace-fail` breaks the build once upstream changes this, so the
+        # patch gets re-checked instead of silently rotting.
+        dsh = inputs.llm-agents.packages.${system}.dsh.overrideAttrs (old: {
+          postInstall =
+            old.postInstall
+            + ''
+              for f in lib/index.js lib/worker/profile-resolution-bootstrap.js; do
+                substituteInPlace \
+                  $out/lib/node_modules/@deepseek-ai/dsh/node_modules/@deepseek-ai/dsh-app-boot/$f \
+                  --replace-fail \
+                    'const addon = createRequire(import.meta.url)("node-addon-require-builtin");' \
+                    'const addon = process.execArgv.includes("--expose-internals") ? { requireBuiltin: createRequire(import.meta.url) } : createRequire(import.meta.url)("node-addon-require-builtin");'
+              done
+            '';
+        });
       in
         pkgs.symlinkJoin {
           name = "deepseek-harness";
