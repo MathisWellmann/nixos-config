@@ -24,7 +24,7 @@
 #     hosts/de-msa2/clanker-bot.nix. It never pushes to the default branch:
 #     an unreviewed LLM edit here would reach every host's next rebuild.
 #
-# One-time setup (secrets/secrets.nix has the recipients):
+# One-time setup (secrets/agenix-rules.nix has the recipients):
 #   # Push-only attic token, minted on de-msa2:
 #   sudo atticd-atticadm make-token --sub cache-builder --validity 5y --push nixos \
 #     | (cd secrets && agenix -e attic-push-token.age)

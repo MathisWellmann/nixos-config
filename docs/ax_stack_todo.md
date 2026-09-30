@@ -91,7 +91,7 @@ All items closed 2026-09-22.
       `environmentFile` for `RUSTFS_ACCESS_KEY`/`RUSTFS_SECRET_KEY`) with
       data in a new ZFS dataset `nvme_pool/rustfs` (pool has 4 TB free;
       sibling datasets are created by hand, e.g. `nvme_pool/forgejo`).
-- [x] Secrets: **agenix** (`secrets/secrets.nix`, `age.secrets.*`), not sops.
+- [x] Secrets: **agenix** (`secrets/agenix-rules.nix`, `age.secrets.*`), not sops.
       Rekeying must happen on de-msa2 (see memory: meshify is not a recipient).
 - [x] Gemini key is **optional**. `ax-task-runner` skips the Antigravity
       `goal` bootstrap with a warning when `GEMINI_API_KEY` is unset
