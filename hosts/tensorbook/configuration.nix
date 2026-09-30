@@ -80,6 +80,7 @@ in {
     };
   };
 
+  security.pki.certificateFiles = [./../../modules/brain_ca.crt];
   environment.sessionVariables = {
     NIXOS_OZONE_WL = 1;
   };
