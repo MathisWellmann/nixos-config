@@ -104,4 +104,15 @@ in {
     ];
     armor = true;
   };
+  # Password of the `ilka` Samba account serving the ilka dataset
+  # (hosts/de-msa2/samba.nix). Windows clients connect as `ilka` with it.
+  # Change it with the agenix edit shown there, then rebuild (or restart
+  # samba-password-ilka) so smbpasswd picks it up.
+  "smb_ilka.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
 }
