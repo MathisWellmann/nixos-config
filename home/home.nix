@@ -149,7 +149,11 @@ in {
     lazygit
     gh # Github TUI
     difftastic # `difft` executable
-    mergiraf # Syntax-aware git merge driver.
+    # Syntax-aware git merge driver. Its cargo test suite aborts during the
+    # build (heap corruption: "corrupted size vs. prev_size", SIGABRT in the
+    # `working` test) under the current nixpkgs-unstable toolchain, so skip
+    # the check. Re-enable on upstream fixes or a nixpkgs that does.
+    (mergiraf.overrideAttrs (_final: prev: { doCheck = false; }))
     cargo-expand # Expands rust macros
     cargo-info
     cargo-wizard
