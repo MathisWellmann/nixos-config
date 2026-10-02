@@ -79,6 +79,12 @@ in {
             monitor = "HDMI-A-1";
             path = "/home/m/acapulco_wallpaper_1.jxl";
           }
+          # Horizontal monitor: the laptop's built-in screen. hyprpaper applies
+          # this at start and whenever eDP-1 is (re-)connected.
+          {
+            monitor = "eDP-1";
+            path = "/home/m/Wallpaper.jpg";
+          }
         ];
       };
     };
