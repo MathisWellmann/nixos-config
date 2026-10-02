@@ -3,6 +3,18 @@ _: let
   email = "wellmannmathis@gmail.com";
   global_const = import ../global_constants.nix;
 in {
+  home = {
+    # SSH signature allowlist for jj: verifies commit signatures against this
+    # key, turning `[?]` into `[✓]` in jj log.
+    #
+    # Format is `principals key` (not authorized_keys). The principals list
+    # must contain `git`, because jj signs with `ssh-keygen -Y sign -n git`.
+    file.".ssh/jj-allowed-signers" = {
+      text = ''
+        git ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGjfqwBPaXyCe0UlgMqAcKful0hZz3Vu3e/aNk2XSe6n
+      '';
+    };
+  };
   programs = {
     git = {
       enable = true;
@@ -163,6 +175,7 @@ in {
           behavior = "own";
           backend = "ssh";
           key = "/home/${global_const.username}/.ssh/id_ed25519.pub";
+          backends.ssh.allowed-signers = "/home/${global_const.username}/.ssh/jj-allowed-signers";
         };
       };
     };
