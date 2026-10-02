@@ -89,7 +89,15 @@
     # Development
     perf
     hotspot # GUI for Linux perf
-    tracy # A real time, nanosecond resolution profiler
+    # A real time, nanosecond resolution profiler. gcc >= 15 (nixpkgs-unstable default) no
+    # longer pulls <cstdint> in transitively, and tracy's vendored robin-hood header omits it.
+    (tracy.overrideAttrs (old: old // {
+      postPatch = (old.postPatch or "") + ''
+        substituteInPlace server/tracy_robin_hood.h \
+          --replace-fail '#include <cstdlib>' '#include <cstdint>\n#include <cstdlib>'
+      '';
+    }))
+
     heaptrack # Heap memory profiler for linux
     # tlaplusToolbox
     # redisinsight
