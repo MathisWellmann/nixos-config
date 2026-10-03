@@ -65,7 +65,6 @@ in {
     ./rustfs.nix
     ./samba.nix
     ./substrate.nix
-    ./monty-persona.nix
     ./grafana.nix
     # ./ups.nix
     searx
