@@ -140,7 +140,7 @@
         (b "F" "hl.dsp.window.fullscreen()")
 
         # for the charachorder
-        (b "m" ''hl.dsp.focus({ direction = "left" })'')
+        (b "a" ''hl.dsp.focus({ direction = "left" })'')
         (b "n" ''hl.dsp.focus({ direction = "right" })'')
         (b "l" ''hl.dsp.focus({ direction = "up" })'')
         (b "w" ''hl.dsp.focus({ direction = "down" })'')
@@ -157,7 +157,7 @@
         (b "8" "hl.dsp.focus({ workspace = 8 })")
         (b "9" "hl.dsp.focus({ workspace = 9 })")
 
-        (b "a" ''hl.dsp.exec_cmd("stochos")'')
+        # (b "i" ''hl.dsp.exec_cmd("stochos")'')
 
         # Move/resize windows with mainMod + LMB/RMB and dragging
         (bm "mouse:272" "hl.dsp.window.drag()") # NOTE: mouse:272 = left click
