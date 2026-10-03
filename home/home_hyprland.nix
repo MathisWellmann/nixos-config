@@ -89,7 +89,20 @@
     # Development
     perf
     hotspot # GUI for Linux perf
-    tracy # A real time, nanosecond resolution profiler
+    # A real time, nanosecond resolution profiler. Its vendored
+    # server/tracy_robin_hood.h uses uint32_t/uint64_t without including
+    # <cstdint>, which current libstdc++ no longer provides transitively, so
+    # tracy fails to build on nixpkgs-unstable. Drop this override once
+    # upstream fixes the header.
+    (tracy.overrideAttrs (final: prev: {
+      prePatch =
+        (prev.prePatch or "")
+        + ''
+          substituteInPlace server/tracy_robin_hood.h \
+            --replace-fail '#include <algorithm>' '#include <cstdint>
+#include <algorithm>'
+        '';
+    }))
     heaptrack # Heap memory profiler for linux
     # tlaplusToolbox
     # redisinsight
