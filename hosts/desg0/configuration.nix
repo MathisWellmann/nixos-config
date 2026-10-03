@@ -105,17 +105,23 @@ in {
       # Full-GPU tuning (2026-09-10): llama-cpp is off, so this no longer
       # shares the card. See the module header for the sizing.
       memFractionStatic = "0.93";
-      # 24, not 16: measured 2026-09-10, it costs only 5% of the KV pool
-      # (1,072,169 -> 1,013,801) and buys +19% throughput (1166 -> 1390
-      # tok/s). Do NOT go to 32+: DSpark's intermediate mamba buffer scales
-      # with concurrency and eats the pool (32 -> 838k, 64 -> 138k, which
-      # cannot hold even ONE 200k request).
-      maxRunningRequests = 24;
-      # 1.5x the 24x4=96 running-request floor. The bare floor is what
-      # crashed the scheduler in 2026-08 via the radix-cache path
-      # (extra_buffer_lazy keeps a slot per cached prefix too), so it needs
-      # headroom. 144 costs 87k KV tokens (1,013,801 -> 926,249) and ran
-      # clean under sustained 24-way load with mamba usage 0.02-0.04.
+      # 12, from production metrics (2026-09-11..2026-10-03, ~47k-token
+      # median prompts; plot in docs/diagrams/sglang-concurrency-sweetspot.png).
+      # The 2026-09-10 sweep that chose 24 used 1k-token prompts, so it did
+      # not show the cost of long prefills. With the real workload, 12 -> 13
+      # is a cliff: ITL 30 -> 73 ms, TTFT 7 -> 19 s, decode halves, because
+      # 50k prefills take the place of decode steps. Decode peaks at 8, and
+      # decode+prefill is ~3.3k tok/s at 12. KV usage is only ~0.6 there, so
+      # compute is the limit. Above 12, requests now wait in the queue and
+      # do not slow down every running stream. Do NOT go to 32+: DSpark's
+      # intermediate mamba buffer scales with concurrency and eats the pool.
+      maxRunningRequests = 12;
+      # Kept from the conc-24 config: 1.5x its 24x4=96 running-request
+      # floor. The bare floor crashed the scheduler in 2026-08 via the
+      # radix-cache path (extra_buffer_lazy keeps a slot per cached prefix
+      # too), so it needs headroom. For conc 12 this is 3x the 48 floor: too
+      # large but safe. A smaller pin would give back KV tokens (144 costs
+      # 87k: 1,013,801 -> 926,249), but that is not tested yet.
       maxMambaCacheSize = 144;
       contextLength = 262144;
     })

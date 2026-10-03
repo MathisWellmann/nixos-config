@@ -88,6 +88,24 @@ node's tailscale IP through `networking.hosts` in `modules/base_system.nix`.
 `remote_builder.nix` module turns GPU hosts into distributed nix builders over
 SSH.
 
+`desg0` serves Qwen3.8-27B-NVFP4 with SGLang
+(`hosts/desg0/sglang_qwen3_container.nix`). The concurrency limit
+(`--max-running-requests 12`) comes from production metrics in
+VictoriaMetrics, not from a synthetic benchmark. The data is 8,769 busy
+1-minute windows since 2026-09-11, with a median prompt of ~47k tokens:
+
+![SGLang throughput and latency vs. concurrent requests](docs/diagrams/sglang-concurrency-sweetspot.png)
+
+- Aggregate decode peaks at 8 concurrent requests (~464 tok/s).
+- Decode plus prefill compute keeps rising to ~3.3k tok/s at 12.
+- From 12 to 13 there is a cliff. Inter-token latency goes from 30 to 73 ms,
+  median TTFT goes from 7 to 19 s, and decode throughput halves. The cause is
+  the ~50k-token prefills, which take the place of decode steps in the batch.
+  The KV pool is only ~60% used at this point, so compute is the limit, not
+  memory.
+- Above 13, total throughput is almost all prefill (~4.5k tok/s ceiling). The
+  streams then get only 4-9 tok/s each.
+
 ### 🧪 Sandboxed agent tasks (ax + Agent Substrate)
 
 The cluster runs [google/ax](https://github.com/google/ax) as the task API on

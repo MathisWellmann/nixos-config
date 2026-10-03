@@ -6,7 +6,10 @@
 # configuration.nix, so this owns all 96GB of the RTX PRO 6000. The call site
 # overrides the defaults below to 0.93 / 16 / 128 / 262144.
 #
-# CURRENT (2026-09-10): mem-fraction 0.93, conc 24, 144 mamba slots, 256k.
+# CURRENT (2026-10-03): mem-fraction 0.93, conc 12, 144 mamba slots, 256k.
+#   conc lowered 24 -> 12 from production metrics with ~50k-token prompts:
+#   ITL/TTFT cliff at 13 (see configuration.nix and the README plot).
+#   The pool figures below were measured at conc 24.
 #   max_total_num_tokens = 926,249   <- fp8 KV pool, shared by ALL requests
 #   available_gpu_mem 2.13GB after capture; 95594MiB of 97887MiB resident
 #
