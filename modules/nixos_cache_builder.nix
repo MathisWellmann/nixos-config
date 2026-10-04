@@ -20,9 +20,23 @@
 #     marked insecure on 2026-09-25).
 #   * A `pi` agent then gets the build log and the repo, diagnoses the
 #     failure, patches it, checks that *every* host still evaluates, and
-#     pushes a `cache-mechanic/fix-*` branch for review -- same idea as
+#     pushes the `cache-mechanic/fix` branch for review -- same idea as
 #     hosts/de-msa2/clanker-bot.nix. It never pushes to the default branch:
 #     an unreviewed LLM edit here would reach every host's next rebuild.
+#
+# After a repair the previously failing hosts are rebuilt on the patched tree.
+# If they all pass, the run continues into the normal push-and-commit path, so
+# a night that needed a fix still fills the cache and still lands a lock --
+# the fix itself waits for review on the branch. The lock is only ever
+# committed when all hosts built *and* the push succeeded, because a client
+# rebuilding from that lock expects to find those closures in the cache.
+#
+# The repair branch name is fixed rather than timestamped, and the previous
+# attempt is used as the starting point. A timestamped branch per run made the
+# agent re-derive the same fix from scratch every night and left a pile of
+# near-identical unmerged branches (four for one tracy build break in
+# 2026-10). Opening the PR is left to the human: the deploy key can push but
+# not call the GitHub API, and the ntfy message carries the compare link.
 #
 # One-time setup (secrets/agenix-rules.nix has the recipients):
 #   # Push-only attic token, minted on de-msa2:
@@ -66,7 +80,14 @@
   # Identity the repair agent commits under, so its work is easy to spot in
   # `git log` and in the ntfy feed.
   agent_name = "cache-mechanic";
-  fix_branch_prefix = "${agent_name}/fix-";
+  # One stable branch, not one per run: the agent picks up where the last
+  # attempt left off instead of re-deriving the same patch every night.
+  fix_branch = "${agent_name}/fix";
+  # Web URL of the repo, for the "open a PR" link in the ntfy message. Derived
+  # from the ssh remote so the two cannot drift apart.
+  repo_url = let
+    path = lib.removeSuffix ".git" (lib.last (lib.splitString ":" repo));
+  in "https://github.com/${path}";
   agent_bin = "/run/current-system/sw/bin/pi";
   # Attic client config for both units: endpoint plus the push-only token,
   # read at runtime so a rotated secret takes effect on the next start.
@@ -172,29 +193,45 @@ in {
       # of the cache is that the other hosts still get their closures pushed.
       # `|| true` under `set -e` would also swallow the exit code, so the
       # status is captured explicitly and the log kept for the agent below.
+      #
+      # Sets $failed_hosts to the subset of "$@" that did not build. Defined as
+      # a function because the repair path below builds a second time, on the
+      # patched tree, and must apply the exact same criterion.
       failed_hosts=""
-      for host in ${lib.escapeShellArgs hosts}; do
-        echo "==> building $host"
-        if nix build --accept-flake-config --no-update-lock-file \
-          --out-link "result-$host" \
-          ".#nixosConfigurations.$host.config.system.build.toplevel" \
-          2>&1 | tee "$workdir/build-$host.log"; then
-          :
-        else
-          echo "==> FAILED $host"
-          failed_hosts="$failed_hosts $host"
-        fi
-      done
-      failed_hosts="''${failed_hosts# }"
+      build_hosts() {
+        failed_hosts=""
+        for host in "$@"; do
+          echo "==> building $host"
+          if nix build --accept-flake-config --no-update-lock-file \
+            --out-link "result-$host" \
+            ".#nixosConfigurations.$host.config.system.build.toplevel" \
+            2>&1 | tee "$workdir/build-$host.log"; then
+            :
+          else
+            echo "==> FAILED $host"
+            failed_hosts="$failed_hosts $host"
+          fi
+        done
+        failed_hosts="''${failed_hosts# }"
+      }
 
-      # Push whatever did build. A partial cache still spares every client the
-      # rebuild for the hosts that are fine.
-      if compgen -G "result-*" >/dev/null; then
+      # Pushes every result-* symlink. A partial cache still spares the hosts
+      # that are fine their rebuild, so this runs even when some host failed.
+      #
+      # An empty result-* set means nothing built at all. That used to only
+      # print "skipping push" and fall through to the lock commit, which on
+      # 2026-09-28..30 published a lock whose closures were in no cache. It is
+      # a hard error now: a push is the one thing this unit exists to do.
+      push_results() {
+        if ! compgen -G "result-*" >/dev/null; then
+          echo "==> nothing built, nothing to push" >&2
+          return 1
+        fi
         echo "==> pushing to ${cache}"
         attic push ${cache} result-*
-      else
-        echo "==> nothing built, skipping push"
-      fi
+      }
+
+      build_hosts ${lib.escapeShellArgs hosts}
 
       if [ -n "$failed_hosts" ]; then
         # Hand the failure to the agent: it diagnoses, patches and pushes a
@@ -203,18 +240,59 @@ in {
         echo "==> build failed for:$failed_hosts; invoking ${agent_name}"
         notify high warning "build failed for:$failed_hosts; ${agent_name} is investigating"
 
+        broken_hosts="$failed_hosts"
         first_failed="''${failed_hosts%% *}"
         # Tail only: a full nix build log is far larger than the context window,
         # and the actual error is always at the end.
         failure_log="$(tail -c 4000 "$workdir/build-$first_failed.log")"
-        fix_branch="${fix_branch_prefix}$(date +%Y%m%d-%H%M%S)"
+
+        # Continue from the last attempt instead of from a bare ${branch}, so a
+        # fix that needs more than one night accumulates rather than restarts.
+        # The branch is rebased onto the current ${branch} first: its diff must
+        # apply to what is actually deployed, not to last week's tree.
+        git config user.name "${agent_name}"
+        git config user.email "${agent_name}@${config.networking.hostName}"
+
+        # The updated flake.lock is an unstaged change at this point, and both
+        # `git rebase` and `git checkout -B` refuse to run with a dirty tree.
+        # Park it in a file rather than `git stash`: the lock is this run's
+        # input and must survive every branch switch below unchanged, including
+        # the paths where a rebase is aborted.
+        cp flake.lock "$workdir/flake.lock.new"
+        git checkout -q -- flake.lock
+
+        if git fetch -q origin "${fix_branch}" 2>/dev/null; then
+          echo "==> resuming ${fix_branch} from the previous run"
+          git checkout -q -B "${fix_branch}" FETCH_HEAD
+          if git rebase -q "$before"; then
+            resumed=yes
+          else
+            # The old patch no longer applies: ${branch} moved under it, most
+            # likely because the fix was merged or hand-fixed. Start clean
+            # rather than hand the agent a conflicted tree.
+            echo "==> previous ${fix_branch} no longer applies, starting fresh"
+            git rebase --abort || true
+            git checkout -q -B "${fix_branch}" "$before"
+            resumed=no
+          fi
+        else
+          git checkout -q -B "${fix_branch}" "$before"
+          resumed=no
+        fi
+
+        # Put the run's lock back, so the agent reproduces the failure against
+        # the same inputs the build used.
+        cp "$workdir/flake.lock.new" flake.lock
 
         # Unquoted heredoc so the env vars reach the prompt verbatim.
         # No backticks and no command substitutions inside.
         agent_prompt="$(cat <<PROMPT
       You are "${agent_name}", a maintenance bot for the NixOS fleet config in the
-      current working directory (a fresh clone of ${repo}, branch ${branch}, with an
-      already-updated flake.lock).
+      current working directory (a fresh clone of ${repo}, with an already-updated
+      flake.lock). You are on branch ${fix_branch}, checked out from ${branch}.
+      Previous attempt carried over: $resumed -- if yes, your own earlier commits
+      are already here, so review them with "git log ${branch}..HEAD" and amend or
+      extend them instead of starting over.
 
       The daily cache build failed for these hosts:$failed_hosts
       Every other host built fine, so this is almost certainly config in this repo
@@ -236,47 +314,81 @@ in {
          permittedInsecurePackages, which accepts the vulnerability and pins a
          version string that must be bumped on every update. If you must allow an
          insecure package, scope it to the host that needs it.
+         Carrying a local patch for a package nobody here uses is usually worse
+         than dropping the package: say so in the commit message if you drop one.
          Do NOT paper over the failure by disabling a host or deleting a feature
          that is actually in use.
       3. Verify EVERY one of these hosts still evaluates, not just the one you
          fixed: ${lib.concatStringsSep " " hosts}
          Use the nix eval command from step 1 for each. All must print a .drv path.
-      4. If and only if all hosts evaluate, commit and push a branch:
-           git config user.name "${agent_name}"
-           git config user.email "${agent_name}@${config.networking.hostName}"
-           git checkout -b $fix_branch
-           git add -A
+      4. If and only if all hosts evaluate, commit on the current branch:
+           git add -- <the files you changed>
            git commit -m "<scope>: <what and why>"
-           git push -q origin $fix_branch
+         Stage the files you changed by name. Do NOT use "git add -A": it would
+         pick up flake.lock and the result-* build symlinks, neither of which
+         belongs in your commit.
          Explain in the commit message WHY the change was needed, citing the
-         upstream change. Then print the branch name.
-      5. If you cannot fix it, or cannot get all hosts to evaluate, push nothing
-         and explain what you found and what you ruled out.
+         upstream change. Do not push: the calling script rebuilds the failing
+         hosts on your commit and pushes the branch itself.
+      5. If you cannot fix it, or cannot get all hosts to evaluate, commit
+         nothing and explain what you found and what you ruled out.
 
-      Never push to ${branch}. Never touch flake.lock: the lock is this run's input
-      and is committed separately only when every host builds.
+      Never commit to ${branch}. Never touch flake.lock: the lock is this run's
+      input and is committed separately only when every host builds.
       PROMPT
         )"
 
         # pi lives in the system profile, which is not on a service's PATH.
         # The model is pinned so the bot never depends on whatever model the
         # interactive user last selected.
-        if ${agent_bin} --model ${lib.escapeShellArg agent_model} -p "$agent_prompt"; then
-          if git ls-remote --exit-code --heads origin "$fix_branch" >/dev/null 2>&1; then
-            notify high wrench "${agent_name} pushed $fix_branch for:$failed_hosts -- review and merge"
-          else
-            notify high warning "${agent_name} could not fix:$failed_hosts; no branch pushed"
-          fi
-        else
-          notify high warning "${agent_name} errored while investigating:$failed_hosts"
+        if ! ${agent_bin} --model ${lib.escapeShellArg agent_model} -p "$agent_prompt"; then
+          notify high warning "${agent_name} errored while investigating:$broken_hosts"
+          push_results || true
+          exit 1
         fi
 
-        # The lock is never committed on a partial build: clients must not
-        # rebuild from a lock whose closures are not all in the cache.
-        exit 1
+        # Trust the rebuild, not the agent's report: on 2026-10-04 it reported
+        # "builds to completion" on a tree that had not been verified here.
+        if git diff --quiet "$before" -- .; then
+          notify high warning "${agent_name} could not fix:$broken_hosts; no change made"
+          push_results || true
+          exit 1
+        fi
+
+        echo "==> ${agent_name} patched the tree; rebuilding:$broken_hosts"
+        build_hosts $broken_hosts
+
+        if [ -n "$failed_hosts" ]; then
+          echo "==> still failing after the repair:$failed_hosts"
+          # Push the branch anyway: a partial fix is a useful starting point
+          # for tomorrow's run and for a human reading the diff.
+          git push -q --force-with-lease origin "HEAD:refs/heads/${fix_branch}"
+          notify high warning \
+            "${agent_name} fix incomplete, still failing:$failed_hosts -- see ${repo_url}/compare/${branch}...${fix_branch}"
+          push_results || true
+          exit 1
+        fi
+
+        # Every host builds on the patched tree. Push the branch for review and
+        # keep going: the cache gets today's closures and ${branch} gets today's
+        # lock, while the repo change itself waits for a human.
+        git push -q --force-with-lease origin "HEAD:refs/heads/${fix_branch}"
+        notify high wrench \
+          "${agent_name} fixed:$broken_hosts -- open a PR at ${repo_url}/compare/${branch}...${fix_branch}?expand=1"
+
+        # The lock commit must not carry the unreviewed fix with it. Go back to
+        # the pristine ${branch} tree, drop in only the updated flake.lock, and
+        # commit that. The closures just pushed were built *with* the fix, so
+        # the hosts that needed it still rebuild locally until the PR lands --
+        # the other hosts, the majority, get a warm cache either way.
+        git checkout -q -B lock-update "$before"
+        git checkout -q -- .
+        cp "$workdir/flake.lock.new" flake.lock
       fi
 
-      if git diff --quiet flake.lock; then
+      push_results
+
+      if git diff --quiet "$before" -- flake.lock; then
         notify low package "lock unchanged, ${toString (builtins.length hosts)} hosts (re)pushed"
         exit 0
       fi
@@ -286,8 +398,15 @@ in {
       git add flake.lock
       git commit -q -m "flake.lock: automated update $(date -I)" \
         -m "Built and pushed to the ${cache} cache for: ${lib.concatStringsSep ", " hosts}."
-      git push -q origin HEAD:${branch}
-      notify low package "flake.lock updated to $(git rev-parse --short HEAD), ${toString (builtins.length hosts)} hosts pushed"
+      # Fast-forward only: if someone pushed to ${branch} during the run, the
+      # lock we built is no longer the lock they would get. Fail and let
+      # tomorrow's run redo it against the new tip.
+      if git push -q origin "HEAD:${branch}"; then
+        notify low package "flake.lock updated to $(git rev-parse --short HEAD), ${toString (builtins.length hosts)} hosts pushed"
+      else
+        notify high warning "${branch} moved during the run; lock not committed, cache still pushed"
+        exit 1
+      fi
     '';
   };
 
