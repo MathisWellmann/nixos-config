@@ -89,7 +89,11 @@
     # Development
     perf
     hotspot # GUI for Linux perf
-    tracy # A real time, nanosecond resolution profiler
+    # gcc-16 no longer transitively includes <cstdint>; tracy's vendored
+    # server/tracy_robin_hood.h uses uint32_t/uint64_t without including it.
+    (tracy.overrideAttrs (old: {
+      patches = (old.patches or []) ++ [./tracy-robin-hood-cstdint.patch];
+    })) # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
     # tlaplusToolbox
     # redisinsight
