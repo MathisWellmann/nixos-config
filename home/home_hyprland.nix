@@ -89,7 +89,6 @@
     # Development
     perf
     hotspot # GUI for Linux perf
-    tracy # A real time, nanosecond resolution profiler
     heaptrack # Heap memory profiler for linux
     # tlaplusToolbox
     # redisinsight
