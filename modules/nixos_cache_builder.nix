@@ -222,13 +222,20 @@ in {
       # print "skipping push" and fall through to the lock commit, which on
       # 2026-09-28..30 published a lock whose closures were in no cache. It is
       # a hard error now: a push is the one thing this unit exists to do.
+      #
+      # The set is collected with a plain glob, not `compgen -G`: compgen is
+      # part of bash's programmable completion, which a non-interactive shell
+      # does not load, so it failed with "command not found" and made every
+      # run take the "nothing built" path -- silently, because the old code
+      # only logged it. That is the 2026-09-28..30 bug.
       push_results() {
-        if ! compgen -G "result-*" >/dev/null; then
+        local results=(result-*)
+        if [ ! -e "''${results[0]}" ]; then
           echo "==> nothing built, nothing to push" >&2
           return 1
         fi
-        echo "==> pushing to ${cache}"
-        attic push ${cache} result-*
+        echo "==> pushing ''${#results[@]} closures to ${cache}"
+        attic push ${cache} "''${results[@]}"
       }
 
       build_hosts ${lib.escapeShellArgs hosts}
