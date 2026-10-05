@@ -107,6 +107,7 @@ in {
     deadnix # Dead code detection for nix
     statix # Lints and suggestions for nix code
     compose2nix
+    age # Encryption tool
     sops # Secrets for NixOs
     rage # Modern encryption tool
 
