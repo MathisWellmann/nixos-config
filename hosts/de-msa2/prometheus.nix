@@ -593,6 +593,13 @@ in {
     victorialogs = {
       enable = true;
       listenAddress = ":${toString const.victorialogs_port}";
+      extraOptions = [
+        # The 7d default is too short for looking back.
+        "-retentionPeriod=90d"
+        # Hard cap so a log storm cannot fill the root disk; VictoriaLogs
+        # drops the oldest partitions first when it is reached.
+        "-retention.maxDiskSpaceUsageBytes=100GiB"
+      ];
     };
   };
 
