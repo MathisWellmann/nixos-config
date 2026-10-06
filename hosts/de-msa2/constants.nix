@@ -34,6 +34,10 @@ in {
   minidlna_port = 8200;
   victoriametrics_port = 9003;
   victorialogs_port = 9004;
+  # Pyroscope (pyroscope.nix) upstream defaults. Only the HTTP port is reached
+  # from outside (tailnet); gRPC stays on loopback.
+  pyroscope_port = 4040;
+  pyroscope_grpc_port = 9095;
   # Alerting stack (see `alerting.nix`): vmalert evaluates rules against
   # victoriametrics and pushes firing alerts to alertmanager, which routes them
   # through the alertmanager-ntfy bridge to the ntfy push-notification server.

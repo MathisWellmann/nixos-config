@@ -66,6 +66,7 @@ in {
     ./samba.nix
     ./substrate.nix
     ./grafana.nix
+    ./pyroscope.nix
     # ./ups.nix
     searx
     # (import ./../../modules/monero_miner.nix {max-threads-hint = 25;})
@@ -153,6 +154,7 @@ in {
         prometheus-node-exporter = "prometheus-node-exporter";
         victoriametrics = "victoriametrics";
         victorialogs = "victorialogs";
+        pyroscope = "pyroscope";
         alertmanager = "alertmanager";
         alertmanager-ntfy = "alertmanager-ntfy";
         vmalert = "vmalert-cluster-health";

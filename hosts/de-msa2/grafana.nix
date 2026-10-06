@@ -62,6 +62,17 @@ in {
             access = "proxy";
             url = "http://127.0.0.1:${toString const.victorialogs_port}";
           }
+          {
+            # Continuous profiles pushed by the agent-symbiont pods into
+            # `services.pyroscope` (pyroscope.nix). Built-in datasource type;
+            # the `grafana-pyroscope-app` plugin above is the Profiles
+            # Drilldown UI on top of it. Fixed `uid` for dashboard portability.
+            name = "Pyroscope";
+            uid = "pyroscope";
+            type = "grafana-pyroscope-datasource";
+            access = "proxy";
+            url = "http://127.0.0.1:${toString const.pyroscope_port}";
+          }
         ];
       };
       dashboards.settings = {
