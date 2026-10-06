@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "agent-symbiont fleet: self-evolving binaries reporting evolution pipeline health, LLM token consumption, revision registry state and the trading performance of the code the LLM just wrote. Designed for many concurrent instances -- filter via the model/instance variables; all timeseries break down per instance. Events arrive in bursts (a refinement round every ~2-3 min), so all rates/ratios/means use fixed 30m windows -- short windows render as unreadable combs and zero-valued stats. The Training harness / Pareto frontier / Last evaluated candidate / Persistence rows cover the agent_symbiont_* series emitted by the agent-symbiont harness on top of the framework. NOTE: neither exporter configures histogram bucket bounds, so every histogram is exported as a summary whose quantile series only hold the exporter's 60s rolling window and read 0 in between, while _sum/_count stay cumulative -- hence means are derived from rate(_sum)/rate(_count) and the quantile panels filter != 0 and span the gaps. The LLM context budget row sizes the vLLM context window against actual prompt sizes; its 262144-token reference is hardcoded in those queries and thresholds, so update it there when the server setting changes. The two payload panels in that row need symbiont >= 0.23.0, which measures the serialized body of every outbound request; they read No data against older agents.",
+  "description": "agent-symbiont fleet: self-evolving binaries reporting evolution pipeline health, LLM token consumption, revision registry state and the trading performance of the code the LLM just wrote. Designed for many concurrent instances -- filter via the model/instance variables; all timeseries break down per instance. Events arrive in bursts (a refinement round every ~2-3 min), so all rates/ratios/means use fixed 30m windows -- short windows render as unreadable combs and zero-valued stats. The Training harness / Pareto frontier / Last evaluated candidate / Persistence rows cover the agent_symbiont_* series emitted by the agent-symbiont harness on top of the framework. NOTE: neither exporter configures histogram bucket bounds, so every histogram is exported as a summary whose quantile series only hold the exporter's 60s rolling window and read 0 in between, while _sum/_count stay cumulative -- hence means are derived from rate(_sum)/rate(_count) and the quantile panels filter != 0 and span the gaps. The LLM context budget row sizes the vLLM context window against actual prompt sizes; its 262144-token reference is hardcoded in those queries and thresholds, so update it there when the server setting changes. The two payload panels in that row need symbiont >= 0.23.0, which measures the serialized body of every outbound request; they read No data against older agents. The Logs row reads pod logs of the agent-symbiont namespace from VictoriaLogs (datasource uid victorialogs) and is driven by the Pod (logs) and Log filter variables only; the eval binary runs on the desg0 host, not in k3s, so its logs are not there.",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -92,6 +92,33 @@
         "regex": "",
         "sort": 1,
         "type": "query"
+      },
+      {
+        "current": { "selected": true, "text": ["All"], "value": ["$__all"] },
+        "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+        "definition": "pod_name values of (namespace:=\"agent-symbiont\" or kubernetes.pod_namespace:=\"agent-symbiont\") | format \"<pod><kubernetes.pod_name>\" as pod_name",
+        "description": "Pods in the agent-symbiont namespace that wrote logs in the selected time range (VictoriaLogs). Drives the Logs row only. Lists every pod, including the dashboards, independent of the Binary/Model/Instance filters. Reads both the promtail-era `pod` field and the vlagent `kubernetes.pod_name` field, so the list spans the collector switch.",
+        "hide": 0,
+        "includeAll": true,
+        "label": "Pod (logs)",
+        "multi": true,
+        "name": "pod",
+        "options": [],
+        "query": { "field": "pod_name", "limit": 500, "query": "(namespace:=\"agent-symbiont\" or kubernetes.pod_namespace:=\"agent-symbiont\") | format \"<pod><kubernetes.pod_name>\" as pod_name", "refId": "VictoriaLogsVariableQueryEditor-VariableQuery", "type": "fieldValue" },
+        "refresh": 2,
+        "regex": "",
+        "sort": 1,
+        "type": "query"
+      },
+      {
+        "current": { "selected": false, "text": "*", "value": "*" },
+        "description": "LogsQL filter for the Logs row, applied to the log line. Examples: WARN, ERROR or WARN, \"Could not close the position\", -INFO. Use * to show everything.",
+        "hide": 0,
+        "label": "Log filter (LogsQL)",
+        "name": "log_filter",
+        "options": [ { "selected": true, "text": "*", "value": "*" } ],
+        "query": "*",
+        "type": "textbox"
       }
     ]
   },
@@ -1014,6 +1041,46 @@
       "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (store) (rate(agent_symbiont_persist_failures_total{crate_name=~\"$crate_name\",model=~\"$model\",instance=~\"$instance\"}[30m])) * 3600", "legendFormat": "{{store}}", "refId": "A" } ],
       "title": "Insert failures / h by store",
       "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 203 },
+      "id": 123,
+      "panels": [],
+      "title": "Logs",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+      "description": "Log lines per interval by pod, after the Pod and Log filter selections. A sudden drop to zero means the pod died or stopped logging; a spike usually means a retry or error loop.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "bars", "fillOpacity": 60, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 204 },
+      "id": 124,
+      "options": { "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" }, "editorMode": "code", "expr": "(namespace:=\"agent-symbiont\" or kubernetes.pod_namespace:=\"agent-symbiont\") (pod:in($pod) or kubernetes.pod_name:in($pod)) ($log_filter) | format \"<pod><kubernetes.pod_name>\" as pod_name | stats by (pod_name) count() lines", "legendFormat": "{{pod_name}}", "queryType": "statsRange", "refId": "A" } ],
+      "title": "Log lines by pod",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+      "description": "WARN and ERROR lines per interval by pod (word match on the tracing level, so a message that contains the word also counts). Uses the Pod selection, ignores the Log filter.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "bars", "fillOpacity": 60, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "normal" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "min": 0, "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 204 },
+      "id": 125,
+      "options": { "legend": { "calcs": ["sum"], "displayMode": "table", "placement": "right", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" }, "editorMode": "code", "expr": "(namespace:=\"agent-symbiont\" or kubernetes.pod_namespace:=\"agent-symbiont\") (pod:in($pod) or kubernetes.pod_name:in($pod)) (WARN or ERROR) | format \"<pod><kubernetes.pod_name>\" as pod_name | stats by (pod_name) count() lines", "legendFormat": "{{pod_name}}", "queryType": "statsRange", "refId": "A" } ],
+      "title": "WARN / ERROR lines by pod",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" },
+      "description": "Raw log lines from the selected pods, newest first, limited to 1000 lines (narrow the time range or the Log filter to see older lines). Source: VictoriaLogs on de-msa2, 90 day retention.",
+      "gridPos": { "h": 20, "w": 24, "x": 0, "y": 212 },
+      "id": 126,
+      "options": { "dedupStrategy": "none", "enableLogDetails": true, "prettifyLogMessage": false, "showCommonLabels": false, "showLabels": true, "showTime": true, "sortOrder": "Descending", "wrapLogMessage": true },
+      "targets": [ { "datasource": { "type": "victoriametrics-logs-datasource", "uid": "victorialogs" }, "editorMode": "code", "expr": "(namespace:=\"agent-symbiont\" or kubernetes.pod_namespace:=\"agent-symbiont\") (pod:in($pod) or kubernetes.pod_name:in($pod)) ($log_filter) | format \"<pod><kubernetes.pod_name>\" as pod_name | fields _time, pod_name, _msg", "maxLines": 1000, "queryType": "instant", "refId": "A" } ],
+      "title": "Logs",
+      "type": "logs"
     }
   ]
 }
