@@ -1,9 +1,20 @@
-_: let
+{pkgs, ...}: let
   const = import ./constants.nix;
 in {
   services.
     grafana = {
     enable = true;
+    # Nix-managed plugins, so the VictoriaLogs datasource below does not depend
+    # on a plugin someone once installed by hand. Setting this replaces the
+    # writable plugin dir, so the drilldown apps Grafana used to preinstall
+    # there must be listed too, or Explore loses them.
+    declarativePlugins = with pkgs.grafanaPlugins; [
+      victoriametrics-logs-datasource
+      grafana-exploretraces-app
+      grafana-lokiexplore-app
+      grafana-metricsdrilldown-app
+      grafana-pyroscope-app
+    ];
     settings = {
       security.secret_key = "/etc/secrets/grafana";
       server = {
@@ -40,6 +51,16 @@ in {
             url = "http://127.0.0.1:${toString const.victoriametrics_port}";
             isDefault = true;
             jsonData.timeInterval = "5s";
+          }
+          {
+            # Cluster pod logs, shipped by the collector DaemonSet in the nexus
+            # repo (`env/logging.nix`) into `services.victorialogs` (prometheus.nix). Fixed `uid` for
+            # the same dashboard-portability reason as above.
+            name = "VictoriaLogs";
+            uid = "victorialogs";
+            type = "victoriametrics-logs-datasource";
+            access = "proxy";
+            url = "http://127.0.0.1:${toString const.victorialogs_port}";
           }
         ];
       };
