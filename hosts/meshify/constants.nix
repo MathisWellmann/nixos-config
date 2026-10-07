@@ -18,6 +18,16 @@
     "unsloth/gemma-4-12b-it-GGUF:UD-Q8_K_XL" # 12.7GiB, full 256k ctx
     "unsloth/Muse-Glimmer-30B-GGUF:Q4_K_XL" # 14.8GiB + 3.6GiB mmproj, ~90k ctx
     "bloomer010/Ling-3.0-tiny-GGUF:UD-Q8_K_XL" # 10.4GiB, full 128k ctx
+    # Added after a Hugging Face search (2026-10-07). All five ran 16 users
+    # with 8k prompts each in the README sweep.
+    # Qwen3.8-27B (the model desg0 serves) at 3.5 bpw. The GSQ-RCO card
+    # reports BF16-level scores; the tag resolves to the `-mtp` file.
+    "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S" # 11.3GiB + 0.9GiB mmproj, ~200k ctx
+    "unsloth/Qwen-AgentWorld-35B-A3B-GGUF:UD-IQ4_XS" # 16.6GiB, text only, ~200k ctx
+    "ornith-ai/Ornith-1.5-9B-GGUF:Q8_0" # 9.1GiB + 0.9GiB mmproj, full 256k ctx
+    "unsloth/gemma-4-26B-A4B-it-qat-GGUF:UD-Q4_K_XL" # 13.3GiB + 2.1GiB mmproj, full 256k ctx
+    "unsloth/North-Mini-Code-1.0-GGUF:UD-IQ4_XS" # 14.2GiB, text only, ~350k ctx
+    # "unsloth/gemma-4-31B-it-qat-GGUF:UD-Q4_K_XL" # 16.1GiB + 2.1GiB F32 mmproj, no room for its SWA cache
     # "unsloth/gemma-4-31B-it-GGUF:UD-Q4_K_XL" # 17.5GiB + 1.1GiB mmproj, no room for its SWA cache
     # "poolside/Laguna-XS-2.1-GGUF:Q4_K_M" # 18.9GiB, only ~6k ctx
     # "InternScience/Agents-A1-Q4_K_M-GGUF" # 19.7GiB

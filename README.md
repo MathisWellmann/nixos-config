@@ -112,37 +112,75 @@ enables only the models that run fully on the GPU with at least 32k tokens of
 context. The other models stay in the list as comments, for a bigger GPU. The
 concurrency sweep below used `llama-batched-bench` (q8_0 KV cache,
 flash-attn, all layers on the GPU) with an 8,192-token prompt and 128
-generated tokens per user (2026-10-07):
+generated tokens per user (2026-10-07). The dashed lines are the five models
+added after a Hugging Face search:
 
 ![llama.cpp on meshify: throughput vs. concurrent users](docs/diagrams/llama-cpp-meshify-concurrency.png)
 
-Generation tok/s, aggregate over all users (per user in parentheses):
+Generation tok/s, aggregate over all users (per user in parentheses), and
+prompt processing tok/s:
 
-| Model | 1 | 2 | 4 | 8 | 16 |
-|---|---|---|---|---|---|
-| Ling-3.0-tiny UD-Q8_K_XL (MoE) | 149 | 232 (116) | 460 (115) | 652 (82) | 832 (52) |
-| gemma-4-26B-A4B Q4_K_M (MoE) | 110 | 188 (94) | 261 (65) | 344 (43) | 518 (32) |
-| gemma-4-12b UD-Q8_K_XL | 48 | 89 (44) | 153 (38) | 231 (29) | 344 (22) |
-| Muse-Glimmer-30B Q4_K_XL | 37 | 67 (33) | 88 (22) | 108 (13) | 233 (15) |
-| Qwen3.6-27B Q4_K_XL | 32 | 56 (28) | 67 (17) | 97 (12) | OOM |
+| Model | 1 | 2 | 4 | 8 | 16 | Prompt |
+|---|---|---|---|---|---|---|
+| Ling-3.0-tiny UD-Q8_K_XL (MoE) | 149 | 232 (116) | 460 (115) | 652 (82) | 832 (52) | ~5.5k |
+| gemma-4-26B-A4B Q4_K_M (MoE) | 110 | 188 (94) | 261 (65) | 344 (43) | 518 (32) | ~4.3k |
+| gemma-4-26B-A4B QAT UD-Q4_K_XL (MoE) [new] | 122 | 219 (109) | 290 (72) | 360 (45) | 514 (32) | ~4.3k |
+| Qwen-AgentWorld-35B-A3B UD-IQ4_XS (MoE) [new] | 125 | 182 (91) | 258 (65) | 314 (39) | 337 (21) | ~3.2k |
+| North-Mini-Code-1.0 UD-IQ4_XS (MoE) [new] | 118 | 171 (86) | 209 (52) | 224 (28) | 302 (19) | ~3.6k |
+| Ornith-1.5-9B Q8_0 [new] | 71 | 125 (62) | 207 (52) | 292 (37) | 415 (26) | ~3.7k |
+| gemma-4-12b UD-Q8_K_XL | 48 | 89 (44) | 153 (38) | 231 (29) | 344 (22) | ~2.9k |
+| Qwen3.8-27B GSQ-RCO IQ3_S [new] | 39 | 58 (29) | 83 (21) | 104 (13) | 155 (10) | ~1.2k |
+| Muse-Glimmer-30B Q4_K_XL | 37 | 67 (33) | 88 (22) | 108 (13) | 233 (15) | ~1.3k |
+| Qwen3.6-27B Q4_K_XL | 32 | 56 (28) | 67 (17) | 97 (12) | OOM | ~1.2k |
 
-- gemma-4-26B-A4B is the best fit for many users. It gives 110 tok/s to one
-  user and still 32 tok/s to each of 16 users. Ling-3.0-tiny is faster, but
+Why the new models were picked (scores are from the model cards, not
+checked here):
+
+- Qwen3.8-27B is the model that desg0 serves. Its card reports SWE-bench Pro
+  61.7 and Terminal-Bench 2.1 73.0, against 53.5 / 63.4 for Qwen3.6-27B and
+  51.2 / 51.7 for Muse-Glimmer-30B. The ISTA-DASLab GSQ-RCO IQ3_S quant
+  (3.5 bpw) reports BF16-level scores (GPQA-D 89.4 vs 89.9, LiveCodeBench v6
+  85.7 vs 85.7). The `IQ3_S` tag resolves to the `-mtp` file, which also has
+  the MTP head for speculative decoding.
+- Qwen-AgentWorld-35B-A3B scores 56.4 overall on Qwen's agent suite (MCP,
+  search, terminal, SWE, Android, web, OS), against 56.0 for Claude Sonnet 4.6
+  and 47.7 for Qwen3.5-35B-A3B.
+- Ornith-1.5-9B reports SWE-bench Verified 70.6 and Terminal-Bench 2.1 46.2,
+  close to Qwen3.6-35B-A3B (73.4 / 52.5) at a quarter of the size.
+- North-Mini-Code-1.0 is Cohere's 30B-A3B model for code and agentic software
+  engineering (256k context). Its card shows the scores only as an image.
+- The gemma-4-26B-A4B QAT build is Google's quantization-aware-trained
+  checkpoint. It is 2.5GiB smaller and 11% faster for one user than the
+  Q4_K_M build of the same model.
+
+Findings:
+
+- gemma-4-26B-A4B (QAT or Q4_K_M) is the best fit for many users: ~515 tok/s
+  aggregate and 32 tok/s per user at 16 users. Ling-3.0-tiny is faster, but
   it is a much smaller model.
-- Prompt processing speed does not increase with more users (~1.2k tok/s for
-  Qwen3.6-27B, ~1.3k Muse, ~2.9k gemma-4-12b, ~4.4k gemma-4-26B, ~6k Ling).
-  The time to read all prompts thus grows linearly. With 8 users, the last
-  user of Qwen3.6-27B or Muse waits ~55 s for the first token.
-- Qwen3.6-27B runs out of memory at 16 users (133k tokens of context); 8 users
-  fit.
-- With one user, generation speed is almost the same for 8k prompts as for
-  512-token prompts (dotted lines in the plot).
+- For one user, the 3B-4B-active MoE models give 118-125 tok/s.
+  Qwen-AgentWorld and North-Mini-Code scale less well: their aggregate
+  speed is almost flat from 8 to 16 users.
+- Qwen3.8-27B at 3.5 bpw is 20% faster than Qwen3.6-27B at 4.5 bpw (39 vs 32
+  tok/s) and, with smaller weights, it fits 16 users. Qwen3.6-27B runs out of
+  memory at 16 users (133k tokens of context).
+- Prompt processing speed does not increase with more users. The time to read
+  all prompts thus grows linearly. The dense 27B-30B models read only
+  ~1.2-1.3k tok/s, so with 8 users the last user waits ~55 s for the first
+  token, and with 16 users ~100 s.
+- With one user, generation speed for 8k prompts is within 15% of the speed
+  for 512-token prompts.
 - The router serves one request at a time (`parallel = 1`). To use the
   concurrency above, raise `parallel`; each slot costs extra VRAM. `kev` is
   disabled on meshify because it lazy-loads ~5.2GB onto the same GPU.
 - This measures the llama.cpp engine directly, not the HTTP server. The
   server also loads the vision projector and keeps a 1GiB `--fit` margin, so
   it holds slightly less context than the benchmark.
+- Not added: Ternary-Bonsai-2-27B needs the PrismML llama.cpp fork for its
+  PQ2_0 / PTQ1_0 types. Xing4.0-29B-A4B and Cloudflare Clef use
+  architectures that the packaged llama.cpp does not support yet. The
+  gemma-4-31B QAT build (16.1GiB + 2.1GiB F32 mmproj) leaves no room for its
+  sliding-window cache.
 
 ### 🧪 Sandboxed agent tasks (ax + Agent Substrate)
 
