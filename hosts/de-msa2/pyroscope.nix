@@ -15,8 +15,12 @@
 # in `allowedTCPPorts`. Tailscale's `ts-input` chain accepts all traffic on
 # `tailscale0` before `nixos-fw`, so pods on every node reach it over the
 # tailnet (checked from pods on de-msa2 and desg0), while the LAN cannot.
-# The UI is also at https://pyroscope.k3s.lan through the k3s traefik ingress
-# (env/host_ingress.nix), which reaches this port over the same tailnet path.
+#
+# UI: view profiles in Grafana (Explore or Drilldown -> Profiles,
+# datasource in grafana.nix), not here. The nixpkgs build has no `embedassets`
+# tag and no frontend build, so every UI route on this port only returns
+# "This route is not available in dev mode." Upstream points users to Grafana
+# anyway, so there is deliberately no `pyroscope.k3s.lan` ingress.
 # gRPC, memberlist and the metastore raft port stay on loopback: in single
 # binary mode they only talk to this process.
 _: let
