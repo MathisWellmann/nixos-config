@@ -57,6 +57,7 @@ in {
   system.stateVersion = "24.05"; # Did you read the comment?
 
   programs = {
+    _1password.enable = true;
     hyprland = {
       enable = true;
     };
