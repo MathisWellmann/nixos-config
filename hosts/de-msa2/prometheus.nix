@@ -1,4 +1,8 @@
-{config, ...}: let
+{
+  config,
+  lib,
+  ...
+}: let
   const = import ./constants.nix;
   static_ips = import ../../modules/static_ips.nix;
 
@@ -52,8 +56,10 @@
   # a model to `localModels` over there adds a scrape job here automatically.
   # llama-cpp's metric series carry no labels, so the per-target `model`
   # label below is what separates one model's series from another in VM and
-  # Grafana.
+  # Grafana. Jobs use the id the router serves (`UD-Q4_K_XL` -> `Q4_K_XL`, see
+  # modules/ai/llama-cpp-model-id.nix); the original tag would always 400.
   llama_cpp_consts = import ../meshify/constants.nix;
+  llama_cpp_model_id = import ../../modules/ai/llama-cpp-model-id.nix {inherit lib;};
   desg0_consts = import ../desg0/constants.nix;
   llama_cpp_slug = id:
     builtins.replaceStrings ["/" ":" "."] ["-" "-" "-"] id;
@@ -75,7 +81,7 @@
         }
       ];
     })
-    llama_cpp_consts.localModels;
+    (map llama_cpp_model_id llama_cpp_consts.localModels);
   # Scrapes the tikr pods running in the k3s cluster (deployments live in the
   # `nexus` repo, `env/prod.nix`). Pods are discovered through the Kubernetes
   # API: any pod annotated with `prometheus.io/scrape: "true"` is kept and

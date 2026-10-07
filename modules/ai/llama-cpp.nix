@@ -5,19 +5,31 @@
   # tuned for desg0's 96GB card; a `null` value drops the flag, so a smaller
   # host can fall back to llama-server's own (auto) default.
   extraSettings ? {},
+  # Per-model llama-server flags, keyed by the entry in `models`; rendered
+  # into that model's preset section (flag name without the dashes).
+  modelSettings ? {},
 }: {
   pkgs,
   lib,
   ...
 }: let
   global_const = import ../../global_constants.nix;
+  modelId = import ./llama-cpp-model-id.nix {inherit lib;};
+  # Sections use the id the router serves anyway (see llama-cpp-model-id.nix),
+  # so the INI shows the real model names. The router also lists every model
+  # in the HF cache; `dedup-cache-models` hides cache entries that resolve to
+  # a preset's file under another name (e.g. `...-IQ3_S-mtp.gguf` as `:MTP`).
   modelsPreset = pkgs.writeText "llama-models.ini" (''
       version = 1
     ''
-    + lib.concatMapStringsSep "\n" (model: ''
-      [${model}]
-      hf-repo = ${model}
-    '')
+    + lib.concatMapStringsSep "\n" (model:
+      ''
+        [${modelId model}]
+        hf-repo = ${model}
+        dedup-cache-models = 1
+      ''
+      + lib.concatStrings (lib.mapAttrsToList (key: value: "${key} = ${toString value}\n")
+        (modelSettings.${model} or {})))
     models);
 in {
   services.llama-cpp = {

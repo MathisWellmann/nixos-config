@@ -107,10 +107,12 @@ VictoriaMetrics, not from a synthetic benchmark. The data is 8,769 busy
   streams then get only 4-9 tok/s each.
 
 `meshify` runs a llama.cpp router (`modules/ai/llama-cpp.nix`) on its 24GB
-RTX 3090, which also drives the desktop (~3GB). `hosts/meshify/constants.nix`
-enables only the models that run fully on the GPU with at least 32k tokens of
-context. The other models stay in the list as comments, for a bigger GPU. The
-concurrency sweep below used `llama-batched-bench` (q8_0 KV cache,
+RTX 3090, which also drives the desktop (~3GB). The router has a 200k-token
+q8_0 KV pool (`--ctx-size 204800 --kv-unified`) shared by 4 slots
+(`--parallel 4`): median agent prompts are ~50k tokens, so 4 fit at once, and
+one request can still use the whole pool. `hosts/meshify/constants.nix`
+enables only the models that hold this pool fully in VRAM. The other models
+stay in the list as comments, for a bigger GPU. The concurrency sweep below used `llama-batched-bench` (q8_0 KV cache,
 flash-attn, all layers on the GPU) with an 8,192-token prompt and 128
 generated tokens per user (2026-10-07). The dashed lines are the five models
 added after a Hugging Face search:
@@ -170,17 +172,46 @@ Findings:
   token, and with 16 users ~100 s.
 - With one user, generation speed for 8k prompts is within 15% of the speed
   for 512-token prompts.
-- The router serves one request at a time (`parallel = 1`). To use the
-  concurrency above, raise `parallel`; each slot costs extra VRAM. `kev` is
-  disabled on meshify because it lazy-loads ~5.2GB onto the same GPU.
+- The router runs 4 slots, so the 8-16 user columns need more slots than it
+  has; requests above 4 wait in the queue. `kev` is disabled on meshify
+  because it lazy-loads ~5.2GB onto the same GPU.
 - This measures the llama.cpp engine directly, not the HTTP server. The
-  server also loads the vision projector and keeps a 1GiB `--fit` margin, so
-  it holds slightly less context than the benchmark.
+  server also loads the vision projector.
 - Not added: Ternary-Bonsai-2-27B needs the PrismML llama.cpp fork for its
   PQ2_0 / PTQ1_0 types. Xing4.0-29B-A4B and Cloudflare Clef use
   architectures that the packaged llama.cpp does not support yet. The
   gemma-4-31B QAT build (16.1GiB + 2.1GiB F32 mmproj) leaves no room for its
   sliding-window cache.
+
+Long prompts: the same benchmark with the router's 200k unified KV pool
+(`-kvu -c 204800`) and a 50,000-token prompt per user. "Wait" is the time to
+read the prompts of all users (no prompt cache, so the cold-start worst
+case). "Spare" is the free VRAM left at 4 users after the vision projector:
+
+| Model | Wait, 1 user | tok/s, 1 user | tok/s per user, 2 | Wait, 4 users | tok/s per user, 4 | Spare |
+|---|---|---|---|---|---|---|
+| Ling-3.0-tiny | 13 s | 141 | 109 | 117 s | 73 | 9.1GB |
+| gemma-4-26B-A4B QAT | 15 s | 100 | 59 | 125 s | 36 | 1.4GB |
+| Ornith-1.5-9B | 15 s | 69 | 42 | 97 s | 26 | 7.3GB |
+| gemma-4-26B-A4B Q4_K_M | 16 s | 85 | 55 | 130 s | 34 | none |
+| North-Mini-Code-1.0 | 19 s | 73 | 55 | 148 s | 31 | 2.3GB |
+| Qwen-AgentWorld-35B-A3B | 19 s | 96 | 63 | 116 s | 36 | 1.5GB |
+| gemma-4-12b | 25 s | 39 | 33 | 201 s | 23 | 4.6GB |
+| Muse-Glimmer-30B | 42 s | 32 | 30 | 249 s | 19 | 0.7GB |
+| Qwen3.8-27B GSQ-RCO IQ3_S | 53 s | 29 | 18 | 357 s | 11 | 0.5GB |
+| Qwen3.6-27B Q4_K_XL | OOM | | | | | |
+
+- Qwen3.6-27B is disabled: its 200k pool (6.8GB) does not fit next to the
+  weights. gemma-4-26B-A4B Q4_K_M is disabled too: it fits only without its
+  vision projector, and the QAT build of the same model replaces it.
+- Ling-3.0-tiny and Muse-Glimmer-30B were trained for 128k context only, so
+  requests beyond that may lose quality.
+- Compared to 8k prompts, generation for one user is 15-25% slower at 50k.
+  gemma-4-26B-A4B QAT and Qwen-AgentWorld-35B-A3B are the best fit: ~15-19 s
+  to the first token and ~100 tok/s. The dense 27B-30B models need ~45-55 s
+  for one cold 50k prompt.
+- Agent turns mostly reuse the previous prompt, and the server caches it, so
+  a later turn reads only the new tokens.
 
 ### 🧪 Sandboxed agent tasks (ax + Agent Substrate)
 

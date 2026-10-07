@@ -48,22 +48,28 @@ in {
     })
     (import ./../../modules/ai/llama-cpp.nix {
       models = const.localModels;
+      modelSettings = const.localModelSettings;
       port = const.llama-cpp_port;
       # The module defaults target desg0's 96GB card. Here the 24GB RTX 3090
-      # also drives the desktop (~3GB), so the context is not fixed: `--fit`
-      # (on by default) sizes it to the free VRAM when a model loads, while
-      # n-gpu-layers stays set so no layer silently moves to the CPU.
+      # also drives the desktop (~3GB); hosts/meshify/constants.nix lists only
+      # the models that hold the KV pool below fully in VRAM.
       extraSettings = {
-        ctx-size = null;
-        # Below 32k a coding agent is useless, so fail the load instead.
-        fit-ctx = 32768;
+        # 200k tokens: median agent prompts are ~50k, so 4 slots fit at
+        # once. The pool is unified, so one request can also use all of it.
+        # Fixed rather than sized by `--fit`: n-gpu-layers stays set, so a
+        # model that cannot hold the pool fails to load instead of quietly
+        # getting less context.
+        ctx-size = 204800;
+        parallel = 4;
+        kv-unified = true;
         # q8_0 halves the KV cache vs f16 at negligible quality cost, which
         # roughly doubles the context that fits next to the weights.
         cache-type-k = "q8_0";
         cache-type-v = "q8_0";
-        # Each extra slot costs its own SWA / recurrent-state buffers, which
-        # the card cannot spare; one user does not need parallel slots.
-        parallel = 1;
+        # The router's own flags override every model preset, so the
+        # per-model ubatch-size in const.localModelSettings only applies if
+        # the flag is unset here. llama-server's default is 512 as well.
+        ubatch-size = null;
         # 16C/32T single-socket desktop: let llama.cpp pick the thread count,
         # and do not run the server above the desktop's priority.
         threads = null;
