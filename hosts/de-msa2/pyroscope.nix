@@ -15,6 +15,8 @@
 # in `allowedTCPPorts`. Tailscale's `ts-input` chain accepts all traffic on
 # `tailscale0` before `nixos-fw`, so pods on every node reach it over the
 # tailnet (checked from pods on de-msa2 and desg0), while the LAN cannot.
+# The UI is also at https://pyroscope.k3s.lan through the k3s traefik ingress
+# (env/host_ingress.nix), which reaches this port over the same tailnet path.
 # gRPC, memberlist and the metastore raft port stay on loopback: in single
 # binary mode they only talk to this process.
 _: let

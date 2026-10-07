@@ -20,7 +20,7 @@ spec:
         - args:
             - --addr=:8080
             - --redis-addr=ax-redis.ax-system.svc.cluster.local:6379
-          image: de-msa2:2999/mathiswellmann/ax-server:d8ed0fe38bce@sha256:feb56df34bd7024deaa250080759aeb24618cab6f0b01d19980a0d21645718cf
+          image: de-msa2:2999/mathiswellmann/ax-server:d8ed0fe38bce@sha256:ee6239380e42d918b61dc369faf06d76d6a97b85e69bcb15adc179fc6f723b73
           livenessProbe:
             httpGet:
               path: /healthz

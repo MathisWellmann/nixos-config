@@ -46,6 +46,7 @@ in {
     "s3.k3s.lan"
     "rustfs.k3s.lan"
     "grafana.k3s.lan"
+    "pyroscope.k3s.lan"
     "vikunja.k3s.lan"
     "bencher.k3s.lan"
     "bencher-api.k3s.lan"

@@ -54,7 +54,7 @@ spec:
                 name: ate-otel-config
             - secretRef:
                 name: rustfs-s3-credentials
-          image: de-msa2:2999/mathiswellmann/atelet:dc1f263076d1@sha256:c6df5a6d071d4362db65bbc193635d300a24d0324f9f2f369497f21546f1c8e0
+          image: de-msa2:2999/mathiswellmann/atelet:dc1f263076d1@sha256:bc66c20af566d93a9c2c31eeba06965646f082ddac10e6371121833de6dae450
           livenessProbe:
             httpGet:
               path: /healthz

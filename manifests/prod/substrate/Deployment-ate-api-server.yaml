@@ -58,7 +58,7 @@ spec:
                 name: ate-api-server-secret-envvars
             - secretRef:
                 name: rustfs-s3-credentials
-          image: de-msa2:2999/mathiswellmann/ateapi:dc1f263076d1@sha256:4d925c45088b88142aac00c726c796e803851d3fc2578225fc891327d14a8203
+          image: de-msa2:2999/mathiswellmann/ateapi:dc1f263076d1@sha256:4754aa6d245316ce1eb2eb3ee485b0f86b7df0e04441c31a88b31b6dd6526070
           livenessProbe:
             httpGet:
               path: /healthz

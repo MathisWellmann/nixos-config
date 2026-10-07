@@ -72,6 +72,16 @@ _: let
       description = "Dashboards";
     }
     {
+      name = "pyroscope";
+      host = "pyroscope.k3s.lan";
+      port = 4040; # const.pyroscope_port
+      group = "Monitoring";
+      icon = "mdi-fire";
+      description = "Continuous profiling";
+      # `/ready` checks the backend itself, not only that the UI HTML is served.
+      monitor = "http://pyroscope.pyroscope.svc.cluster.local/ready";
+    }
+    {
       name = "vikunja";
       host = "vikunja.k3s.lan";
       port = 3005; # const.vikunja_port

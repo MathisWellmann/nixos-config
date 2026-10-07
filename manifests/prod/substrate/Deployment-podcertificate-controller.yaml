@@ -40,7 +40,7 @@ spec:
                   fieldPath: metadata.uid
             - name: WORKERS_PER_SIGNER
               value: "1"
-          image: de-msa2:2999/mathiswellmann/podcertcontroller:dc1f263076d1@sha256:ff9ce1ab7fcf0f80761469340e9e89b2c2f5de7539ca8eaea5269e97f4f57df6
+          image: de-msa2:2999/mathiswellmann/podcertcontroller:dc1f263076d1@sha256:8c2fed7cc21d8a51ccac27b811341addba73083b20ac8d4d7c60b602b17a444f
           name: controller
           securityContext:
             allowPrivilegeEscalation: false

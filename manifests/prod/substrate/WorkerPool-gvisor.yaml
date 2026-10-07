@@ -26,4 +26,4 @@ spec:
       requests:
         cpu: "1"
         memory: 4Gi
-  workerImage: de-msa2:2999/mathiswellmann/ateom-gvisor:dc1f263076d1@sha256:c5fae3d5f44b972fe0d469005e6304f1037a142dfa58ff9b6aafc4b0c1bc79ab
+  workerImage: de-msa2:2999/mathiswellmann/ateom-gvisor:dc1f263076d1@sha256:cb2b58f1a2c663b15e9cfcc8ac8f0a3f8b16f782f20cfe5a9dbf441b759f9dcd
