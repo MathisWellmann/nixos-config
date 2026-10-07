@@ -106,6 +106,44 @@ VictoriaMetrics, not from a synthetic benchmark. The data is 8,769 busy
 - Above 13, total throughput is almost all prefill (~4.5k tok/s ceiling). The
   streams then get only 4-9 tok/s each.
 
+`meshify` runs a llama.cpp router (`modules/ai/llama-cpp.nix`) on its 24GB
+RTX 3090, which also drives the desktop (~3GB). `hosts/meshify/constants.nix`
+enables only the models that run fully on the GPU with at least 32k tokens of
+context. The other models stay in the list as comments, for a bigger GPU. The
+concurrency sweep below used `llama-batched-bench` (q8_0 KV cache,
+flash-attn, all layers on the GPU) with an 8,192-token prompt and 128
+generated tokens per user (2026-10-07):
+
+![llama.cpp on meshify: throughput vs. concurrent users](docs/diagrams/llama-cpp-meshify-concurrency.png)
+
+Generation tok/s, aggregate over all users (per user in parentheses):
+
+| Model | 1 | 2 | 4 | 8 | 16 |
+|---|---|---|---|---|---|
+| Ling-3.0-tiny UD-Q8_K_XL (MoE) | 149 | 232 (116) | 460 (115) | 652 (82) | 832 (52) |
+| gemma-4-26B-A4B Q4_K_M (MoE) | 110 | 188 (94) | 261 (65) | 344 (43) | 518 (32) |
+| gemma-4-12b UD-Q8_K_XL | 48 | 89 (44) | 153 (38) | 231 (29) | 344 (22) |
+| Muse-Glimmer-30B Q4_K_XL | 37 | 67 (33) | 88 (22) | 108 (13) | 233 (15) |
+| Qwen3.6-27B Q4_K_XL | 32 | 56 (28) | 67 (17) | 97 (12) | OOM |
+
+- gemma-4-26B-A4B is the best fit for many users. It gives 110 tok/s to one
+  user and still 32 tok/s to each of 16 users. Ling-3.0-tiny is faster, but
+  it is a much smaller model.
+- Prompt processing speed does not increase with more users (~1.2k tok/s for
+  Qwen3.6-27B, ~1.3k Muse, ~2.9k gemma-4-12b, ~4.4k gemma-4-26B, ~6k Ling).
+  The time to read all prompts thus grows linearly. With 8 users, the last
+  user of Qwen3.6-27B or Muse waits ~55 s for the first token.
+- Qwen3.6-27B runs out of memory at 16 users (133k tokens of context); 8 users
+  fit.
+- With one user, generation speed is almost the same for 8k prompts as for
+  512-token prompts (dotted lines in the plot).
+- The router serves one request at a time (`parallel = 1`). To use the
+  concurrency above, raise `parallel`; each slot costs extra VRAM. `kev` is
+  disabled on meshify because it lazy-loads ~5.2GB onto the same GPU.
+- This measures the llama.cpp engine directly, not the HTTP server. The
+  server also loads the vision projector and keeps a 1GiB `--fit` margin, so
+  it holds slightly less context than the benchmark.
+
 ### 🧪 Sandboxed agent tasks (ax + Agent Substrate)
 
 The cluster runs [google/ax](https://github.com/google/ax) as the task API on
