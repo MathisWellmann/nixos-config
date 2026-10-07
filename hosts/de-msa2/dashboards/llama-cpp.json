@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "llama.cpp router serving GGUF models on desg0 (native NixOS service: hosts/desg0/configuration.nix + modules/ai/llama-cpp.nix; --ctx-size 256000, all layers on GPU, flash-attn on, KV cache in VRAM). Router mode: --models-preset with 18 models (hosts/desg0/constants.nix) and --models-max 1 -- exactly one model is loaded at a time, the rest load on demand, LRU eviction. Scraping: one Prometheus job per preset (job `llamacpp-<slug>`, hosts/de-msa2/prometheus.nix); /metrics is only probed with autoload=false so an unloaded model answers 400 instead of evicting the active model -- exactly one job is up at any time. llama.cpp exports aggregate counters/gauges, no per-request histograms, so there are no TTFT/ITL quantile panels; counters reset on model (re)load, which is why everything uses rate() (reset-safe). The Model variable is the scrape target's `model` label (the HuggingFace repo ID).",
+  "description": "llama.cpp router serving GGUF models on meshify's 24GB RTX 3090 (native NixOS service: hosts/meshify/configuration.nix + modules/ai/llama-cpp.nix; context sized by --fit to the free VRAM, all layers on GPU, flash-attn on, q8_0 KV cache in VRAM). Router mode: --models-preset with the models in hosts/meshify/constants.nix and --models-max 1 -- exactly one model is loaded at a time, the rest load on demand, LRU eviction. Scraping: one Prometheus job per preset (job `llamacpp-<slug>`, hosts/de-msa2/prometheus.nix); /metrics is only probed with autoload=false so an unloaded model answers 400 instead of evicting the active model -- exactly one job is up at any time. llama.cpp exports aggregate counters/gauges, no per-request histograms, so there are no TTFT/ITL quantile panels; counters reset on model (re)load, which is why everything uses rate() (reset-safe). The Model variable is the scrape target's `model` label (the HuggingFace repo ID).",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -124,7 +124,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Scrape jobs answering 200 right now. There is one job per preset model (18 in desg0's constants.nix) and --models-max 1, so exactly 1 is expected. 0 = no model loaded (router boot or a reload in progress) -- if sglang and desg0-node go down with it, the router itself is out.",
+      "description": "Scrape jobs answering 200 right now. There is one job per preset model (see meshify's constants.nix) and --models-max 1, so exactly 1 is expected. 0 = no model loaded (router boot or a reload in progress) -- if meshify-node goes down with it, the host itself is out.",
       "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "decimals": 0, "thresholds": { "mode": "absolute", "steps": [{ "color": "red", "value": null }, { "color": "yellow", "value": 1 }, { "color": "green", "value": 1 }, { "color": "yellow", "value": 2 }] } }, "overrides": [] },
       "gridPos": { "h": 4, "w": 4, "x": 20, "y": 1 },
       "id": 6,
@@ -252,7 +252,7 @@
     },
     {
       "datasource": { "type": "prometheus", "uid": "${datasource}" },
-      "description": "Number of scrape jobs up. Flat at 1 in steady state; dips to 0 while a model is loading (minutes for these GGUFs -- clients requesting the new model wait for it). A dip that never recovers = the load failed, check the llama-cpp journal on desg0.",
+      "description": "Number of scrape jobs up. Flat at 1 in steady state; dips to 0 while a model is loading (minutes for these GGUFs -- clients requesting the new model wait for it). A dip that never recovers = the load failed, check the llama-cpp journal on meshify.",
       "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "unit": "short", "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "jobs", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 20, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "thresholds": { "mode": "absolute", "steps": [{ "color": "green", "value": null }] } }, "overrides": [] },
       "gridPos": { "h": 8, "w": 12, "x": 12, "y": 32 },
       "id": 31,

@@ -30,10 +30,10 @@
         }
       ];
     }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "tensorbook"];
-  # Scrapes the llama-cpp router on desg0 (native NixOS service, see
-  # `hosts/desg0/configuration.nix` + `modules/ai/llama-cpp.nix`), running in
+  # Scrapes the llama-cpp router on meshify (native NixOS service, see
+  # `hosts/meshify/configuration.nix` + `modules/ai/llama-cpp.nix`), running in
   # router mode (`--models-preset` + `--models-max 1`): one process serving
-  # the 18 presets with on-demand model loading and LRU eviction.
+  # the presets with on-demand model loading and LRU eviction.
   #
   # In router mode, `/metrics` requires `?model=<id>`, and a scrape of a
   # model that is not currently loaded would trigger an on-demand load --
@@ -45,16 +45,16 @@
   # format, so this is one job per preset model: exactly one of the jobs is
   # "up" at any time (the loaded model's), the rest are expected 400s and
   # are therefore exempt from the ScrapeTargetDown alert (alerting.nix) via
-  # `always_on="false"`. A genuine router outage is still detected -- all 18
-  # jobs then go down together with `sglang` (desg0:8000) and `desg0-node`,
-  # which remain covered.
+  # `always_on="false"`. meshify is an intermittent host, so a router
+  # outage does not page either; `meshify-node` shows whether the host is up.
   #
-  # The preset list and port are imported from desg0's constants, so adding
+  # The preset list and port are imported from meshify's constants, so adding
   # a model to `localModels` over there adds a scrape job here automatically.
   # llama-cpp's metric series carry no labels, so the per-target `model`
   # label below is what separates one model's series from another in VM and
   # Grafana.
-  llama_cpp_consts = import ../desg0/constants.nix;
+  llama_cpp_consts = import ../meshify/constants.nix;
+  desg0_consts = import ../desg0/constants.nix;
   llama_cpp_slug = id:
     builtins.replaceStrings ["/" ":" "."] ["-" "-" "-"] id;
   llama_cpp_scrape_configs =
@@ -67,7 +67,7 @@
       };
       static_configs = [
         {
-          targets = ["desg0:${toString llama_cpp_consts.llama-cpp_port}"];
+          targets = ["meshify:${toString llama_cpp_consts.llama-cpp_port}"];
           labels = {
             always_on = "false";
             inherit model;
@@ -567,7 +567,7 @@
         job_name = "sglang";
         inherit scrape_interval scrape_timeout;
         static_configs = [
-          {targets = ["desg0:${toString llama_cpp_consts.qwen3_port}"];}
+          {targets = ["desg0:${toString desg0_consts.qwen3_port}"];}
         ];
       }
       {

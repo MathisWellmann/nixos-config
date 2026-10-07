@@ -84,14 +84,8 @@ in {
       port = const.open_webui_port;
       inferenceUrl = "http://host.docker.internal:${toString const.qwen3_port}/v1";
     })
-    # DISABLED 2026-09-10: sglang now takes the whole 96GB GPU
-    # (mem-fraction-static 0.93, ~95GB resident) so llama.cpp's ~20GB no
-    # longer fits. Re-enable this together with lowering memFractionStatic
-    # back to 0.58 on the sglang import below.
-    # (import ./../../modules/ai/llama-cpp.nix {
-    #   models = const.localModels;
-    #   port = const.llama-cpp_port;
-    # })
+    # The llama-cpp router moved to meshify (2026-10-07): sglang takes the
+    # whole 96GB GPU here (mem-fraction-static 0.93, ~95GB resident).
     # Qwen3.8 server: SGLang replaced vllm (2026-07) — vllm has no support
     # for the qwen3_5 hybrid GDN (mamba) architecture. The vllm 0.6 (~57GB)
     # and sglang (48GB) footprints do not coexist on the one GPU with

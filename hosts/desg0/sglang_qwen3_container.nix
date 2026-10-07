@@ -2,8 +2,8 @@
 #
 # SGLang supports the qwen3_5 hybrid GDN (mamba) architecture, vllm does not.
 #
-# Sizing: FULL GPU since 2026-09-10. llama-cpp is commented out in
-# configuration.nix, so this owns all 96GB of the RTX PRO 6000. The call site
+# Sizing: FULL GPU since 2026-09-10. llama-cpp moved to meshify
+# (2026-10-07), so this owns all 96GB of the RTX PRO 6000. The call site
 # overrides the defaults below to 0.93 / 16 / 128 / 262144.
 #
 # CURRENT (2026-10-03): mem-fraction 0.93, conc 12, 144 mamba slots, 256k.
@@ -60,7 +60,7 @@
 # current call site, not a constraint.
 #
 # Historic (llama-cpp era, 48GB cap): 0.58 / conc 2 / 192k gave a pool of
-# 379988 tokens and used 46.8GB. Restore those if llama-cpp comes back.
+# 379988 tokens and used 46.8GB. Restore those if llama-cpp comes back here.
 #
 # CAUTION: do not set --max-mamba-cache-size to concurrency x S (= 8).
 # That value crashed the scheduler twice on 2026-08-29:

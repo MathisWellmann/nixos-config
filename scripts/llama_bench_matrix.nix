@@ -1,10 +1,10 @@
-# Benchmark throughput of the `localModels` from `hosts/desg0/constants.nix`
+# Benchmark throughput of the `localModels` from `hosts/meshify/constants.nix`
 # across parallel-sequence (concurrency) levels up to 256 using
 # `llama-batched-bench` from the system llama.cpp (same CUDA build as the
 # `llama-cpp` service). Models are used from the local HF cache (`--offline`);
 # uncached models are skipped.
 {pkgs, ...}: let
-  const = import ../hosts/desg0/constants.nix;
+  const = import ../hosts/meshify/constants.nix;
   models = builtins.concatStringsSep " " (map (m: "\"${m}\"") const.localModels);
 in
   pkgs.writeShellScriptBin "llama_bench_matrix" ''
