@@ -19,8 +19,20 @@
     rev = "cef045011722d285692e3381d12d4d637da56e18";
     hash = "sha256-CESWKMHvCN6Dtc8Fk8V9pP2txQ6b0Y7180GawMciTWc=";
   };
+
+  # Editorial HTML/SVG diagram skill (42 diagram types), pinned to commit
+  # f4547ee9 (2026-10-08). Update the ref + hash to upgrade.
+  diagramDesign = pkgs.fetchFromGitHub {
+    owner = "cathrynlavery";
+    repo = "diagram-design";
+    rev = "f4547ee95f88e5b28a52517feff6b6c11cc657f9";
+    hash = "sha256-L+2YqVybYQ892nLkaHSRKI4pjFcb506jhDz4U8ju6P8=";
+  };
 in {
-  home.file.".agents/skills/simple-english".source = "${simpleEnglish}/skills/simple-english";
-  home.file.".agents/skills/manim-composer".source = "${manimSkill}/skills/manim-composer";
-  home.file.".agents/skills/manimce-best-practices".source = "${manimSkill}/skills/manimce-best-practices";
+  home.file = {
+    ".agents/skills/simple-english".source = "${simpleEnglish}/skills/simple-english";
+    ".agents/skills/manim-composer".source = "${manimSkill}/skills/manim-composer";
+    ".agents/skills/manimce-best-practices".source = "${manimSkill}/skills/manimce-best-practices";
+    ".agents/skills/diagram-design".source = "${diagramDesign}/skills/diagram-design";
+  };
 }
