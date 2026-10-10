@@ -1,5 +1,6 @@
 {
   pkgs,
+  lib,
   inputs,
   ...
 }: let
@@ -18,6 +19,10 @@
   # `${...}` expansion in indented strings); writeShellScriptBin adds the
   # shebang and runs `bash -n` on it at build time.
   hxPr = pkgs.writeShellScriptBin "hx-pr" (builtins.readFile ./hx-pr.sh);
+
+  # Store path instead of PATH lookup: starship runs this on every prompt,
+  # and it must work in shells where home.packages is not on PATH yet.
+  jjStarship = lib.getExe pkgs.jj-starship;
 in {
   home.packages = [nubuddy hxPr];
 
@@ -181,6 +186,20 @@ in {
       enable = true;
       settings = {
         add_newline = false;
+        # Put the VCS module right after the directory. `$all` skips modules
+        # already named in the format, so nothing is shown twice.
+        format = "$directory\${custom.jj}$all";
+        # jj-starship reports both jj and plain git repos, so the built-in git
+        # modules would only duplicate it (and they get confused by jj's
+        # detached HEAD in colocated repos).
+        git_branch.disabled = true;
+        git_status.disabled = true;
+        git_commit.disabled = true;
+        custom.jj = {
+          when = "${jjStarship} detect";
+          shell = [jjStarship];
+          format = "$output ";
+        };
         character = {
           error_symbol = "[✗](bold red)";
         };
