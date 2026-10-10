@@ -12,6 +12,7 @@ in {
     file.".ssh/jj-allowed-signers" = {
       text = ''
         git ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIGjfqwBPaXyCe0UlgMqAcKful0hZz3Vu3e/aNk2XSe6n
+        git ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTrWy6E9iG8lVS1LjISAczHxRHN34mdT9bF1zg6Yh6p
       '';
     };
   };
