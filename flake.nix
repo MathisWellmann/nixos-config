@@ -29,6 +29,8 @@
       url = "github:farcaller/nixhelm";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    nixos-vex.url = "github:datosh/nixos-vex";
+
 
     # Self-hosted on de-msa2's forgejo (hosts/de-msa2/forgejo.nix); the
     # `k3s.lan` name resolves over tailscale via modules/base_system.nix.
@@ -62,6 +64,7 @@
     home-manager,
     hermes-agent,
     nixidy,
+    nixos-vex,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -83,6 +86,7 @@
           [
             ./hosts/${name}/configuration.nix
             home-manager.nixosModules.default
+            nixos-vex.nixosModules.default
             {
               home-manager.useUserPackages = true;
               environment.pathsToLink = ["/share/applications" "/share/xdg-desktop-portal"];

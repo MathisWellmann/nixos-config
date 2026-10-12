@@ -443,6 +443,34 @@ nix why-depends /run/current-system \
 `services` list in `env/host_ingress.nix`, add the hostname to
 `modules/base_system.nix`, set the service's base URL. Done.
 
+## Vulnerability Scanning (nixos-vex)
+
+The flake includes [nixos-vex](https://github.com/datosh/nixos-vex) as an
+input. It evaluates your NixOS configuration and emits a VEX feed — a
+machine-readable list of CVE suppression decisions that apply to *your* system
+— so `grype` can filter out false positives and leave only real, untriaged
+findings.
+
+**Full scan workflow for a host (e.g. `meshify`):**
+
+```sh
+# 1. Build the system closure
+nix build .#nixosConfigurations.meshify.config.system.build.toplevel -o system
+
+# 2. Generate a CycloneDX SBOM from the closure
+nix run github:tiiuae/sbomnix#sbomnix -- ./system --cdx=sbom.cdx.json
+
+# 3. Build the VEX feed for your specific configuration
+nix build .#nixosConfigurations.meshify.config.system.build.vexFeed -o vex-feed.json
+
+# 4. Scan, suppressing known non-applicable CVEs
+grype sbom:sbom.cdx.json --vex vex-feed.json
+```
+
+The EPSS column in `grype`'s output is the daily probability (0–1) that a CVE
+is actively exploited in the wild. Prioritise by EPSS, not CVSS: a CVSS 9.8
+with EPSS 0.001 is far less urgent than a CVSS 5.0 with EPSS 0.8.
+
 ## License
 
 MIT.
