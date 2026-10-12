@@ -13,6 +13,7 @@ in {
     inputs.maki.packages.${system}.default
     inputs.llm-agents.packages.${system}.omp
     inputs.llm-agents.packages.${system}.prime-agent
+    inputs.llm-agents.packages.${system}.jcode
     # inputs.autolith.packages.${system}.default
     # mistral-rs
     lmstudio
