@@ -38,7 +38,7 @@ in {
         todos = "rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
         loctree = "erd --disk-usage line --layout inverted --sort size --no-progress";
         cl = "~/.local/bin/claude --dangerously-skip-permissions";
-        gt = "${pkgs.gitui}";
+        gt = lib.getExe pkgs.gitui;
 
         # Cargo
         cfmt = "cargo fmt --all";

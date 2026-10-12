@@ -19,6 +19,10 @@ description.
   can land in the old revision.
 - Do not push, move bookmarks, or rewrite revisions you did not create unless
   the user asks. Never skip hooks.
+- If you create a git worktree, do not use `git worktree add --relative-paths`
+  and do not set `worktree.useRelativePaths`. Relative paths make git set
+  `extensions.relativeWorktrees` in the repo config. libgit2 (gitui and other
+  tools) does not know this extension and then refuses to open the repo.
 - Keep a revision under ~500 changed lines when you can, so it can be
   reviewed in about 15 minutes. Do not split related work into tiny
   revisions (<100 lines) without a reason.
