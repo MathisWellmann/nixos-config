@@ -186,9 +186,11 @@ in {
       enable = true;
       settings = {
         add_newline = false;
-        # Put the VCS module right after the directory. `$all` skips modules
-        # already named in the format, so nothing is shown twice.
-        format = "$directory\${custom.jj}$all";
+        # Hostname first so an SSH session is obvious at a glance (the module
+        # is SSH-only by default, so it stays hidden locally). Then the VCS
+        # module right after the directory. `$all` skips modules already
+        # named in the format, so nothing is shown twice.
+        format = "$hostname$directory\${custom.jj}$all";
         # jj-starship reports both jj and plain git repos, so the built-in git
         # modules would only duplicate it (and they get confused by jj's
         # detached HEAD in colocated repos).
