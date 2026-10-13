@@ -199,7 +199,17 @@ in {
   nix.settings.system-features = ["nixos-test" "benchmark" "big-parallel" "kvm"];
 
   virtualisation = {
-    docker.enable = true;
+    docker = {
+      enable = true;
+      # NOT the NixOS default `journald`: nixpkgs' moby links
+      # systemd-minimal-libs, which is built without zstd and so skips every
+      # zstd-compressed journal file. With journald, `docker logs` returns
+      # nothing, and k3d (nexus CI `create-cluster`) times out waiting for the
+      # `k3s is up and running` log line. `local` keeps logs readable and
+      # rotates them on its own. Only CI uses docker here; the model
+      # containers run on podman.
+      logDriver = "local";
+    };
     podman.enable = true;
   };
 }
