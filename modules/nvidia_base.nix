@@ -25,6 +25,5 @@
     cudaPackages.libcusparse
     cudaPackages.libcusolver
     cudaPackages.cuda_nvrtc
-    cudaPackages.cuda_nvprof
   ];
 }
