@@ -22,6 +22,7 @@ in {
     # Third k3s server, taking over the etcd quorum slot elitedesk used to
     # hold. Joins de-msa2 over the LAN (192.168.0.14), not Tailscale.
     ./../../modules/k3s_server_follow.nix
+    ./../../modules/nexus_iggy_cluster.nix
     (import ./../../modules/ai/pi-agent.nix {
       baseUrl = "http://desg0:${toString const_desg0.llama-cpp_port}/v1";
       vllmBaseUrl = "http://desg0:${toString const_desg0.qwen3_port}/v1";

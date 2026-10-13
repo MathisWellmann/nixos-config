@@ -57,6 +57,7 @@ in {
       vllmContextWindow = 262144;
     })
     ./../../modules/k3s_server_follow.nix
+    ./../../modules/nexus_iggy_cluster.nix
     ./../../modules/k3s_nvidia.nix
     # Make the runner's IOWeight actually enforceable: the NVMe uses the
     # `none` scheduler, so proportional io.weight needs blk-iocost (see the

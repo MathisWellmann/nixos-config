@@ -40,6 +40,7 @@ in {
     ./../../modules/prometheus_exporter.nix
     ./../../modules/monero.nix
     ./../../modules/k3s_init.nix
+    ./../../modules/nexus_iggy_cluster.nix
     ./../../modules/ai/local_ai.nix
     (import ./../../modules/ai/oh-my-pi.nix {
       defaultModel = "vllm/${desg0_const.qwen3Model}";
