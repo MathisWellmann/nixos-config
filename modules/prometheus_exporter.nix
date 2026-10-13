@@ -24,6 +24,15 @@ in {
         port = global_const.prometheus_exporter_ports.nvidia-gpu;
         openFirewall = true;
       };
+      # SMART health (NVMe wear, media errors, critical warnings) is not visible
+      # through hwmon, so node-exporter cannot see a drive that is dying.
+      # Autodiscovers all disks. The default `--smartctl.powermode-check=standby`
+      # skips spun-down HDDs, so scrapes do not wake them up.
+      smartctl = {
+        enable = true;
+        port = global_const.prometheus_exporter_ports.smartctl;
+        openFirewall = true;
+      };
     };
   };
 }

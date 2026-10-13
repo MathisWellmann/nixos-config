@@ -32,6 +32,13 @@
             then "false"
             else "true";
         }
+        {
+          targets = ["${host}:${toString config.services.prometheus.exporters.smartctl.port}"];
+          labels.always_on =
+            if builtins.elem host intermittent_hosts
+            then "false"
+            else "true";
+        }
       ];
     }) ["127.0.0.1" "meshify" "superserver" "poweredge" "razerblade" "desg0" "de-n5" "tensorbook"];
   # Scrapes the llama-cpp router on meshify (native NixOS service, see
