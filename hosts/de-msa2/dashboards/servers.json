@@ -23,6 +23,273 @@
   "panels": [
     {
       "type": "row",
+      "title": "Overview",
+      "id": 49,
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Host status",
+      "id": 34,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 1,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(up{job=~\".+-node\", instance=~\".+:9121\", always_on=\"true\"} or (2 * up{job=~\".+-node\", instance=~\".+:9121\", always_on=\"false\"} - 1), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}}",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "UP",
+                  "color": "green",
+                  "index": 0
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "DOWN",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "-1": {
+                  "text": "OFF",
+                  "color": "text",
+                  "index": 2
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "justifyMode": "auto",
+        "wideLayout": true
+      },
+      "description": "node-exporter scrape. Intermittent hosts (always_on=\"false\": laptops, desktops) show OFF instead of DOWN, as they are powered off on purpose."
+    },
+    {
+      "type": "stat",
+      "title": "Uptime",
+      "id": 35,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 1,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(time() - node_boot_time_seconds, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}}",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "orange",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 3600
+              }
+            ]
+          },
+          "unit": "dtdurations"
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "justifyMode": "auto",
+        "wideLayout": true
+      },
+      "description": "Time since boot. A short uptime on an always-on host means it rebooted unexpectedly."
+    },
+    {
+      "type": "table",
+      "title": "Failed systemd units",
+      "description": "Units in the `failed` state right now (same source as the SystemdUnitFailed alert). Empty = healthy.",
+      "id": 36,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 1,
+        "w": 8,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(node_systemd_unit_state{state=\"failed\"} == 1, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "",
+          "refId": "A",
+          "range": false,
+          "instant": true,
+          "format": "table"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "align": "auto",
+            "cellOptions": {
+              "type": "auto"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "showHeader": true,
+        "cellHeight": "sm",
+        "footer": {
+          "show": false,
+          "reducer": [
+            "sum"
+          ],
+          "countRows": false,
+          "fields": ""
+        },
+        "sortBy": [
+          {
+            "displayName": "host",
+            "desc": false
+          }
+        ]
+      },
+      "transformations": [
+        {
+          "id": "organize",
+          "options": {
+            "excludeByName": {
+              "Time": true,
+              "Value": true,
+              "__name__": true,
+              "always_on": true,
+              "instance": true,
+              "job": true,
+              "state": true,
+              "type": true
+            },
+            "indexByName": {
+              "host": 0,
+              "name": 1
+            },
+            "renameByName": {
+              "name": "unit"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "type": "row",
       "title": "CPU",
       "id": 1,
       "collapsed": false,
@@ -31,7 +298,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 0
+        "y": 8
       }
     },
     {
@@ -45,7 +312,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 1,
+        "y": 9,
         "w": 8,
         "h": 8
       },
@@ -128,7 +395,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 1,
+        "y": 9,
         "w": 8,
         "h": 8
       },
@@ -211,7 +478,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 1,
+        "y": 9,
         "w": 8,
         "h": 8
       },
@@ -294,7 +561,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 9,
+        "y": 17,
         "w": 12,
         "h": 8
       },
@@ -379,7 +646,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 9,
+        "y": 17,
         "w": 12,
         "h": 8
       },
@@ -516,7 +783,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 17
+        "y": 25
       }
     },
     {
@@ -530,7 +797,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 18,
+        "y": 26,
         "w": 8,
         "h": 8
       },
@@ -613,7 +880,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 18,
+        "y": 26,
         "w": 8,
         "h": 8
       },
@@ -688,8 +955,8 @@
     },
     {
       "type": "timeseries",
-      "title": "/ free",
-      "description": "",
+      "title": "Filesystem free (non-ZFS)",
+      "description": "All real block-device mounts; /nix/store is a bind mount of / and is skipped. ZFS datasets are in the ZFS row.",
       "id": 10,
       "datasource": {
         "type": "prometheus",
@@ -697,7 +964,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 18,
+        "y": 26,
         "w": 8,
         "h": 8
       },
@@ -708,8 +975,8 @@
             "uid": "${datasource}"
           },
           "editorMode": "code",
-          "expr": "label_replace(label_replace(100 * node_filesystem_avail_bytes{mountpoint=\"/\", fstype!~\"tmpfs|overlay\"} / node_filesystem_size_bytes{mountpoint=\"/\", fstype!~\"tmpfs|overlay\"}, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
-          "legendFormat": "{{host}}",
+          "expr": "label_replace(label_replace(100 * node_filesystem_avail_bytes{fstype=~\"ext4|btrfs|xfs|vfat\", mountpoint!=\"/nix/store\"} / node_filesystem_size_bytes{fstype=~\"ext4|btrfs|xfs|vfat\", mountpoint!=\"/nix/store\"}, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{mountpoint}}",
           "refId": "A",
           "range": true,
           "instant": false
@@ -771,6 +1038,568 @@
       }
     },
     {
+      "type": "timeseries",
+      "title": "Disk read",
+      "description": "Per whole disk (partitions, zvols and dm devices excluded).",
+      "id": 37,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 34,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(rate(node_disk_read_bytes_total{device=~\"nvme[0-9]+n[0-9]+|sd[a-z]+\"}[$__rate_interval]), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}}",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "Bps",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Disk write",
+      "description": "Per whole disk (partitions, zvols and dm devices excluded).",
+      "id": 38,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 34,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(rate(node_disk_written_bytes_total{device=~\"nvme[0-9]+n[0-9]+|sd[a-z]+\"}[$__rate_interval]), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}}",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "Bps",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Disk busy",
+      "description": "Fraction of time the disk had I/O in flight. Near 100% on an HDD = saturated; NVMe can serve many parallel requests, so this is a weaker signal there.",
+      "id": 39,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 34,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(rate(node_disk_io_time_seconds_total{device=~\"nvme[0-9]+n[0-9]+|sd[a-z]+\"}[$__rate_interval]), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}}",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "percentunit",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0,
+          "max": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "row",
+      "title": "Pressure (PSI)",
+      "id": 50,
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 42
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "CPU pressure (some)",
+      "description": "Linux PSI. Share of wall time in which runnable tasks waited for a CPU. The kernel does not report a meaningful system-wide \"full\" for CPU.",
+      "id": 40,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 43,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(rate(node_pressure_cpu_waiting_seconds_total[$__rate_interval]), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} some",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "percentunit",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Memory pressure (some / full bold)",
+      "description": "Linux PSI. Share of wall time in which some (thin) / all (bold) non-idle tasks were stalled. Unlike load average, this measures lost time directly.",
+      "id": 41,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 8,
+        "y": 43,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(rate(node_pressure_memory_waiting_seconds_total[$__rate_interval]), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} some",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(rate(node_pressure_memory_stalled_seconds_total[$__rate_interval]), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} full",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "percentunit",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".* full"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "IO pressure (some / full bold)",
+      "description": "Linux PSI. Share of wall time in which some (thin) / all (bold) non-idle tasks were stalled. Unlike load average, this measures lost time directly.",
+      "id": 42,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 43,
+        "w": 8,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(rate(node_pressure_io_waiting_seconds_total[$__rate_interval]), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} some",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(rate(node_pressure_io_stalled_seconds_total[$__rate_interval]), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} full",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "percentunit",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".* full"
+            },
+            "properties": [
+              {
+                "id": "custom.lineWidth",
+                "value": 2
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
       "type": "row",
       "title": "Network (physical NICs)",
       "id": 11,
@@ -780,7 +1609,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 26
+        "y": 51
       }
     },
     {
@@ -794,7 +1623,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 27,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -877,7 +1706,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 27,
+        "y": 52,
         "w": 12,
         "h": 8
       },
@@ -950,6 +1779,232 @@
       }
     },
     {
+      "type": "timeseries",
+      "title": "Errors (tx dashed)",
+      "description": "Physical NICs only (same filter as Receive/Transmit). Should be flat zero; tx is dashed.",
+      "id": 43,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 60,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(sum by (instance, device) (rate(node_network_receive_errs_total{device!~\"lo|veth.*|cni.*|flannel.*|cali.*|podman.*|docker.*|br-.*|virbr.*|vnet.*|tap.*|wg.*|tailscale.*|usb.*\"}[$__rate_interval])), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}} rx",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(sum by (instance, device) (rate(node_network_transmit_errs_total{device!~\"lo|veth.*|cni.*|flannel.*|cali.*|podman.*|docker.*|br-.*|virbr.*|vnet.*|tap.*|wg.*|tailscale.*|usb.*\"}[$__rate_interval])), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}} tx",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "pps",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".* tx"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Drops (tx dashed)",
+      "description": "Physical NICs only (same filter as Receive/Transmit). Should be flat zero; tx is dashed.",
+      "id": 44,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 60,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(sum by (instance, device) (rate(node_network_receive_drop_total{device!~\"lo|veth.*|cni.*|flannel.*|cali.*|podman.*|docker.*|br-.*|virbr.*|vnet.*|tap.*|wg.*|tailscale.*|usb.*\"}[$__rate_interval])), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}} rx",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(sum by (instance, device) (rate(node_network_transmit_drop_total{device!~\"lo|veth.*|cni.*|flannel.*|cali.*|podman.*|docker.*|br-.*|virbr.*|vnet.*|tap.*|wg.*|tailscale.*|usb.*\"}[$__rate_interval])), \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}} tx",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "pps",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byRegexp",
+              "options": ".* tx"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "max"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
       "type": "row",
       "title": "ZFS nvme_pool (de-msa2)",
       "id": 14,
@@ -959,7 +2014,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 35
+        "y": 68
       }
     },
     {
@@ -972,7 +2027,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 36,
+        "y": 69,
         "w": 6,
         "h": 8
       },
@@ -1037,7 +2092,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 36,
+        "y": 69,
         "w": 6,
         "h": 4
       },
@@ -1097,7 +2152,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 40,
+        "y": 73,
         "w": 6,
         "h": 4
       },
@@ -1229,7 +2284,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 36,
+        "y": 69,
         "w": 12,
         "h": 8
       },
@@ -1324,7 +2379,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 44,
+        "y": 77,
         "w": 12,
         "h": 16
       },
@@ -1390,7 +2445,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 44,
+        "y": 77,
         "w": 12,
         "h": 16
       },
@@ -1470,7 +2525,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 60
+        "y": 93
       }
     },
     {
@@ -1484,7 +2539,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 61,
+        "y": 94,
         "w": 8,
         "h": 8
       },
@@ -1568,7 +2623,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 61,
+        "y": 94,
         "w": 8,
         "h": 8
       },
@@ -1682,7 +2737,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 61,
+        "y": 94,
         "w": 8,
         "h": 8
       },
@@ -1764,7 +2819,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 69
+        "y": 102
       }
     },
     {
@@ -1778,7 +2833,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 70,
+        "y": 103,
         "w": 6,
         "h": 8
       },
@@ -1868,7 +2923,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 70,
+        "y": 103,
         "w": 6,
         "h": 8
       },
@@ -1970,7 +3025,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 70,
+        "y": 103,
         "w": 6,
         "h": 8
       },
@@ -2060,7 +3115,7 @@
       },
       "gridPos": {
         "x": 18,
-        "y": 70,
+        "y": 103,
         "w": 6,
         "h": 8
       },
@@ -2141,6 +3196,342 @@
     },
     {
       "type": "row",
+      "title": "Disk health (SMART)",
+      "id": 51,
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "h": 1,
+        "w": 24,
+        "x": 0,
+        "y": 111
+      }
+    },
+    {
+      "type": "stat",
+      "title": "SMART overall health",
+      "id": 45,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 112,
+        "w": 6,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(smartctl_device_smart_status, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}}",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "PASSED",
+                  "color": "green",
+                  "index": 0
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "FAILED",
+                  "color": "red",
+                  "index": 1
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "justifyMode": "auto",
+        "wideLayout": true
+      },
+      "description": "smartctl self-assessment per disk. FAILED means the drive itself predicts failure: replace it."
+    },
+    {
+      "type": "bargauge",
+      "title": "NVMe wear (percentage used)",
+      "id": 46,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 6,
+        "y": 112,
+        "w": 6,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(smartctl_device_percentage_used, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}}",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 80
+              },
+              {
+                "color": "red",
+                "value": 90
+              }
+            ]
+          },
+          "max": 100
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "namePlacement": "left",
+        "valueMode": "text",
+        "sizing": "auto",
+        "minVizHeight": 10,
+        "maxVizHeight": 24,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "description": "Vendor estimate of rated endurance used. Can go above 100%; the drive keeps working but is out of warranty."
+    },
+    {
+      "type": "bargauge",
+      "title": "NVMe available spare",
+      "id": 47,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 112,
+        "w": 6,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(smartctl_device_available_spare, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}}",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "min": 0,
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 20
+              },
+              {
+                "color": "green",
+                "value": 50
+              }
+            ]
+          },
+          "max": 100
+        },
+        "overrides": []
+      },
+      "options": {
+        "orientation": "horizontal",
+        "displayMode": "gradient",
+        "showUnfilled": true,
+        "namePlacement": "left",
+        "valueMode": "text",
+        "sizing": "auto",
+        "minVizHeight": 10,
+        "maxVizHeight": 24,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        }
+      },
+      "description": "Remaining spare blocks. The drive raises a critical warning when this drops below the vendor threshold (usually 10%)."
+    },
+    {
+      "type": "stat",
+      "title": "Error counters (any > 0 is bad)",
+      "id": 48,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 112,
+        "w": 6,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(smartctl_device_media_errors, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}} media errors",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(smartctl_device_critical_warning, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}} critical warning",
+          "refId": "B",
+          "range": false,
+          "instant": true
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "label_replace(label_replace(smartctl_device_attribute{attribute_name=~\"Reallocated_Sector_Ct|Current_Pending_Sector|Offline_Uncorrectable\", attribute_value_type=\"raw\"}, \"host\", \"$1\", \"instance\", \"([^:]+)(:.*)?\"), \"host\", \"de-msa2\", \"host\", \"127\\\\.0\\\\.0\\\\.1|localhost\")",
+          "legendFormat": "{{host}} {{device}} {{attribute_name}}",
+          "refId": "C",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value_and_name",
+        "orientation": "auto",
+        "justifyMode": "auto",
+        "wideLayout": true
+      },
+      "description": "NVMe: media errors and the critical_warning bitfield. SATA: reallocated, pending and offline-uncorrectable sector counts (raw)."
+    },
+    {
+      "type": "row",
       "title": "Services",
       "id": 25,
       "collapsed": false,
@@ -2149,7 +3540,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 78
+        "y": 120
       }
     },
     {
@@ -2163,7 +3554,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 79,
+        "y": 121,
         "w": 8,
         "h": 8
       },
@@ -2246,7 +3637,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 79,
+        "y": 121,
         "w": 8,
         "h": 8
       },
@@ -2341,7 +3732,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 79,
+        "y": 121,
         "w": 8,
         "h": 8
       },
