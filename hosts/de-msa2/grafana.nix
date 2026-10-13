@@ -14,6 +14,15 @@ in {
       grafana-lokiexplore-app
       grafana-metricsdrilldown-app
       grafana-pyroscope-app
+      # Since grafana 13.2 the core datasource plugins (prometheus, loki, tempo,
+      # jaeger) no longer ship compiled into the binary; nixpkgs packages them
+      # here instead. Without `prometheus` the provisioned VictoriaMetrics
+      # datasource (type = "prometheus") 404s on /api/ds/query with
+      # "plugin not registered" and every metrics panel shows No data.
+      prometheus
+      loki
+      tempo
+      jaeger
     ];
     settings = {
       security.secret_key = "/etc/secrets/grafana";
