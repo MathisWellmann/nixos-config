@@ -92,6 +92,27 @@ in {
     ];
     armor = true;
   };
+  # Personal access tokens (never expire) of the permissionless `metrics` iggy
+  # user, one per broker: prod (`tikr`, replicated through consensus, so valid
+  # on every replica) and dev (`tikr-dev`). iggy >= 0.9 serves `/metrics` only
+  # with a bearer credential. victoriametrics scrapes with them
+  # (hosts/de-msa2/prometheus.nix). To re-mint: log in as root (creds in the
+  # `tikr-iggy-producer-credentials` Secret), POST /users for `metrics`, log in
+  # as it and POST /personal-access-tokens with expiry 18446744073709551615.
+  "iggy_metrics_token.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
+  "iggy_dev_metrics_token.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
   # Bearer token of the `meshify-admin` ServiceAccount (env/cluster_access.nix),
   # read via `tokenFile` by meshify's ~/.kube/k3s.yaml and de-msa2's
   # ~/.kube/config (home/k3s_kubeconfig.nix).

@@ -163,54 +163,70 @@
   # Prometheus `/metrics` endpoint. Reuses the same Kubernetes service
   # discovery + credentials as `tikr_scrape_configs` above (pod IPs are
   # reachable from this host because `de-msa2` is a k3s node).
+  #
+  # Since iggy 0.9 `/metrics` answers 401 `access_token_missing` without a
+  # bearer credential. Each broker gets the personal access token of its own
+  # permissionless `metrics` user (see secrets/agenix-rules.nix). Prod and dev
+  # are separate servers with separate user stores, so they need different
+  # tokens, and a scrape job has only one, hence one job per namespace.
+  mk_iggy_k8s_scrape_config = {
+    job_name,
+    namespace,
+    token_credential,
+  }: {
+    inherit job_name scrape_interval scrape_timeout;
+    bearer_token_file = "${k8s_credentials_dir}/${token_credential}";
+    kubernetes_sd_configs = [
+      {
+        role = "pod";
+        api_server = "https://127.0.0.1:6443";
+        namespaces.names = [namespace];
+        bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+        tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
+      }
+    ];
+    relabel_configs = [
+      # Only keep the iggy-server broker pod.
+      {
+        source_labels = ["__meta_kubernetes_pod_label_app"];
+        action = "keep";
+        regex = "iggy-server";
+      }
+      # The iggy pod exposes several named container ports (`http`, `tcp`
+      # and, for the prod cluster replicas, `replica`), so k8s SD role=pod
+      # emits one target per port. Keep only the `http` port, which serves
+      # `/metrics`; SD already sets `__address__` to `<pod_ip>:<that port>`.
+      # Identified by name, not number: prod (host network, 7091) and dev
+      # (pod network, 3011) use different HTTP ports.
+      {
+        source_labels = ["__meta_kubernetes_pod_container_port_name"];
+        action = "keep";
+        regex = "http";
+      }
+      {
+        source_labels = ["__meta_kubernetes_pod_name"];
+        target_label = "pod";
+      }
+      # Keeps the label set the same as the other k8s jobs, so queries can
+      # filter prod (`tikr`) and dev (`tikr-dev`) the same way everywhere.
+      {
+        source_labels = ["__meta_kubernetes_namespace"];
+        target_label = "namespace";
+      }
+    ];
+  };
   iggy_k8s_scrape_configs = [
-    {
+    # The job name is referenced by the `IggyServerDown` alert (alerting.nix).
+    (mk_iggy_k8s_scrape_config {
       job_name = "iggy-server-k8s";
-      inherit scrape_interval scrape_timeout;
-      kubernetes_sd_configs = [
-        {
-          role = "pod";
-          api_server = "https://127.0.0.1:6443";
-          # Both environments' brokers: prod in `tikr`, dev in `tikr-dev`. The
-          # dev broker uses the same `app=iggy-server` label and HTTP port, so
-          # it is discovered and scraped the same way; the `namespace` relabel
-          # below keeps the two apart.
-          namespaces.names = ["tikr" "tikr-dev"];
-          bearer_token_file = "${k8s_credentials_dir}/k8s_token";
-          tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
-        }
-      ];
-      relabel_configs = [
-        # Only keep the iggy-server broker pod.
-        {
-          source_labels = ["__meta_kubernetes_pod_label_app"];
-          action = "keep";
-          regex = "iggy-server";
-        }
-        # The iggy pod exposes several named container ports (`http`, `tcp`
-        # and, for the prod cluster replicas, `replica`), so k8s SD role=pod
-        # emits one target per port. Keep only the `http` port, which serves
-        # `/metrics`; SD already sets `__address__` to `<pod_ip>:<that port>`.
-        # Identified by name, not number: prod (host network, 7091) and dev
-        # (pod network, 3011) use different HTTP ports.
-        {
-          source_labels = ["__meta_kubernetes_pod_container_port_name"];
-          action = "keep";
-          regex = "http";
-        }
-        {
-          source_labels = ["__meta_kubernetes_pod_name"];
-          target_label = "pod";
-        }
-        # Separate the prod (`tikr`) broker from the dev (`tikr-dev`) one: both
-        # are scraped under `job=iggy-server-k8s`, so the `namespace` label is
-        # what tells their series apart.
-        {
-          source_labels = ["__meta_kubernetes_namespace"];
-          target_label = "namespace";
-        }
-      ];
-    }
+      namespace = "tikr";
+      token_credential = "iggy_token";
+    })
+    (mk_iggy_k8s_scrape_config {
+      job_name = "iggy-server-k8s-dev";
+      namespace = "tikr-dev";
+      token_credential = "iggy_dev_token";
+    })
   ];
   # Scrapes the in-cluster ClickHouse (deployed by the `nexus` repo into the
   # `clickhouse` and `clickhouse-dev` namespaces). Unlike the iggy/greptimedb
@@ -607,9 +623,16 @@ in {
   # Kube API credentials for the tikr pod discovery above. `LoadCredential`
   # because the service runs as a `DynamicUser` and can read neither the
   # agenix secret nor the root-owned k3s CA directly.
-  age.secrets.vm_k8s_token.file = ../../secrets/vm_k8s_token.age;
+  # The iggy tokens go the same way, for the `iggy_k8s_scrape_configs` jobs.
+  age.secrets = {
+    vm_k8s_token.file = ../../secrets/vm_k8s_token.age;
+    iggy_metrics_token.file = ../../secrets/iggy_metrics_token.age;
+    iggy_dev_metrics_token.file = ../../secrets/iggy_dev_metrics_token.age;
+  };
   systemd.services.victoriametrics.serviceConfig.LoadCredential = [
     "k8s_token:${config.age.secrets.vm_k8s_token.path}"
     "k8s_ca:/var/lib/rancher/k3s/server/tls/server-ca.crt"
+    "iggy_token:${config.age.secrets.iggy_metrics_token.path}"
+    "iggy_dev_token:${config.age.secrets.iggy_dev_metrics_token.path}"
   ];
 }
