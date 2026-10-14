@@ -35,7 +35,7 @@ spec:
           envFrom:
             - configMapRef:
                 name: ate-otel-config
-          image: de-msa2:2999/mathiswellmann/atecontroller:dc1f263076d1@sha256:74f5a57bdbcd3604ba74c99743b5279fc4b3f9658a2294b28c9e54191b696d33
+          image: de-msa2:2999/mathiswellmann/atecontroller:dc1f263076d1@sha256:bf12960131c7710f773eb7d0011ecd20e2b9aeacda26f16ef0c4158cb0b60b88
           name: ate-controller
           ports:
             - containerPort: 8080
