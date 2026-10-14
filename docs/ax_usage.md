@@ -4,15 +4,15 @@ This guide explains how to write, deploy, watch and clean up ax Tasks on the
 k3s fleet. The README section "Sandboxed agent tasks" gives a short overview.
 For build notes and open items, see [`ax_stack_todo.md`](ax_stack_todo.md).
 
-Versions: ax `d8ed0fe38bce`, Agent Substrate `dc1f263076d1`. Both are
+Versions: ax `ac2332829f22`, Agent Substrate `dc1f263076d1`. Both are
 pre-alpha, so the API can change when you upgrade.
 
 ## 1. How it works
 
 ```
-ax CLI ──h2c──> ax-server (ax-system) ──> Redis (Tasks, Workspaces, Gateways)
+ax CLI ──h2c──> ax-server (ax-system) ──> Redis (Tasks, Workspaces, Models, locks)
                       │
-                ax-controller ──> Substrate (ate-system)
+                      └──> Substrate (ate-system)
                                      │
                      ActorTemplate + Actor ──> gVisor sandbox on desg0 / de-n5
                                                    │
@@ -24,6 +24,11 @@ ax CLI ──h2c──> ax-server (ax-system) ──> Redis (Tasks, Workspaces, 
 - ax keeps its objects in **Redis**, not in Kubernetes. They are not CRDs, so
   ArgoCD does not deploy them and `kubectl get` does not show them. Use the
   `ax` CLI or `nix run .#ax_apply`.
+- There is no separate controller. ax-server calls Substrate inside each
+  RPC (create, resume, suspend, delete), so a command returns when the
+  Substrate side is done. Per-object Redis locks (`lock:task`,
+  `lock:workspace`, `lock:model`) stop two calls from changing one object at
+  the same time.
 - Substrate runs each Task as an **actor** in a gVisor sandbox. Workers run
   only on the Zen-4 nodes (`desg0`, `de-n5`).
 - **Suspend** writes a snapshot to rustfs (S3) and frees the worker.
@@ -61,17 +66,19 @@ Rules:
 All object files are in `manifests/ax/`. Use one file per object. Name the
 file `<kind>-<name>.yaml`.
 
+Object names and atespaces must be RFC 1123 labels: lowercase letters,
+digits and `-`, with a letter or digit at the start and end, at most 63
+characters. ax-server rejects other names at apply time, because they
+become Substrate object names (actor, ActorTemplate, atespace).
+
 | Kind | Purpose | Shared? |
 | --- | --- | --- |
-| `Gateway` | egress allowlist for a Task | yes, `gateway-*.yaml` |
 | `Workspace` | git repos to clone into `/workspace` | yes, `workspace-*.yaml` |
 | `Model` | LLM for the Workspace `goal` bootstrap (Gemini only, not used) | yes, `model-*.yaml` |
 | `Task` | one sandboxed run | no, one-off, `task-*.yaml` |
 
 Existing shared objects:
 
-- `Gateway lan-llm`: SGLang on desg0 (`192.168.0.13:8000`), Forgejo,
-  GitHub.
 - `Workspace monty-persona`: `forgejo.k3s.lan/MathisWellmann/monty-persona`,
   branch `main`.
 
@@ -97,33 +104,26 @@ spec:
   `coredns-custom`). For other LAN services, use the IP address.
 - The runner image contains the fleet CA, so HTTPS to `forgejo.k3s.lan`
   works. Fallback: `http://192.168.0.14:2999/<owner>/<repo>.git`.
+- `files` writes inlined files into the workspace before the git clone, on
+  the first start only. Each entry has `path` (relative to the workspace, or
+  absolute) and `content`:
+
+  ```yaml
+  files:
+    - path: "AGENTS.md"
+      content: |
+        Run the tests before you commit.
+  ```
+
 - Do not set `mcp`, `skills` or `goal`. They need Google registries and
   Gemini.
+- `ax apply` on an existing Workspace updates it in place.
 
-### 3.2 Gateway
+Sandbox egress is allow-all. Substrate enforces egress only through an
+egress gateway, which is not deployed. ax has no per-Task egress policy:
+upstream removed the `Gateway` kind in `ac2332829f22`.
 
-```yaml
-apiVersion: ax.io/v1alpha1
-kind: Gateway
-metadata:
-  name: lan-llm
-  atespace: default
-spec:
-  egress:
-    allowlist:
-      hosts:
-        - host: "192.168.0.13/32"   # write bare IPs as CIDRs
-          port: 8000
-        - host: "forgejo.k3s.lan"
-          port: 443
-```
-
-**Warning:** the fleet does not enforce the allowlist. ax drops `port`, and
-Substrate enforces egress only through an egress gateway, which is not
-deployed. Sandbox egress is allow-all. Keep the Gateway correct for the day
-enforcement starts, but do not rely on it for security.
-
-### 3.3 Task
+### 3.2 Task
 
 ```yaml
 apiVersion: ax.io/v1alpha1
@@ -149,10 +149,7 @@ spec:
     limits:   { cpu: "4", memory: "8Gi" }
   workspaces:
     - name: my-repo            # the first entry is the working directory
-  gateway:
-    name: lan-llm
   debug: true                  # enables `ax ssh`
-  # suspend: true              # create the Task suspended
 ```
 
 Task fields:
@@ -164,12 +161,15 @@ Task fields:
 | `env` | Plain `name`/`value` pairs. There are no secret references: values are stored in clear text in Redis. |
 | `resources` | CPU and memory requests and limits. |
 | `workspaces` | Workspaces to mount under `/workspace`. `path` is optional. |
-| `gateway` | Egress policy (see 3.2). |
 | `debug` | Starts the guest services for `ax ssh`. Set it to `true` unless you have a reason not to. |
 
 The command runs in the first workspace, with the runner's environment plus
 `spec.env` and `AX_METADATA_URL` (the runner's local metadata server).
-| `suspend` | Desired state. `ax suspend` and `ax resume` change it. |
+
+Tasks are **immutable**. `ax apply` on a Task name that already exists fails
+with `already exists and is immutable`. To change a Task, run
+`ax delete task X`, then apply it again. This makes sure that a changed Task
+never resumes an old actor with an old template and snapshot.
 
 ## 4. The default runner image
 
@@ -205,7 +205,7 @@ Do this once, and again after ax loses its Redis data:
 nix run .#ax_apply
 ```
 
-The script applies `gateway-*`, `model-*` and `workspace-*` from
+The script applies `model-*` and `workspace-*` from
 `manifests/ax/`, in that order. Note that it applies a **store copy** of the
 directory: commit or `git add` new files first, or pass them as arguments.
 
@@ -217,6 +217,13 @@ nix run .#ax_apply -- manifests/ax/task-summarize-my-repo.yaml
 ax apply -f manifests/ax/task-summarize-my-repo.yaml
 ```
 
+ax-server creates every new Task in phase `Suspended`: it creates the
+ActorTemplate and the actor, then suspends the actor. Start the Task:
+
+```sh
+ax resume task summarize-my-repo
+```
+
 ### 5.3 Watch it
 
 ```sh
@@ -225,8 +232,8 @@ ax describe task summarize-my-repo
 ax watch task summarize-my-repo
 ```
 
-Expected conditions: the ActorTemplate is created, the actor resumes on a
-worker, then `WorkspaceReady`. After that the phase is `Running`.
+Expected after `ax resume`: the actor resumes on a worker, then
+`WorkspaceReady`. After that the phase is `Running`.
 
 **`Running` is the last phase.** ax has no `Succeeded` or `Failed` phase for
 a finished command. When the command exits, the runner logs the exit code
@@ -371,7 +378,9 @@ permissions the job needs.
 | `404 page not found` from `ax.k3s.lan` | traefik talks HTTP/1.1 to ax-server | the `serversscheme: h2c` annotation must be on the Service (`env/ax.nix`) |
 | `ax ssh` fails with `AX_SERVER` set | `ax ssh` needs a kubeconfig | run it on de-msa2 or meshify as `m` |
 | `ax ssh` fails on a running Task | `debug` is not set | set `debug: true`, then delete and re-apply the Task |
-| A re-applied Task runs the old image or old files | Substrate resumed the old actor with its old template and snapshot | `ax delete task X`, then apply again |
+| `ax apply` fails with `already exists and is immutable` | Tasks are immutable | `ax delete task X`, then apply again |
+| A new Task stays in `Suspended` | ax creates every Task suspended | `ax resume task X` |
+| `ax apply` rejects a name | the name is not an RFC 1123 label | use lowercase letters, digits and `-`, at most 63 characters |
 | "must be pinned by digest" | `image` has a tag only | use `@sha256:...` |
 | Sandbox dies with `waiting for sandbox to start: EOF` | the image has no `/tmp` | add `/tmp` (mode `1777`) to the image |
 | Actor stuck in `RESUMING` | `runsc restore` failed (CPU mismatch or a bad snapshot) | it clears when the worker pod goes away; check the WorkerPool node selector |
@@ -382,13 +391,13 @@ Look at the Substrate side (on de-msa2 or meshify):
 ```sh
 kubectl ate get actors -a default
 kubectl ate get actor-template -a default
-kubectl -n ax-system logs deploy/ax-controller
+kubectl -n ax-system logs deploy/ax-server
 kubectl -n ate-system get pods -o wide
 ```
 
 ## 10. Limitations
 
-- Egress is allow-all (section 3.2).
+- Egress is allow-all, and ax has no per-Task allowlist (section 3.1).
 - `ax.k3s.lan` has no authentication. Everyone on the LAN or tailnet can
   create Tasks.
 - Task `env` has no secret references.

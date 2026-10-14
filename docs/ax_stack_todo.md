@@ -105,10 +105,14 @@ All items closed 2026-09-22.
       sandbox. Without a `Gateway`, egress defaults to allow-all
       (`reconciler.go:193`); with one, add `192.168.0.13:<qwen3_port>` to the
       allowlist. Use the IP: pods cannot resolve `*.k3s.lan`/Tailscale names.
+      (Superseded 2026-10-14: ax `ac2332829f22` removed the `Gateway` kind;
+      egress is allow-all with no per-Task policy.)
 - [x] ax-controller -> Substrate: flags `--substrate-endpoint
       api.ate-system.svc.cluster.local:443`, bearer token file (`ate-token`
       Secret) and CA (`servicedns-ca` ClusterTrustBundle-derived);
       `ATENET_ROUTER_ADDR=atenet-router.ate-system.svc.cluster.local:80`.
+      (Since 2026-10-14 / ax `ac2332829f22`: same flags and env, but on
+      ax-server; ax-controller no longer exists.)
 
 ## Phase 1: Cluster prerequisites -- config done 2026-09-21, deploy pending
 
@@ -308,6 +312,7 @@ Config done 2026-09-22 (upstream `d8ed0fe38bce`, 2026-09-19), deployed the
 same day.
 
 - [x] `pkgs/ax/default.nix`: buildGoModule of `cmd/{ax,ax-server,ax-controller,ax-task-runner}`
+      (no `ax-controller` since 2026-10-14 / ax `ac2332829f22`)
       (`vendorHash`, deps not vendored), images + OCI layouts + digests +
       `refs` like agent-substrate; `.#ax` (CLI), `.#ax-push-images`.
       Patch `default-task-image-env.patch`: `AX_DEFAULT_TASK_IMAGE` env
@@ -322,7 +327,10 @@ same day.
 - [x] Redis Deployment + Service (`redis:7-alpine` pinned, emptyDir; a
       PVC + AOF since Phase 4).
 - [x] `ax-server` Deployment + Service :8080.
-- [x] `ax-controller` Deployment + RBAC as upstream (`ate-token` projected SA
+- [x] `ax-controller` Deployment + RBAC as upstream (superseded 2026-10-14:
+      ax `ac2332829f22` removed ax-controller; ax-server now has the SA
+      `ax-server`, the ClusterRole/Binding, the flags, env and volumes
+      listed here) (`ate-token` projected SA
       token, audience `api.ate-system.svc`; `servicedns-ca` trust bundle;
       `ATENET_ROUTER_ADDR`), plus `AX_SNAPSHOTS_BUCKET=gs://ate-snapshots/ax/`
       and `AX_DEFAULT_TASK_IMAGE`. ate-api-server does not enforce authz yet
@@ -343,7 +351,8 @@ same day.
 - [x] Deploy: ArgoCD `ax` Synced/Healthy; `ax-server`, `ax-controller`,
       `ax-redis` Running on desg0 with 0 restarts. The controller logs one
       Redis "connection refused" at startup (it starts before Redis), then
-      reconnects and blocks in `XREADGROUP` on the task stream. It only
+      reconnects and blocks in `XREADGROUP` on the task stream (no stream
+      and no controller since ax `ac2332829f22`, see Phase 6). It only
       talks to Substrate when a Task is reconciled, so the first Phase 4
       Task is what proves that path.
 - [x] Smoke test: `ax get tasks|gateways|workspaces|models` all answer
@@ -361,7 +370,8 @@ same day.
 
 Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
 
-- [x] `manifests/ax/`: one file per object, `gateway-*`, `workspace-*`,
+- [x] `manifests/ax/`: one file per object, `gateway-*` (removed
+      2026-10-14), `workspace-*`,
       `task-*` (no `Model` until Phase 5). ArgoCD only renders
       `manifests/prod/`, so these are not picked up by GitOps.
       Decided 2026-09-23 to keep them as raw YAML outside nixidy: they are
@@ -370,7 +380,8 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       `ax apply` CronJob, with no diff, prune or health for the objects.
       Tasks are one-offs that ax changes on suspend/resume. Revisit if
       upstream adds CRDs.
-- [x] `Gateway lan-llm` (`manifests/ax/gateway-lan-llm.yaml`): SGLang
+- [-] `Gateway lan-llm` (`manifests/ax/gateway-lan-llm.yaml`; deleted
+      2026-10-14, because ax `ac2332829f22` removed the `Gateway` kind): SGLang
       `192.168.0.13/32`, Forgejo `192.168.0.14/32` + `forgejo.k3s.lan`,
       `github.com`, `*.githubusercontent.com`. **Recorded, not enforced**:
       ax drops `port` (only host patterns/CIDRs reach Substrate's
@@ -395,7 +406,7 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       fresh process tree, unlike the raw Substrate counter demo). Left
       suspended.
 - [x] Re-apply after a Redis flush: `nix run .#ax_apply` (`scripts/ax_apply.nix`)
-      applies Gateways, Models, Workspaces from a store copy of
+      applies Models, Workspaces (Gateways until 2026-10-14) from a store copy of
       `manifests/ax/` in dependency order; `ax_apply FILE...` applies
       explicit files (Tasks). Chosen over a post-sync Job: tasks are
       one-offs, and the script needs nothing in-cluster. It needs a fleet
@@ -418,6 +429,9 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       switch the actor to it). Use `ax delete task X` (removes actor and
       templates) and re-apply for a clean run; check
       `kubectl ate get actors -a default` for leftovers after a Redis loss.
+      (Since ax `ac2332829f22`, re-applying an existing Task fails with
+      FailedPrecondition "already exists and is immutable", and #390 keeps
+      task templates stable. `ax delete task X` first is still the way.)
 - [x] meshify access (config 2026-09-23, needs push + meshify switch):
       `env/cluster_access.nix` (nixidy app `cluster-access`) declares
       ServiceAccount `kube-system/meshify-admin` (cluster-admin) and a
@@ -453,8 +467,9 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       (`modules/ai/pi-sglang-provider.nix`). Env: `OPENAI_BASE_URL`,
       `PI_OFFLINE=1` (no pi.dev catalog refresh; egress is blocked anyway).
       No `OPENAI_API_KEY`: pi would then offer its whole OpenAI catalog.
-      Usage in a Task: `pi -p --no-session "<prompt>"`; the Task needs a
-      Gateway that allows desg0 (`lan-llm`). Tested locally with podman on
+      Usage in a Task: `pi -p --no-session "<prompt>"`; the Task needed a
+      Gateway that allows desg0 (`lan-llm`; obsolete since 2026-10-14, no
+      Gateway kind, egress allow-all). Tested locally with podman on
       de-msa2 (`pi --list-models` shows only sglang; a prompt round trip
       works). The flake builds `pkgs/ax` once (`axBundle`, passed to nixidy
       via `extraSpecialArgs`), so the pushed digest always equals the pin.
@@ -490,6 +505,28 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
       atenet-router requests + resume latency, ate-controller reconcile
       errors, worker pool capacity vs. use, rustfs bucket size; later ax
       task counts/states. Metric names: `docs/metrics/` upstream.
+- [x] Bump ax `d8ed0fe38bce` (2026-09-19) -> `ac2332829f22` (2026-09-27)
+      (config 2026-10-14; deploy needs `nix run .#ax-push-images` before
+      the push, then `ax_apply` and re-created Tasks). Upstream changes
+      that affect us:
+      - ax-controller and the Redis Streams queue are gone. ax-server
+        calls Substrate inside each RPC (create/resume/suspend/delete),
+        guarded by per-resource Redis locks (`lock:task`,
+        `lock:workspace`, `lock:model`). ax-server took over the
+        controller's SA, RBAC, flags, env and volumes (`env/ax.nix`).
+      - The `Gateway` kind is removed (API, CLI, store). Deleted
+        `manifests/ax/gateway-lan-llm.yaml`; Tasks have no `spec.gateway`.
+        Egress stays allow-all (no Substrate egress gateway deployed).
+      - Tasks are immutable (`ax apply` on an existing Task fails with
+        FailedPrecondition) and `spec.suspend` is gone: every new Task
+        starts in phase `Suspended`; start it with `ax resume task X`.
+        Workspaces and Models still update in place.
+      - `ax delete`/`ax watch` no longer poll in two phases. `ax watch`
+        still ends at `Running` for a finished command.
+      - Fixes: stable task templates (#390), crashed actors reverted, not
+        recreated (#432), reconcile skips deleting Tasks (#417), RFC 1123
+        name check (#406), `ax get tasks NAME` (#402), empty YAML docs
+        skipped (#409), Workspace `spec.files` (inlined files).
 - [x] Update `README.md` and the homepage dashboard entries (2026-09-23:
       README section "Sandboxed agent tasks"; homepage entry `ax` in group
       *AI* via the `ax.k3s.lan` Ingress annotations in `env/ax.nix`).
@@ -503,7 +540,7 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
 | Component | Upstream commit | Image digest |
 |-----------|-----------------|--------------|
 | substrate | `dc1f263076d1575c0562c71d763edd0a0342fd68` (2026-09-21), tag `dc1f263076d1` | see below |
-| ax        | `d8ed0fe38bceb7842d3c47817d53d16ccdfcb601` (2026-09-19), tag `d8ed0fe38bce` | pinned in `manifests/prod/ax/*.yaml` |
+| ax        | `ac2332829f22360ff97b0ba34d94dd0dd782f17e` (2026-09-27), tag `ac2332829f22` (was `d8ed0fe38bce` until 2026-10-14) | pinned in `manifests/prod/ax/*.yaml` |
 
 Substrate image digests are pinned in the rendered manifests
 (`grep -h 'image:\|workerImage:' manifests/prod/substrate/*.yaml`) and computed

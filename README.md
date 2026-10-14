@@ -229,14 +229,14 @@ How it fits together:
   server, controller, `atelet` and the gVisor worker pool. Workers run only on
   the Zen-4 nodes (`desg0`, `de-n5`), because golden snapshots must not move
   between CPU generations. Snapshots go to rustfs (S3).
-- **ax** (`env/ax.nix`, `pkgs/ax/`): `ax-server` (gRPC API), `ax-controller`
-  and Redis in `ax-system`. The API is at `ax.k3s.lan:80` (plaintext h2c
+- **ax** (`env/ax.nix`, `pkgs/ax/`): `ax-server` (gRPC API, which also
+  drives Substrate directly) and Redis in `ax-system`. The API is at `ax.k3s.lan:80` (plaintext h2c
   through traefik). It is also on the homepage under *AI*.
 - **Default task image**: tasks without `spec.image` run the Nix-built
   `ax-task-runner`. It ships `git`, `curl`, the fleet CA and the
   [`pi`](https://pi.dev) coding agent, which is preconfigured for Qwen3.8 on
   desg0's SGLang (`OPENAI_BASE_URL=http://192.168.0.13:8000/v1`).
-- **ax objects** (`manifests/ax/`): Gateways, Workspaces and Tasks live in
+- **ax objects** (`manifests/ax/`): Models, Workspaces and Tasks live in
   ax's Redis, not in Kubernetes. ArgoCD does not apply them. Use `ax_apply`.
 
 #### Client-side usage
@@ -254,7 +254,7 @@ There are two ways to reach the server:
 root-owned `~/.kube` and `~/.ax` behind. In a shell other than nushell on
 tensorbook, export `AX_SERVER=ax.k3s.lan:80` first.
 
-Apply the shared objects (Gateways, Models, Workspaces), then a Task:
+Apply the shared objects (Models, Workspaces), then a Task:
 
 ```sh
 nix run .#ax_apply                                    # everything shared in manifests/ax/
@@ -273,14 +273,13 @@ spec:
   command: [bash, -c, 'pi -p --no-session "Summarize this repo into /workspace/summary.md"']
   workspaces:
     - name: monty-persona # cloned into /workspace, the working directory
-  gateway:
-    name: lan-llm         # egress to desg0 (SGLang) and Forgejo
   debug: true             # needed for `ax ssh`
 ```
 
-Watch and inspect it:
+ax creates every new Task suspended. Start, watch and inspect it:
 
 ```sh
+ax resume task smoke-pi       # new Tasks start in phase Suspended
 ax get tasks
 ax watch task smoke-pi        # "Running" is reported as final; check the result with ax ssh
 ax ssh smoke-pi -- cat /workspace/summary.md
@@ -290,15 +289,16 @@ ax delete task smoke-pi       # also removes the Substrate actor
 
 Gotchas:
 
-- Delete a Task before you re-apply it under the same name. Otherwise
-  Substrate resumes the old actor, with its old image and snapshot.
-- The Gateway egress allowlist is recorded but not enforced yet (no egress
-  gateway is deployed), so sandbox egress is allow-all.
+- Tasks are immutable: `ax apply` fails for a Task name that already exists.
+  Run `ax delete task X` first, then apply again.
+- Sandbox egress is allow-all: no Substrate egress gateway is deployed, and
+  ax has no per-Task egress policy since the Gateway resource was removed
+  upstream.
 - Pods can't resolve `*.k3s.lan` names except `forgejo.k3s.lan`. Use LAN IPs
   for other services.
 - To ship a new runner image, run `nix run .#ax-push-images` (after
   `skopeo login --tls-verify=false de-msa2:2999`) **before** you push the
-  re-rendered manifests. Otherwise the controller points at a digest that is
+  re-rendered manifests. Otherwise ax-server points at a digest that is
   not in the registry yet.
 
 ### 📦 Fleet Nix binary cache (attic)
