@@ -12,7 +12,7 @@
       }
     ]
   },
-  "description": "tikr trading pipeline: iggy producers (ws ingest) and ClickHouse sinks with insert rates and latency histograms. Metrics scraped by the de-msa2 `tikr-k8s-pods` job (namespaces tikr / tikr-dev).",
+  "description": "tikr trading pipeline: iggy producers (ws ingest) and ClickHouse sinks with insert rates and latency histograms, plus the replicated iggy-server cluster (WAL, replication, drops, denials). Metrics scraped by the de-msa2 `tikr-k8s-pods` job and the `iggy-server-k8s` / `iggy-server-k8s-dev` jobs (namespaces tikr / tikr-dev).",
   "editable": true,
   "fiscalYearStartMonth": 0,
   "graphTooltip": 1,
@@ -245,6 +245,275 @@
         { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (job) (rate(tikr_iggy_producer_insert_failure{namespace=\"$namespace\"}[$__rate_interval]))", "legendFormat": "{{job}} insert failures/s", "refId": "B" }
       ],
       "title": "Producer drops & insert failures",
+      "type": "timeseries"
+    },
+    {
+      "collapsed": false,
+      "gridPos": { "h": 1, "w": 24, "x": 0, "y": 56 },
+      "id": 104,
+      "panels": [],
+      "title": "iggy-server cluster",
+      "type": "row"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Scraped iggy-server replicas of this namespace's VSR cluster (jobs `iggy-server-k8s` / `iggy-server-k8s-dev`). Both clusters run 3 replicas, so 2 is the quorum: orange = one replica down, red = no quorum and writes stop.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "none", "thresholds": { "mode": "absolute", "steps": [ { "color": "red", "value": null }, { "color": "orange", "value": 2 }, { "color": "green", "value": 3 } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 0, "y": 57 },
+      "id": 40,
+      "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(up{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "replicas up", "refId": "A" } ],
+      "title": "Replicas up",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Clients connected across all replicas (producers, sinks, web console). The SDK follows the cluster metadata to the primary, so most clients sit on the primary.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 4, "y": 57 },
+      "id": 41,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(clients{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "clients", "refId": "A" } ],
+      "title": "Connected clients",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Replicated prepares made durable per second by the fastest replica. Every replica persists every prepare, so the max (not the sum) is the cluster write rate.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "ops", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 8, "y": 57 },
+      "id": 42,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(sum by (pod) (rate(partition_wal_prepares_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval])))", "legendFormat": "prepares/s", "refId": "A" } ],
+      "title": "WAL prepares / s",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Highest per-replica `messages` gauge (total count of messages). See 'Messages stored by replica' for divergence between replicas.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 12, "y": 57 },
+      "id": 43,
+      "options": { "colorMode": "value", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(messages{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "messages", "refId": "A" } ],
+      "title": "Messages stored",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Partition WAL writer failures plus frames shed instead of delivered (`frame_drops_total`, all variants). `or vector(0)` because iggy only exports a counter family after its first increment.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 0.01 } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 16, "y": 57 },
+      "id": 44,
+      "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "(sum(rate(partition_wal_errors_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval])) or vector(0)) + (sum(rate(frame_drops_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval])) or vector(0))", "legendFormat": "errors+drops/s", "refId": "A" } ],
+      "title": "WAL errors & frame drops / s",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Duplicate partition builds discarded plus parked frames rejected for a dead incarnation, over the dashboard range. iggy documents both as 'non-zero is a caught anomaly'.",
+      "fieldConfig": { "defaults": { "color": { "mode": "thresholds" }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null }, { "color": "red", "value": 1 } ] } }, "overrides": [] },
+      "gridPos": { "h": 4, "w": 4, "x": 20, "y": 57 },
+      "id": 45,
+      "options": { "colorMode": "background", "graphMode": "area", "justifyMode": "auto", "orientation": "auto", "reduceOptions": { "calcs": ["lastNotNull"], "fields": "", "values": false }, "textMode": "auto" },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "round((sum(increase(partitions_duplicate_builds_discarded_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__range])) or vector(0)) + (sum(increase(partition_frames_rejected_stale_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__range])) or vector(0)))", "legendFormat": "anomalies", "refId": "A" } ],
+      "title": "Caught anomalies (range)",
+      "type": "stat"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Scrape health per replica. The replica label comes from the pod name without the ReplicaSet hash, so a restarted pod continues the same series.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "none", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] }, "min": 0, "max": 1 }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 61 },
+      "id": 46,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (replica) (label_replace(up{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}}", "refId": "A" } ],
+      "title": "Replica up",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Connected clients per replica. The primary holds most connections; a shift between replicas marks a view change (new primary).",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 61 },
+      "id": 47,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(clients{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}}", "refId": "A" } ],
+      "title": "Connected clients by replica",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Prepares covered by completed partition WAL batches, per replica. All replicas should track each other; a replica below its peers is falling behind replication.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "ops", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 69 },
+      "id": 48,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(rate(partition_wal_prepares_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]), \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}}", "refId": "A" } ],
+      "title": "WAL prepares / s by replica",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Group-commit efficiency: prepares per durable WAL batch (higher = fewer fsyncs per prepare). The dashed series count durable groups that took the optional pre-barrier wait.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [ { "matcher": { "id": "byRegexp", "options": ".* waits/s" }, "properties": [ { "id": "unit", "value": "cps" }, { "id": "custom.axisPlacement", "value": "right" }, { "id": "custom.lineStyle", "value": { "dash": [10, 10], "fill": "dash" } } ] } ] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 69 },
+      "id": 49,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(rate(partition_wal_prepares_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]), \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\")) / sum by (replica) (label_replace(rate(partition_wal_batches_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]), \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} prepares/batch", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(rate(partition_wal_group_commit_waits_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]), \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} group-commit waits/s", "refId": "B" }
+      ],
+      "title": "Prepares per WAL batch",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Active WAL bytes on disk, retained prepare bytes charged to the WAL budget, and bytes queued / in flight to the writer. Growing queued or in-flight bytes mean the disk cannot keep up.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "bytes", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 77 },
+      "id": 50,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(partition_wal_disk_bytes{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} disk", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(partition_wal_retained_bytes{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} retained", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(partition_wal_queued_bytes{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} queued", "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(partition_wal_in_flight_bytes{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} in flight", "refId": "D" }
+      ],
+      "title": "Partition WAL bytes by replica",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Committed entries (right axis) and their payload bytes (left axis) that each replica keeps to repair lagging peers.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "bytes", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [ { "matcher": { "id": "byRegexp", "options": ".* entries" }, "properties": [ { "id": "unit", "value": "short" }, { "id": "custom.axisPlacement", "value": "right" } ] } ] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 77 },
+      "id": 51,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(partition_repair_ring_bytes{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} bytes", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(partition_repair_ring_entries{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} entries", "refId": "B" }
+      ],
+      "title": "Repair ring by replica",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Per-replica `messages` gauge (total count of messages). A replica that stays below its peers has not caught up.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 85 },
+      "id": 52,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max by (replica) (label_replace(messages{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}}", "refId": "A" } ],
+      "title": "Messages stored by replica",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Completed partition WAL checkpoints per second (left axis) and checkpoints waiting for storage completion (right axis). A pending count that keeps growing means storage is stalled.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [ { "matcher": { "id": "byRegexp", "options": ".* pending" }, "properties": [ { "id": "unit", "value": "short" }, { "id": "custom.axisPlacement", "value": "right" } ] } ] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 85 },
+      "id": 53,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(rate(partition_wal_checkpoints_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]), \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} checkpoints/s", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (replica) (label_replace(partition_wal_checkpoints_pending{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}, \"replica\", \"$1\", \"pod\", \"(iggy-server-[0-9]+)-.*\"))", "legendFormat": "{{replica}} pending", "refId": "B" }
+      ],
+      "title": "WAL checkpoints",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Frames shed instead of delivered, cluster-wide, by frame class (`variant`) and refusal reason. `full` = a shard inbox was full; `consensus` or `forward_replica_send` drops can stall replication.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 93 },
+      "id": 54,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [ { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (variant, reason) (rate(frame_drops_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "{{variant}} / {{reason}}", "refId": "A" } ],
+      "title": "Frame drops by variant & reason",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Cluster-wide rates: replicated prepares a backup dropped as out of order (gap check), state transfers refused by the serving peer, metadata reads refused at the read frontier, parked frames for a future epoch, and repair serves deferred for a purge. Bursts are normal during a view change or rollout; a steady rate is not.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 93 },
+      "id": 55,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partition_prepare_gap_drops_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "partition prepare gap drops", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(metadata_prepare_gap_drops_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "metadata prepare gap drops", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partition_transfer_refusals_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "partition transfer refusals", "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(metadata_read_frontier_refusals_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "metadata read-frontier refusals", "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partition_frames_rejected_ahead_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "frames rejected (epoch ahead)", "refId": "E" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partition_repair_serves_deferred_purge_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "repair serves deferred (purge)", "refId": "F" }
+      ],
+      "title": "Replication gaps & refusals",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Retryable denials sent to clients, cluster-wide: the client's request queue was full, a transient partition denial, or a consumer offset refused at the per-partition admission limit.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 101 },
+      "id": 56,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(client_requests_denied_queue_full_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "queue full", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partition_requests_denied_transient_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "partition transient", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (rate(partition_consumer_offsets_denied_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "consumer offsets denied ({{kind}})", "refId": "C" }
+      ],
+      "title": "Client request denials",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Cluster-wide rates of WAL writer failures, partition reconcile failures (retried), and the counters iggy documents as anomalies (duplicate builds, stale frames, stats decrements clamped at zero).",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 101 },
+      "id": 57,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partition_wal_errors_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "WAL errors", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partitions_reconcile_failures_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "reconcile failures", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partitions_duplicate_builds_discarded_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "duplicate builds discarded", "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partition_frames_rejected_stale_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "frames rejected (stale)", "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(stats_rollup_underflows_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "stats rollup underflows", "refId": "E" }
+      ],
+      "title": "Errors & caught anomalies",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Highest per-replica count of streams, topics, partitions, segments and users.",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "stepAfter", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "short", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [] },
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 109 },
+      "id": 58,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(streams{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "streams", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(topics{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "topics", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(partitions{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "partitions", "refId": "C" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(segments{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "segments", "refId": "D" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "max(users{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "users", "refId": "E" }
+      ],
+      "title": "Cluster objects",
+      "type": "timeseries"
+    },
+    {
+      "datasource": { "type": "prometheus", "uid": "${datasource}" },
+      "description": "Partitions materialised and removed by the reconciliation loop per second (left axis), and consumer offset keys whose file could not be loaded or unlinked (right axis, still counted against the admission limit).",
+      "fieldConfig": { "defaults": { "color": { "mode": "palette-classic" }, "custom": { "axisCenteredZero": false, "axisColorMode": "text", "axisLabel": "", "axisPlacement": "auto", "barAlignment": 0, "drawStyle": "line", "fillOpacity": 10, "gradientMode": "none", "hideFrom": { "legend": false, "tooltip": false, "viz": false }, "lineInterpolation": "linear", "lineWidth": 1, "pointSize": 5, "scaleDistribution": { "type": "linear" }, "showPoints": "never", "spanNulls": false, "stacking": { "group": "A", "mode": "none" }, "thresholdsStyle": { "mode": "off" } }, "unit": "cps", "thresholds": { "mode": "absolute", "steps": [ { "color": "green", "value": null } ] } }, "overrides": [ { "matcher": { "id": "byRegexp", "options": "stranded .*" }, "properties": [ { "id": "unit", "value": "short" }, { "id": "custom.axisPlacement", "value": "right" } ] } ] },
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 109 },
+      "id": 59,
+      "options": { "legend": { "calcs": ["lastNotNull", "max"], "displayMode": "table", "placement": "bottom", "showLegend": true }, "tooltip": { "mode": "multi", "sort": "desc" } },
+      "targets": [
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partitions_materialised_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "materialised/s", "refId": "A" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum(rate(partitions_removed_total{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"}[$__rate_interval]))", "legendFormat": "removed/s", "refId": "B" },
+        { "datasource": { "type": "prometheus", "uid": "${datasource}" }, "expr": "sum by (kind) (partition_consumer_offsets_stranded{namespace=\"$namespace\", job=~\"iggy-server-k8s.*\"})", "legendFormat": "stranded offsets ({{kind}})", "refId": "C" }
+      ],
+      "title": "Partition reconciler",
       "type": "timeseries"
     }
   ]
