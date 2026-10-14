@@ -670,6 +670,65 @@ _: let
         }
       ];
     }
+
+    # ── iggy host-firewall ports ──────────────────────────────────────────────
+    # The iggy replicas run on the host network, so each node's firewall must
+    # open their ports (`modules/nexus_iggy_cluster.nix`). On 2026-10-14 desg0
+    # had not been rebuilt with them: iggy-server-2 could not reach its peers
+    # while every pod was Ready, and only the data-flow alerts above fired,
+    # hours later. nexus runs one `iggy-port-probe-<node>` CronJob per replica
+    # every 5 minutes (`env/tikr/iggy-server.nix`): from another node, it dials
+    # the replica's ports and fails only when the host firewall drops one (a
+    # node that is down passes; the node alerts cover it). These rules fire
+    # when a probe has not succeeded since its last scheduled run, for 10m (two
+    # runs), via kube-state-metrics. The probe log names the blocked ports:
+    # `kubectl -n <namespace> logs job/<latest job of the cronjob>`.
+    {
+      name = "iggy-host-ports";
+      interval = "30s";
+      rules = let
+        # Scheduled after the last success (a failed run, or one that never
+        # succeeded). A run in progress is true for seconds only.
+        notSucceeding = namespace: ''
+          (
+            kube_cronjob_status_last_schedule_time{namespace="${namespace}", cronjob=~"iggy-port-probe-.+"}
+              > on (namespace, cronjob)
+            kube_cronjob_status_last_successful_time{namespace="${namespace}", cronjob=~"iggy-port-probe-.+"}
+          )
+          or
+          (
+            kube_cronjob_status_last_schedule_time{namespace="${namespace}", cronjob=~"iggy-port-probe-.+"}
+              unless on (namespace, cronjob)
+            kube_cronjob_status_last_successful_time{namespace="${namespace}", cronjob=~"iggy-port-probe-.+"}
+          )
+        '';
+        description = ''The host firewall of the node drops at least one iggy replica port, so that replica cannot reach its peers (or clients cannot reach it). nixos-config opens `inputs.nexus.lib.iggyHostTcpPorts`: update the `nexus` flake input and rebuild that node. The probe log lists the blocked ports: `kubectl -n {{ $labels.namespace }} logs -l app=iggy-port-probe --tail=20`.'';
+      in [
+        {
+          alert = "IggyHostPortBlocked";
+          expr = notSucceeding "tikr";
+          for = "10m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''iggy port probe {{ $labels.cronjob }} failing: host firewall blocks the prod cluster'';
+            inherit description;
+          };
+        }
+        {
+          # Dev runs the same cluster shape on the same nodes; a blocked dev
+          # port usually means the node missed a rebuild, which prod's ports
+          # will hit next.
+          alert = "IggyHostPortBlockedDev";
+          expr = notSucceeding "tikr-dev";
+          for = "10m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''iggy port probe {{ $labels.cronjob }} failing: host firewall blocks the dev cluster'';
+            inherit description;
+          };
+        }
+      ];
+    }
   ];
 in {
   services = {
