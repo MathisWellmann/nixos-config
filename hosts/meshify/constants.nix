@@ -20,6 +20,9 @@
     # reports BF16-level scores; the tag resolves to the `-mtp` file.
     "ISTA-DASLab/Qwen3.8-27B-GSQ-RCO-GGUF:IQ3_S" # 11.3GiB + 0.9GiB mmproj, ~0.5GB spare
     "unsloth/Qwen-AgentWorld-35B-A3B-GGUF:UD-IQ4_XS" # 16.6GiB, text only, ~1.5GB spare
+    # Qwen3.6-35B-A3B backbone (same arch as AgentWorld above); Q4_K_S at
+    # 18.5GiB would not fit. Text only for now, see localModelSettings.
+    "openbmb/MiniCPM-V-4.7-35B-A3B-gguf:mix_q3gud_im" # 14.4GiB, text only, ~3.7GB spare (estimated, not measured)
     "unsloth/North-Mini-Code-1.0-GGUF:UD-IQ4_XS" # 14.2GiB, text only, ~2.3GB spare
     "unsloth/gemma-4-26B-A4B-it-qat-GGUF:UD-Q4_K_XL" # 13.3GiB + 2.1GiB mmproj, ~1.1GB spare
     "unsloth/gemma-4-12b-it-GGUF:UD-Q8_K_XL" # 12.7GiB + 0.2GiB mmproj, ~4.3GB spare
@@ -59,5 +62,10 @@
   localModelSettings = {
     "unsloth/gemma-4-26B-A4B-it-qat-GGUF:UD-Q4_K_XL".ubatch-size = 1152;
     "unsloth/gemma-4-12b-it-GGUF:UD-Q8_K_XL".ubatch-size = 1152;
+    # llama.cpp v0.6.0 (nixpkgs) has no `minicpmv4_7` projector type, so the
+    # auto-downloaded mmproj fails to load and the model with it. Support
+    # landed upstream in 69f201a (2026-10-10); drop this after a bump that
+    # includes it to get vision (~0.9GiB `mmproj-model-f16-4x.gguf`).
+    "openbmb/MiniCPM-V-4.7-35B-A3B-gguf:mix_q3gud_im".no-mmproj = true;
   };
 }
