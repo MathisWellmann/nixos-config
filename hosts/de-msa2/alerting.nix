@@ -567,6 +567,109 @@ _: let
         }
       ];
     }
+
+    # ── tikr data flow: is market data actually arriving? ─────────────────────
+    # The pod/target alerts above only check that processes are alive. They
+    # stayed silent through the 2026-10-13/14 incident: from ~21:30 to 09:45
+    # every producer and sink pod was Running and `up == 1`, yet ClickHouse
+    # received no rows. After the restart the producers dropped ~25-90% of the
+    # websocket messages, because desg0's firewall cut iggy-server-2 off from
+    # its peers. These rules alert on the data flow itself.
+    #
+    # Each stall rule has an `unless` branch because during that gap the pods
+    # exported ZERO samples (`scrape_samples_scraped == 0`). The counters were
+    # absent, not 0, so `rate(...) == 0` alone evaluates to an empty vector and
+    # never fires. A target that is scraped but has no throughput counter counts
+    # as stalled. Binance spot quotes and trades never stop for 10m, so zero
+    # throughput is always an outage. Prod (`tikr`) only, like tikr-datastores.
+    {
+      name = "tikr-dataflow";
+      interval = "30s";
+      rules = [
+        {
+          alert = "TikrClickHouseInsertsStalled";
+          expr = ''
+            sum by (namespace, job) (rate(tikr_clickhouse_inserts{namespace="tikr"}[10m])) == 0
+            or (
+              count by (namespace, job) (up{namespace="tikr", job=~"tikr-sink-clickhouse-.+"} == 1)
+                unless on (namespace, job)
+              count by (namespace, job) (tikr_clickhouse_inserts{namespace="tikr"})
+            )
+          '';
+          for = "5m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.job }}: ClickHouse inserts stalled'';
+            description = ''The sink inserted zero rows into ClickHouse (or is scraped but exports no insert counter), so market data is being lost or is backing up in iggy. Check the sink logs, iggy-server consensus (view changes, `ReplicaNotConnected`) and the producers (cf. the 2026-10-14 gap).'';
+          };
+        }
+        {
+          alert = "TikrClickHouseSinksMissing";
+          # The stall rule above needs at least one sink target. This rule fires
+          # if all sink targets disappear (Deployment deleted, k8s service
+          # discovery broken).
+          expr = ''absent(up{namespace="tikr", job=~"tikr-sink-clickhouse-.+"} == 1)'';
+          for = "10m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''No tikr ClickHouse sink is being scraped'';
+            description = ''No `tikr-sink-clickhouse-*` target in the `tikr` namespace is up. Nothing writes market data to ClickHouse. Check the sink Deployments and the `tikr-k8s-pods` scrape job.'';
+          };
+        }
+        {
+          alert = "TikrProducerIngestStalled";
+          # Upstream counterpart of the insert-stall rule: tells "the exchange
+          # websocket or the producer is stuck" apart from "the sink side is stuck".
+          expr = ''
+            sum by (namespace, job) (rate(tikr_iggy_producer_ws_msg_count{namespace="tikr"}[10m])) == 0
+            or (
+              count by (namespace, job) (up{namespace="tikr", job=~"tikr-binancespot-.+"} == 1)
+                unless on (namespace, job)
+              count by (namespace, job) (tikr_iggy_producer_ws_msg_count{namespace="tikr"})
+            )
+          '';
+          for = "5m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.job }}: websocket ingest stalled'';
+            description = ''The producer received no exchange messages (or is scraped but exports no ingest counter). It is probably stuck at startup (for example in the iggy connect retry) or its websocket is dead. Check the producer logs.'';
+          };
+        }
+        {
+          alert = "TikrProducerDroppingMessages";
+          # `ws_msg_count` counts every message the websocket parsed, dropped
+          # ones too, so this ratio is the fraction of market data lost. Drops
+          # mean the iggy send loop cannot keep up with the 10k-slot websocket
+          # channel (slow or refused sends). Above 1% for 5m, so a short burst
+          # at startup does not page.
+          expr = ''
+            sum by (namespace, job) (rate(tikr_iggy_producer_ws_messages_dropped{namespace="tikr"}[5m]))
+              / on (namespace, job)
+            sum by (namespace, job) (rate(tikr_iggy_producer_ws_msg_count{namespace="tikr"}[5m]))
+            > 0.01
+          '';
+          for = "5m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.job }} is dropping {{ $value | humanizePercentage }} of websocket messages'';
+            description = ''The producer cannot push to iggy fast enough, so `channel full, dropping message` drops market data and the data has gaps. The usual cause is a degraded iggy cluster: check for `not primary`, view changes or `ReplicaNotConnected` in the iggy-server logs, and check that ports 7090-7092 are open on every iggy host (cf. 2026-10-14, desg0 firewall).'';
+          };
+        }
+        {
+          alert = "TikrProducerIggyInsertFailures";
+          # A failed `send_messages` loses that batch. The producer logs the
+          # error and does not retry. Short bursts during an iggy rolling
+          # restart are normal, so this fires only after 5m.
+          expr = ''sum by (namespace, job) (rate(tikr_iggy_producer_insert_failure{namespace="tikr"}[5m])) > 0'';
+          for = "5m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.job }}: iggy inserts failing ({{ printf "%.1f" $value }}/s)'';
+            description = ''The producer's `send_messages` to iggy fails continuously (`Disconnected`, `Not connected`, `transiently not accepted`), and each failed batch is lost. Check iggy-server health and consensus.'';
+          };
+        }
+      ];
+    }
   ];
 in {
   services = {
