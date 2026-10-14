@@ -37,6 +37,14 @@
       url = "git+https://forgejo.k3s.lan/MathisWellmann/monty-persona.git";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    # Only for `lib.iggyHostTcpPorts` (modules/nexus_iggy_cluster.nix): plain
+    # data, so none of nexus' own inputs is fetched. The local checkout, not
+    # forgejo, where nexus is private and root (`sudo nixos-rebuild`) has no
+    # credentials. `git+file` copies only tracked files and locks the
+    # checkout's HEAD, so update with `nix flake update nexus` after pulling
+    # nexus. A host without this checkout needs the locked source in its
+    # store (or a rebuild from a host that has it, `--target-host`).
+    nexus.url = "git+file:///home/m/MathisWellmann/nexus";
   };
   # some CUDA packages require like 250GB of RAM to compile from scratch, so use binary caches.
   # Run with `--accept-flake-config`. The fleet cache comes first so plain
