@@ -542,6 +542,13 @@ Applied and smoke tested 2026-09-22. One deploy step open (patched ax images).
 | substrate | `dc1f263076d1575c0562c71d763edd0a0342fd68` (2026-09-21), tag `dc1f263076d1` | see below |
 | ax        | `ac2332829f22360ff97b0ba34d94dd0dd782f17e` (2026-09-27), tag `ac2332829f22` (was `d8ed0fe38bce` until 2026-10-14) | pinned in `manifests/prod/ax/*.yaml` |
 
+The ax version is set in `pkgs/ax/pin.json` only (since 2026-10-14).
+monty-persona reads that file through its `nixos-config` flake input
+(not a flake) for the swarm worker's `ax-task-runner` and checks its
+vendored `ax.proto` against the same source. Bump steps are in the header
+of `pkgs/ax/default.nix`; the last one is `nix flake update nixos-config`
+in monty-persona.
+
 Substrate image digests are pinned in the rendered manifests
 (`grep -h 'image:\|workerImage:' manifests/prod/substrate/*.yaml`) and computed
 by `pkgs/agent-substrate.nix` (`refs`); the push script prints pushed vs

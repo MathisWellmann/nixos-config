@@ -7,10 +7,17 @@
 # pushes from those layouts so the registry digests match. `nix build .#ax`
 # gives the `ax` CLI.
 #
-# Bump: change `rev`, refresh `hash` with
+# The ax version lives in ./pin.json, the single source of truth for the
+# fleet's ax rev: monty-persona reads that file (flake input `nixos-config`,
+# not a flake) to build its swarm worker's ax-task-runner and to check its
+# vendored ax.proto, so server, runner and client cannot drift apart.
+#
+# Bump: in pin.json change `rev` and `version`, refresh `hash` with
 #   nix run nixpkgs#nix-prefetch-github -- google ax --rev <sha>
 # then rebuild once to get the new `vendorHash` from the error message
-# (ax does not vendor its deps, unlike substrate).
+# (ax does not vendor its deps, unlike substrate). After the push, run
+# `nix flake update nixos-config` in monty-persona; its flake check fails
+# until crates/swarm-ax/proto matches the new rev.
 {
   lib,
   buildGo127Module,
@@ -41,20 +48,20 @@
   pi,
   registry ? "de-msa2:2999/mathiswellmann",
 }: let
-  rev = "ac2332829f22360ff97b0ba34d94dd0dd782f17e";
-  version = "0-unstable-2026-09-27";
+  pin = lib.importJSON ./pin.json;
+  inherit (pin) rev version;
 
   src = fetchFromGitHub {
     owner = "google";
     repo = "ax";
     inherit rev;
-    hash = "sha256-1hnp2UqMG5NqJHBXQ1AQGgNG4raK2NVdJ8aN3+UzAbo=";
+    inherit (pin) hash;
   };
 
   ax = buildGo127Module {
     pname = "ax";
     inherit version src;
-    vendorHash = "sha256-6ye6UQXkFYrBDxr3JLdkul+PEJa/RwSCxD1nHIivBAw=";
+    inherit (pin) vendorHash;
     # No ax-controller since upstream ac2332829f22: ax-server reconciles
     # against Substrate directly.
     subPackages = ["cmd/ax" "cmd/ax-server" "cmd/ax-task-runner"];
