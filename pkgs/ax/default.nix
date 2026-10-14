@@ -41,24 +41,26 @@
   pi,
   registry ? "de-msa2:2999/mathiswellmann",
 }: let
-  rev = "d8ed0fe38bceb7842d3c47817d53d16ccdfcb601";
-  version = "0-unstable-2026-09-19";
+  rev = "ac2332829f22360ff97b0ba34d94dd0dd782f17e";
+  version = "0-unstable-2026-09-27";
 
   src = fetchFromGitHub {
     owner = "google";
     repo = "ax";
     inherit rev;
-    hash = "sha256-mGSQ4QsYLdeKDtVMBODCulqQQ0Ze0NjeADPhB6edaYU=";
+    hash = "sha256-1hnp2UqMG5NqJHBXQ1AQGgNG4raK2NVdJ8aN3+UzAbo=";
   };
 
   ax = buildGo127Module {
     pname = "ax";
     inherit version src;
-    vendorHash = "sha256-iC/X6Bg1M7Pn3dT1zWs2YxuPfgl9ZKNEYQsBisIQguY=";
-    subPackages = ["cmd/ax" "cmd/ax-server" "cmd/ax-controller" "cmd/ax-task-runner"];
+    vendorHash = "sha256-6ye6UQXkFYrBDxr3JLdkul+PEJa/RwSCxD1nHIivBAw=";
+    # No ax-controller since upstream ac2332829f22: ax-server reconciles
+    # against Substrate directly.
+    subPackages = ["cmd/ax" "cmd/ax-server" "cmd/ax-task-runner"];
     # Upstream hardcodes its GCR task-runner image as the default for tasks
     # without `spec.image`; this makes it overridable with
-    # AX_DEFAULT_TASK_IMAGE on the controller (env/ax.nix sets it to the
+    # AX_DEFAULT_TASK_IMAGE on ax-server (env/ax.nix sets it to the
     # digest-pinned runner built here). Candidate for upstreaming.
     patches = [./default-task-image-env.patch];
     env.CGO_ENABLED = 0;
@@ -74,8 +76,8 @@
 
   tag = builtins.substring 0 12 rev;
 
-  # Local model for agents inside Tasks: Qwen3.8 on desg0 (SGLang). A Task
-  # reaches it only through a Gateway that allows the desg0 IP (lan-llm).
+  # Local model for agents inside Tasks: Qwen3.8 on desg0 (SGLang). Sandbox
+  # egress is allow-all (no Substrate egress gateway deployed).
   desg0 = import ../../hosts/desg0/constants.nix;
   inherit (import ../../modules/static_ips.nix) desg0_ip;
   llmBaseUrl = "http://${desg0_ip}:${toString desg0.qwen3_port}/v1";
@@ -93,7 +95,7 @@
     defaultThinkingLevel = "medium";
   });
 
-  # Fleet CA in the bundle: the controller talks to ate-api-server with the
+  # Fleet CA in the bundle: ax-server talks to ate-api-server with the
   # Substrate CA it mounts, but the task runner clones from
   # https://forgejo.k3s.lan and any sandboxed tool may call the fleet's
   # *.k3s.lan services.
@@ -127,8 +129,9 @@
   # (Phase 5), preconfigured for the SGLang server on desg0:
   #   pi -p --no-session "<prompt>"
   # Its config is copied (not linked) into /root/.pi/agent because pi
-  # rewrites settings.json. PI_OFFLINE stops catalog refreshes from pi.dev,
-  # which the Gateway egress rules would block anyway (slow timeouts).
+  # rewrites settings.json. PI_OFFLINE stops catalog refreshes from pi.dev:
+  # the Task only needs the local model, and an offline fleet would hit slow
+  # timeouts.
   # Paths the runner and ax hardcode: `/usr/local/bin/ax-task-runner`
   # (DefaultGuestCommand), `/workspace` (durable volume mount), `git` and
   # `ssh` on PATH, `/bin/sh` for Task commands. Runs as root inside gVisor.
@@ -181,7 +184,6 @@
 
   images = {
     ax-server = mkStaticImage "ax-server";
-    ax-controller = mkStaticImage "ax-controller";
     ax-task-runner = taskRunnerImage;
   };
   imageNames = lib.attrNames images;

@@ -3,10 +3,14 @@
 # workspace with its tools and writes a file, so the durable /workspace
 # volume shows whether the agent actually ran.
 #
-# `image` is omitted on purpose (AX_DEFAULT_TASK_IMAGE). The `lan-llm`
-# Gateway allows egress to desg0.
+# `image` is omitted on purpose (AX_DEFAULT_TASK_IMAGE). Sandbox egress is
+# allow-all, so desg0 is reachable.
 #
-#   ax_apply manifests/ax/task-smoke-pi.yaml
+# Tasks are created suspended and are immutable: `ax resume` starts it; to
+# change it, `ax delete task smoke-pi` and apply again.
+#
+#   nix run .#ax_apply -- manifests/ax/task-smoke-pi.yaml
+#   ax resume task smoke-pi
 #   ax watch task smoke-pi
 #   ax ssh smoke-pi -- cat /workspace/pi.log /workspace/summary.md
 apiVersion: ax.io/v1alpha1
@@ -26,6 +30,4 @@ spec:
         2>&1 | tee /workspace/pi.log
   workspaces:
     - name: monty-persona
-  gateway:
-    name: lan-llm
   debug: true

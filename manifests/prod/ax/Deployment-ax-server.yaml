@@ -20,7 +20,20 @@ spec:
         - args:
             - --addr=:8080
             - --redis-addr=ax-redis.ax-system.svc.cluster.local:6379
-          image: de-msa2:2999/mathiswellmann/ax-server:d8ed0fe38bce@sha256:ee6239380e42d918b61dc369faf06d76d6a97b85e69bcb15adc179fc6f723b73
+            - --substrate-endpoint=api.ate-system.svc.cluster.local:443
+            - --substrate-authority=api.ate-system.svc
+            - --substrate-token-file=/var/run/secrets/ateapi/token
+            - --substrate-ca-file=/run/servicedns-ca/trust-bundle.pem
+            - --template=default-template
+            - --template-atespace=ax-system
+          env:
+            - name: ATENET_ROUTER_ADDR
+              value: atenet-router.ate-system.svc.cluster.local:80
+            - name: AX_SNAPSHOTS_BUCKET
+              value: gs://ate-snapshots/ax/
+            - name: AX_DEFAULT_TASK_IMAGE
+              value: forgejo.k3s.lan/mathiswellmann/ax-task-runner@sha256:f7c16c628d2431cfdbbfb104d9ec435ea35ed2d6ad1cf9e1a6ca7e25e10c3fe4
+          image: de-msa2:2999/mathiswellmann/ax-server:ac2332829f22@sha256:e5f2c529a3dabd69d414dfb0ee3a6db0ad56953948e5965d2e4bc4e8e16f71ba
           livenessProbe:
             httpGet:
               path: /healthz
@@ -42,5 +55,35 @@ spec:
               cpu: "1"
               memory: 512Mi
             requests:
-              cpu: 50m
-              memory: 64Mi
+              cpu: 100m
+              memory: 128Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            readOnlyRootFilesystem: true
+          volumeMounts:
+            - mountPath: /var/run/secrets/ateapi
+              name: ate-token
+              readOnly: true
+            - mountPath: /run/servicedns-ca
+              name: servicedns-ca
+              readOnly: true
+      serviceAccountName: ax-server
+      volumes:
+        - name: ate-token
+          projected:
+            defaultMode: 420
+            sources:
+              - serviceAccountToken:
+                  audience: api.ate-system.svc
+                  expirationSeconds: 7200
+                  path: token
+        - name: servicedns-ca
+          projected:
+            defaultMode: 420
+            sources:
+              - clusterTrustBundle:
+                  labelSelector:
+                    matchLabels:
+                      podcert.ate.dev/canarying: live
+                  path: trust-bundle.pem
+                  signerName: servicedns.podcert.ate.dev/identity

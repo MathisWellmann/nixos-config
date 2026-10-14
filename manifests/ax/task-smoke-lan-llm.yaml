@@ -2,11 +2,15 @@
 # for its model list and writes it to the durable /workspace volume, so a
 # suspend/resume round trip can be checked by reading the file back.
 #
-# `image` is omitted on purpose: the controller then uses
+# `image` is omitted on purpose: ax-server then uses
 # AX_DEFAULT_TASK_IMAGE (the Nix-built task runner, see pkgs/ax/).
 # `debug: true` enables the guest services that `ax ssh` needs.
 #
-#   scripts/ax_apply.sh manifests/ax/task-smoke-lan-llm.yaml
+# Tasks are created suspended and are immutable: `ax resume` starts it; to
+# change it, `ax delete task smoke-lan-llm` and apply again.
+#
+#   nix run .#ax_apply -- manifests/ax/task-smoke-lan-llm.yaml
+#   ax resume task smoke-lan-llm
 #   ax watch task smoke-lan-llm
 #   ax ssh smoke-lan-llm -- cat /workspace/models.json
 apiVersion: ax.io/v1alpha1
@@ -27,6 +31,4 @@ spec:
       value: "http://192.168.0.13:8000/v1"
   workspaces:
     - name: monty-persona
-  gateway:
-    name: lan-llm
   debug: true

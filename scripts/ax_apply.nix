@@ -9,8 +9,11 @@ pkgs.writeShellApplication {
     # Apply ax API objects (they live in ax's Redis, not in Kubernetes).
     #
     #   ax_apply                 re-apply shared objects from manifests/ax/:
-    #                            Gateways, Models, Workspaces (in that order)
+    #                            Models, Workspaces (in that order)
     #   ax_apply FILE...         apply exactly these files (e.g. a Task)
+    #
+    # Tasks are immutable and created suspended: applying an existing Task
+    # fails (`ax delete task X` first), and `ax resume task X` starts it.
     #
     # ax reaches ax-server through `$AX_SERVER` or a `kubectl port-forward`
     # with the current kubeconfig (de-msa2 and meshify ship one for m, see
@@ -24,7 +27,7 @@ pkgs.writeShellApplication {
     if [[ ''${#files[@]} -eq 0 ]]; then
       shopt -s nullglob
       dir=${../manifests/ax}
-      files=("$dir"/gateway-*.yaml "$dir"/model-*.yaml "$dir"/workspace-*.yaml)
+      files=("$dir"/model-*.yaml "$dir"/workspace-*.yaml)
     fi
 
     for f in "''${files[@]}"; do

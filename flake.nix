@@ -170,8 +170,8 @@
       agent-substrate = (pkgs.callPackage ./pkgs/agent-substrate.nix {}).substrate;
       agent-substrate-push-images = (pkgs.callPackage ./pkgs/agent-substrate.nix {}).push;
 
-      # google/ax on top of it: the `ax` CLI (also ax-server/-controller/
-      # -task-runner binaries) and the image push, e.g. `nix run .#ax-push-images`
+      # google/ax on top of it: the `ax` CLI (also ax-server/-task-runner
+      # binaries) and the image push, e.g. `nix run .#ax-push-images`
       inherit (axBundle) ax;
       ax-push-images = axBundle.push;
 
@@ -255,7 +255,7 @@
               inherit (self.packages.${system}) ax;
             };
           })
-          // {meta.description = "Apply ax Gateways/Workspaces/Tasks from manifests/ax";};
+          // {meta.description = "Apply ax Models/Workspaces/Tasks from manifests/ax";};
       };
     };
   };

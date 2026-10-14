@@ -3,26 +3,27 @@
 # (Phase 3). Namespace `ax-system`, images from pkgs/ax (digest-pinned).
 #
 # Upstream `deploy/*.yaml` inlined with the fleet specifics:
-#   - ax-controller drives Substrate over `api.ate-system.svc:443` with its
-#     own ServiceAccount token (audience `api.ate-system.svc`, accepted by
-#     the `ate-api-authentication` config) and the servicedns
-#     ClusterTrustBundle as CA; actor snapshots go to the rustfs bucket via
-#     AX_SNAPSHOTS_BUCKET, tasks without `spec.image` get the runner built
-#     here via AX_DEFAULT_TASK_IMAGE (patched in, see pkgs/ax).
-#   - ax-server: gRPC :8080 (h2c) + `/healthz`. The `ax` CLI reaches it
-#     through a kubectl port-forward tunnel it manages itself (`ax ctx`), or
-#     `$AX_SERVER`. The `ax.k3s.lan` Ingress serves the homepage entry and
-#     health probe, and gRPC: the CLI only dials plaintext h2c, so
-#     `AX_SERVER=ax.k3s.lan:80 ax ...` works without a kubeconfig. traefik
-#     reads `service.serversscheme: h2c` from the Service only (on the
-#     Ingress it is ignored, traefik sends HTTP/1.1 and ax-server answers
-#     gRPC with 404).
+#   - ax-server is the whole control plane (upstream dropped ax-controller in
+#     ac2332829f22): gRPC :8080 (h2c) + `/healthz`, and it drives Substrate
+#     synchronously over `api.ate-system.svc:443` with its own ServiceAccount
+#     token (audience `api.ate-system.svc`, accepted by the
+#     `ate-api-authentication` config) and the servicedns ClusterTrustBundle
+#     as CA. Actor snapshots go to the rustfs bucket via AX_SNAPSHOTS_BUCKET,
+#     tasks without `spec.image` get the runner built here via
+#     AX_DEFAULT_TASK_IMAGE (patched in, see pkgs/ax).
+#   - The `ax` CLI reaches ax-server through a kubectl port-forward tunnel it
+#     manages itself (`ax ctx`), or `$AX_SERVER`. The `ax.k3s.lan` Ingress
+#     serves the homepage entry and health probe, and gRPC: the CLI only
+#     dials plaintext h2c, so `AX_SERVER=ax.k3s.lan:80 ax ...` works without
+#     a kubeconfig. traefik reads `service.serversscheme: h2c` from the
+#     Service only (on the Ingress it is ignored, traefik sends HTTP/1.1 and
+#     ax-server answers gRPC with 404).
 #   - Redis: upstream's `redis:7-alpine`, pinned. Upstream runs it on an
 #     emptyDir; here it has a local-path PVC with AOF (`appendonly yes`),
-#     because Tasks/Workspaces/Gateways live only in Redis. After a real
-#     loss, re-apply them from `manifests/ax/` (Phase 4); actors themselves
-#     persist in Substrate/Postgres.
-# ax objects (Task, Workspace, Gateway) are not Kubernetes resources; they are
+#     because Tasks/Workspaces/Models and the per-resource locks live only in
+#     Redis. After a real loss, re-apply them from `manifests/ax/` (Phase 4);
+#     actors themselves persist in Substrate/Postgres.
+# ax objects (Task, Workspace, Model) are not Kubernetes resources; they are
 # applied with `ax apply -f` (Phase 4), not through ArgoCD.
 {axBundle, ...}: let
   inherit (axBundle) refs;
@@ -140,19 +141,40 @@ in {
               labels:
                 app.kubernetes.io/name: ax-server
             spec:
+              serviceAccountName: ax-server
               containers:
                 - name: ax-server
                   image: ${refs.ax-server}
                   args:
                     - --addr=:8080
                     - --redis-addr=ax-redis.${ns}.svc.cluster.local:6379
+                    - --substrate-endpoint=api.ate-system.svc.cluster.local:443
+                    - --substrate-authority=api.ate-system.svc
+                    - --substrate-token-file=/var/run/secrets/ateapi/token
+                    - --substrate-ca-file=/run/servicedns-ca/trust-bundle.pem
+                    - --template=default-template
+                    - --template-atespace=${ns}
+                  env:
+                    - name: ATENET_ROUTER_ADDR
+                      value: atenet-router.ate-system.svc.cluster.local:80
+                    # Snapshot prefix in the rustfs bucket (scheme is ignored by
+                    # Substrate's S3 backend; the host is the bucket).
+                    - name: AX_SNAPSHOTS_BUCKET
+                      value: gs://ate-snapshots/ax/
+                    # Runner image for Tasks without `spec.image` (pkgs/ax
+                    # patch). Pulled by atelet through the forgejo.k3s.lan
+                    # ingress, hence that host (see pkgs/agent-substrate.nix).
+                    - name: AX_DEFAULT_TASK_IMAGE
+                      value: ${refs.ax-task-runner}
                   ports:
                     - containerPort: 8080
                       name: http
+                  # Upstream's request: the server now also does the
+                  # Substrate calls the controller used to make.
                   resources:
                     requests:
-                      cpu: 50m
-                      memory: 64Mi
+                      cpu: 100m
+                      memory: 128Mi
                     limits:
                       cpu: "1"
                       memory: 512Mi
@@ -168,6 +190,35 @@ in {
                       port: 8080
                     initialDelaySeconds: 5
                     periodSeconds: 10
+                  securityContext:
+                    readOnlyRootFilesystem: true
+                    allowPrivilegeEscalation: false
+                  volumeMounts:
+                    - mountPath: /var/run/secrets/ateapi
+                      name: ate-token
+                      readOnly: true
+                    - mountPath: /run/servicedns-ca
+                      name: servicedns-ca
+                      readOnly: true
+              volumes:
+                - name: ate-token
+                  projected:
+                    defaultMode: 420
+                    sources:
+                      - serviceAccountToken:
+                          audience: api.ate-system.svc
+                          expirationSeconds: 7200
+                          path: token
+                - name: servicedns-ca
+                  projected:
+                    defaultMode: 420
+                    sources:
+                      - clusterTrustBundle:
+                          labelSelector:
+                            matchLabels:
+                              podcert.ate.dev/canarying: live
+                          path: trust-bundle.pem
+                          signerName: servicedns.podcert.ate.dev/identity
       ''
       ''
         apiVersion: v1
@@ -221,21 +272,20 @@ in {
                 - ax.k3s.lan
               secretName: ax-server-tls
       ''
-      # -------------------------------------------------------- ax-controller
+      # Upstream: ax-server reads a `gemini-api-secret` per atespace namespace
+      # for Models (not used here, Phase 0 decision) -- keep the RBAC as is.
       ''
         apiVersion: v1
         kind: ServiceAccount
         metadata:
-          name: ax-controller
+          name: ax-server
           namespace: ${ns}
       ''
-      # Upstream: the controller reads a `gemini-api-secret` per atespace
-      # namespace (not used here, Phase 0 decision) -- keep the RBAC as is.
       ''
         apiVersion: rbac.authorization.k8s.io/v1
         kind: ClusterRole
         metadata:
-          name: ax-controller
+          name: ax-server
         rules:
           - apiGroups: [""]
             resources: ["secrets"]
@@ -245,95 +295,15 @@ in {
         apiVersion: rbac.authorization.k8s.io/v1
         kind: ClusterRoleBinding
         metadata:
-          name: ax-controller
+          name: ax-server
         subjects:
           - kind: ServiceAccount
-            name: ax-controller
+            name: ax-server
             namespace: ${ns}
         roleRef:
           apiGroup: rbac.authorization.k8s.io
           kind: ClusterRole
-          name: ax-controller
-      ''
-      ''
-        apiVersion: apps/v1
-        kind: Deployment
-        metadata:
-          name: ax-controller
-          namespace: ${ns}
-          labels:
-            app.kubernetes.io/name: ax-controller
-            app.kubernetes.io/part-of: ax
-        spec:
-          replicas: 1
-          selector:
-            matchLabels:
-              app.kubernetes.io/name: ax-controller
-          template:
-            metadata:
-              labels:
-                app.kubernetes.io/name: ax-controller
-            spec:
-              serviceAccountName: ax-controller
-              containers:
-                - name: controller
-                  image: ${refs.ax-controller}
-                  args:
-                    - --redis-addr=ax-redis.${ns}.svc.cluster.local:6379
-                    - --substrate-endpoint=api.ate-system.svc.cluster.local:443
-                    - --substrate-authority=api.ate-system.svc
-                    - --substrate-token-file=/var/run/secrets/ateapi/token
-                    - --substrate-ca-file=/run/servicedns-ca/trust-bundle.pem
-                    - --template=default-template
-                    - --template-atespace=${ns}
-                  env:
-                    - name: ATENET_ROUTER_ADDR
-                      value: atenet-router.ate-system.svc.cluster.local:80
-                    # Snapshot prefix in the rustfs bucket (scheme is ignored by
-                    # Substrate's S3 backend; the host is the bucket).
-                    - name: AX_SNAPSHOTS_BUCKET
-                      value: gs://ate-snapshots/ax/
-                    # Runner image for Tasks without `spec.image` (pkgs/ax
-                    # patch). Pulled by atelet through the forgejo.k3s.lan
-                    # ingress, hence that host (see pkgs/agent-substrate.nix).
-                    - name: AX_DEFAULT_TASK_IMAGE
-                      value: ${refs.ax-task-runner}
-                  resources:
-                    requests:
-                      cpu: 50m
-                      memory: 128Mi
-                    limits:
-                      cpu: 500m
-                      memory: 512Mi
-                  securityContext:
-                    readOnlyRootFilesystem: true
-                    allowPrivilegeEscalation: false
-                  volumeMounts:
-                    - mountPath: /var/run/secrets/ateapi
-                      name: ate-token
-                      readOnly: true
-                    - mountPath: /run/servicedns-ca
-                      name: servicedns-ca
-                      readOnly: true
-              volumes:
-                - name: ate-token
-                  projected:
-                    defaultMode: 420
-                    sources:
-                      - serviceAccountToken:
-                          audience: api.ate-system.svc
-                          expirationSeconds: 7200
-                          path: token
-                - name: servicedns-ca
-                  projected:
-                    defaultMode: 420
-                    sources:
-                      - clusterTrustBundle:
-                          labelSelector:
-                            matchLabels:
-                              podcert.ate.dev/canarying: live
-                          path: trust-bundle.pem
-                          signerName: servicedns.podcert.ate.dev/identity
+          name: ax-server
       ''
     ];
   };
