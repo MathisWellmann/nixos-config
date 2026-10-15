@@ -181,7 +181,55 @@ in {
       cd repo
       before="$(git rev-parse HEAD)"
 
-      nix flake update --accept-flake-config
+      # Update every input except the ones fetched from a local path. A plain
+      # `nix flake update` also re-resolves `nexus` (flake.nix: a `git+file`
+      # input under /home/m), which this unit cannot read: /home/m is 0700 and
+      # the service user is not `m`, so the run died with
+      # `getting status of "/home/m/MathisWellmann/nexus": Permission denied`.
+      # Widening /home/m is not the fix -- a `git+file` input locks the
+      # checkout's HEAD, so updating it here would cache whatever uncommitted
+      # state that working copy is in, while this unit exists to build a clean
+      # ${branch}. The locked revision stays as committed and is already in the
+      # store, which is all modules/nexus_iggy_cluster.nix needs.
+      #
+      # The list is derived from flake.lock rather than hardcoded so an input
+      # added later is updated without touching this unit. `nix flake update`
+      # with no arguments would be the only other way to get that property.
+      # A local input is either type "path", or a git repo whose URL is a local
+      # file. nix normalises `git+file://x` in flake.nix to {type:"git",
+      # url:"file://x"} in the lock, so match the url, not the flakeref prefix.
+      # Matching is done with bash's `case`, not `grep`: a systemd unit gets a
+      # minimal PATH and `grep` is in gnugrep, which this unit's `path` does
+      # not carry (`coreutils` does not provide it). That is the same class of
+      # bug as the `compgen` one documented under push_results below.
+      mapfile -t local_inputs < <(jq -r '
+        .nodes | to_entries[]
+        | select(
+            .value.original.type == "path"
+            or ((.value.original.url // "") | test("^(git\\+)?file:"))
+          )
+        | .key
+      ' flake.lock)
+      echo "==> local-path inputs, left at their locked revision: ''${local_inputs[*]:-none}"
+
+      updatable=()
+      while read -r input; do
+        [ -n "$input" ] || continue
+        is_local=""
+        for local_input in ''${local_inputs[@]+"''${local_inputs[@]}"}; do
+          case "$input" in
+            "$local_input") is_local=1 ;;
+          esac
+        done
+        [ -n "$is_local" ] && continue
+        updatable+=("$input")
+      done < <(jq -r '.nodes.root.inputs | keys[]' flake.lock)
+
+      if [ ''${#updatable[@]} -eq 0 ]; then
+        echo "==> no updatable inputs in flake.lock" >&2
+        exit 1
+      fi
+      nix flake update --accept-flake-config "''${updatable[@]}"
       if git diff --quiet flake.lock; then
         echo "flake.lock unchanged since $before; still building in case the cache lags behind"
       fi
