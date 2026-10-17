@@ -620,10 +620,12 @@ _: let
           alert = "TikrProducerIngestStalled";
           # Upstream counterpart of the insert-stall rule: tells "the exchange
           # websocket or the producer is stuck" apart from "the sink side is stuck".
+          # The book snapshot producer polls REST and has no websocket, so it
+          # never exports `ws_msg_count`; `TikrBookSnapshotsStalled` covers it.
           expr = ''
             sum by (namespace, job) (rate(tikr_iggy_producer_ws_msg_count{namespace="tikr"}[10m])) == 0
             or (
-              count by (namespace, job) (up{namespace="tikr", job=~"tikr-binancespot-.+"} == 1)
+              count by (namespace, job) (up{namespace="tikr", job=~"tikr-binancespot-.+", job!~".+-booksnapshot"} == 1)
                 unless on (namespace, job)
               count by (namespace, job) (tikr_iggy_producer_ws_msg_count{namespace="tikr"})
             )
@@ -666,6 +668,57 @@ _: let
           annotations = {
             summary = ''{{ $labels.job }}: iggy inserts failing ({{ printf "%.1f" $value }}/s)'';
             description = ''The producer's `send_messages` to iggy fails continuously (`Disconnected`, `Not connected`, `transiently not accepted`), and each failed batch is lost. Check iggy-server health and consensus.'';
+          };
+        }
+        {
+          alert = "TikrBookSnapshotsStalled";
+          # The book snapshot producer sends one REST depth snapshot per symbol
+          # and minute. Without snapshots the book deltas cannot be replayed
+          # into a book, so the order book history has a hole. Same absent-
+          # counter pattern as the stall rules above: the counter only exists
+          # after the first snapshot was sent.
+          expr = ''
+            sum by (namespace, job) (rate(tikr_iggy_producer_book_snapshots_ok{namespace="tikr"}[5m])) == 0
+            or (
+              count by (namespace, job) (up{namespace="tikr", job=~"tikr-.+-booksnapshot"} == 1)
+                unless on (namespace, job)
+              count by (namespace, job) (tikr_iggy_producer_book_snapshots_ok{namespace="tikr"})
+            )
+          '';
+          for = "5m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.job }}: book snapshots stalled'';
+            description = ''The producer sent no order book snapshot to iggy for 5m, so the book deltas of this period cannot be replayed. Check its logs for `Book snapshot of ... failed` (HTTP or parse errors), a rate limit pause (`TikrBinanceRateLimited`) or iggy send failures.'';
+          };
+        }
+        {
+          alert = "TikrBinanceRateLimited";
+          # A 429 means this IP exceeded Binance's 6000 request weight per
+          # minute; a 418 means Binance banned the IP for ignoring 429s. The
+          # weight is per IP, and dev and prod leave the cluster through the
+          # same IP, so a dev producer can get prod banned: both namespaces.
+          # Fires on the first response, no `for`.
+          expr = ''sum by (namespace, job) (increase(tikr_iggy_producer_book_snapshots_rate_limited{namespace=~"tikr|tikr-dev"}[10m])) > 0'';
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.job }} ({{ $labels.namespace }}): Binance rate limited the cluster IP'';
+            description = ''Binance answered a snapshot request with 429 or 418. The producer pauses for `Retry-After`, but a repeated 429 escalates to an IP ban that also blocks the REST calls of every other producer on this IP. Lower `tikr.bookSnapshot.weightPerMinute` or `tikr.bookSymbols`, and check the "Binance used request weight" panel for other REST users.'';
+          };
+        }
+        {
+          alert = "TikrBinanceWeightHigh";
+          # `X-MBX-USED-WEIGHT-1M` as reported to the snapshot producers: the
+          # weight the cluster IP used in the current minute. The snapshot
+          # budget is 3000; above 4800 of 6000 something else uses this IP
+          # heavily or the budgets of the environments add up too close to the
+          # limit. A warning before `TikrBinanceRateLimited`.
+          expr = ''max(tikr_iggy_producer_binance_used_weight_1m{namespace=~"tikr|tikr-dev"}) > 4800'';
+          for = "2m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''Binance request weight of the cluster IP at {{ $value }} of 6000'';
+            description = ''The cluster IP used more than 80 % of Binance's 6000 request weight per minute for 2m. The next increase gets 429 responses and then an IP ban. Check the "Binance used request weight" panel and lower the snapshot budget or symbol count.'';
           };
         }
       ];
