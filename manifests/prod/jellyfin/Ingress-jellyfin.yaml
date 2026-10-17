@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: Movies, shows & music streaming
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/external: "true"
+    gethomepage.dev/group: Media
+    gethomepage.dev/icon: jellyfin.svg
+    gethomepage.dev/name: jellyfin
+    gethomepage.dev/siteMonitor: http://jellyfin.jellyfin.svc.cluster.local
+  name: jellyfin
+  namespace: jellyfin
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: jellyfin.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: jellyfin
+                port:
+                  number: 80
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - jellyfin.k3s.lan
+      secretName: jellyfin-tls

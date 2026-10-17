@@ -104,6 +104,16 @@ _: let
       description = "Photo & video management";
     }
     {
+      # Upstream default port; the NixOS jellyfin module has no port option.
+      # No base URL needed: it is served at the host root, not a path prefix.
+      name = "jellyfin";
+      host = "jellyfin.k3s.lan";
+      port = 8096;
+      group = "Media";
+      icon = "jellyfin.svg";
+      description = "Movies, shows & music streaming";
+    }
+    {
       name = "dsh";
       host = "dsh.k3s.lan";
       port = 3080; # `dsh web` via the dsh-web-proxy socat forwarder, hosts/de-msa2/dsh.nix

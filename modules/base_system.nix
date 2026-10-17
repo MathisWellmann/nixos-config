@@ -56,6 +56,7 @@ in {
     "dsh.k3s.lan"
     "ax.k3s.lan"
     "immich.k3s.lan"
+    "jellyfin.k3s.lan"
   ];
 
   nix.settings = {
