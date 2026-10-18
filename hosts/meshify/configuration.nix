@@ -101,6 +101,12 @@ in {
     SUBSYSTEM=="drm", KERNEL=="card[0-9]*", DRIVERS=="nvidia", SYMLINK+="dri/nvidia-card"
   '';
   environment.sessionVariables.AQ_DRM_DEVICES = "/dev/dri/nvidia-card";
+  # DRM connector names (DP-N) use one global counter per connector type across all
+  # GPUs, so the amdgpu/nvidia probe race decides whether the 3090 gets DP-1..3 or
+  # DP-4..6. Loading amdgpu in the initrd makes it always register first, pinning the
+  # 3090 outputs to DP-4..6 as used in home/meshify.nix. EDID `desc:` matching can't
+  # replace this: the two RTK panels report identical descriptions without a serial.
+  hardware.amdgpu.initrd.enable = true;
 
   age = {
     # agenix skips identities that are not present.
