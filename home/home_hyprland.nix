@@ -27,7 +27,7 @@
     # geeqie # Better image viewer
     zathura # PDF reader
     qbittorrent
-    nemo
+    cosmic-files # PopOs File Manager
     amfora
     bitmagnet
     hyprshot
