@@ -335,6 +335,17 @@
   # and bakes the nix-built `monty-runtime` path into the bundle patch (the
   # npm prebuilt worker carries a /lib64 interpreter that NixOS lacks).
   toolMontyPlugin = pkgs.callPackage ../pkgs/dsh-tool-monty.nix {};
+
+  # ThoughtDAG (github.com/chenxiachan/thoughtdag): mounts its branching-canvas
+  # SPA under /thoughtdag on the existing dsh web server and adds the `why_*`
+  # history-recall tools plus a /why command. The npm tarball ships the built
+  # SPA (`dist-app/`) and a self-contained host bundle that imports only
+  # `node:` builtins; its peer deps are dsh's own `@deepseek-ai/*` packages,
+  # which the profile wiring below symlinks in, so no vendoring is needed.
+  thoughtdagPlugin = pkgs.fetchzip {
+    url = "https://registry.npmjs.org/dsh-thoughtdag/-/dsh-thoughtdag-0.5.21.tgz";
+    hash = "sha256-38DFXNBD+i4dehRSZxyDu0E+JVfa9iu/Hla5oe0sdEE=";
+  };
 in {
   options = {
     programs.deepseek-harness = with lib; {
@@ -508,6 +519,7 @@ in {
           "dsh-us-stocks" = usStocksPlugin;
           "dsh-sidebar-archive" = sidebarArchivePlugin;
           "dsh-tool-monty" = toolMontyPlugin;
+          "dsh-thoughtdag" = thoughtdagPlugin;
         };
         description = ''
           Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).

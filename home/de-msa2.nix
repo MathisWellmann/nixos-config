@@ -2,6 +2,7 @@
 {
   lib,
   pkgs,
+  options,
   osConfig,
   ...
 }: {
@@ -12,6 +13,12 @@
 
   # DeepSeek Harness (`dsh`), pointed at the vLLM server on `desg0`.
   programs.deepseek-harness.enable = true;
+  # dsh-thoughtdag's /thoughtdag/api (session logs, followup/inject, tool
+  # approvals) skips dsh web's token auth and only checks the client-chosen
+  # Host header. Here dsh web is reachable from the tailnet
+  # (hosts/de-msa2/dsh.nix socat forwarder), so any peer could drive agents.
+  programs.deepseek-harness.plugins =
+    builtins.removeAttrs options.programs.deepseek-harness.plugins.default ["dsh-thoughtdag"];
 
   # Fleet k3s API for kubectl, `ax` and `kubectl-ate` as m (the default
   # kubeconfig; there is no other cluster here). Loopback is in the API cert.
