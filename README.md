@@ -458,7 +458,7 @@ findings.
 nix build .#nixosConfigurations.meshify.config.system.build.toplevel -o system
 
 # 2. Generate a CycloneDX SBOM from the closure
-nix run github:tiiuae/sbomnix#sbomnix -- ./system --cdx=sbom.cdx.json
+syft dir:./system -o cyclonedx-json > sbom.cdx.json
 
 # 3. Build the VEX feed for your specific configuration
 nix build .#nixosConfigurations.meshify.config.system.build.vexFeed -o vex-feed.json

@@ -93,8 +93,8 @@ in {
     cacert
     unipicker
     steel # Scheme dialect
-    sbomnix
-    grype # Run system wide vulnerability check: `sbomnix .#nixosConfigurations.meshify.config.system.build.toplevel && grype sbom:sbom.cdx.json`
+    syft # SBOM generator (has a Nix cataloger); `syft dir:/nix/store/<...>-nixos-system-host-... -o cyclonedx-json > sbom.cdx.json`
+    grype # Run system wide vulnerability check: `syft dir:/nix/store/<...>-nixos-system-host-... -o cyclonedx-json > sbom.cdx.json && grype sbom:sbom.cdx.json`
 
     # Nix
     # Package version diff tool. E.g Compare system revision 405 with 420:
