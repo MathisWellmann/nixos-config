@@ -320,59 +320,77 @@
   # ponytail: scrapes the whole node's cAdvisor rather than per-pod sidecars;
   # if you ever want only tikr pods, drop a metric_relabel keep on
   # namespace=tikr instead of deploying per-pod exporters.
-  cadvisor_scrape_configs = [
+  #
+  # Two jobs per kubelet, because it serves two endpoints: cAdvisor at
+  # `/metrics/cadvisor` (the `container_*` series above) and its own metrics
+  # at `/metrics` (`kubelet_volume_stats_*`, which the PVC alerts in
+  # alerting.nix read). Until 2026-10-22 the single `kubernetes-cadvisor`
+  # job had no `metrics_path`, so it scraped only `/metrics`: no
+  # `container_*` series existed and the CPU throttling alerts and the
+  # ClickHouse dashboard's CPU panel matched nothing.
+  kubelet_scrape_config = {
+    job_name,
+    metrics_path,
+  }: {
+    inherit job_name metrics_path scrape_interval scrape_timeout;
+    scheme = "https";
+    bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+    # k3s kubelet serves a per-node cert, not the API server CA, so verify
+    # would fail against `k8s_ca`. The kubelet is on the LAN behind the same
+    # API authn, so skip verify (same trade-off the k3s docs make for
+    # `kubectl --insecure-skip-tls-verify` against kubelet stats).
+    tls_config.insecure_skip_verify = true;
+    kubernetes_sd_configs = [
+      {
+        role = "node";
+        api_server = "https://127.0.0.1:6443";
+        bearer_token_file = "${k8s_credentials_dir}/k8s_token";
+        tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
+      }
+    ];
+    relabel_configs = [
+      # k8s SD role=node returns `<node_ip>:10250` (default kubelet port),
+      # so this is a no-op -- but it pins the path explicitly in case a node
+      # advertises a non-default port, and documents that we scrape the
+      # kubelet, not the API.
+      {
+        source_labels = ["__address__"];
+        regex = "([^:]+):.*";
+        replacement = "$1:10250";
+        target_label = "__address__";
+      }
+      # Surface the node's own labels (e.g. kubernetes.io/hostname) as
+      # Prometheus labels so per-node filtering works in Grafana.
+      {
+        action = "labelmap";
+        regex = "__meta_kubernetes_node_label_(.+)";
+      }
+      {
+        source_labels = ["__meta_kubernetes_node_name"];
+        target_label = "node";
+      }
+    ];
+    metric_relabel_configs = [
+      # cAdvisor emits a series for the pod-level aggregate (container="POD")
+      # and the node-level aggregate (container=""); the per-container
+      # series (container!="POD" && container!="") is what you chart. Drop
+      # the POD aggregate to halve the series count -- the per-container
+      # numbers already cover everything you'd compute from it.
+      {
+        source_labels = ["container"];
+        regex = "POD";
+        action = "drop";
+      }
+    ];
+  };
+  cadvisor_scrape_configs = map kubelet_scrape_config [
     {
       job_name = "kubernetes-cadvisor";
-      inherit scrape_interval scrape_timeout;
-      scheme = "https";
-      bearer_token_file = "${k8s_credentials_dir}/k8s_token";
-      # k3s kubelet serves a per-node cert, not the API server CA, so verify
-      # would fail against `k8s_ca`. The kubelet is on the LAN behind the same
-      # API authn, so skip verify (same trade-off the k3s docs make for
-      # `kubectl --insecure-skip-tls-verify` against kubelet stats).
-      tls_config.insecure_skip_verify = true;
-      kubernetes_sd_configs = [
-        {
-          role = "node";
-          api_server = "https://127.0.0.1:6443";
-          bearer_token_file = "${k8s_credentials_dir}/k8s_token";
-          tls_config.ca_file = "${k8s_credentials_dir}/k8s_ca";
-        }
-      ];
-      relabel_configs = [
-        # k8s SD role=node returns `<node_ip>:10250` (default kubelet port),
-        # so this is a no-op -- but it pins the path explicitly in case a node
-        # advertises a non-default port, and documents that we scrape the
-        # kubelet, not the API.
-        {
-          source_labels = ["__address__"];
-          regex = "([^:]+):.*";
-          replacement = "$1:10250";
-          target_label = "__address__";
-        }
-        # Surface the node's own labels (e.g. kubernetes.io/hostname) as
-        # Prometheus labels so per-node filtering works in Grafana.
-        {
-          action = "labelmap";
-          regex = "__meta_kubernetes_node_label_(.+)";
-        }
-        {
-          source_labels = ["__meta_kubernetes_node_name"];
-          target_label = "node";
-        }
-      ];
-      metric_relabel_configs = [
-        # cAdvisor emits a series for the pod-level aggregate (container="POD")
-        # and the node-level aggregate (container=""); the per-container
-        # series (container!="POD" && container!="") is what you chart. Drop
-        # the POD aggregate to halve the series count -- the per-container
-        # numbers already cover everything you'd compute from it.
-        {
-          source_labels = ["container"];
-          regex = "POD";
-          action = "drop";
-        }
-      ];
+      metrics_path = "/metrics/cadvisor";
+    }
+    {
+      job_name = "kubernetes-kubelet";
+      metrics_path = "/metrics";
     }
   ];
   # Agent Substrate control plane (env/substrate.nix, namespace `ate-system`;
