@@ -150,6 +150,11 @@
         monty-runtime = self.packages.${system}.monty;
       };
 
+      # LayerFS × DSH plugin bundle (Sim projects only), e.g. `nix build .#dsh-layerfs`
+      dsh-layerfs = pkgs.callPackage ./pkgs/dsh-layerfs.nix {
+        deepseek-harness = self.packages.${system}.deepseek-harness;
+      };
+
       # Archify architecture diagram tool & agent skill CLI
       archify = pkgs.callPackage ./pkgs/archify.nix {};
 

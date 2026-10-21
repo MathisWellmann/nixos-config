@@ -1,0 +1,8 @@
+{
+  "name": "dsh-layerfs-build-deps",
+  "private": true,
+  "dependencies": {
+    "lightningcss": "1.33.0",
+    "tsdown": "0.22.2"
+  }
+}

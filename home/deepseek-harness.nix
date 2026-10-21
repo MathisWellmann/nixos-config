@@ -346,6 +346,24 @@
     url = "https://registry.npmjs.org/dsh-thoughtdag/-/dsh-thoughtdag-0.5.21.tgz";
     hash = "sha256-38DFXNBD+i4dehRSZxyDu0E+JVfa9iu/Hla5oe0sdEE=";
   };
+
+  # LayerFS × DSH (github.com/Ephemeral-AI-Lab/layerfs, `dsh/`): agents work
+  # on a LayerFS project through the LayerFS JS SDK from bash (Branches,
+  # Workspaces, merge, publish), and sessions get Work and History tabs, a
+  # project chip and the "LayerFS × DSH minimalist" preset, which the bundle
+  # makes the default for new sessions. Built against `cfg.package`, because
+  # the Host must import the same `@deepseek-ai/*` files dsh runs.
+  #
+  # Only Sim projects work: Live needs Docker Engine and a Linux LayerFS build
+  # (`image` and `daemon` on the `layerfs-host` row), and `/layerfs/status`
+  # reports both as missing until then. LayerFS's home and traces default to
+  # `$TMPDIR/dsh-layerfs`, the only place outside the workspace that bash in
+  # Workspace Write mode may write, so Sim projects do not survive a reboot
+  # (or, under `PrivateTmp`, a dsh-web restart); the bindings in
+  # `profiles/web/dsh-layerfs` do.
+  layerfsPlugin = pkgs.callPackage ../pkgs/dsh-layerfs.nix {
+    deepseek-harness = cfg.package;
+  };
 in {
   options = {
     programs.deepseek-harness = with lib; {
@@ -520,6 +538,7 @@ in {
           "dsh-sidebar-archive" = sidebarArchivePlugin;
           "dsh-tool-monty" = toolMontyPlugin;
           "dsh-thoughtdag" = thoughtdagPlugin;
+          "dsh-layerfs" = layerfsPlugin;
         };
         description = ''
           Plugins installed into the `web` profile (`$DSH_HOME/profiles/web`).
