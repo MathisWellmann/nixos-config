@@ -61,6 +61,18 @@ in {
       # The target and source must have the `lz4` package installed.
       # root user must be able to log in to the target as root without password:
       # `sudo ssh-copy-id root@target`
+      #
+      # CAVEAT: zfs-replicate only sends snapshots, never the live dataset. A
+      # dataset with `com.sun:auto-snapshot=false` is not replicated, and if a
+      # copy already exists on the target, zfs-replicate deletes its snapshots
+      # and runs `zfs destroy -r` on it (even without `followDelete`).
+      # Turning snapshots off for nvme_pool/clickhouse on 2026-10-21 froze its
+      # de-n5 copy. A quoting bug in zfs-replicate 4.1.0 made the destroy fail,
+      # which is the only reason the copy still exists. To keep a dataset
+      # backed up with less snapshot space, turn off single intervals instead.
+      # nvme_pool/clickhouse now uses daily snapshots only:
+      #   zfs set com.sun:auto-snapshot:{frequent,hourly,weekly,monthly}=false
+      # attic and rustfs have `auto-snapshot=false`, so they are not on de-n5.
       autoReplication = {
         enable = true;
         followDelete = true;
