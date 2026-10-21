@@ -93,7 +93,7 @@ in {
     cacert
     unipicker
     steel # Scheme dialect
-    sbomnix
+    # sbomnix # Fails to build due to transitive dependency
     grype # Run system wide vulnerability check: `sbomnix .#nixosConfigurations.meshify.config.system.build.toplevel && grype sbom:sbom.cdx.json`
 
     # Nix
