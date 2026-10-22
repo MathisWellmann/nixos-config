@@ -3,6 +3,7 @@
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 {
   inputs,
+  lib,
   pkgs,
   ...
 }: let
@@ -253,9 +254,19 @@ in {
       port = const.immich_port;
       # Exposed off-cluster at https://immich.k3s.lan through the k3s traefik
       # ingress (see env/host_ingress.nix); fleet-trusted `k3s-lan-ca` cert.
-      # 0.0.0.0/0: traefik's pod source IP is NAT-dependent, and the service
-      # is already LAN-open, so this only fixes logged client IPs.
-      environment = {IMMICH_TRUSTED_PROXIES = "0.0.0.0/0";};
+      # traefik's source IP is NAT-dependent: a pod IP (10.42.0.0/16), the LAN
+      # or a tailscale IP (100.64.0.0/10, since the EndpointSlice points at
+      # de-msa2's tailscale address). Trust all private ranges; this only
+      # fixes logged client IPs. Not `0.0.0.0/0`: proxy-addr rejects a /0
+      # prefix, and immich's maintenance worker crashed on it in a restart
+      # loop from 2026-10-18 until 2026-10-22.
+      environment.IMMICH_TRUSTED_PROXIES = lib.concatStringsSep "," [
+        "10.0.0.0/8"
+        "172.16.0.0/12"
+        "192.168.0.0/16"
+        "100.64.0.0/10"
+        "fc00::/7"
+      ];
     };
   };
 
