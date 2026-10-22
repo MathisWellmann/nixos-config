@@ -605,8 +605,15 @@
           {targets = ["desg0:${toString desg0_consts.qwen3_port}"];}
         ];
       }
+      # nut_exporter serves the UPS variables at `/ups_metrics`; its
+      # `/metrics` has only the exporter's own Go runtime metrics.
+      # 30s matches the driver's `pollfreq`, so a faster scrape would only
+      # repeat values.
       {
         job_name = "ups";
+        metrics_path = "/ups_metrics";
+        scrape_interval = "30s";
+        scrape_timeout = "10s";
         static_configs = [
           {targets = ["localhost:${toString const.prometheus_exporter_nut_port}"];}
         ];

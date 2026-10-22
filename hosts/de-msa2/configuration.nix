@@ -68,7 +68,7 @@ in {
     ./substrate.nix
     ./grafana.nix
     ./pyroscope.nix
-    # ./ups.nix
+    ./ups.nix
     searx
     # (import ./../../modules/monero_miner.nix {max-threads-hint = 25;})
     readeck

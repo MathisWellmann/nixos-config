@@ -1,6 +1,8 @@
-# TODO: Not entirely working end-to-end yet.
+# NUT for the FSP Champ 3KR (USB 0665:5161, Voltronic "QS" protocol).
+# Metrics: `nut_exporter` -> victoriametrics job `ups` (`prometheus.nix`).
 _: let
   nut_user = "nut-admin";
+  # Not in the store and not agenix: created by hand on de-msa2 (root, 0644).
   passwordFile = "/etc/ups-passwd.txt";
   const = import ./constants.nix;
 in {
@@ -9,8 +11,17 @@ in {
     mode = "standalone";
     ups."UPS-1" = {
       description = "FSP Champ 3KR Fortron";
-      driver = "blazer_usb";
+      # `blazer_usb` is deprecated upstream; `nutdrv_qx` replaces it and
+      # was checked against this UPS on 2026-10-22 (reports
+      # `driver.version.data: Voltronic 0.12`).
+      driver = "nutdrv_qx";
       port = "auto";
+      # Pin the device so `port = auto` cannot pick another USB-serial
+      # adapter that uses the same Cypress chip.
+      directives = [
+        "vendorid = 0665"
+        "productid = 5161"
+      ];
     };
     upsd = {
       listen = [
@@ -21,7 +32,7 @@ in {
       ];
     };
     users."${nut_user}" = {
-      passwordFile = "/etc/ups-passwd.txt";
+      inherit passwordFile;
       upsmon = "primary";
     };
     upsmon.monitor."UPS-1" = {
@@ -38,6 +49,28 @@ in {
       nutUser = nut_user;
       passwordPath = passwordFile;
       port = const.prometheus_exporter_nut_port;
+      # An empty list does not export "all" variables, unlike what the
+      # module docs say: nut_exporter then uses its built-in default list,
+      # which is mostly `battery.charge*`. This UPS does not report those,
+      # so only `ups.load` and `ups.status` came through. The UPS has no
+      # `ups.realpower`, so watts = ups.load / 100 * ups.power.nominal *
+      # output.powerfactor.
+      nutVariables = [
+        "battery.runtime"
+        "battery.voltage"
+        "battery.voltage.nominal"
+        "input.frequency"
+        "input.voltage"
+        "input.voltage.nominal"
+        "output.current"
+        "output.frequency"
+        "output.powerfactor"
+        "output.voltage"
+        "ups.load"
+        "ups.power.nominal"
+        "ups.status"
+        "ups.temperature"
+      ];
     };
   };
 }
