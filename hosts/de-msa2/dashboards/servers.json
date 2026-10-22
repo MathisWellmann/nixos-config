@@ -290,6 +290,786 @@
     },
     {
       "type": "row",
+      "title": "Power (UPS: FSP Champ 3KR on de-msa2)",
+      "id": 52,
+      "collapsed": false,
+      "panels": [],
+      "gridPos": {
+        "x": 0,
+        "y": 8,
+        "w": 24,
+        "h": 1
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Power draw",
+      "description": "Real power drawn from the UPS output: ups.load (% of the 3000 VA rating) x 3000 VA x output.powerfactor. The UPS reports no ups.realpower, and load has 1 % resolution, so the value moves in steps of ~27 W. Thresholds: yellow at 50 %, red at 80 % of the 2700 W real-power limit.",
+      "id": 53,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 9,
+        "w": 7,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_ups_load / 100 * network_ups_tools_ups_power_nominal * network_ups_tools_output_powerfactor",
+          "legendFormat": "power",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "watt",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1350
+              },
+              {
+                "color": "red",
+                "value": 2160
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "value",
+        "orientation": "auto",
+        "justifyMode": "center",
+        "wideLayout": true
+      }
+    },
+    {
+      "type": "stat",
+      "title": "UPS status",
+      "description": "Most severe flag of ups.status. ON BATTERY means mains failed; LOW BATTERY means upsmon starts the shutdown. UNKNOWN: no flag set; No data: the exporter or driver is down.",
+      "id": 54,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 7,
+        "y": 9,
+        "w": 5,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "max(\n  network_ups_tools_ups_status{flag=\"OL\"} * 1\n  or network_ups_tools_ups_status{flag=\"TRIM\"} * 2\n  or network_ups_tools_ups_status{flag=\"BOOST\"} * 2\n  or network_ups_tools_ups_status{flag=\"RB\"} * 3\n  or network_ups_tools_ups_status{flag=\"BYPASS\"} * 4\n  or network_ups_tools_ups_status{flag=\"OB\"} * 5\n  or network_ups_tools_ups_status{flag=\"LB\"} * 6\n  or network_ups_tools_ups_status{flag=\"OVER\"} * 7\n  or network_ups_tools_ups_status{flag=\"FSD\"} * 8\n)",
+          "legendFormat": "status",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "none",
+          "mappings": [
+            {
+              "type": "value",
+              "options": {
+                "1": {
+                  "text": "ONLINE",
+                  "color": "green",
+                  "index": 0
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "2": {
+                  "text": "ONLINE (TRIM/BOOST)",
+                  "color": "yellow",
+                  "index": 1
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "3": {
+                  "text": "REPLACE BATTERY",
+                  "color": "orange",
+                  "index": 2
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "4": {
+                  "text": "BYPASS",
+                  "color": "orange",
+                  "index": 3
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "5": {
+                  "text": "ON BATTERY",
+                  "color": "red",
+                  "index": 4
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "6": {
+                  "text": "LOW BATTERY",
+                  "color": "dark-red",
+                  "index": 5
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "7": {
+                  "text": "OVERLOAD",
+                  "color": "dark-red",
+                  "index": 6
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "8": {
+                  "text": "FORCED SHUTDOWN",
+                  "color": "dark-red",
+                  "index": 7
+                }
+              }
+            },
+            {
+              "type": "value",
+              "options": {
+                "0": {
+                  "text": "UNKNOWN",
+                  "color": "purple",
+                  "index": 8
+                }
+              }
+            }
+          ],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "purple",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "background",
+        "graphMode": "none",
+        "textMode": "value",
+        "orientation": "auto",
+        "justifyMode": "center",
+        "wideLayout": true
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Load",
+      "description": "ups.load: share of the 3000 VA rating in use. Above 100 % the UPS goes to bypass or shuts off.",
+      "id": 55,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 9,
+        "w": 4,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_ups_load",
+          "legendFormat": "load",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 0
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "value",
+        "orientation": "auto",
+        "justifyMode": "center",
+        "wideLayout": true
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Battery runtime",
+      "description": "battery.runtime: the UPS's own estimate of time on battery at the current load. It falls when load rises.",
+      "id": 56,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 16,
+        "y": 9,
+        "w": 4,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_battery_runtime",
+          "legendFormat": "runtime",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "orange",
+                "value": 600
+              },
+              {
+                "color": "green",
+                "value": 1200
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "area",
+        "textMode": "value",
+        "orientation": "auto",
+        "justifyMode": "center",
+        "wideLayout": true
+      }
+    },
+    {
+      "type": "stat",
+      "title": "Energy (last 24h)",
+      "description": "Mean power draw over the last 24 h x 24 h. Covers everything plugged into the UPS.",
+      "id": 57,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 20,
+        "y": 9,
+        "w": 4,
+        "h": 7
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "avg_over_time((network_ups_tools_ups_load / 100 * network_ups_tools_ups_power_nominal * network_ups_tools_output_powerfactor)[24h:1m]) * 24 / 1000",
+          "legendFormat": "energy",
+          "refId": "A",
+          "range": false,
+          "instant": true
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "kwatth",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "blue",
+                "value": null
+              }
+            ]
+          },
+          "color": {
+            "mode": "thresholds"
+          },
+          "decimals": 1
+        },
+        "overrides": []
+      },
+      "options": {
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "colorMode": "value",
+        "graphMode": "none",
+        "textMode": "value",
+        "orientation": "auto",
+        "justifyMode": "center",
+        "wideLayout": true
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Power draw (dashed = UPS real-power limit)",
+      "description": "Same formula as the 'Power draw' stat. The dashed line is 3000 VA x power factor, the most the UPS can deliver.",
+      "id": 58,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 0,
+        "y": 16,
+        "w": 12,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_ups_load / 100 * network_ups_tools_ups_power_nominal * network_ups_tools_output_powerfactor",
+          "legendFormat": "power draw",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_ups_power_nominal * network_ups_tools_output_powerfactor",
+          "legendFormat": "limit",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "watt",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          },
+          "min": 0
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "limit"
+            },
+            "properties": [
+              {
+                "id": "custom.lineStyle",
+                "value": {
+                  "fill": "dash",
+                  "dash": [
+                    10,
+                    10
+                  ]
+                }
+              },
+              {
+                "id": "color",
+                "value": {
+                  "mode": "fixed",
+                  "fixedColor": "red"
+                }
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Mains & output voltage",
+      "description": "input.voltage is the mains side; the UPS is online (double conversion), so output.voltage stays at 230 V while input moves. It switches to battery outside input.transfer.low/high (218 / 242 V).",
+      "id": 59,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 12,
+        "y": 16,
+        "w": 6,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_input_voltage",
+          "legendFormat": "input",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_output_voltage",
+          "legendFormat": "output",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "volt",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "timeseries",
+      "title": "Battery voltage & UPS temperature",
+      "description": "Battery voltage drops while discharging (nominal 72 V, low cutoff 62.4 V). A steady rise in UPS temperature shortens battery life.",
+      "id": 60,
+      "datasource": {
+        "type": "prometheus",
+        "uid": "${datasource}"
+      },
+      "gridPos": {
+        "x": 18,
+        "y": 16,
+        "w": 6,
+        "h": 8
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_battery_voltage",
+          "legendFormat": "battery V",
+          "refId": "A",
+          "range": true,
+          "instant": false
+        },
+        {
+          "datasource": {
+            "type": "prometheus",
+            "uid": "${datasource}"
+          },
+          "editorMode": "code",
+          "expr": "network_ups_tools_ups_temperature",
+          "legendFormat": "temperature",
+          "refId": "B",
+          "range": true,
+          "instant": false
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "drawStyle": "line",
+            "lineWidth": 1,
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "showPoints": "never",
+            "spanNulls": false,
+            "lineInterpolation": "linear",
+            "axisPlacement": "auto",
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "unit": "volt",
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              }
+            ]
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "temperature"
+            },
+            "properties": [
+              {
+                "id": "unit",
+                "value": "celsius"
+              },
+              {
+                "id": "custom.axisPlacement",
+                "value": "right"
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "legend": {
+          "displayMode": "table",
+          "placement": "bottom",
+          "showLegend": true,
+          "calcs": [
+            "mean",
+            "max",
+            "lastNotNull"
+          ]
+        },
+        "tooltip": {
+          "mode": "multi",
+          "sort": "desc",
+          "hideZeros": false
+        }
+      }
+    },
+    {
+      "type": "row",
       "title": "CPU",
       "id": 1,
       "collapsed": false,
@@ -298,7 +1078,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 8
+        "y": 24
       }
     },
     {
@@ -312,7 +1092,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 9,
+        "y": 25,
         "w": 8,
         "h": 8
       },
@@ -395,7 +1175,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 9,
+        "y": 25,
         "w": 8,
         "h": 8
       },
@@ -478,7 +1258,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 9,
+        "y": 25,
         "w": 8,
         "h": 8
       },
@@ -561,7 +1341,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 17,
+        "y": 33,
         "w": 12,
         "h": 8
       },
@@ -646,7 +1426,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 17,
+        "y": 33,
         "w": 12,
         "h": 8
       },
@@ -783,7 +1563,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 25
+        "y": 41
       }
     },
     {
@@ -797,7 +1577,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 26,
+        "y": 42,
         "w": 8,
         "h": 8
       },
@@ -880,7 +1660,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 26,
+        "y": 42,
         "w": 8,
         "h": 8
       },
@@ -964,7 +1744,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 26,
+        "y": 42,
         "w": 8,
         "h": 8
       },
@@ -1048,7 +1828,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 34,
+        "y": 50,
         "w": 8,
         "h": 8
       },
@@ -1131,7 +1911,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 34,
+        "y": 50,
         "w": 8,
         "h": 8
       },
@@ -1214,7 +1994,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 34,
+        "y": 50,
         "w": 8,
         "h": 8
       },
@@ -1297,7 +2077,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 42
+        "y": 58
       }
     },
     {
@@ -1311,7 +2091,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 43,
+        "y": 59,
         "w": 8,
         "h": 8
       },
@@ -1394,7 +2174,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 43,
+        "y": 59,
         "w": 8,
         "h": 8
       },
@@ -1502,7 +2282,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 43,
+        "y": 59,
         "w": 8,
         "h": 8
       },
@@ -1609,7 +2389,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 51
+        "y": 67
       }
     },
     {
@@ -1623,7 +2403,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 52,
+        "y": 68,
         "w": 12,
         "h": 8
       },
@@ -1706,7 +2486,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 52,
+        "y": 68,
         "w": 12,
         "h": 8
       },
@@ -1789,7 +2569,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 60,
+        "y": 76,
         "w": 12,
         "h": 8
       },
@@ -1902,7 +2682,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 60,
+        "y": 76,
         "w": 12,
         "h": 8
       },
@@ -2014,7 +2794,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 68
+        "y": 84
       }
     },
     {
@@ -2027,7 +2807,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 69,
+        "y": 85,
         "w": 6,
         "h": 8
       },
@@ -2092,7 +2872,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 69,
+        "y": 85,
         "w": 6,
         "h": 4
       },
@@ -2152,7 +2932,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 73,
+        "y": 89,
         "w": 6,
         "h": 4
       },
@@ -2284,7 +3064,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 69,
+        "y": 85,
         "w": 12,
         "h": 8
       },
@@ -2379,7 +3159,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 77,
+        "y": 93,
         "w": 12,
         "h": 16
       },
@@ -2445,7 +3225,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 77,
+        "y": 93,
         "w": 12,
         "h": 16
       },
@@ -2525,7 +3305,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 93
+        "y": 109
       }
     },
     {
@@ -2539,7 +3319,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 94,
+        "y": 110,
         "w": 8,
         "h": 8
       },
@@ -2623,7 +3403,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 94,
+        "y": 110,
         "w": 8,
         "h": 8
       },
@@ -2737,7 +3517,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 94,
+        "y": 110,
         "w": 8,
         "h": 8
       },
@@ -2819,7 +3599,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 102
+        "y": 118
       }
     },
     {
@@ -2833,7 +3613,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 103,
+        "y": 119,
         "w": 6,
         "h": 8
       },
@@ -2923,7 +3703,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 103,
+        "y": 119,
         "w": 6,
         "h": 8
       },
@@ -3025,7 +3805,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 103,
+        "y": 119,
         "w": 6,
         "h": 8
       },
@@ -3115,7 +3895,7 @@
       },
       "gridPos": {
         "x": 18,
-        "y": 103,
+        "y": 119,
         "w": 6,
         "h": 8
       },
@@ -3204,7 +3984,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 111
+        "y": 127
       }
     },
     {
@@ -3217,7 +3997,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 112,
+        "y": 128,
         "w": 6,
         "h": 8
       },
@@ -3302,7 +4082,7 @@
       },
       "gridPos": {
         "x": 6,
-        "y": 112,
+        "y": 128,
         "w": 6,
         "h": 8
       },
@@ -3377,7 +4157,7 @@
       },
       "gridPos": {
         "x": 12,
-        "y": 112,
+        "y": 128,
         "w": 6,
         "h": 8
       },
@@ -3452,7 +4232,7 @@
       },
       "gridPos": {
         "x": 18,
-        "y": 112,
+        "y": 128,
         "w": 6,
         "h": 8
       },
@@ -3540,7 +4320,7 @@
         "h": 1,
         "w": 24,
         "x": 0,
-        "y": 120
+        "y": 136
       }
     },
     {
@@ -3554,7 +4334,7 @@
       },
       "gridPos": {
         "x": 0,
-        "y": 121,
+        "y": 137,
         "w": 8,
         "h": 8
       },
@@ -3637,7 +4417,7 @@
       },
       "gridPos": {
         "x": 8,
-        "y": 121,
+        "y": 137,
         "w": 8,
         "h": 8
       },
@@ -3732,7 +4512,7 @@
       },
       "gridPos": {
         "x": 16,
-        "y": 121,
+        "y": 137,
         "w": 8,
         "h": 8
       },
