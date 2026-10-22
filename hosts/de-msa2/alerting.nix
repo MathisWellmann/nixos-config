@@ -782,6 +782,113 @@ _: let
         }
       ];
     }
+    # The FSP Champ 3KR behind de-msa2 (hosts/de-msa2/ups.nix), via the nut
+    # exporter (job `ups`). The exporter sets every `ups_status` flag to 0 or 1,
+    # so `== 1` never matches a missing flag. upsmon shuts de-msa2 down on LB by
+    # itself; these alerts only make sure a human hears about it first.
+    {
+      name = "ups";
+      interval = "30s";
+      rules = [
+        {
+          alert = "UpsOnBattery";
+          # `for: 0m`: about 24 min of runtime at the usual ~700 W, so every
+          # minute of warning counts. A short flicker still fires, which is
+          # wanted: it shows that the mains is unstable.
+          expr = ''network_ups_tools_ups_status{flag="OB"} == 1'';
+          for = "0m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''UPS on battery: mains power lost'';
+            description = ''The UPS runs on battery (battery.runtime estimate in the "Power (UPS)" row of the servers dashboard). On LOW BATTERY, upsmon shuts down de-msa2. Hosts not on this UPS may already be down.'';
+          };
+        }
+        {
+          alert = "UpsLowBattery";
+          expr = ''network_ups_tools_ups_status{flag="LB"} == 1'';
+          for = "0m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''UPS battery low: de-msa2 shuts down now'';
+            description = ''The UPS reports LOW BATTERY. upsmon has started (or will start) `shutdown now` on de-msa2. Shut down other hosts on this UPS by hand if they matter.'';
+          };
+        }
+        {
+          alert = "UpsRuntimeLow";
+          # Below 10 min, an outage leaves no time to react. On battery, LB
+          # follows soon. On mains, this means the load grew or the battery
+          # aged: the battery estimate is still based on the live load.
+          expr = ''network_ups_tools_battery_runtime < 600'';
+          for = "2m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''UPS runtime estimate {{ $value | humanizeDuration }}'';
+            description = ''battery.runtime is below 10 minutes. If the UPS is on mains, reduce the load on the UPS or replace the battery; if it is on battery, the shutdown is close.'';
+          };
+        }
+        {
+          alert = "UpsOverloaded";
+          # OVER means the inverter is past its rating and may drop the output
+          # or go to bypass, i.e. no protection at all.
+          expr = ''network_ups_tools_ups_status{flag="OVER"} == 1 or network_ups_tools_ups_load > 90'';
+          for = "1m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''UPS overloaded (load {{ $value }})'';
+            description = ''The UPS reports OVERLOAD or more than 90 % of 3000 VA. It can switch to bypass or cut the output. Move load off the UPS.'';
+          };
+        }
+        {
+          alert = "UpsLoadHigh";
+          # ~2160 W. Early warning before UpsOverloaded, and runtime on
+          # battery drops fast at this load.
+          expr = ''network_ups_tools_ups_load > 80'';
+          for = "10m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''UPS load {{ $value }} %'';
+            description = ''The UPS load is above 80 % of 3000 VA for 10m. Battery runtime is short at this load and a spike can overload the UPS.'';
+          };
+        }
+        {
+          alert = "UpsNotProtecting";
+          # An online UPS on bypass feeds mains straight through: a power cut
+          # drops every host at once. RB: the UPS's own battery test failed.
+          expr = ''network_ups_tools_ups_status{flag=~"BYPASS|RB|OFF"} == 1'';
+          for = "5m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''UPS status {{ $labels.flag }}: no reliable battery backup'';
+            description = ''BYPASS: the inverter is off and mains goes straight through. RB: replace the battery. OFF: the UPS output is off. In all cases a power cut is not covered.'';
+          };
+        }
+        {
+          alert = "UpsTemperatureHigh";
+          # Lead-acid battery life halves for every ~8-10 C above 25 C.
+          expr = ''network_ups_tools_ups_temperature > 40'';
+          for = "15m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''UPS temperature {{ $value }} C'';
+            description = ''The UPS is above 40 C for 15m. Check airflow around the UPS; heat shortens battery life a lot.'';
+          };
+        }
+        {
+          alert = "UpsMetricsMissing";
+          # Without this, a dead driver, upsd or exporter silences every rule
+          # above: they need series to fire. When the driver loses the USB
+          # device, upsd drops the UPS and the exporter returns no
+          # `ups_status` series while `up` stays 1.
+          expr = ''up{job="ups"} == 0 or absent(network_ups_tools_ups_status{flag="OL"})'';
+          for = "5m";
+          labels.severity = "warning";
+          annotations = {
+            summary = ''No UPS metrics: power failures go unnoticed'';
+            description = ''The nut exporter is down or returns no UPS data. Check `systemctl status upsdrv upsd prometheus-nut-exporter` and that the USB device 0665:5161 is present (`lsusb`).'';
+          };
+        }
+      ];
+    }
   ];
 in {
   services = {
