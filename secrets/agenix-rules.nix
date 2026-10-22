@@ -136,4 +136,15 @@ in {
     ];
     armor = true;
   };
+  # Password of the `nut-admin` upsd user (hosts/de-msa2/ups.nix), shared by
+  # upsmon and the prometheus nut exporter, which both log in over localhost.
+  # Random; nothing outside this host uses it, so rotating it only needs a
+  # switch.
+  "ups_password.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
 }

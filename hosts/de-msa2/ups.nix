@@ -1,11 +1,17 @@
 # NUT for the FSP Champ 3KR (USB 0665:5161, Voltronic "QS" protocol).
 # Metrics: `nut_exporter` -> victoriametrics job `ups` (`prometheus.nix`).
-_: let
+{config, ...}: let
   nut_user = "nut-admin";
-  # Not in the store and not agenix: created by hand on de-msa2 (root, 0644).
-  passwordFile = "/etc/ups-passwd.txt";
+  # agenix (root, 0400). upsd and upsmon read it through systemd
+  # credentials set up by the NUT module.
+  passwordFile = config.age.secrets.ups_password.path;
+  # The exporter runs as a DynamicUser and cannot read the root-only secret,
+  # so systemd copies it into the unit's credentials directory instead.
+  exporterCredential = "ups_password";
   const = import ./constants.nix;
 in {
+  age.secrets.ups_password.file = ../../secrets/ups_password.age;
+
   power.ups = {
     enable = true;
     mode = "standalone";
@@ -43,11 +49,14 @@ in {
       inherit passwordFile;
     };
   };
+  systemd.services.prometheus-nut-exporter.serviceConfig.LoadCredential = [
+    "${exporterCredential}:${passwordFile}"
+  ];
   services = {
     prometheus.exporters.nut = {
       enable = true;
       nutUser = nut_user;
-      passwordPath = passwordFile;
+      passwordPath = "/run/credentials/prometheus-nut-exporter.service/${exporterCredential}";
       port = const.prometheus_exporter_nut_port;
       # An empty list does not export "all" variables, unlike what the
       # module docs say: nut_exporter then uses its built-in default list,
