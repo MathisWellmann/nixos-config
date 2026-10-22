@@ -48,9 +48,9 @@ in {
       address = "192.168.0.55";
     };
     nameservers = [
+      "9.9.9.9"
       "1.1.1.1"
       "8.8.8.8"
-      "9.9.9.9"
     ];
     interfaces = {
       "${main_nic}" = {
