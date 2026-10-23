@@ -159,6 +159,7 @@ in {
     cargo-nextest
     devenv
     skopeo # work with the image registry of forgejo
+    hyperfine # CLI benchmarking
 
     # Cryptography
     # sequoia-sq
