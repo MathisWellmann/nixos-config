@@ -1,7 +1,11 @@
 # Agent Skills for the agent CLIs (`maki`, `deepseek-harness`, `pi`): all of
 # them scan `~/.agents/skills/` (the Agent Skills standard directory), so one
 # symlink per skill in the Nix store serves every agent.
-{pkgs, ...}: let
+{
+  inputs,
+  pkgs,
+  ...
+}: let
   # ASD-STE100 "Simple English" writing skill.
   # Pinned to commit be3277ce (2026-08-20). Update the ref + hash to upgrade.
   simpleEnglish = pkgs.fetchFromGitHub {
@@ -28,11 +32,27 @@
     rev = "f4547ee95f88e5b28a52517feff6b6c11cc657f9";
     hash = "sha256-L+2YqVybYQ892nLkaHSRKI4pjFcb506jhDz4U8ju6P8=";
   };
+
+  # Interactive architecture/workflow/sequence/... diagram skill. Pinned in
+  # pkgs/archify.nix, which also builds the `archify` CLI from the same source.
+  archify = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.archify;
 in {
-  home.file = {
-    ".agents/skills/simple-english".source = "${simpleEnglish}/skills/simple-english";
-    ".agents/skills/manim-composer".source = "${manimSkill}/skills/manim-composer";
-    ".agents/skills/manimce-best-practices".source = "${manimSkill}/skills/manimce-best-practices";
-    ".agents/skills/diagram-design".source = "${diagramDesign}/skills/diagram-design";
+  home = {
+    file = {
+      ".agents/skills/simple-english".source = "${simpleEnglish}/skills/simple-english";
+      ".agents/skills/manim-composer".source = "${manimSkill}/skills/manim-composer";
+      ".agents/skills/manimce-best-practices".source = "${manimSkill}/skills/manimce-best-practices";
+      ".agents/skills/diagram-design".source = "${diagramDesign}/skills/diagram-design";
+      ".agents/skills/archify".source = archify.skill;
+    };
+
+    # The archify skill runs `node bin/archify.mjs ...` from its own directory,
+    # so the agents' shells need a bare `node`.
+    packages = [pkgs.nodejs];
+
+    # Archify upgrades come through the Nix pin. Its update reminder would
+    # tell the agent to reinstall via `npx skills add`, which fights the
+    # read-only store symlink above.
+    sessionVariables.ARCHIFY_UPDATE_CHECK_DISABLED = "1";
   };
 }

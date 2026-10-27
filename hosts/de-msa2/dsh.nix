@@ -49,9 +49,11 @@ in {
         # bash tool cannot spawn a shell and both Linux sandbox backends
         # probe unusable (the Landlock launcher's probe child is a bare
         # name, too). Use the system environment plus bubblewrap, DSH's
-        # preferred Linux sandbox backend.
+        # preferred Linux sandbox backend. The user profile (and its `node`)
+        # is not on this PATH, but the archify skill in ~/.agents/skills runs
+        # `node bin/archify.mjs`, so add nodejs explicitly.
         Environment = [
-          "PATH=/run/current-system/sw/bin:${pkgs.bubblewrap}/bin:${pkgs.systemd}/bin"
+          "PATH=/run/current-system/sw/bin:${pkgs.bubblewrap}/bin:${pkgs.systemd}/bin:${pkgs.nodejs}/bin"
         ];
       };
     };

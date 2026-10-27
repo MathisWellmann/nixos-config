@@ -241,11 +241,6 @@
       node ${patchScript} $out/lib/client.js
     '';
 
-  archifyPlugin = pkgs.fetchzip {
-    url = "https://registry.npmjs.org/@tt-a1i/archify-dsh/-/archify-dsh-0.1.0.tgz";
-    hash = "sha256-QWwjlh5H2l8DJYw24p0K6SaZ0OJKVI5oYsu/H/IIG5g=";
-  };
-
   # dsh-mermaid ships its build output (`lib/`) in the repo, so no npm build is
   # needed — but its host half serves the mermaid UMD bundle off disk through
   # `require.resolve("mermaid/dist/mermaid.min.js")`, which only resolves if the
@@ -532,7 +527,6 @@ in {
             hash = "sha256-PjFJ8Gw0Ymh+v9R0NzKVSQ4BoqpooBSgfbuTFHx7oqA=";
           };
           "@hellosz/dsh-pets" = defaultPetsPlugin;
-          "@tt-a1i/archify-dsh" = archifyPlugin;
           "dsh-mermaid" = mermaidPlugin;
           "dsh-us-stocks" = usStocksPlugin;
           "dsh-sidebar-archive" = sidebarArchivePlugin;
