@@ -181,16 +181,15 @@ in {
       cd repo
       before="$(git rev-parse HEAD)"
 
-      # Update every input except the ones fetched from a local path. A plain
-      # `nix flake update` also re-resolves `nexus` (flake.nix: a `git+file`
-      # input under /home/m), which this unit cannot read: /home/m is 0700 and
-      # the service user is not `m`, so the run died with
-      # `getting status of "/home/m/MathisWellmann/nexus": Permission denied`.
-      # Widening /home/m is not the fix -- a `git+file` input locks the
-      # checkout's HEAD, so updating it here would cache whatever uncommitted
-      # state that working copy is in, while this unit exists to build a clean
-      # ${branch}. The locked revision stays as committed and is already in the
-      # store, which is all modules/nexus_iggy_cluster.nix needs.
+      # Update every input except the ones fetched from a local path. A
+      # `git+file` input locks the checkout's HEAD, so updating one here would
+      # cache whatever uncommitted state that working copy is in, while this
+      # unit exists to build a clean ${branch} -- and on a machine where the
+      # checkout is missing or unreadable (the former `nexus` input under
+      # /home/m; 0700, and no checkout at all on hosts like de-n5), the
+      # update just dies with `Permission denied`. The `nexus` input is gone
+      # for good (its ports are vendored in modules/nexus_iggy_cluster.nix),
+      # but the skip stays for any future local input.
       #
       # The list is derived from flake.lock rather than hardcoded so an input
       # added later is updated without touching this unit. `nix flake update`

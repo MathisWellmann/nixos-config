@@ -7,19 +7,29 @@
 # traffic passes this host's firewall, unlike CNI `hostPort`/servicelb traffic
 # (DNAT in PREROUTING, then FORWARD), which never reaches `nixos-fw`.
 #
-# The ports come from nexus (`lib.iggyHostTcpPorts`, derived from its
-# `env/tikr/iggy-clusters.nix`), not from a copy here: on 2026-10-14 a
-# hand-kept copy had not reached desg0, and its replica could not join the
-# cluster. A roster change in nexus reaches this host with the next
-# `nix flake update nexus` and rebuild. nexus' `iggy-port-probe-*` CronJobs
-# (alerts: `IggyHostPortBlocked*` in hosts/de-msa2/alerting.nix) catch a host
-# that was not rebuilt.
+# The ports are a copy of nexus' `lib.iggyHostTcpPorts` (derived from its
+# `env/tikr/iggy-clusters.nix`), not a flake input: that input is a
+# `git+file` checkout under /home/m, which root (no forgejo credentials, the
+# repo is private) and the fleet cache builder (0700 home) cannot read. As
+# soon as the locked source left the store (store GC), every host that
+# imports this module failed to evaluate with
+# `getting status of "/home/m/MathisWellmann/nexus": Permission denied` --
+# including de-n5, which has no checkout at all. The data is three lists of
+# ports, so it is kept here: update it when nexus' roster or ports change.
+# (On 2026-10-14 a hand-kept copy of an earlier, hard-coded version had not
+# reached desg0, and its replica could not join the cluster.) nexus'
+# `iggy-port-probe-*` CronJobs (alerts: `IggyHostPortBlocked*` in
+# hosts/de-msa2/alerting.nix) catch a host that was not rebuilt.
 {
   config,
-  inputs,
   ...
 }: let
-  portsByHost = inputs.nexus.lib.iggyHostTcpPorts;
+  # prod `tikr` 7090-7092, staging `tikr-dev` 7190-7192, same three nodes.
+  portsByHost = {
+    "de-msa2" = [ 7090 7091 7092 7190 7191 7192 ];
+    "de-n5" = [ 7090 7091 7092 7190 7191 7192 ];
+    "desg0" = [ 7090 7091 7092 7190 7191 7192 ];
+  };
   host = config.networking.hostName;
 in {
   assertions = [

@@ -755,7 +755,7 @@ _: let
             kube_cronjob_status_last_successful_time{namespace="${namespace}", cronjob=~"iggy-port-probe-.+"}
           )
         '';
-        description = ''The host firewall of the node drops at least one iggy replica port, so that replica cannot reach its peers (or clients cannot reach it). nixos-config opens `inputs.nexus.lib.iggyHostTcpPorts`: update the `nexus` flake input and rebuild that node. The probe log lists the blocked ports: `kubectl -n {{ $labels.namespace }} logs -l app=iggy-port-probe --tail=20`.'';
+        description = ''The host firewall of the node drops at least one iggy replica port, so that replica cannot reach its peers (or clients cannot reach it). nixos-config opens the ports listed in `modules/nexus_iggy_cluster.nix`: rebuild that node with the current ports. The probe log lists the blocked ports: `kubectl -n {{ $labels.namespace }} logs -l app=iggy-port-probe --tail=20`.'';
       in [
         {
           alert = "IggyHostPortBlocked";
