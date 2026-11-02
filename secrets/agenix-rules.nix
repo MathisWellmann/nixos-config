@@ -32,6 +32,17 @@ in {
     ];
     armor = true;
   };
+  # Password of the least-privilege ClickHouse user `venue_registry` (only its
+  # own database), used by the weekly venue-registry job
+  # (hosts/de-msa2/venue-registry.nix). The server side holds only its SHA-256
+  # (nexus `env/prod.nix`, `clickhouse.users.venue_registry`).
+  "clickhouse_venue_registry.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
   # HMAC secret of the Forgejo webhook that wakes the `jeff` monty-persona
   # (hosts/de-msa2/monty-persona.nix). Paste the same value into the webhook's
   # "Secret" field in Forgejo; read it on de-msa2 with

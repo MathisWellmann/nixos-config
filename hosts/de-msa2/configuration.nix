@@ -58,6 +58,7 @@ in {
     ./nexus_dbs.nix
     ./forgejo.nix
     ./clanker-bot.nix
+    ./venue-registry.nix
     ./bencher.nix
     ./dsh.nix
     ./prometheus.nix
