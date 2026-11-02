@@ -185,11 +185,12 @@ in {
       # `git+file` input locks the checkout's HEAD, so updating one here would
       # cache whatever uncommitted state that working copy is in, while this
       # unit exists to build a clean ${branch} -- and on a machine where the
-      # checkout is missing or unreadable (the former `nexus` input under
-      # /home/m; 0700, and no checkout at all on hosts like de-n5), the
-      # update just dies with `Permission denied`. The `nexus` input is gone
-      # for good (its ports are vendored in modules/nexus_iggy_cluster.nix),
-      # but the skip stays for any future local input.
+      # checkout is missing or unreadable (the `nexus` input still points at
+      # a private checkout under /home/m; 0700, and no checkout at all on
+      # hosts like de-n5), the update just dies with `Permission denied`.
+      # `nexus` is the last local input; it is declared only to stay in sync
+      # with flake.lock and will disappear from both once a lock without it
+      # is committed.
       #
       # The list is derived from flake.lock rather than hardcoded so an input
       # added later is updated without touching this unit. `nix flake update`

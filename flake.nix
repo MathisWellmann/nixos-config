@@ -37,6 +37,14 @@
       url = "git+https://forgejo.k3s.lan/MathisWellmann/monty-persona.git";
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
+    # Unused vestige: no output touches inputs.nexus (the iggy ports it used
+    # to provide are vendored in modules/nexus_iggy_cluster.nix). It is kept
+    # declared only so the committed flake.lock stays consistent with this
+    # flake under `--no-update-lock-file`; an input that is never referenced
+    # is never fetched. `nix flake update` prunes it from the lock, at which
+    # point this declaration goes away too. It points at a private local
+    # checkout (/home/m, 0700), so it is skipped by modules/nixos_cache_builder.nix.
+    nexus.url = "git+file:///home/m/MathisWellmann/nexus";
   };
   # some CUDA packages require like 250GB of RAM to compile from scratch, so use binary caches.
   # Run with `--accept-flake-config`. The fleet cache comes first so plain
