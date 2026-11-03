@@ -262,22 +262,26 @@
   };
 
   services = {
-    # Blue light filter at night.
-    hyprsunset = {
+    # Blue light filter at night, following local sunset/sunrise instead of
+    # fixed clock times (hyprsunset only supports fixed times).
+    gammastep = {
       enable = true;
-      settings = {
-        max-gamma = 150;
-        profile = [
-          {
-            time = "7:30";
-            identity = true;
-          }
-          {
-            time = "20:00";
-            temperature = 2750;
-            gamma = 0.85;
-          }
-        ];
+      # London. Manual coordinates avoid depending on geoclue2 / network.
+      provider = "manual";
+      latitude = 51.5;
+      longitude = -0.13;
+      temperature = {
+        day = 6500;
+        night = 2750;
+      };
+      settings.general = {
+        adjustment-method = "wayland";
+        brightness-night = 0.85;
+        fade = 1;
+        # Defaults (3 / -6 degrees): the transition starts shortly before
+        # sunset and is complete at the end of civil twilight.
+        elevation-high = 3;
+        elevation-low = -6;
       };
     };
     hypridle = {
