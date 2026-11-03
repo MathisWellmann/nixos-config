@@ -6,7 +6,6 @@ _: {
       la = "lsd -la --group-directories-first -g --header";
       shx = "fd --type f --strip-cwd-prefix | sk | xargs hx"; # Fuzzy search and open the selected file with `helix`
       fhx = "fd --type f --strip-cwd-prefix | fzf | xargs hx"; # Same as above but with `fzf`
-      night = "redshift -P -O 5000";
       bright = "sudo xbacklight -set 100";
       # Rust
       cu = "cargo update";
