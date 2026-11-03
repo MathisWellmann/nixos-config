@@ -1,4 +1,8 @@
-_: let
+{
+  lib,
+  pkgs,
+  ...
+}: let
   name = "MathisWellmann";
   email = "wellmannmathis@gmail.com";
   global_const = import ../global_constants.nix;
@@ -33,6 +37,25 @@ in {
         pull.rebase = true;
         credential.helper = "store";
       };
+    };
+    lazygit = {
+      enable = true;
+      settings.git.diffRenderers = [
+        # difft takes over diff generation (`--ext-diff`), so it sees syntax,
+        # not lines. `{{width}}` is the diff panel, not the terminal, and
+        # `{{diffContext}}` follows lazygit's `{`/`}` keys.
+        {
+          type = "extDiff";
+          name = "difftastic";
+          command = "${lib.getExe pkgs.difftastic} --color=always --background={{colorScheme}} --width={{width}} --context={{diffContext}}";
+        }
+        # Plain git diff, one `|` away, for diffs that read better line by
+        # line than as syntax (large reformats, non-code files).
+        {
+          type = "rawGit";
+          name = "git";
+        }
+      ];
     };
     jujutsu = {
       enable = true;

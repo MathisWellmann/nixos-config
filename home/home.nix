@@ -149,7 +149,6 @@ in {
 
     # Development
     gitui
-    lazygit
     gh # Github TUI
     difftastic # `difft` executable
     mergiraf # Syntax-aware git merge driver.
