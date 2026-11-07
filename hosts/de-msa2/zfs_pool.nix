@@ -11,6 +11,19 @@
   # its slowest member, so iggy's io_uring workers piled up in D-state
   # (load ~45 on 2026-10-19). ~1 TiB free per vdev at 32 MiB/s is ~9h.
   trim_rate = "32M";
+  zfs = "${config.boot.zfs.package}/bin/zfs";
+  # iggy (replica 0 of tikr and tikr-dev) acks each message only after an
+  # fsync. On the raidz1 without SLOG, every fsync waits for a ZIL commit and
+  # a cache flush on the slowest disk, so ~40 io_uring workers sat in
+  # D-state (load ~100 on 2026-11-07). `sync=disabled` acks at the next txg
+  # (~5s); a crash of this host loses at most that window, which the other
+  # two iggy replicas still hold. `logbias=throughput` avoids writing data
+  # twice (ZIL + final block). Revisit once the slow disk is replaced.
+  iggy_datasets = [
+    "nvme_pool/iggy-cluster-0.10"
+    "nvme_pool/iggy-dev-cluster-0.10"
+  ];
+  iggy_props = "sync=disabled logbias=throughput";
 in {
   boot = {
     supportedFilesystems = ["zfs"];
@@ -162,6 +175,22 @@ in {
       ExecStartPre = "${zpool} wait -t scrub nvme_pool";
       ExecStart = lib.mkForce "${zpool} trim -w -r ${trim_rate} nvme_pool";
       TimeoutStartSec = "infinity";
+    };
+    # NixOS has no option for per-dataset properties, so set them on every
+    # boot and switch. `zfs set` is idempotent. A missing dataset fails the
+    # unit on purpose: iggy would otherwise write into the root dataset with
+    # `sync=standard` again (its hostPath uses DirectoryOrCreate).
+    zfs-iggy-props = {
+      description = "Set ZFS properties on the iggy datasets";
+      after = ["zfs-import.target"];
+      requires = ["zfs-import.target"];
+      wantedBy = ["multi-user.target"];
+      before = ["k3s.service"];
+      serviceConfig = {
+        Type = "oneshot";
+        RemainAfterExit = true;
+      };
+      script = lib.concatMapStrings (ds: "${zfs} set ${iggy_props} ${ds}\n") iggy_datasets;
     };
   };
 }
