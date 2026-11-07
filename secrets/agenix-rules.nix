@@ -110,6 +110,8 @@ in {
   # (hosts/de-msa2/prometheus.nix). To re-mint: log in as root (creds in the
   # `tikr-iggy-producer-credentials` Secret), POST /users for `metrics`, log in
   # as it and POST /personal-access-tokens with expiry 18446744073709551615.
+  # The user lives in the broker's data dir, so a cluster started on fresh
+  # dirs (the 0.10.0 cutover, 2026-11-07) needs a new token.
   "iggy_metrics_token.age" = {
     publicKeys = [
       user_de_msa2
