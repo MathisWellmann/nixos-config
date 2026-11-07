@@ -1,8 +1,19 @@
-# Build and run with `nix-build vms/tor.nix; result/bin/run-nixos-vm`
+# Build and run with `nix-build vms/tor.nix; result/bin/tor-vm`
+#
+# The disk image (./tor.qcow2 in the current directory) is LUKS-encrypted.
+# The first run asks for a new passphrase, later runs ask for it to unlock.
+# To keep the state of an old plaintext image (it used to be ./nixos.qcow2):
+# `result/bin/tor-vm convert nixos.qcow2`, then delete nixos.qcow2.
 let
   pkgs = import <nixpkgs> {};
 
   tor_vm = _: {
+    imports = [./encrypted-disk.nix];
+
+    # Names the disk image and launcher. The default "nixos" was shared with
+    # waterfox.nix, so both VMs used the same ./nixos.qcow2.
+    networking.hostName = "tor";
+
     users = {
       users.root.initialPassword = "test";
       users.guest = {
@@ -59,4 +70,4 @@ let
     tor_vm
   ];
 in
-  vms.config.system.build.vm
+  vms.config.system.build.encryptedVm

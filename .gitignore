@@ -1,4 +1,5 @@
-nixos.qcow2
+# VM disk images (vms/*.nix default to ./<hostName>.qcow2)
+*.qcow2
 result
 result-bin
 cheatsheet.pdf
