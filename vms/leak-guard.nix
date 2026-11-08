@@ -35,8 +35,9 @@ in {
     services.nscd.enable = false;
     system.nssModules = lib.mkForce [];
 
-    # The router daemons correct their own clocks (I2P has a built-in SNTP
-    # client) and timesyncd would be dropped by the firewall anyway.
+    # timesyncd would be dropped by the firewall anyway. The guest clock
+    # starts from the host's RTC, which is close enough for Tor, and I2P
+    # also runs its own SNTP client.
     services.timesyncd.enable = false;
 
     networking.nftables = {

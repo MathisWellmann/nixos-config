@@ -8,9 +8,18 @@
 {lib, ...}: {
   system.stateVersion = "26.11";
 
-  users.users.guest = {
-    isNormalUser = true;
-    initialPassword = "guest";
+  users = {
+    # Rebuild /etc/passwd and /etc/shadow from this config on every boot. On
+    # a persistent disk, mutable users would keep any password set earlier
+    # (the tor VM used to give root "test") or by a compromised guest.
+    mutableUsers = false;
+    # Nobody can log in as root inside the VM, on purpose: the VM is changed
+    # by editing this config on the host.
+    allowNoPasswordLogin = true;
+    users.guest = {
+      isNormalUser = true;
+      initialPassword = "guest";
+    };
   };
 
   services = {
