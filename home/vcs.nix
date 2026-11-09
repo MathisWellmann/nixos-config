@@ -1,4 +1,5 @@
 {
+  config,
   lib,
   pkgs,
   ...
@@ -20,6 +21,11 @@ in {
         git ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIJTrWy6E9iG8lVS1LjISAczHxRHN34mdT9bF1zg6Yh6p
       '';
     };
+    # lazygit writes an empty config.yml on first launch, which blocks HM
+    # activation on hosts where it ran before programs.lazygit owned the
+    # file. The stub holds no settings, so overwriting it is safe. The key
+    # must match the one the lazygit module uses so the two definitions merge.
+    file."${config.xdg.configHome}/lazygit/config.yml".force = true;
   };
   programs = {
     git = {
