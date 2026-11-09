@@ -25,6 +25,10 @@ in {
         # listens on 127.0.0.1 (monty-persona.nix). The default, `external`,
         # refuses loopback targets.
         webhook.ALLOWED_HOST_LIST = "external,loopback";
+        # The default 300s mirror timeout kills large fetches (ClickHouse with
+        # its refs/pull/*) midway, and each killed fetch leaves a multi-GiB
+        # `tmp_pack_*` behind; this had piled up ~890 GiB.
+        "git.timeout".MIRROR = 3600;
         actions = {
           ENABLED = true;
           DEFAULT_ACTIONS_URL = "github";
