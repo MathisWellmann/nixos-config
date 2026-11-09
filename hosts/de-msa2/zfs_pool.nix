@@ -1,6 +1,7 @@
 {
   config,
   lib,
+  pkgs,
   ...
 }: let
   const = import ./constants.nix;
@@ -81,13 +82,27 @@ in {
       # and runs `zfs destroy -r` on it (even without `followDelete`).
       # Turning snapshots off for nvme_pool/clickhouse on 2026-10-21 froze its
       # de-n5 copy. A quoting bug in zfs-replicate 4.1.0 made the destroy fail,
-      # which is the only reason the copy still exists. To keep a dataset
+      # which is the only reason the copy still exists (the bug is now patched
+      # below, so such copies WILL be destroyed). To keep a dataset
       # backed up with less snapshot space, turn off single intervals instead.
       # nvme_pool/clickhouse now uses daily snapshots only:
       #   zfs set com.sun:auto-snapshot:{frequent,hourly,weekly,monthly}=false
       # attic and rustfs have `auto-snapshot=false`, so they are not on de-n5.
       autoReplication = {
         enable = true;
+        # 4.1.0 (latest release) interpolates the FileSystem dataclass repr
+        # into `zfs destroy -r '...'`, so bash fails on the `(` and every
+        # run that has to drop a remote dataset aborts. Upstream main fixed
+        # it (argv with `filesystem.name`), but is 255 commits of breaking
+        # changes ahead; drop this once a release ships the fix.
+        package = pkgs.zfs-replicate.overridePythonAttrs (old: {
+          postPatch =
+            (old.postPatch or "")
+            + ''
+              substituteInPlace zfs/replicate/filesystem/destroy.py \
+                --replace-fail "zfs destroy -r '{filesystem}'" "zfs destroy -r '{filesystem.name}'"
+            '';
+        });
         followDelete = true;
         host = static_ips.de-n5_ip;
         identityFilePath = "/root/.ssh/id_ed25519";
