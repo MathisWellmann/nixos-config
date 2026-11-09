@@ -30,6 +30,10 @@
       inputs.nixpkgs.follows = "nixpkgs-unstable";
     };
     nixos-vex.url = "github:datosh/nixos-vex";
+    bootvine = {
+      url = "git+https://codeberg.org/wvhulle/bootvine";
+      inputs.nixpkgs.follows = "nixpkgs-unstable";
+    };
 
     # Self-hosted on de-msa2's forgejo (hosts/de-msa2/forgejo.nix); the
     # `k3s.lan` name resolves over tailscale via modules/base_system.nix.
@@ -72,6 +76,7 @@
     hermes-agent,
     nixidy,
     nixos-vex,
+    bootvine,
     ...
   } @ inputs: let
     system = "x86_64-linux";
@@ -91,6 +96,7 @@
         specialArgs = {inherit inputs;};
         modules =
           [
+            bootvine.nixosModules.default
             ./hosts/${name}/configuration.nix
             home-manager.nixosModules.default
             nixos-vex.nixosModules.default

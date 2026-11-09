@@ -180,6 +180,7 @@ in {
   };
 
   services = {
+    bootvine.enable = true;
     blueman.enable = true;
     mount_remote_nfs_exports = {
       enable = true;
