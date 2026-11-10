@@ -51,10 +51,9 @@ in {
     # Fonts
     terminus_font
     maple-mono.NF
-    hongdown
-    eilmeldung
 
     # Misc
+    eilmeldung
     viu # View images in the terminal, best with `kitty`
     unsure # Calculate with numbers you are unsure about.
     jq # Json toolkit
