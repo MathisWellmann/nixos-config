@@ -18,9 +18,6 @@
     inputs.awww.packages.${pkgs.stdenv.hostPlatform.system}.awww
     # Desktop
     firefox
-    # ladybird # CVE currently
-    brave
-    # floorp-bin
     keepassxc
     # Both are disablede because they require `libsoup` which was marked as insecure.
     gthumb # Image viewer with support for ARW files
