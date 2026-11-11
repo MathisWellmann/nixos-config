@@ -7,23 +7,32 @@
 # Built from crates.io instead of taking the npm platform package's prebuilt
 # ELF, which hardcodes `/lib64/ld-linux-x86-64.so.2` and does not run on NixOS
 # without nix-ld. Keep the version in lock-step with the `@pydantic/monty`
-# npm version vendored in `home/deepseek-harness.nix`: the worker protocol is
+# npm version vendored in `pkgs/dsh-tool-monty.nix`: the worker protocol is
 # only guaranteed compatible within one release.
+#
+# nixpkgs' cargo setup hook exports `ZSTD_SYS_USE_PKG_CONFIG=1`, so the
+# `zstd-sys` dependency needs pkg-config and the system zstd; without them its
+# build script panics.
 {
   lib,
   fetchCrate,
   rustPlatform,
+  pkg-config,
+  zstd,
 }:
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "monty-runtime";
-  version = "1.0.0";
+  version = "1.5.0";
 
   src = fetchCrate {
     inherit (finalAttrs) pname version;
-    hash = "sha256-lhuKFrOdgwHiNTalFEdk0rDYee2xnJ4r4hNGrJSoWOI=";
+    hash = "sha256-wtrDWGlhVAjHzsr0sbaGUA97KAgNhnC2+QVzH8Wg/7A=";
   };
 
-  cargoHash = "sha256-X/Ydb9nZ11ll+sctIs6r24t87XkN3jssmK9igYT0DMU=";
+  cargoHash = "sha256-UIFY1otb222pnncMvKTy4Gf+eGNhOuB/3cMGtFZrz0o=";
+
+  nativeBuildInputs = [pkg-config];
+  buildInputs = [zstd];
 
   # The crate's tests spawn the built binary through tempfiles; not needed
   # for a runtime package and they lengthen the build considerably.

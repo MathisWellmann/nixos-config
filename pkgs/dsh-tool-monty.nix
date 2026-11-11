@@ -23,17 +23,17 @@
   callPackage,
   monty-runtime ? callPackage ./monty-runtime.nix {},
 }: let
-  version = "1.0.0";
+  version = "1.5.0";
 
   platform =
     {
       "x86_64-linux" = {
         name = "linux-x64-gnu";
-        hash = "sha256-KfJuShk9i3KKodRsGwqHz0ef1Nny3gJzOy1HAsIRUa8=";
+        hash = "sha256-HhMcD+XCL1ANWqFScbF4DQ/jpcVCL4ARTPjVskBWZUo=";
       };
       "aarch64-linux" = {
         name = "linux-arm64-gnu";
-        hash = "sha256-q7HKABu7fkqDq9S7Yece/8sZ7thEAxe7vSZgxbDmgfk=";
+        hash = "sha256-2QIfd1HPjx7X2kVvtQWZ7qdWoNs9A5PAc8VTNBXVGc0=";
       };
     }
     .${
@@ -43,7 +43,7 @@
 
   monty = fetchzip {
     url = "https://registry.npmjs.org/@pydantic/monty/-/monty-${version}.tgz";
-    hash = "sha256-UbZT8RDWg6oypbtaHe3OHpswVvHow2ZaIfx9+bXQVpg=";
+    hash = "sha256-50198c2kErCGzU4I5mwA+6+tmz3nwZbCatAKJVmx4GM=";
   };
   montyPlatform = fetchzip {
     url = "https://registry.npmjs.org/@pydantic/monty-${platform.name}/-/monty-${platform.name}-${version}.tgz";
