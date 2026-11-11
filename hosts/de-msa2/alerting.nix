@@ -588,10 +588,13 @@ _: let
       rules = [
         {
           alert = "TikrClickHouseInsertsStalled";
+          # Funding rates arrive in one burst per settlement (every 8h on Binance
+          # COIN-M and Bitfinex), so zero inserts in 10m is their normal state.
+          # `TikrFundingRateInsertsStalled` covers them with a longer window.
           expr = ''
-            sum by (namespace, job) (rate(tikr_clickhouse_inserts{namespace="tikr"}[10m])) == 0
+            sum by (namespace, job) (rate(tikr_clickhouse_inserts{namespace="tikr", job!~".+-fundingrate"}[10m])) == 0
             or (
-              count by (namespace, job) (up{namespace="tikr", job=~"tikr-sink-clickhouse-.+"} == 1)
+              count by (namespace, job) (up{namespace="tikr", job=~"tikr-sink-clickhouse-.+", job!~".+-fundingrate"} == 1)
                 unless on (namespace, job)
               count by (namespace, job) (tikr_clickhouse_inserts{namespace="tikr"})
             )
@@ -601,6 +604,31 @@ _: let
           annotations = {
             summary = ''{{ $labels.job }}: ClickHouse inserts stalled'';
             description = ''The sink inserted zero rows into ClickHouse (or is scraped but exports no insert counter), so market data is being lost or is backing up in iggy. Check the sink logs, iggy-server consensus (view changes, `ReplicaNotConnected`) and the producers (cf. the 2026-10-14 gap).'';
+          };
+        }
+        {
+          alert = "TikrFundingRateInsertsStalled";
+          # The funding producers poll about once a minute and send each
+          # settlement once. The longest settlement interval is 8h (Binance
+          # COIN-M, Bitfinex; Binance USD-M uses 1h to 8h per symbol), so a
+          # working sink inserts at least once in 9h. `increase_pure` (MetricsQL)
+          # counts a new series from 0: after a sink restart the counter first
+          # appears with a whole settlement batch, and `increase` drops such a
+          # large first value. The absent branch also looks back 9h, so a
+          # restarted sink that waits for its first settlement does not fire.
+          expr = ''
+            sum by (namespace, job) (increase_pure(tikr_clickhouse_inserts{namespace="tikr", job=~"tikr-sink-clickhouse-.+-fundingrate"}[9h])) == 0
+            or (
+              count by (namespace, job) (up{namespace="tikr", job=~"tikr-sink-clickhouse-.+-fundingrate"} == 1)
+                unless on (namespace, job)
+              count by (namespace, job) (last_over_time(tikr_clickhouse_inserts{namespace="tikr", job=~"tikr-sink-clickhouse-.+-fundingrate"}[9h]))
+            )
+          '';
+          for = "5m";
+          labels.severity = "critical";
+          annotations = {
+            summary = ''{{ $labels.job }}: no funding rate inserted for 9h'';
+            description = ''The sink inserted no funding rate into ClickHouse for 9h, longer than the longest settlement interval (8h), so settlements are lost or backing up in iggy. Check the producer first (`tikr_iggy_producer_funding_polls_failed`, logs), then the sink logs and iggy.'';
           };
         }
         {
@@ -676,11 +704,14 @@ _: let
           # and minute. Without snapshots the book deltas cannot be replayed
           # into a book, so the order book history has a hole. Same absent-
           # counter pattern as the stall rules above: the counter only exists
-          # after the first snapshot was sent.
+          # after the first snapshot was sent. The sinks of the snapshot topics
+          # (`tikr-sink-clickhouse-*-booksnapshot`) also match
+          # `tikr-.+-booksnapshot` but never export the producer counter, so
+          # they are excluded; `TikrClickHouseInsertsStalled` covers them.
           expr = ''
             sum by (namespace, job) (rate(tikr_iggy_producer_book_snapshots_ok{namespace="tikr"}[5m])) == 0
             or (
-              count by (namespace, job) (up{namespace="tikr", job=~"tikr-.+-booksnapshot"} == 1)
+              count by (namespace, job) (up{namespace="tikr", job=~"tikr-.+-booksnapshot", job!~"tikr-sink-.+"} == 1)
                 unless on (namespace, job)
               count by (namespace, job) (tikr_iggy_producer_book_snapshots_ok{namespace="tikr"})
             )
