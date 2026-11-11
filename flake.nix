@@ -81,6 +81,7 @@
   } @ inputs: let
     system = "x86_64-linux";
     pkgs = import nixpkgs-unstable {inherit system;};
+    rustSystemLibs = import ./overlays/rust_system_libs.nix;
     # google/ax, built once: the push script and the nixidy env (image digest
     # pins in manifests/prod/ax) must see the same derivation.
     axBundle = pkgs.callPackage ./pkgs/ax {
@@ -101,6 +102,10 @@
             home-manager.nixosModules.default
             nixos-vex.nixosModules.default
             {
+              # Also into home-manager: `useGlobalPkgs` is off, so it
+              # imports its own nixpkgs and would not see the NixOS overlays.
+              nixpkgs.overlays = [rustSystemLibs];
+              home-manager.sharedModules = [{nixpkgs.overlays = [rustSystemLibs];}];
               home-manager.useUserPackages = true;
               environment.pathsToLink = ["/share/applications" "/share/xdg-desktop-portal"];
             }
