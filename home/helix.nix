@@ -1,7 +1,7 @@
 {pkgs, ...}: {
   home.packages = with pkgs; [
     tinymist # Typst markup language with `.typ` file extension
-    codebook
+    # codebook # Fails to compile now
     simple-completion-language-server
   ];
   programs.helix = {
@@ -11,10 +11,10 @@
         rust-analyzer = {
           config = {cargo = {features = "all";};};
         };
-        codebook = {
-          command = "codebook-lsp";
-          args = ["serve"];
-        };
+        # codebook = {
+        #   command = "codebook-lsp";
+        #   args = ["serve"];
+        # };
         # provides easy unicode support for all those fancy symbols
         scls = {
           command = "simple-completion-language-server";
@@ -39,7 +39,7 @@
       language = [
         {
           name = "rust";
-          language-servers = ["rust-analyzer" "codebook" "scls"];
+          language-servers = ["rust-analyzer" "scls"];
         }
         {
           name = "markdown";
