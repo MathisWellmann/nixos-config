@@ -180,6 +180,9 @@
 
       # The same idea for nushell: `nubuddy "prompt"` or `ask` in the REPL, see pkgs/nubuddy.nix
       nubuddy = pkgs.callPackage ./pkgs/nubuddy.nix {};
+
+      # exa-fork file lister with jj status, e.g. `nix run .#lx -- -ll -aFTCZ`
+      lx = pkgs.callPackage ./pkgs/lx.nix {};
     };
 
     nixosConfigurations = {

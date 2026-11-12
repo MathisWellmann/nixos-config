@@ -23,8 +23,11 @@
   # Store path instead of PATH lookup: starship runs this on every prompt,
   # and it must work in shells where home.packages is not on PATH yet.
   jjStarship = lib.getExe pkgs.jj-starship;
+
+  # lx: exa-fork file lister with jj status, see pkgs/lx.nix
+  lx = inputs.self.packages.${pkgs.stdenv.hostPlatform.system}.lx;
 in {
-  home.packages = [nubuddy hxPr];
+  home.packages = [nubuddy hxPr lx];
 
   programs = {
     nushell = {
@@ -37,6 +40,9 @@ in {
         dim = "sudo ${pkgs.brillo}/bin/brillo -u 150000 -U 10";
         todos = "rg --glob='*.{rs,nix,typst}' --line-number --color=always TODO";
         loctree = "erd --disk-usage line --layout inverted --sort size --no-progress";
+        # Tree view: tier-2 long (+group, VCS), hidden files, dirs first,
+        # recursive dir sizes, item count + total size footer on stderr.
+        lxt = "lx -ll -aFTCZ -L2";
         cl = "~/.local/bin/claude --dangerously-skip-permissions";
         gt = lib.getExe pkgs.gitui;
 
