@@ -111,7 +111,9 @@ in {
   # `tikr-iggy-producer-credentials` Secret), POST /users for `metrics`, log in
   # as it and POST /personal-access-tokens with expiry 18446744073709551615.
   # The user lives in the broker's data dir, so a cluster started on fresh
-  # dirs (the 0.10.0 cutover, 2026-11-07) needs a new token.
+  # dirs (the 0.10.0 cutover, 2026-11-07) needs a new token. Re-mint BOTH
+  # tokens after such a cutover: in 2026-11 only prod was re-minted and the
+  # dev scrape stayed at 401 until 2026-11-12.
   "iggy_metrics_token.age" = {
     publicKeys = [
       user_de_msa2
