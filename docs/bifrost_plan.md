@@ -1,7 +1,10 @@
 # Bifrost LLM gateway: integration plan
 
-Status: planned, nothing is deployed. Research done 2026-11-10 (agent
-memory tag `llm_gateway`).
+Status (2026-11-13): Phase 0 partly done (results below). Phase 1 and the
+ClickHouse part of Phase 3 are implemented but not deployed:
+`env/bifrost.nix` here, and the ClickHouse user in nexus `env/prod.nix`
+(on `dev`). See "Deploy order" below. No client uses the gateway yet.
+Research done 2026-11-10 (agent memory tag `llm_gateway`).
 
 Goal: put one gateway in front of the sglang server on desg0 and OpenRouter,
 so that:
@@ -63,10 +66,21 @@ Fallback if Phase 0 fails: LiteLLM. It is in nixpkgs as `services.litellm`
 - **sglang-specific parameters**: `modules/ai/pi-sglang-provider.nix`,
   `oh-my-pi.nix` and `prime-agent.nix` send `chat_template_kwargs` to
   toggle thinking. Bifrost drops unknown fields unless the request carries
-  the header `x-bf-passthrough-extra-params: true`.
+  the header `x-bf-passthrough-extra-params: true`, but the `sgl` provider
+  sets that flag itself (`core/providers/sgl/sgl.go`). Tested on v2.5.1:
+  thinking on and off work without the header.
 - **Model ids**: Bifrost uses `provider/model`, e.g.
-  `sgl/RadixArk/Qwen3.8-27B-NVFP4`. Static aliases exist (v1.5+). Whether
-  an id without the prefix works is an open question.
+  `sgl/RadixArk/Qwen3.8-27B-NVFP4`. Tested on v2.5.1: chat requests
+  without the prefix also work (routed by the model catalog), but
+  `/v1/models` lists only the prefixed id.
+- **Private IPs**: providers on RFC 1918 addresses need
+  `network_config.allow_private_network = true`. Without it every request
+  fails with "connection to private IP 192.168.0.13 is not allowed".
+- **ClickHouse log store** (labelled beta upstream): Bifrost never runs
+  CREATE DATABASE (maximhq/bifrost#5340). It needs SELECT on
+  `system.data_skipping_indices` besides its own database. While
+  ClickHouse is down, inference keeps working, but the log rows of that
+  window are dropped after 3 retries (~1 s).
 - **OSS limits**: one node only (state is held in memory; multi-node sync
   is Enterprise). Scraping `/metrics` needs admin basic auth once auth is
   on (API-key scraping is Enterprise). There is no "remaining budget"
@@ -84,7 +98,8 @@ Fallback if Phase 0 fails: LiteLLM. It is in nixpkgs as `services.litellm`
 | Manifests | Plain nixidy resources: Deployment (1 replica, `Recreate`), PVC, Service, Ingress, ConfigMap with `config.json` | The chart is not in nixhelm; one container is easy to write by hand and we avoid chart churn | `lib.helm.downloadHelmChart` from `https://maximhq.github.io/bifrost/helm-charts` |
 | Node | Pin to de-msa2 | `local-path` PVCs bind to one node; de-msa2 is always on and already runs the observability stack | |
 | `config_store` | SQLite on the PVC | OSS is single-node anyway; budget usage survives restarts; no database to run | Postgres on de-msa2 (`services.postgresql` already runs for attic) |
-| `logs_store` | Phase 1: SQLite with short retention, to measure. Phase 3: ClickHouse database `bifrost` in the nexus ClickHouse | Volume (see above) | Postgres with retention |
+| `logs_store` | ClickHouse database `bifrost` in the nexus ClickHouse from the start, retention 30 days (table TTL + `log_retention_days`). The SQLite measurement phase was skipped: nvme_pool has 1.7 TB free, so even ~35 GB/week uncompressed fits | Volume (see above) | Postgres with retention |
+| Health | `disable_db_pings_in_health = true` | `/health` pings the stores; a ClickHouse restart would fail the liveness probe and kill every in-flight agent request | Keep pings, TCP liveness probe |
 | Config source | `source_of_truth = "config.json"` with the config store enabled | Git wins on every start; UI edits are only for experiments | `split` (default) keeps UI edits |
 | Auth | `enforce_auth_on_inference = true`; admin basic auth for UI and `/metrics` | Every request is attributed to a VK | |
 | Hostname | `llm.k3s.lan`; in-cluster clients use `bifrost.llm-gateway.svc.cluster.local` | Same pattern as `ax.k3s.lan` | |
@@ -94,66 +109,83 @@ Fallback if Phase 0 fails: LiteLLM. It is in nixpkgs as `services.litellm`
 
 ## Phase 0: Proof of concept (no client changes)
 
-Run Bifrost by hand on de-msa2 with podman (pinned digest), SQLite for both
-stores, an `sgl` provider pointing at `http://192.168.0.13:8000` and an
-`openrouter` provider. Use a test OpenRouter key with an OpenRouter-side
-limit of $1/day, so a mistake cannot cost money.
+Done on 2026-11-13 in a rootless podman pod on de-msa2: Bifrost v2.5.1
+(pinned digest) with the `sgl` provider at `http://192.168.0.13:8000`, a
+SQLite config store, and a throwaway clickhouse-server 26.3.50.11 container
+whose `bifrost` user had exactly the nexus grants. The last run used the
+`config.json` rendered from `env/bifrost.nix`. There is no OpenRouter
+provider yet, so the budget items wait for Phase 5.
 
-- [ ] `/v1/models` lists `sgl/RadixArk/Qwen3.8-27B-NVFP4`. Check whether the
-      id without the prefix works, or whether a static alias makes it work.
-      (agent-symbiont checks the id against `/v1/models`.)
-- [ ] `chat_template_kwargs` reaches sglang with
-      `x-bf-passthrough-extra-params: true`: thinking on and off must give
-      different outputs. Look for a server-side way to make passthrough the
-      default.
-- [ ] pi works end to end through the gateway
-      (`pi -p --no-session --thinking low "..."`): streaming, tool calls,
-      `reasoning_content`.
+- [x] `/v1/models` lists `sgl/RadixArk/Qwen3.8-27B-NVFP4`. Chat requests
+      with `RadixArk/Qwen3.8-27B-NVFP4` (no prefix) also work.
+      agent-symbiont checks the id against `/v1/models`, so it must use the
+      prefixed id or skip that check.
+- [x] `chat_template_kwargs` reaches sglang without any header: the `sgl`
+      provider turns passthrough on itself. With thinking on, the response
+      has `reasoning_content`; with it off, it has none.
+- [x] Streaming and tool calls work (`tool_calls` deltas,
+      `finish_reason: tool_calls`). pi itself is not tested yet (Phase 4).
 - [ ] A cold ~200k-token prompt completes with
       `default_request_timeout_in_seconds = 900` and
-      `stream_idle_timeout_in_seconds = 600` on the `sgl` provider. Find
-      out whether sglang sends anything on the stream before the first token.
+      `stream_idle_timeout_in_seconds = 600` on the `sgl` provider. Not
+      run: it loads the shared GPU. Find out whether sglang sends anything
+      on the stream before the first token.
 - [ ] Budget: a global model limit for openrouter with
       `budgets = [{1d, $0.05}, {1w, $0.10}]`. Go over it and record the HTTP
       status, the `error_type` label value and the error body. sglang
-      traffic must keep working.
-- [ ] Virtual keys can be declared in `config.json` with fixed values (from
-      env), so their secrets can live in agenix. If not: create them once
-      through the API and store the values in agenix.
+      traffic must keep working. (Phase 5.)
+- [x] Virtual keys can be declared in `config.json` with
+      `value = "env.BIFROST_VK_..."`, so their secrets live in agenix.
 - [ ] Budget usage survives a restart with `source_of_truth = "config.json"`.
-- [ ] Measure bytes per logged request in SQLite under real traffic (point
-      one busy client at the PoC for a day). Extrapolate to 136.8k/week.
+      (Phase 5.)
+- [ ] Measure bytes per logged request under real traffic. Now done in
+      ClickHouse after Phase 4 (see Phase 3).
 - [ ] Measure `bifrost_overhead_latency_microseconds` and RSS with 12
-      concurrent streams (sglang's `--max-running-requests`).
-- [ ] Write the results into this file and decide: go, or fall back to
-      LiteLLM.
+      concurrent streams (sglang's `--max-running-requests`). Idle RSS:
+      85 MB. Single requests: `latency` equals `upstream_latency`.
+- [x] Decision: go. Also tested: without auth `/v1/models` and `/metrics`
+      return 401, admin basic auth opens `/metrics`, a restart that changes
+      `retention_days` runs `MODIFY TTL` with the nexus grants, and the
+      `bifrost` user cannot read `system.query_log` or create other
+      databases.
 
 ## Phase 1: Deploy in k3s (no clients yet)
 
-- [ ] `env/bifrost.nix`, imported in `env/prod.nix`: Namespace, PVC
-      (`local-path`), ConfigMap (`config.json` rendered from Nix),
-      Deployment (pinned digest, `nodeSelector` de-msa2, `strategy:
-      Recreate`, liveness/readiness probes (take the health path from
-      the upstream chart), CPU and memory requests
-      AND limits: the 2026-06-27 greptimedb incident shows why), Service,
-      Ingress (`cert-manager.io/cluster-issuer: k3s-lan-ca`, traefik; copy
-      from `env/ax.nix`).
-- [ ] `config.json`:
-  - `sgl` provider: the timeouts from Phase 0, `max_retries = 0`. Use the
-    IP, as `pkgs/ax/default.nix` does, because pods may not resolve `desg0`.
-  - `openrouter` provider: key `env.OPENROUTER_API_KEY`, with a model
-    allowlist so a typo cannot reach an expensive model.
-  - Global model limit for openrouter (daily + weekly budgets).
-  - Client settings: `enforce_auth_on_inference`, log retention, JSON logs.
-- [ ] Secret `bifrost-secrets` (OpenRouter key, admin password, encryption
-      key, later the ClickHouse password), created by hand as in nexus.
-      Write the exact `kubectl create secret ... --dry-run=client -o yaml |
-      kubectl apply -f -` command into `env/bifrost.nix`.
-- [ ] `llm.k3s.lan`: add it to `networking.hosts` in
-      `modules/base_system.nix`, and add `gethomepage.dev/*` annotations.
-- [ ] Render (`nix run .#nixidy -- switch .#prod`). Put unrelated manifest
-      drift in its own revision (`jj restore manifests/prod/<app>`).
-- [ ] Run a smoke test through `https://llm.k3s.lan` with a test VK.
+- [x] `env/bifrost.nix`, imported in `env/prod.nix`: Namespace, PVC
+      (`local-path`, 1Gi, SQLite config store only), ConfigMap (`config.json`
+      rendered from Nix, `checksum/config` pod annotation because it is a
+      subPath mount), Deployment (pinned digest, `nodeSelector` de-msa2,
+      `strategy: Recreate`, startup/readiness/liveness probes on `/health`,
+      requests 100m/256Mi, limits 4 CPU/2Gi, `GOMEMLIMIT` 1800MiB), Service,
+      Ingress (traefik, `k3s-lan-ca`, homepage annotations).
+- [x] `config.json`:
+  - `sgl` provider: timeouts 900 s / 600 s, `max_retries = 0`,
+    `allow_private_network = true`, the IP instead of `desg0`.
+  - Client settings: `enforce_auth_on_inference`, retention 30 days,
+    `disable_db_pings_in_health`, JSON logs (`LOG_STYLE`).
+  - One VK `smoke-test` (sgl only).
+  - [ ] `openrouter` provider and its global model limit: Phase 5.
+- [x] Secret `bifrost-secrets` from `secrets/bifrost_env.age` (env file:
+      `CLICKHOUSE_PASSWORD`, `BIFROST_ENCRYPTION_KEY`,
+      `BIFROST_ADMIN_PASSWORD`, `BIFROST_VK_SMOKE_TEST`). The command to
+      create it is in the header of `env/bifrost.nix`.
+- [x] `llm.k3s.lan` in `networking.hosts` (`modules/base_system.nix`).
+- [x] Rendered. The unrelated drift (argocd and cert-manager charts, ax and
+      substrate image digests after the 2026-11-13 flake.lock update) was
+      left out.
+- [ ] Run a smoke test through `https://llm.k3s.lan` with the `smoke-test`
+      VK once ArgoCD has synced.
+
+### Deploy order
+
+1. nexus: promote the `clickhouse: least-privilege bifrost user ...`
+   change from `dev` to `main`. It restarts the ClickHouse pod once
+   (`checksum/config`). Without the user, the initContainer gets 403
+   and the pod retries with backoff, which does no harm.
+2. Create the namespace and the Secret (header of `env/bifrost.nix`).
+3. Push this repo's `main`. ArgoCD syncs the `bifrost` app.
+4. Smoke test:
+   `curl https://llm.k3s.lan/v1/models -H "Authorization: Bearer $VK"`.
 
 ## Phase 2: Observability
 
@@ -188,14 +220,20 @@ limit of $1/day, so a mistake cannot cost money.
 
 ## Phase 3: Message store at scale
 
-- [ ] Add a ClickHouse database `bifrost` and user `bifrost` in nexus
-      (`env/prod.nix`, `clickhouse.users`, like `venue_registry`). Store the
-      password in `bifrost-secrets`.
-- [ ] Switch `logs_store` to `clickhouse`
-      (`clickhouse.clickhouse.svc.cluster.local:9000`, native protocol). Set
-      `retention_days` from the Phase 0 measurement and the free space on
-      `nvme_pool/clickhouse` (ZFS, daily snapshots only, see
-      `hosts/de-msa2/zfs_pool.nix`).
+- [x] User `bifrost` in nexus (`env/prod.nix`, `clickhouse.users`):
+      `SELECT, INSERT, CREATE DATABASE, CREATE TABLE, ALTER ON bifrost.*`
+      and `SELECT ON system.data_skipping_indices`. The initContainer
+      creates the database. The password is `CLICKHOUSE_PASSWORD` in
+      `bifrost-secrets`.
+- [x] `logs_store = clickhouse`
+      (`clickhouse.clickhouse.svc.cluster.local:9000`, native protocol),
+      `retention_days = 30`. Bifrost creates `ReplacingMergeTree` tables with
+      a native TTL. Each request is inserted as `processing` and inserted
+      again when it completes, so until merges run a row exists twice.
+- [ ] After a week of real traffic, check the table size against the free
+      space on `nvme_pool/clickhouse` (ZFS, daily snapshots only, see
+      `hosts/de-msa2/zfs_pool.nix`; 1.7 TB free on 2026-11-13):
+      `SELECT formatReadableSize(sum(bytes_on_disk)), formatReadableSize(sum(data_uncompressed_bytes)) FROM system.parts WHERE database = 'bifrost' AND active`.
 - [ ] Measure ClickHouse's compression ratio on real rows. Successive agent
       turns repeat the same prefix, but they are rarely adjacent in a block,
       so do not assume a high ratio.
@@ -205,14 +243,16 @@ limit of $1/day, so a mistake cannot cost money.
 ## Phase 4: Migrate clients
 
 Migrate one client per revision, and keep the direct sglang URL in a comment
-for rollback. Each client gets its own VK: NixOS clients from agenix, cluster
-clients from a k8s Secret. Clients that send `chat_template_kwargs` also send
-the passthrough header.
+for rollback. Each client gets its own VK: add it to `virtual_keys` in
+`env/bifrost.nix` with `value = "env.BIFROST_VK_<NAME>"`, add that line to
+`secrets/bifrost_env.age` and re-create the Secret. The client reads the
+same value from agenix (NixOS) or from a k8s Secret (cluster). No
+passthrough header is needed (Phase 0).
 
 | Client | Where | Notes |
 |---|---|---|
-| pi (all hosts) | `vllmBaseUrl` in `hosts/{meshify,tensorbook,de-msa2,de-n5,desg0,razerblade}/configuration.nix`; provider in `modules/ai/pi-sglang-provider.nix` | Add VK + passthrough header to the provider. The discovery `curl` (`modules/ai/pi-agent.nix:63`) needs the auth header too. |
-| oh-my-pi | `modules/ai/oh-my-pi.nix`, desg0 `defaultModel` | Model id gets the `sgl/` prefix unless aliases work. |
+| pi (all hosts) | `vllmBaseUrl` in `hosts/{meshify,tensorbook,de-msa2,de-n5,desg0,razerblade}/configuration.nix`; provider in `modules/ai/pi-sglang-provider.nix` | Add the VK to the provider. The discovery `curl` (`modules/ai/pi-agent.nix:63`) needs the auth header too. |
+| oh-my-pi | `modules/ai/oh-my-pi.nix`, desg0 `defaultModel` | The id without `sgl/` works for chat; use the prefixed id if it is checked against `/v1/models`. |
 | prime-agent | `modules/ai/prime-agent.nix` | |
 | nixos_cache_builder repair agent | `hosts/desg0/configuration.nix` (`agent_model`) | Uses pi on desg0. |
 | deepseek-harness | `home/deepseek-harness.nix` (`sglang-desg0` route) | |
@@ -248,10 +288,9 @@ nixidy Applications have no finalizer, so delete the namespace by hand.
 
 ## Open questions
 
-- Do model ids without the `provider/` prefix work, through aliases or
-  otherwise? If yes, agent-symbiont needs no config change.
-- Is there a server-side default for extra-parameter passthrough?
-- Can virtual-key secrets be fixed in `config.json`?
+- Answered in Phase 0: ids without the prefix work for chat (not in
+  `/v1/models`); the `sgl` provider passes extra parameters by itself;
+  virtual-key values can come from env.
 - Does sglang send anything on a stream before the first token? This sets
   the minimum `stream_idle_timeout_in_seconds`.
 - Out of scope for now: putting the llama-cpp router on meshify and
