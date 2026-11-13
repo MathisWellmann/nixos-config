@@ -1,0 +1,105 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: bifrost
+  namespace: llm-gateway
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: bifrost
+  strategy:
+    type: Recreate
+  template:
+    metadata:
+      annotations:
+        checksum/config: d1bf2c5c914a5c7295762a72c8b0ee0cabf1fa7b0d878256bd34065a31f74218
+      labels:
+        app.kubernetes.io/name: bifrost
+    spec:
+      containers:
+        - env:
+            - name: GOMEMLIMIT
+              value: 1800MiB
+            - name: LOG_STYLE
+              value: json
+          envFrom:
+            - secretRef:
+                name: bifrost-secrets
+          image: docker.io/maximhq/bifrost:v2.5.1@sha256:5ec9873acaf1687556b6e4dd854b92b539d9debf87a5a683b66338648b84d3c8
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 30
+            timeoutSeconds: 5
+          name: bifrost
+          ports:
+            - containerPort: 8080
+              name: http
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 10
+          resources:
+            limits:
+              cpu: "4"
+              memory: 2Gi
+            requests:
+              cpu: 100m
+              memory: 256Mi
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+          startupProbe:
+            failureThreshold: 60
+            httpGet:
+              path: /health
+              port: http
+            periodSeconds: 5
+          volumeMounts:
+            - mountPath: /app/data/config.json
+              name: config
+              readOnly: true
+              subPath: config.json
+            - mountPath: /app/data
+              name: data
+      initContainers:
+        - command:
+            - sh
+            - -c
+            - |
+              exec wget -qO- \
+                --header "X-ClickHouse-User: bifrost" \
+                --header "X-ClickHouse-Key: $CLICKHOUSE_PASSWORD" \
+                --post-data "CREATE DATABASE IF NOT EXISTS bifrost" \
+                http://clickhouse.clickhouse.svc.cluster.local:8123/
+          env:
+            - name: CLICKHOUSE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  key: CLICKHOUSE_PASSWORD
+                  name: bifrost-secrets
+          image: docker.io/maximhq/bifrost:v2.5.1@sha256:5ec9873acaf1687556b6e4dd854b92b539d9debf87a5a683b66338648b84d3c8
+          name: create-database
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop:
+                - ALL
+      nodeSelector:
+        kubernetes.io/hostname: de-msa2
+      securityContext:
+        fsGroup: 1000
+        runAsNonRoot: true
+        runAsUser: 1000
+      volumes:
+        - configMap:
+            name: bifrost-config
+          name: config
+        - name: data
+          persistentVolumeClaim:
+            claimName: bifrost-data

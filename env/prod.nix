@@ -6,6 +6,7 @@
     ./homepage.nix
     ./substrate.nix
     ./ax.nix
+    ./bifrost.nix
     ./cluster_access.nix
   ];
 

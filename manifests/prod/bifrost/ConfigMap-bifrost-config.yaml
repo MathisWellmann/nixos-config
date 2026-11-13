@@ -1,0 +1,7 @@
+apiVersion: v1
+data:
+  config.json: '{"$schema":"https://www.getbifrost.ai/schema","client":{"disable_db_pings_in_health":true,"enable_logging":true,"enforce_auth_on_inference":true,"log_retention_days":30},"config_store":{"config":{"path":"/app/data/config.db"},"enabled":true,"type":"sqlite"},"encryption_key":"env.BIFROST_ENCRYPTION_KEY","governance":{"auth_config":{"admin_password":"env.BIFROST_ADMIN_PASSWORD","admin_username":"admin","is_enabled":true},"virtual_keys":[{"description":"Manual smoke tests of the gateway","id":"smoke-test","name":"smoke-test","provider_configs":[{"allowed_models":["*"],"key_ids":["*"],"provider":"sgl"}],"value":"env.BIFROST_VK_SMOKE_TEST"}]},"logs_store":{"config":{"database":"bifrost","host":"clickhouse.clickhouse.svc.cluster.local","password":"env.CLICKHOUSE_PASSWORD","port":"9000","username":"bifrost"},"enabled":true,"retention_days":30,"type":"clickhouse"},"providers":{"sgl":{"keys":[{"models":["*"],"name":"desg0","sgl_key_config":{"url":"http://192.168.0.13:8000"},"value":"","weight":1.0}],"network_config":{"allow_private_network":true,"default_request_timeout_in_seconds":900,"max_retries":0,"stream_idle_timeout_in_seconds":600}}},"source_of_truth":"config.json"}'
+kind: ConfigMap
+metadata:
+  name: bifrost-config
+  namespace: llm-gateway

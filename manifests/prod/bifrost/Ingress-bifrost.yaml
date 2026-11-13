@@ -1,0 +1,31 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  annotations:
+    cert-manager.io/cluster-issuer: k3s-lan-ca
+    gethomepage.dev/description: LLM gateway (sglang), logs to ClickHouse
+    gethomepage.dev/enabled: "true"
+    gethomepage.dev/group: AI
+    gethomepage.dev/icon: mdi-transit-connection-variant
+    gethomepage.dev/name: Bifrost
+    gethomepage.dev/pod-selector: app.kubernetes.io/name=bifrost
+    gethomepage.dev/siteMonitor: http://bifrost.llm-gateway.svc.cluster.local:8080/health
+  name: bifrost
+  namespace: llm-gateway
+spec:
+  ingressClassName: traefik
+  rules:
+    - host: llm.k3s.lan
+      http:
+        paths:
+          - backend:
+              service:
+                name: bifrost
+                port:
+                  number: 8080
+            path: /
+            pathType: Prefix
+  tls:
+    - hosts:
+        - llm.k3s.lan
+      secretName: bifrost-tls

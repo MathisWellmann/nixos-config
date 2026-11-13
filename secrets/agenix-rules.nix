@@ -43,6 +43,19 @@ in {
     ];
     armor = true;
   };
+  # Env file (KEY=value lines) of the Bifrost LLM gateway pod (env/bifrost.nix):
+  # CLICKHOUSE_PASSWORD (ClickHouse user `bifrost`, nexus `env/prod.nix` holds
+  # its SHA-256), BIFROST_ENCRYPTION_KEY, BIFROST_ADMIN_PASSWORD and the
+  # virtual keys BIFROST_VK_*. No secret operator runs in the cluster, so the
+  # k8s Secret `bifrost-secrets` is created from this file by hand (command in
+  # env/bifrost.nix).
+  "bifrost_env.age" = {
+    publicKeys = [
+      user_de_msa2
+      system_de_msa2
+    ];
+    armor = true;
+  };
   # HMAC secret of the Forgejo webhook that wakes the `jeff` monty-persona
   # (hosts/de-msa2/monty-persona.nix). Paste the same value into the webhook's
   # "Secret" field in Forgejo; read it on de-msa2 with
